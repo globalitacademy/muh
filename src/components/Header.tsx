@@ -1,165 +1,114 @@
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Menu, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Globe } from 'lucide-react';
+import UserMenu from './UserMenu';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  const { t, language, setLanguage } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
-  const location = useLocation();
+  const { t, currentLanguage, setLanguage } = useLanguage();
+  const navigate = useNavigate();
 
-  const navigationItems = [
-    { key: 'nav.home', href: '/' },
-    { key: 'nav.courses', href: '/courses' },
-    { key: 'nav.about', href: '/about' },
-    { key: 'nav.contact', href: '/contact' }
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const menuItems = [
+    { href: '/', label: t('nav.home') },
+    { href: '/courses', label: t('nav.courses') },
+    { href: '/about', label: t('nav.about') },
+    { href: '/contact', label: t('nav.contact') },
   ];
-
-  const languages = [
-    { code: 'hy', name: 'Հայերեն' },
-    { code: 'ru', name: 'Русский' },
-    { code: 'en', name: 'English' }
-  ];
-
-  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+    <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-edu-blue rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">ԿԱՍ</span>
+          <div 
+            className="flex items-center space-x-2 cursor-pointer" 
+            onClick={() => navigate('/')}
+          >
+            <div className="w-8 h-8 bg-gradient-to-r from-edu-blue to-purple-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">L</span>
             </div>
-            <span className="font-bold text-xl text-edu-blue font-armenian">
-              Կրթություն առանց սահմանների
+            <span className="text-xl font-bold text-gray-900 font-armenian">
+              LearnHub
             </span>
-          </Link>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.key}
-                to={item.href}
-                className={`font-medium transition-colors font-armenian ${
-                  isActive(item.href)
-                    ? 'text-edu-blue'
-                    : 'text-gray-600 hover:text-edu-blue'
-                }`}
+            {menuItems.map((item) => (
+              <button
+                key={item.href}
+                onClick={() => navigate(item.href)}
+                className="text-gray-600 hover:text-edu-blue transition-colors font-armenian"
               >
-                {t(item.key)}
-              </Link>
+                {item.label}
+              </button>
             ))}
           </nav>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             {/* Language Selector */}
-            <div className="relative">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-                className="flex items-center space-x-1"
-              >
-                <Globe className="w-4 h-4" />
-                <span className="text-sm">
-                  {languages.find(lang => lang.code === language)?.name}
-                </span>
-              </Button>
-              {isLanguageOpen && (
-                <div className="absolute top-full right-0 mt-1 bg-white border rounded-md shadow-lg py-1 z-50">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        setLanguage(lang.code as any);
-                        setIsLanguageOpen(false);
-                      }}
-                      className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
-                        language === lang.code ? 'bg-edu-light-blue' : ''
-                      }`}
-                    >
-                      {lang.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <select
+              value={currentLanguage}
+              onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
+              className="bg-transparent border border-gray-200 rounded px-2 py-1 text-sm focus:outline-none focus:border-edu-blue"
+            >
+              <option value="hy">Հայ</option>
+              <option value="en">EN</option>
+              <option value="ru">РУ</option>
+            </select>
 
-            <Link to="/login">
-              <Button variant="ghost" className="font-armenian">
-                {t('nav.login')}
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button className="bg-edu-blue hover:bg-edu-dark-blue font-armenian">
-                {t('nav.register')}
-              </Button>
-            </Link>
+            <UserMenu />
           </div>
 
-          {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </Button>
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t bg-white">
-            <nav className="py-4 space-y-2">
-              {navigationItems.map((item) => (
-                <Link
-                  key={item.key}
-                  to={item.href}
-                  className={`block px-4 py-2 font-medium font-armenian ${
-                    isActive(item.href)
-                      ? 'text-edu-blue bg-edu-light-blue'
-                      : 'text-gray-600 hover:text-edu-blue hover:bg-gray-50'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
+          <div className="md:hidden border-t border-gray-100 bg-white">
+            <nav className="flex flex-col space-y-4 px-4 py-6">
+              {menuItems.map((item) => (
+                <button
+                  key={item.href}
+                  onClick={() => {
+                    navigate(item.href);
+                    setIsMenuOpen(false);
+                  }}
+                  className="text-gray-600 hover:text-edu-blue transition-colors text-left font-armenian"
                 >
-                  {t(item.key)}
-                </Link>
+                  {item.label}
+                </button>
               ))}
-              <div className="px-4 py-2 border-t">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600 font-armenian">Լեզու</span>
-                  <select
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value as any)}
-                    className="text-sm border rounded px-2 py-1"
-                  >
-                    {languages.map((lang) => (
-                      <option key={lang.code} value={lang.code}>
-                        {lang.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="px-4 py-2 space-y-2">
-                <Link to="/login" className="block w-full">
-                  <Button variant="ghost" className="w-full font-armenian">
-                    {t('nav.login')}
-                  </Button>
-                </Link>
-                <Link to="/register" className="block w-full">
-                  <Button className="w-full bg-edu-blue hover:bg-edu-dark-blue font-armenian">
-                    {t('nav.register')}
-                  </Button>
-                </Link>
+              
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <select
+                  value={currentLanguage}
+                  onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
+                  className="bg-transparent border border-gray-200 rounded px-2 py-1 text-sm focus:outline-none focus:border-edu-blue"
+                >
+                  <option value="hy">Հայ</option>
+                  <option value="en">EN</option>
+                  <option value="ru">РУ</option>
+                </select>
+                
+                <UserMenu />
               </div>
             </nav>
           </div>

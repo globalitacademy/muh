@@ -160,6 +160,41 @@ export type Database = {
         }
         Relationships: []
       }
+      enrollments: {
+        Row: {
+          completed_at: string | null
+          enrolled_at: string
+          id: string
+          module_id: string | null
+          progress_percentage: number | null
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          enrolled_at?: string
+          id?: string
+          module_id?: string | null
+          progress_percentage?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          enrolled_at?: string
+          id?: string
+          module_id?: string | null
+          progress_percentage?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       excursion_destinations: {
         Row: {
           destination_id: string | null
@@ -269,6 +304,78 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      modules: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          description_en: string | null
+          description_ru: string | null
+          difficulty_level: string
+          duration_weeks: number
+          id: string
+          image_url: string | null
+          instructor: string
+          instructor_en: string | null
+          instructor_ru: string | null
+          is_active: boolean | null
+          price: number
+          rating: number | null
+          students_count: number
+          title: string
+          title_en: string | null
+          title_ru: string | null
+          total_lessons: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          difficulty_level: string
+          duration_weeks?: number
+          id?: string
+          image_url?: string | null
+          instructor: string
+          instructor_en?: string | null
+          instructor_ru?: string | null
+          is_active?: boolean | null
+          price?: number
+          rating?: number | null
+          students_count?: number
+          title: string
+          title_en?: string | null
+          title_ru?: string | null
+          total_lessons?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          difficulty_level?: string
+          duration_weeks?: number
+          id?: string
+          image_url?: string | null
+          instructor?: string
+          instructor_en?: string | null
+          instructor_ru?: string | null
+          is_active?: boolean | null
+          price?: number
+          rating?: number | null
+          students_count?: number
+          title?: string
+          title_en?: string | null
+          title_ru?: string | null
+          total_lessons?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -383,6 +490,68 @@ export type Database = {
           },
         ]
       }
+      topics: {
+        Row: {
+          content: string | null
+          created_at: string
+          description: string | null
+          description_en: string | null
+          description_ru: string | null
+          duration_minutes: number | null
+          id: string
+          is_free: boolean | null
+          module_id: string | null
+          order_index: number
+          title: string
+          title_en: string | null
+          title_ru: string | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_free?: boolean | null
+          module_id?: string | null
+          order_index?: number
+          title: string
+          title_en?: string | null
+          title_ru?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          duration_minutes?: number | null
+          id?: string
+          is_free?: boolean | null
+          module_id?: string | null
+          order_index?: number
+          title?: string
+          title_en?: string | null
+          title_ru?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       transportation: {
         Row: {
           excursion_id: string | null
@@ -411,6 +580,57 @@ export type Database = {
             columns: ["excursion_id"]
             isOneToOne: false
             referencedRelation: "excursions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_progress: {
+        Row: {
+          completed: boolean | null
+          completion_date: string | null
+          created_at: string
+          id: string
+          module_id: string | null
+          progress_percentage: number | null
+          topic_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          completed?: boolean | null
+          completion_date?: string | null
+          created_at?: string
+          id?: string
+          module_id?: string | null
+          progress_percentage?: number | null
+          topic_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          completed?: boolean | null
+          completion_date?: string | null
+          created_at?: string
+          id?: string
+          module_id?: string | null
+          progress_percentage?: number | null
+          topic_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_progress_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
             referencedColumns: ["id"]
           },
         ]

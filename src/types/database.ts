@@ -1,0 +1,63 @@
+
+export interface Module {
+  id: string;
+  title: string;
+  title_en?: string;
+  title_ru?: string;
+  description?: string;
+  description_en?: string;
+  description_ru?: string;
+  image_url?: string;
+  difficulty_level: 'beginner' | 'intermediate' | 'advanced';
+  duration_weeks: number;
+  price: number;
+  instructor: string;
+  instructor_en?: string;
+  instructor_ru?: string;
+  category: string;
+  total_lessons: number;
+  students_count: number;
+  rating?: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Topic {
+  id: string;
+  module_id: string;
+  title: string;
+  title_en?: string;
+  title_ru?: string;
+  description?: string;
+  description_en?: string;
+  description_ru?: string;
+  content?: string;
+  video_url?: string;
+  duration_minutes: number;
+  order_index: number;
+  is_free: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserProgress {
+  id: string;
+  user_id: string;
+  module_id: string;
+  topic_id: string;
+  completed: boolean;
+  completion_date?: string;
+  progress_percentage: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Enrollment {
+  id: string;
+  user_id: string;
+  module_id: string;
+  enrolled_at: string;
+  completed_at?: string;
+  progress_percentage: number;
+}
