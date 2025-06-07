@@ -20,8 +20,15 @@ export const useTopics = (moduleId: string) => {
       }
 
       console.log('Topics fetched:', data);
+      console.log('Total topics count:', data?.length || 0);
+      console.log('Free topics:', data?.filter(t => t.is_free).length || 0);
+      console.log('Paid topics:', data?.filter(t => !t.is_free).length || 0);
+      
       return data || [];
     },
     enabled: !!moduleId,
+    staleTime: 0, // Force fresh data on every request
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 };

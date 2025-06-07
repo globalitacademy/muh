@@ -16,8 +16,19 @@ interface TopicCurriculumProps {
 const TopicCurriculum = ({ topics, hasFullAccess, onTopicClick }: TopicCurriculumProps) => {
   const { user } = useAuth();
 
+  console.log('TopicCurriculum props:', { 
+    topicsCount: topics.length, 
+    hasFullAccess,
+    topics: topics.map(t => ({ id: t.id, title: t.title, is_free: t.is_free }))
+  });
+
   const freeTopics = topics.filter(t => t.is_free);
   const paidTopics = topics.filter(t => !t.is_free);
+
+  console.log('Filtered topics:', {
+    freeTopicsCount: freeTopics.length,
+    paidTopicsCount: paidTopics.length
+  });
 
   const handleTopicClick = (topicId: string, canAccess: boolean) => {
     if (canAccess) {
