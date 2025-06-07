@@ -35,8 +35,7 @@ const ModuleDetail = () => {
   };
 
   const handleTopicClick = (topicId: string) => {
-    // Navigate to topic detail page (to be implemented)
-    console.log('Navigate to topic:', topicId);
+    navigate(`/topic/${topicId}`);
   };
 
   if (moduleLoading || topicsLoading) {
@@ -107,7 +106,7 @@ const ModuleDetail = () => {
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-5 h-5 text-muted-foreground" />
                   <div>
-                    <div className="font-semibold">{module.total_lessons}</div>
+                    <div className="font-semibold">{topics?.length || 0}</div>
                     <div className="text-sm text-muted-foreground font-armenian">դաս</div>
                   </div>
                 </div>
@@ -143,7 +142,7 @@ const ModuleDetail = () => {
               {topics && topics.length > 0 ? (
                 <TopicCurriculum
                   topics={topics}
-                  isEnrolled={false}
+                  isEnrolled={isEnrolled || false}
                   onTopicClick={handleTopicClick}
                 />
               ) : (
@@ -186,7 +185,12 @@ const ModuleDetail = () => {
                           <Progress value={0} className="mb-2" />
                           <div className="text-xs text-muted-foreground">0% ավարտված</div>
                         </div>
-                        <Button className="w-full btn-modern font-armenian">
+                        <Button className="w-full btn-modern font-armenian" onClick={() => {
+                          const firstTopic = topics?.find(t => t.is_free) || topics?.[0];
+                          if (firstTopic) {
+                            handleTopicClick(firstTopic.id);
+                          }
+                        }}>
                           Շարունակել ուսումը
                         </Button>
                       </>

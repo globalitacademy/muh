@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Clock, Play, Lock, CheckCircle, BookOpen } from 'lucide-react';
 import { Topic } from '@/types/database';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
 
 interface TopicCurriculumProps {
   topics: Topic[];
@@ -16,14 +15,13 @@ interface TopicCurriculumProps {
 
 const TopicCurriculum = ({ topics, isEnrolled, onTopicClick }: TopicCurriculumProps) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const freeTopics = topics.filter(t => t.is_free);
   const paidTopics = topics.filter(t => !t.is_free);
 
   const handleTopicClick = (topicId: string, canAccess: boolean) => {
     if (canAccess) {
-      navigate(`/topic/${topicId}`);
+      onTopicClick(topicId);
     }
   };
 
