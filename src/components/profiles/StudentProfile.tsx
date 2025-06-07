@@ -7,11 +7,43 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 import { BookOpen, Award, Clock, Users, Target } from 'lucide-react';
 
 const StudentProfile = () => {
-  const { data: profile, isLoading } = useUserProfile();
+  const { data: profile, isLoading, error } = useUserProfile();
+
+  console.log('StudentProfile - Loading:', isLoading);
+  console.log('StudentProfile - Profile data:', profile);
+  console.log('StudentProfile - Error:', error);
 
   if (isLoading) {
     return <div className="animate-pulse">Բեռնվում է...</div>;
   }
+
+  if (error) {
+    console.error('StudentProfile - Error loading profile:', error);
+    return (
+      <div className="text-center p-8">
+        <h2 className="text-xl font-bold mb-4">Սխալ է տեղի ունեցել</h2>
+        <p className="text-muted-foreground">Չհաջողվեց բեռնել պրոֆիլի տվյալները:</p>
+        <p className="text-sm text-red-500 mt-2">{error?.message}</p>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    console.log('StudentProfile - No profile data available');
+    return (
+      <div className="text-center p-8">
+        <h2 className="text-xl font-bold mb-4">Պրոֆիլ չի գտնվել</h2>
+        <p className="text-muted-foreground">Ձեր պրոֆիլի տվյալները հասանելի չեն:</p>
+      </div>
+    );
+  }
+
+  console.log('StudentProfile - Rendering with profile:', {
+    name: profile.name,
+    role: profile.role,
+    group_number: profile.group_number,
+    department: profile.department
+  });
 
   return (
     <div className="space-y-6">
@@ -35,6 +67,10 @@ const StudentProfile = () => {
             <div>
               <p className="text-sm text-muted-foreground font-armenian">Բաժին</p>
               <p className="font-semibold">{profile?.department || 'Նշված չէ'}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground font-armenian">Դեր</p>
+              <p className="font-semibold">{profile?.role || 'Նշված չէ'}</p>
             </div>
           </div>
         </CardContent>
