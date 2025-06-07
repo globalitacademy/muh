@@ -37,7 +37,7 @@ const Auth = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signUp(email, password, name);
+      await signUp(email, password, { name });
     } finally {
       setIsLoading(false);
     }
