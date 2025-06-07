@@ -12,7 +12,7 @@ import SecuritySettingsTab from '@/components/settings/SecuritySettingsTab';
 import NotificationSettingsTab from '@/components/settings/NotificationSettingsTab';
 import PrivacySettingsTab from '@/components/settings/PrivacySettingsTab';
 import AccountSettingsTab from '@/components/settings/AccountSettingsTab';
-import { Loader2, Settings, Shield, Bell, Eye, User } from 'lucide-react';
+import { Loader2, Settings as SettingsIcon, Shield, Bell, Eye, User } from 'lucide-react';
 
 const Settings = () => {
   const { user, loading: authLoading } = useAuth();
@@ -69,7 +69,7 @@ const Settings = () => {
                 <span className="hidden md:inline">Գաղտնիություն</span>
               </TabsTrigger>
               <TabsTrigger value="account" className="flex items-center gap-2">
-                <Settings className="w-4 h-4" />
+                <SettingsIcon className="w-4 h-4" />
                 <span className="hidden md:inline">Հաշիվ</span>
               </TabsTrigger>
             </TabsList>
