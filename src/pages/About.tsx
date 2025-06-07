@@ -148,13 +148,13 @@ const About = () => {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16">
               {achievements.map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2">
+                <div key={index} className="modern-card glass-card rounded-2xl p-6 text-center group hover:scale-105 transition-all duration-300">
+                  <div className="text-2xl md:text-3xl lg:text-4xl font-bold text-gradient mb-2">
                     {stat.number}
                   </div>
-                  <div className="text-muted-foreground font-armenian">
+                  <div className="text-muted-foreground font-armenian text-sm md:text-base">
                     {stat.label}
                   </div>
                 </div>
@@ -177,17 +177,17 @@ const About = () => {
                 }
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
               {values.map((value, index) => (
-                <Card key={index} className="modern-card course-card-hover border-0 shadow-lg group overflow-hidden">
-                  <CardContent className="p-8 text-center">
+                <Card key={index} className="modern-card course-card-hover border-0 shadow-lg group overflow-hidden h-full">
+                  <CardContent className="p-6 lg:p-8 text-center h-full flex flex-col">
                     <div className={`w-16 h-16 mx-auto mb-6 bg-gradient-to-r ${value.color} text-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                       {value.icon}
                     </div>
                     <h3 className="text-lg font-semibold mb-4 font-armenian group-hover:text-edu-blue transition-colors">
                       {value.title}
                     </h3>
-                    <p className="text-muted-foreground font-armenian leading-relaxed">
+                    <p className="text-muted-foreground font-armenian leading-relaxed text-sm flex-grow">
                       {value.description}
                     </p>
                   </CardContent>
@@ -251,10 +251,10 @@ const About = () => {
                 }
               </p>
             </div>
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
               {team.map((member, index) => (
-                <Card key={index} className="modern-card course-card-hover border-0 shadow-lg group overflow-hidden">
-                  <CardContent className="p-8 text-center">
+                <Card key={index} className="modern-card course-card-hover border-0 shadow-lg group overflow-hidden h-full">
+                  <CardContent className="p-6 lg:p-8 text-center h-full flex flex-col">
                     <div className="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300">
                       <img 
                         src={member.image} 
@@ -268,7 +268,7 @@ const About = () => {
                     <p className="text-edu-blue font-medium mb-3 font-armenian">
                       {member.role}
                     </p>
-                    <p className="text-muted-foreground text-sm font-armenian leading-relaxed">
+                    <p className="text-muted-foreground text-sm font-armenian leading-relaxed flex-grow">
                       {member.experience}
                     </p>
                   </CardContent>
