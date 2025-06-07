@@ -1,16 +1,14 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play, Star, Users, Award } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-
 const Hero = () => {
-  const { t } = useLanguage();
+  const {
+    t
+  } = useLanguage();
   const navigate = useNavigate();
-
-  return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-accent/5 pt-20">
+  return <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-accent/5 pt-20">
       {/* Background decorations */}
       <div className="absolute inset-0">
         <div className="absolute top-20 left-10 w-72 h-72 bg-edu-blue/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob dark:mix-blend-screen dark:opacity-30"></div>
@@ -28,9 +26,9 @@ const Hero = () => {
 
           {/* Main heading */}
           <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-            <span className="text-gradient font-armenian">Ուսումնական</span>
+            <span className="text-gradient font-armenian">Կրթություն</span>
             <br />
-            <span className="text-foreground font-armenian">Մոդուլներ</span>
+            <span className="text-foreground font-armenian">Առանց Սահմանների</span>
           </h1>
 
           {/* Description */}
@@ -40,20 +38,11 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button 
-              size="lg" 
-              className="btn-modern text-white px-8 py-4 text-lg font-armenian"
-              onClick={() => navigate('/courses')}
-            >
+            <Button size="lg" className="btn-modern text-white px-8 py-4 text-lg font-armenian" onClick={() => navigate('/courses')}>
               Սկսել ուսումը
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="px-8 py-4 text-lg font-armenian backdrop-blur-sm border-border bg-background/80 text-foreground hover:bg-accent"
-              onClick={() => navigate('/about')}
-            >
+            <Button variant="outline" size="lg" className="px-8 py-4 text-lg font-armenian backdrop-blur-sm border-border bg-background/80 text-foreground hover:bg-accent" onClick={() => navigate('/about')}>
               <Play className="mr-2 w-5 h-5" />
               Դիտել ցուցադրությունը
             </Button>
@@ -105,8 +94,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default Hero;
