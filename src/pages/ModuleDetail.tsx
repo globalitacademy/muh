@@ -44,6 +44,13 @@ const ModuleDetail = () => {
     setHasValidCompanyCode(isValid);
   };
 
+  const handleContinueLearning = () => {
+    const firstTopic = topics?.find(t => t.is_free) || topics?.[0];
+    if (firstTopic) {
+      handleTopicClick(firstTopic.id);
+    }
+  };
+
   if (moduleLoading || topicsLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -191,12 +198,7 @@ const ModuleDetail = () => {
                           <Progress value={0} className="mb-2" />
                           <div className="text-xs text-muted-foreground">0% ավարտված</div>
                         </div>
-                        <Button className="w-full btn-modern font-armenian" onClick={() => {
-                          const firstTopic = topics?.find(t => t.is_free) || topics?.[0];
-                          if (firstTopic) {
-                            handleTopicClick(firstTopic.id);
-                          }
-                        }}>
+                        <Button className="w-full btn-modern font-armenian" onClick={handleContinueLearning}>
                           Շարունակել ուսումը
                         </Button>
                       </>
@@ -220,16 +222,11 @@ const ModuleDetail = () => {
                     {hasValidCompanyCode ? (
                       <>
                         <div className="text-center">
-                          <div className="text-sm font-armenian mb-2">Ունեք անվճար մուտք</div>
+                          <div className="text-sm font-armenian mb-2">Ունեք անվչար մուտք</div>
                           <Progress value={0} className="mb-2" />
                           <div className="text-xs text-muted-foreground">0% ավարտված</div>
                         </div>
-                        <Button className="w-full btn-modern font-armenian" onClick={() => {
-                          const firstTopic = topics?.find(t => t.is_free) || topics?.[0];
-                          if (firstTopic) {
-                            handleTopicClick(firstTopic.id);
-                          }
-                        }}>
+                        <Button className="w-full btn-modern font-armenian" onClick={handleContinueLearning}>
                           Շարունակել ուսումը
                         </Button>
                       </>
