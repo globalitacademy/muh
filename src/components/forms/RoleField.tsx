@@ -33,8 +33,6 @@ const RoleField = ({ role, onChange, language }: RoleFieldProps) => {
     onChange(syntheticEvent);
   };
 
-  const selectedRoleLabel = roles.find(r => r.value === role)?.label || roles[0].label;
-
   return (
     <div>
       <Label htmlFor="role" className="font-armenian">
@@ -42,7 +40,7 @@ const RoleField = ({ role, onChange, language }: RoleFieldProps) => {
       </Label>
       <Select value={role} onValueChange={handleValueChange}>
         <SelectTrigger className="w-full mt-1">
-          <SelectValue placeholder={selectedRoleLabel} />
+          <SelectValue placeholder={language === 'hy' ? 'Ընտրեք դեր' : language === 'ru' ? 'Выберите роль' : 'Select role'} />
         </SelectTrigger>
         <SelectContent>
           {roles.map((roleOption) => (
