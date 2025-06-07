@@ -17,7 +17,7 @@ const CompanyCodeInput = ({ onCodeVerified }: CompanyCodeInputProps) => {
   const [verificationStatus, setVerificationStatus] = useState<'none' | 'valid' | 'invalid'>('none');
 
   // Hardcoded company codes for demo - in real app these would come from database
-  const validCodes = ['COMPANY2024', 'STUDENT123', 'PARTNER2024', 'SPECIAL2024'];
+  const validCodes = ['COMPANY2024', 'STUDENT123', 'PARTNER2024', 'SPECIAL2024', 'USUM25'];
 
   const handleVerifyCode = async () => {
     if (!code.trim()) return;
