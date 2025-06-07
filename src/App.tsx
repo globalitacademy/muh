@@ -13,6 +13,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import ModuleDetail from "./pages/ModuleDetail";
+import TopicDetail from "./pages/TopicDetail";
 import MyCourses from "./pages/MyCourses";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/course/:id" element={<ModuleDetail />} />
+                <Route path="/topic/:topicId" element={<TopicDetail />} />
                 <Route path="/my-courses" element={<MyCourses />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Clock, Play, Lock, CheckCircle, BookOpen } from 'lucide-react';
 import { Topic } from '@/types/database';
 import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 interface TopicCurriculumProps {
   topics: Topic[];
@@ -15,9 +16,16 @@ interface TopicCurriculumProps {
 
 const TopicCurriculum = ({ topics, isEnrolled, onTopicClick }: TopicCurriculumProps) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const freeTopics = topics.filter(t => t.is_free);
   const paidTopics = topics.filter(t => !t.is_free);
+
+  const handleTopicClick = (topicId: string, canAccess: boolean) => {
+    if (canAccess) {
+      navigate(`/topic/${topicId}`);
+    }
+  };
 
   const TopicItem = ({ topic, canAccess }: { topic: Topic; canAccess: boolean }) => (
     <Card className={`mb-4 transition-all duration-300 ${canAccess ? 'hover:shadow-md cursor-pointer border-l-4 border-l-edu-blue' : 'opacity-60'}`}>
@@ -61,7 +69,7 @@ const TopicCurriculum = ({ topics, isEnrolled, onTopicClick }: TopicCurriculumPr
           {canAccess && (
             <Button 
               size="sm" 
-              onClick={() => onTopicClick(topic.id)}
+              onClick={() => handleTopicClick(topic.id, canAccess)}
               className="font-armenian"
             >
               <Play className="w-4 h-4 mr-1" />
