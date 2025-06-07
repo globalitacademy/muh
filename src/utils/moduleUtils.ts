@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   Code, 
@@ -26,6 +27,8 @@ export const getModuleIcon = (category?: string, title?: string) => {
   const iconProps = {
     width: 32,
     height: 32,
+    viewBox: "0 0 24 24",
+    fill: "none",
     stroke: "currentColor",
     strokeWidth: 2,
     strokeLinecap: "round" as const,
@@ -75,7 +78,7 @@ export const getModuleIcon = (category?: string, title?: string) => {
     if (lowerTitle.includes('կետային գրաֆիկա')) {
       return React.createElement(Image, iconProps);
     }
-    if (lowerTitle.includes('անվտանգություն')) {
+    if (lowerTitle.includes('տեղեկատվության անվտանգություն')) {
       return React.createElement(Shield, iconProps);
     }
   }
