@@ -56,13 +56,19 @@ export const useCreateCourse = () => {
     mutationFn: async (courseData: Partial<InstructorCourse>) => {
       if (!user) throw new Error('User not authenticated');
 
+      // Ensure required fields are provided
+      const requiredData = {
+        title: courseData.title || 'Untitled Course',
+        category: courseData.category || 'General',
+        difficulty_level: courseData.difficulty_level || 'beginner',
+        instructor: user.email,
+        is_active: true,
+        ...courseData,
+      };
+
       const { data, error } = await supabase
         .from('modules')
-        .insert({
-          ...courseData,
-          instructor: user.email,
-          is_active: true,
-        })
+        .insert(requiredData)
         .select()
         .single();
 

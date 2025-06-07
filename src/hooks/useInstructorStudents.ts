@@ -12,7 +12,6 @@ interface InstructorStudent {
   completed_at?: string;
   profiles?: {
     name: string;
-    email: string;
     group_number?: string;
   };
   modules?: {
@@ -31,20 +30,38 @@ export const useInstructorStudents = () => {
       const userEmail = user.email;
       console.log('Fetching students for instructor:', userEmail);
 
+      // First get modules taught by this instructor
+      const { data: instructorModules, error: modulesError } = await supabase
+        .from('modules')
+        .select('id')
+        .eq('instructor', userEmail)
+        .eq('is_active', true);
+
+      if (modulesError) {
+        console.error('Error fetching instructor modules:', modulesError);
+        throw modulesError;
+      }
+
+      if (!instructorModules || instructorModules.length === 0) {
+        return [];
+      }
+
+      const moduleIds = instructorModules.map(m => m.id);
+
+      // Then get enrollments for those modules with student profiles
       const { data, error } = await supabase
         .from('enrollments')
         .select(`
           *,
-          profiles!enrollments_user_id_fkey (
+          profiles!inner (
             name,
             group_number
           ),
-          modules!enrollments_module_id_fkey (
-            title,
-            instructor
+          modules!inner (
+            title
           )
         `)
-        .eq('modules.instructor', userEmail)
+        .in('module_id', moduleIds)
         .order('enrolled_at', { ascending: false });
 
       if (error) {
