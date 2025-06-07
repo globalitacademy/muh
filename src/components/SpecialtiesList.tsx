@@ -12,6 +12,7 @@ import {
   ArrowRight 
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useModules } from '@/hooks/useModules';
 
 const specialties = [
   {
@@ -19,7 +20,6 @@ const specialties = [
     title: 'Ծրագրավորում',
     description: 'Սովորեք ժամանակակից ծրագրավորման լեզուներ և տեխնոլոգիաներ',
     icon: Code,
-    moduleCount: 8,
     color: 'from-blue-500 to-cyan-500'
   },
   {
@@ -66,6 +66,7 @@ const specialties = [
 
 const SpecialtiesList = () => {
   const navigate = useNavigate();
+  const { data: modules, isLoading } = useModules();
 
   const handleSpecialtyClick = (specialtyId: string) => {
     if (specialtyId === 'programming') {
@@ -76,10 +77,14 @@ const SpecialtiesList = () => {
     }
   };
 
+  // Ծրագրավորման մասնագիտության համար մոդուլների քանակը
+  const programmingModuleCount = specialtyId === 'programming' && modules ? modules.length : 0;
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
       {specialties.map((specialty) => {
         const IconComponent = specialty.icon;
+        const moduleCount = specialty.id === 'programming' ? programmingModuleCount : specialty.moduleCount || 0;
         
         return (
           <Card key={specialty.id} className="group hover:shadow-lg transition-all duration-300 border-border bg-card">
@@ -98,17 +103,17 @@ const SpecialtiesList = () => {
               
               <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                 <span className="font-armenian">
-                  {specialty.moduleCount} մոդուլ
+                  {isLoading && specialty.id === 'programming' ? 'Բեռնվում է...' : `${moduleCount} մոդուլ`}
                 </span>
               </div>
 
               <Button 
                 onClick={() => handleSpecialtyClick(specialty.id)}
                 className="w-full btn-modern text-white font-armenian group-hover:scale-105 transition-transform"
-                disabled={specialty.moduleCount === 0}
+                disabled={moduleCount === 0}
               >
-                {specialty.moduleCount > 0 ? 'Սկսել ուսումը' : 'Շուտով'}
-                {specialty.moduleCount > 0 && <ArrowRight className="w-4 h-4 ml-2" />}
+                {moduleCount > 0 ? 'Սկսել ուսումը' : 'Շուտով'}
+                {moduleCount > 0 && <ArrowRight className="w-4 h-4 ml-2" />}
               </Button>
             </CardContent>
           </Card>
