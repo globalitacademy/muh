@@ -1,13 +1,16 @@
 
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Loader2 } from 'lucide-react';
+import { useContactStats } from '@/hooks/useContactStats';
 
 const Stats = () => {
   const { t } = useLanguage();
+  const { data: stats, isLoading: statsLoading } = useContactStats();
 
-  const stats = [
+  const statsData = [
     {
-      value: '5,000+',
+      value: statsLoading ? '...' : `${stats?.studentsCount || 0}+`,
       label: t('stats.students'),
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,7 +19,7 @@ const Stats = () => {
       )
     },
     {
-      value: '150+',
+      value: statsLoading ? '...' : `${stats?.modulesCount || 0}+`,
       label: t('stats.courses'),
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -25,7 +28,7 @@ const Stats = () => {
       )
     },
     {
-      value: '50+',
+      value: statsLoading ? '...' : `${stats?.instructorsCount || 0}+`,
       label: t('stats.instructors'),
       icon: (
         <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,11 +51,11 @@ const Stats = () => {
     <section className="py-16 gradient-hero">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-          {stats.map((stat, index) => (
+          {statsData.map((stat, index) => (
             <div key={index} className="text-center text-white">
               <div className="flex justify-center mb-4">
                 <div className="p-3 bg-white/20 rounded-full">
-                  {stat.icon}
+                  {statsLoading && index < 3 ? <Loader2 className="w-8 h-8 animate-spin" /> : stat.icon}
                 </div>
               </div>
               <div className="text-3xl md:text-4xl font-bold mb-2">

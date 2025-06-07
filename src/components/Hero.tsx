@@ -1,13 +1,17 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Play, Star, Users, Award } from 'lucide-react';
+import { ArrowRight, Play, Star, Users, Award, BookOpen, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { useContactStats } from '@/hooks/useContactStats';
+
 const Hero = () => {
   const {
     t
   } = useLanguage();
   const navigate = useNavigate();
+  const { data: stats, isLoading: statsLoading } = useContactStats();
+
   return <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-accent/5 pt-20">
       {/* Background decorations */}
       <div className="absolute inset-0">
@@ -51,16 +55,22 @@ const Hero = () => {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="glass-card rounded-2xl p-6 text-center bg-card/50 backdrop-blur-md border border-border">
-              <div className="text-3xl font-bold text-edu-blue mb-2">500+</div>
+              <div className="text-3xl font-bold text-edu-blue mb-2">
+                {statsLoading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : `${stats?.studentsCount || 0}+`}
+              </div>
               <div className="text-muted-foreground font-armenian">Ուսանողներ</div>
             </div>
             <div className="glass-card rounded-2xl p-6 text-center bg-card/50 backdrop-blur-md border border-border">
-              <div className="text-3xl font-bold text-edu-blue mb-2">50+</div>
+              <div className="text-3xl font-bold text-edu-blue mb-2">
+                {statsLoading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : `${stats?.modulesCount || 0}`}
+              </div>
               <div className="text-muted-foreground font-armenian">Մոդուլներ</div>
             </div>
             <div className="glass-card rounded-2xl p-6 text-center bg-card/50 backdrop-blur-md border border-border">
-              <div className="text-3xl font-bold text-edu-blue mb-2">95%</div>
-              <div className="text-muted-foreground font-armenian">Բավարարվածություն</div>
+              <div className="text-3xl font-bold text-edu-blue mb-2">
+                {statsLoading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : `${stats?.instructorsCount || 0}+`}
+              </div>
+              <div className="text-muted-foreground font-armenian">Մանկավարժներ</div>
             </div>
           </div>
         </div>
@@ -96,4 +106,5 @@ const Hero = () => {
       </div>
     </section>;
 };
+
 export default Hero;
