@@ -4,7 +4,7 @@ import { useAdminRole } from '@/hooks/useAdminRole';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, BookOpen, Settings, BarChart3, Activity, FileText, Shield } from 'lucide-react';
+import { Users, BookOpen, Settings, BarChart3, Activity, FileText, Shield, GraduationCap } from 'lucide-react';
 import { Loader2 } from 'lucide-react';
 import AdminModulesTab from './AdminModulesTab';
 import AdminUsersTab from './AdminUsersTab';
@@ -13,6 +13,7 @@ import AdminAnalyticsTab from './AdminAnalyticsTab';
 import AdminReportsTab from './AdminReportsTab';
 import AdminLogsTab from './AdminLogsTab';
 import AdminUserActivityTab from './AdminUserActivityTab';
+import AdminCurriculumTab from './curriculum/AdminCurriculumTab';
 
 const AdminDashboard = () => {
   const { data: isAdmin, isLoading, error } = useAdminRole();
@@ -124,10 +125,14 @@ const AdminDashboard = () => {
         {/* Management Tabs */}
         <div className="glass-card rounded-2xl p-2 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           <Tabs defaultValue="modules" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7 bg-muted/50 p-1 rounded-xl">
+            <TabsList className="grid w-full grid-cols-8 bg-muted/50 p-1 rounded-xl">
               <TabsTrigger value="modules" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
                 <BookOpen className="w-4 h-4 mr-2" />
                 Մոդուլներ
+              </TabsTrigger>
+              <TabsTrigger value="curriculum" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
+                <GraduationCap className="w-4 h-4 mr-2" />
+                Ծրագրեր
               </TabsTrigger>
               <TabsTrigger value="users" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
                 <Users className="w-4 h-4 mr-2" />
@@ -158,6 +163,10 @@ const AdminDashboard = () => {
             <div className="min-h-[600px]">
               <TabsContent value="modules" className="mt-6">
                 <AdminModulesTab />
+              </TabsContent>
+
+              <TabsContent value="curriculum" className="mt-6">
+                <AdminCurriculumTab />
               </TabsContent>
 
               <TabsContent value="users" className="mt-6">
