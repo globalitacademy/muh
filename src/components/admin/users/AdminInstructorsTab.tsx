@@ -5,43 +5,39 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Upload, Search, Plus, User, Award, BookOpen, Star, Edit, Eye } from 'lucide-react';
+import { useAdminUsers } from '@/hooks/useAdminUsers';
+import { Loader2 } from 'lucide-react';
 
 const AdminInstructorsTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { data: users, isLoading, error } = useAdminUsers();
   
-  // Mock data for instructors
-  const instructors = [
-    {
-      id: '1',
-      name: 'Արամ Ավետիսյան',
-      email: 'aram.avetisyan@example.com',
-      specialization: 'Ծրագրավորում',
-      experience: '8 տարի',
-      courses: 5,
-      students: 127,
-      rating: 4.8,
-      certificates: ['React', 'Node.js', 'MongoDB'],
-      status: 'active'
-    },
-    {
-      id: '2',
-      name: 'Մարիամ Գրիգորյան',
-      email: 'mariam.grigoryan@example.com',
-      specialization: 'Դիզայն',
-      experience: '6 տարի',
-      courses: 3,
-      students: 89,
-      rating: 4.9,
-      certificates: ['UI/UX', 'Figma', 'Adobe Creative'],
-      status: 'active'
-    }
-  ];
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
+  if (error) {
+    console.error('Error loading instructors:', error);
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-xl font-semibold font-armenian mb-2">Տվյալների բեռնման սխալ</h3>
+        <p className="text-muted-foreground font-armenian">Խնդրում ենք փորձել նորից</p>
+      </div>
+    );
+  }
+
+  // Filter only instructors
+  const instructors = users?.filter(user => user.role === 'instructor') || [];
+  
   const filteredInstructors = instructors.filter(instructor =>
-    instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    instructor.specialization.toLowerCase().includes(searchTerm.toLowerCase())
+    instructor.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    instructor.organization?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    instructor.department?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -91,12 +87,20 @@ const AdminInstructorsTab = () => {
               <div className="flex justify-between items-start">
                 <div className="flex items-start gap-4">
                   <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-edu-blue to-edu-orange flex items-center justify-center">
-                    <User className="w-8 h-8 text-white" />
+                    {instructor.avatar_url ? (
+                      <img 
+                        src={instructor.avatar_url} 
+                        alt={instructor.name || 'Instructor'} 
+                        className="w-full h-full rounded-2xl object-cover"
+                      />
+                    ) : (
+                      <User className="w-8 h-8 text-white" />
+                    )}
                   </div>
                   <div>
-                    <CardTitle className="font-armenian text-xl mb-1">{instructor.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground mb-2">{instructor.email}</p>
-                    <Badge className="bg-gradient-to-r from-green-500 to-green-600 text-white border-0">
+                    <CardTitle className="font-armenian text-xl mb-1">{instructor.name || 'Անանուն'}</CardTitle>
+                    <p className="text-sm text-muted-foreground mb-2">{instructor.id}</p>
+                    <Badge className={instructor.status === 'active' ? 'bg-gradient-to-r from-green-500 to-green-600 text-white border-0' : 'bg-gradient-to-r from-gray-500 to-gray-600 text-white border-0'}>
                       {instructor.status === 'active' ? 'Ակտիվ' : 'Ապաակտիվ'}
                     </Badge>
                   </div>
@@ -114,51 +118,38 @@ const AdminInstructorsTab = () => {
             <CardContent>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <span className="text-sm font-armenian text-muted-foreground">Մասնագիտություն</span>
-                  <p className="font-semibold">{instructor.specialization}</p>
+                  <span className="text-sm font-armenian text-muted-foreground">Կազմակերպություն</span>
+                  <p className="font-semibold">{instructor.organization || 'Չի նշված'}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-armenian text-muted-foreground">Փորձ</span>
-                  <p className="font-semibold">{instructor.experience}</p>
+                  <span className="text-sm font-armenian text-muted-foreground">Բաժին</span>
+                  <p className="font-semibold">{instructor.department || 'Չի նշված'}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-armenian text-muted-foreground">Դասընթացներ</span>
-                  <p className="font-semibold flex items-center gap-1">
-                    <BookOpen className="w-4 h-4" />
-                    {instructor.courses}
-                  </p>
+                  <span className="text-sm font-armenian text-muted-foreground">Խումբ</span>
+                  <p className="font-semibold">{instructor.group_number || 'Չի նշված'}</p>
                 </div>
                 <div>
-                  <span className="text-sm font-armenian text-muted-foreground">Ուսանողներ</span>
-                  <p className="font-semibold flex items-center gap-1">
-                    <User className="w-4 h-4" />
-                    {instructor.students}
-                  </p>
+                  <span className="text-sm font-armenian text-muted-foreground">Հեռախոս</span>
+                  <p className="font-semibold">{instructor.phone || 'Չի նշված'}</p>
                 </div>
               </div>
               
               <div className="mb-4">
-                <span className="text-sm font-armenian text-muted-foreground">Գնահատական</span>
+                <span className="text-sm font-armenian text-muted-foreground">Գրանցման ամսաթիվ</span>
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="font-semibold ml-1">{instructor.rating}</span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">/ 5.0</span>
+                  <span className="font-semibold">
+                    {new Date(instructor.created_at).toLocaleDateString('hy-AM')}
+                  </span>
                 </div>
               </div>
 
-              <div>
-                <span className="text-sm font-armenian text-muted-foreground">Վկայականներ</span>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {instructor.certificates.map((cert, idx) => (
-                    <Badge key={idx} variant="outline" className="text-xs">
-                      <Award className="w-3 h-3 mr-1" />
-                      {cert}
-                    </Badge>
-                  ))}
+              {instructor.bio && (
+                <div>
+                  <span className="text-sm font-armenian text-muted-foreground">Կենսագրություն</span>
+                  <p className="text-sm mt-1 text-muted-foreground line-clamp-2">{instructor.bio}</p>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -169,7 +160,12 @@ const AdminInstructorsTab = () => {
           <CardContent className="p-12 text-center">
             <User className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
             <h3 className="text-xl font-semibold font-armenian mb-2">Դասախոսներ չեն գտնվել</h3>
-            <p className="text-muted-foreground font-armenian">Փորձեք փոխել որոնման չափանիշները</p>
+            <p className="text-muted-foreground font-armenian">
+              {instructors.length === 0 
+                ? 'Բազայում դեռ չկան գրանցված դասախոսներ' 
+                : 'Փորձեք փոխել որոնման չափանիշները'
+              }
+            </p>
           </CardContent>
         </Card>
       )}

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useAdminRole } from '@/hooks/useAdminRole';
+import { useAdminStats } from '@/hooks/useAdminStats';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -17,8 +18,9 @@ import AdminCurriculumTab from './curriculum/AdminCurriculumTab';
 
 const AdminDashboard = () => {
   const { data: isAdmin, isLoading, error } = useAdminRole();
+  const { data: adminStats, isLoading: statsLoading, error: statsError } = useAdminStats();
 
-  if (isLoading) {
+  if (isLoading || statsLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -36,6 +38,18 @@ const AdminDashboard = () => {
       </div>
     );
   }
+
+  if (statsError) {
+    console.error('Error loading admin stats:', statsError);
+  }
+
+  // Use real data or fallback to 0
+  const stats = adminStats || {
+    totalModules: 0,
+    totalUsers: 0,
+    activeCourses: 0,
+    systemStatus: 'active' as const,
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 relative overflow-hidden">
@@ -72,7 +86,7 @@ const AdminDashboard = () => {
                   <BookOpen className="h-6 w-6 text-white" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-white">12</div>
+                  <div className="text-3xl font-bold text-white">{stats.totalModules}</div>
                   <div className="text-white/80 font-armenian text-sm">Ընդամենը մոդուլներ</div>
                 </div>
               </div>
@@ -86,7 +100,7 @@ const AdminDashboard = () => {
                   <Users className="h-6 w-6 text-white" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-white">347</div>
+                  <div className="text-3xl font-bold text-white">{stats.totalUsers}</div>
                   <div className="text-white/80 font-armenian text-sm">Ընդամենը օգտատերեր</div>
                 </div>
               </div>
@@ -100,7 +114,7 @@ const AdminDashboard = () => {
                   <BarChart3 className="h-6 w-6 text-white" />
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-white">8</div>
+                  <div className="text-3xl font-bold text-white">{stats.activeCourses}</div>
                   <div className="text-white/80 font-armenian text-sm">Ակտիվ դասընթացներ</div>
                 </div>
               </div>
@@ -114,7 +128,9 @@ const AdminDashboard = () => {
                   <Activity className="h-6 w-6 text-white" />
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-green-400">Ակտիվ</div>
+                  <div className={`text-2xl font-bold ${stats.systemStatus === 'active' ? 'text-green-400' : 'text-red-400'}`}>
+                    {stats.systemStatus === 'active' ? 'Ակտիվ' : 'Սխալ'}
+                  </div>
                   <div className="text-white/80 font-armenian text-sm">Համակարգի կարգավիճակ</div>
                 </div>
               </div>

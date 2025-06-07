@@ -2,8 +2,40 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart3, TrendingUp, Users, BookOpen, Activity, Eye } from 'lucide-react';
+import { useAdminAnalytics } from '@/hooks/useAdminAnalytics';
+import { Loader2 } from 'lucide-react';
 
 const AdminAnalyticsTab = () => {
+  const { data: analytics, isLoading, error } = useAdminAnalytics();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error('Error loading analytics:', error);
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-xl font-semibold font-armenian mb-2">Տվյալների բեռնման սխալ</h3>
+        <p className="text-muted-foreground font-armenian">Խնդրում ենք փորձել նորից</p>
+      </div>
+    );
+  }
+
+  const data = analytics || {
+    activeUsers: 0,
+    completedCourses: 0,
+    dailyActivity: 0,
+    averageRating: 0,
+    completionRate: 0,
+    satisfaction: 0,
+    averageStudyTime: '0ժ',
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -31,10 +63,10 @@ const AdminAnalyticsTab = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold mb-2">1,247</div>
+            <div className="text-3xl font-bold mb-2">{data.activeUsers.toLocaleString()}</div>
             <div className="flex items-center gap-2 text-sm">
               <TrendingUp className="w-4 h-4 text-green-500" />
-              <span className="text-green-500">+12%</span>
+              <span className="text-green-500">+{Math.floor(data.activeUsers * 0.12)}%</span>
               <span className="text-muted-foreground">վերջին ամսում</span>
             </div>
           </CardContent>
@@ -50,10 +82,10 @@ const AdminAnalyticsTab = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold mb-2">3,456</div>
+            <div className="text-3xl font-bold mb-2">{data.completedCourses.toLocaleString()}</div>
             <div className="flex items-center gap-2 text-sm">
               <TrendingUp className="w-4 h-4 text-green-500" />
-              <span className="text-green-500">+8%</span>
+              <span className="text-green-500">+{Math.floor(data.completedCourses * 0.08)}%</span>
               <span className="text-muted-foreground">վերջին ամսում</span>
             </div>
           </CardContent>
@@ -69,7 +101,7 @@ const AdminAnalyticsTab = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold mb-2">87%</div>
+            <div className="text-3xl font-bold mb-2">{data.dailyActivity}%</div>
             <div className="flex items-center gap-2 text-sm">
               <TrendingUp className="w-4 h-4 text-green-500" />
               <span className="text-green-500">+5%</span>
@@ -92,6 +124,7 @@ const AdminAnalyticsTab = () => {
             <div className="text-center text-muted-foreground">
               <BarChart3 className="w-16 h-16 mx-auto mb-4 opacity-50" />
               <p className="font-armenian">Գծապատկերը մշակման փուլում է</p>
+              <p className="text-sm mt-2">Ակտիվ օգտատերեր: {data.activeUsers}</p>
             </div>
           </CardContent>
         </Card>
@@ -107,6 +140,7 @@ const AdminAnalyticsTab = () => {
             <div className="text-center text-muted-foreground">
               <Activity className="w-16 h-16 mx-auto mb-4 opacity-50" />
               <p className="font-armenian">Գծապատկերը մշակման փուլում է</p>
+              <p className="text-sm mt-2">Ավարտման տոկոս: {data.completionRate}%</p>
             </div>
           </CardContent>
         </Card>
@@ -123,19 +157,19 @@ const AdminAnalyticsTab = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center p-4 bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl">
-              <div className="text-2xl font-bold text-blue-600">73%</div>
+              <div className="text-2xl font-bold text-blue-600">{data.completionRate}%</div>
               <div className="text-sm font-armenian text-muted-foreground">Ավարտման տոկոս</div>
             </div>
             <div className="text-center p-4 bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl">
-              <div className="text-2xl font-bold text-green-600">4.7</div>
+              <div className="text-2xl font-bold text-green-600">{data.averageRating}</div>
               <div className="text-sm font-armenian text-muted-foreground">Միջին գնահատական</div>
             </div>
             <div className="text-center p-4 bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl">
-              <div className="text-2xl font-bold text-purple-600">2.3ժ</div>
+              <div className="text-2xl font-bold text-purple-600">{data.averageStudyTime}</div>
               <div className="text-sm font-armenian text-muted-foreground">Միջին ուսուցման ժամանակ</div>
             </div>
             <div className="text-center p-4 bg-gradient-to-br from-muted/30 to-muted/10 rounded-xl">
-              <div className="text-2xl font-bold text-orange-600">94%</div>
+              <div className="text-2xl font-bold text-orange-600">{data.satisfaction}%</div>
               <div className="text-sm font-armenian text-muted-foreground">Գոհունակություն</div>
             </div>
           </div>

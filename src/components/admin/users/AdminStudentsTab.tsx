@@ -7,61 +7,42 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Progress } from '@/components/ui/progress';
 import { Search, User, BookOpen, Award, TrendingUp, Edit, Eye } from 'lucide-react';
+import { useAdminUsers } from '@/hooks/useAdminUsers';
+import { Loader2 } from 'lucide-react';
 
 const AdminStudentsTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [groupFilter, setGroupFilter] = useState('all');
+  const { data: users, isLoading, error } = useAdminUsers();
 
-  // Mock data for students
-  const students = [
-    {
-      id: '1',
-      name: 'Անի Սարգսյան',
-      email: 'ani.sargsyan@example.com',
-      group: 'PRG-2024-01',
-      enrolledCourses: 3,
-      completedCourses: 1,
-      progress: 67,
-      gpa: 4.2,
-      status: 'active',
-      lastActivity: '2024-01-15',
-      certificates: 2
-    },
-    {
-      id: '2',
-      name: 'Դավիթ Հակոբյան',
-      email: 'davit.hakobyan@example.com',
-      group: 'PRG-2024-01',
-      enrolledCourses: 4,
-      completedCourses: 2,
-      progress: 85,
-      gpa: 4.7,
-      status: 'active',
-      lastActivity: '2024-01-16',
-      certificates: 3
-    },
-    {
-      id: '3',
-      name: 'Մարի Կարապետյան',
-      email: 'mari.karapetyan@example.com',
-      group: 'DSN-2024-01',
-      enrolledCourses: 2,
-      completedCourses: 0,
-      progress: 34,
-      gpa: 3.8,
-      status: 'inactive',
-      lastActivity: '2024-01-10',
-      certificates: 0
-    }
-  ];
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    console.error('Error loading students:', error);
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-xl font-semibold font-armenian mb-2">Տվյալների բեռնման սխալ</h3>
+        <p className="text-muted-foreground font-armenian">Խնդրում ենք փորձել նորից</p>
+      </div>
+    );
+  }
+
+  // Filter only students
+  const students = users?.filter(user => user.role === 'student') || [];
 
   const filteredStudents = students.filter(student => {
-    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         student.group.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = student.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         student.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         student.group_number?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || student.status === statusFilter;
-    const matchesGroup = groupFilter === 'all' || student.group === groupFilter;
+    const matchesGroup = groupFilter === 'all' || student.group_number === groupFilter;
     
     return matchesSearch && matchesStatus && matchesGroup;
   });
@@ -77,7 +58,7 @@ const AdminStudentsTab = () => {
     }
   };
 
-  const uniqueGroups = [...new Set(students.map(s => s.group))];
+  const uniqueGroups = [...new Set(students.map(s => s.group_number).filter(Boolean))];
 
   return (
     <div className="space-y-6">
@@ -117,7 +98,7 @@ const AdminStudentsTab = () => {
           <SelectContent>
             <SelectItem value="all">Բոլոր խմբերը</SelectItem>
             {uniqueGroups.map(group => (
-              <SelectItem key={group} value={group}>{group}</SelectItem>
+              <SelectItem key={group} value={group || ''}>{group}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -131,11 +112,19 @@ const AdminStudentsTab = () => {
               <div className="flex justify-between items-start">
                 <div className="flex items-start gap-3">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-edu-blue to-edu-orange flex items-center justify-center">
-                    <User className="w-6 h-6 text-white" />
+                    {student.avatar_url ? (
+                      <img 
+                        src={student.avatar_url} 
+                        alt={student.name || 'Student'} 
+                        className="w-full h-full rounded-xl object-cover"
+                      />
+                    ) : (
+                      <User className="w-6 h-6 text-white" />
+                    )}
                   </div>
                   <div>
-                    <CardTitle className="font-armenian text-lg mb-1">{student.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground mb-2">{student.email}</p>
+                    <CardTitle className="font-armenian text-lg mb-1">{student.name || 'Անանուն'}</CardTitle>
+                    <p className="text-sm text-muted-foreground mb-2">{student.id.slice(0, 8)}...</p>
                     <Badge className={getStatusBadge(student.status)}>
                       {student.status === 'active' ? 'Ակտիվ' : 'Ապաակտիվ'}
                     </Badge>
@@ -155,23 +144,23 @@ const AdminStudentsTab = () => {
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
                   <span className="font-armenian text-muted-foreground">Խումբ</span>
-                  <p className="font-semibold">{student.group}</p>
+                  <p className="font-semibold">{student.group_number || 'Չի նշված'}</p>
                 </div>
                 <div>
-                  <span className="font-armenian text-muted-foreground">GPA</span>
-                  <p className="font-semibold flex items-center gap-1">
-                    <TrendingUp className="w-4 h-4" />
-                    {student.gpa}
-                  </p>
+                  <span className="font-armenian text-muted-foreground">Կազմակերպություն</span>
+                  <p className="font-semibold">{student.organization || 'Չի նշված'}</p>
                 </div>
               </div>
 
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm font-armenian text-muted-foreground">Առաջընթաց</span>
-                  <span className="text-sm font-semibold">{student.progress}%</span>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="font-armenian text-muted-foreground">Բաժին</span>
+                  <p className="font-semibold">{student.department || 'Չի նշված'}</p>
                 </div>
-                <Progress value={student.progress} className="h-2" />
+                <div>
+                  <span className="font-armenian text-muted-foreground">Հեռախոս</span>
+                  <p className="font-semibold">{student.phone || 'Չի նշված'}</p>
+                </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3 text-center">
@@ -179,28 +168,35 @@ const AdminStudentsTab = () => {
                   <div className="flex items-center justify-center mb-1">
                     <BookOpen className="w-4 h-4 text-blue-600" />
                   </div>
-                  <div className="text-lg font-bold">{student.enrolledCourses}</div>
+                  <div className="text-lg font-bold">0</div>
                   <div className="text-xs font-armenian text-muted-foreground">Դասընթաց</div>
                 </div>
                 <div className="p-2 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-center mb-1">
                     <Award className="w-4 h-4 text-green-600" />
                   </div>
-                  <div className="text-lg font-bold">{student.completedCourses}</div>
+                  <div className="text-lg font-bold">0</div>
                   <div className="text-xs font-armenian text-muted-foreground">Ավարտած</div>
                 </div>
                 <div className="p-2 bg-muted/30 rounded-lg">
                   <div className="flex items-center justify-center mb-1">
                     <Award className="w-4 h-4 text-purple-600" />
                   </div>
-                  <div className="text-lg font-bold">{student.certificates}</div>
+                  <div className="text-lg font-bold">0</div>
                   <div className="text-xs font-armenian text-muted-foreground">Վկայական</div>
                 </div>
               </div>
 
               <div className="text-xs text-muted-foreground pt-2 border-t">
-                <span className="font-armenian">Վերջին գործունեություն:</span> {new Date(student.lastActivity).toLocaleDateString('hy-AM')}
+                <span className="font-armenian">Գրանցման ամսաթիվ:</span> {new Date(student.created_at).toLocaleDateString('hy-AM')}
               </div>
+
+              {student.bio && (
+                <div className="text-xs pt-2">
+                  <span className="font-armenian text-muted-foreground">Մասին:</span>
+                  <p className="text-muted-foreground mt-1 line-clamp-2">{student.bio}</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
@@ -211,7 +207,12 @@ const AdminStudentsTab = () => {
           <CardContent className="p-12 text-center">
             <User className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
             <h3 className="text-xl font-semibold font-armenian mb-2">Ուսանողներ չեն գտնվել</h3>
-            <p className="text-muted-foreground font-armenian">Փորձեք փոխել որոնման կամ զտման չափանիշները</p>
+            <p className="text-muted-foreground font-armenian">
+              {students.length === 0 
+                ? 'Բազայում դեռ չկան գրանցված ուսանողներ' 
+                : 'Փորձեք փոխել որոնման կամ զտման չափանիշները'
+              }
+            </p>
           </CardContent>
         </Card>
       )}
