@@ -37,6 +37,7 @@ const ModuleDetail = () => {
   };
 
   const handleTopicClick = (topicId: string) => {
+    console.log('Navigating to topic:', topicId);
     navigate(`/topic/${topicId}`);
   };
 
@@ -45,8 +46,10 @@ const ModuleDetail = () => {
   };
 
   const handleContinueLearning = () => {
+    // For the main "Continue Learning" button, find the first available topic
     const firstTopic = topics?.find(t => t.is_free) || topics?.[0];
     if (firstTopic) {
+      console.log('Continue learning - navigating to first available topic:', firstTopic.id);
       handleTopicClick(firstTopic.id);
     }
   };
@@ -222,7 +225,7 @@ const ModuleDetail = () => {
                     {hasValidCompanyCode ? (
                       <>
                         <div className="text-center">
-                          <div className="text-sm font-armenian mb-2">Ունեք անվչար մուտք</div>
+                          <div className="text-sm font-armenian mb-2">Ունեք անվճար մուտք</div>
                           <Progress value={0} className="mb-2" />
                           <div className="text-xs text-muted-foreground">0% ավարտված</div>
                         </div>
