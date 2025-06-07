@@ -87,29 +87,31 @@ const SpecialtiesList = () => {
         const moduleCount = specialty.id === 'programming' ? programmingModuleCount : specialty.moduleCount || 0;
         
         return (
-          <Card key={specialty.id} className="group hover:shadow-lg transition-all duration-300 border-border bg-card">
-            <CardHeader className="text-center pb-4">
+          <Card key={specialty.id} className="group hover:shadow-lg transition-all duration-300 border-border bg-card h-full flex flex-col">
+            <CardHeader className="text-center pb-4 flex-shrink-0">
               <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${specialty.color} mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform`}>
                 <IconComponent className="w-8 h-8 text-white" />
               </div>
-              <CardTitle className="text-xl font-armenian text-card-foreground">
+              <CardTitle className="text-xl font-armenian text-card-foreground h-12 flex items-center justify-center">
                 {specialty.title}
               </CardTitle>
             </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-muted-foreground font-armenian leading-relaxed">
-                {specialty.description}
-              </p>
-              
-              <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                <span className="font-armenian">
-                  {isLoading && specialty.id === 'programming' ? 'Բեռնվում է...' : `${moduleCount} մոդուլ`}
-                </span>
+            <CardContent className="text-center space-y-4 flex-grow flex flex-col justify-between p-6 pt-0">
+              <div className="space-y-4">
+                <p className="text-muted-foreground font-armenian leading-relaxed h-12 flex items-center justify-center">
+                  {specialty.description}
+                </p>
+                
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground h-6">
+                  <span className="font-armenian">
+                    {isLoading && specialty.id === 'programming' ? 'Բեռնվում է...' : `${moduleCount} մոդուլ`}
+                  </span>
+                </div>
               </div>
 
               <Button 
                 onClick={() => handleSpecialtyClick(specialty.id)}
-                className="w-full btn-modern text-white font-armenian group-hover:scale-105 transition-transform"
+                className="w-full btn-modern text-white font-armenian group-hover:scale-105 transition-transform mt-auto"
                 disabled={moduleCount === 0}
               >
                 {moduleCount > 0 ? 'Սկսել ուսումը' : 'Շուտով'}
