@@ -6,8 +6,7 @@ import { Module } from '@/types/database';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnrollments, useEnrollModule } from '@/hooks/useEnrollments';
 import { useNavigate } from 'react-router-dom';
-import { getModuleIcon, getCategoryColor } from '@/utils/moduleUtils';
-import { ArrowRight } from 'lucide-react';
+import { getModuleIcon } from '@/utils/moduleUtils';
 
 interface ModuleCardProps {
   module: Module;
@@ -36,35 +35,40 @@ const ModuleCard = ({ module, orderIndex }: ModuleCardProps) => {
   };
 
   return (
-    <Card className={`relative overflow-hidden group h-full flex flex-col bg-gradient-to-br ${getCategoryColor(module.category)} backdrop-blur-sm border transition-all duration-300 hover:scale-105 hover:shadow-2xl cursor-pointer`}>
-      {/* Module number */}
-      {orderIndex && (
-        <div className="absolute top-4 left-4 z-10">
-          <div className="w-10 h-10 rounded-full bg-edu-blue text-white flex items-center justify-center text-lg font-bold">
-            {orderIndex}
+    <Card className="relative overflow-hidden h-full flex flex-col bg-slate-900 border-2 border-blue-500/50 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-blue-400">
+      <CardContent className="p-8 flex flex-col items-center text-center h-full">
+        {/* Module Icon */}
+        <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-6">
+          <span className="text-2xl text-blue-400">
+            {getModuleIcon(module.category)}
+          </span>
+        </div>
+
+        {/* Module Number */}
+        {orderIndex && (
+          <div className="text-white text-xl font-bold mb-4 font-armenian">
+            {orderIndex}.
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Module icon - centered */}
-      <div className="flex-1 flex items-center justify-center py-8">
-        <div className="text-8xl opacity-80 font-mono">
-          {getModuleIcon(module.category)}
-        </div>
-      </div>
-
-      <CardContent className="p-6 relative z-10">
-        <h3 className="text-xl font-bold font-armenian text-center mb-6 text-card-foreground line-clamp-2">
+        {/* Module Title */}
+        <h3 className="text-white text-xl font-bold mb-4 font-armenian leading-tight">
           {module.title}
         </h3>
-        
+
+        {/* Module Description */}
+        <p className="text-slate-400 text-sm mb-8 font-armenian leading-relaxed flex-1">
+          Ամենը թեականակերը ունակակերը հանդարց
+        </p>
+
+        {/* Start Learning Button */}
         <Button 
           onClick={handleStartLearning}
           disabled={enrollModule.isPending}
-          className="w-full btn-modern font-armenian"
+          variant="outline"
+          className="w-auto px-8 py-2 bg-transparent border-slate-600 text-white hover:bg-slate-800 hover:border-slate-500 font-armenian transition-all duration-200"
         >
           {enrollModule.isPending ? 'Գրանցվում է...' : 'Սկսել ուսուցումը'}
-          <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </CardContent>
     </Card>
