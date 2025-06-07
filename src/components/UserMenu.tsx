@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
-import { User, LogOut, BookOpen, Settings } from 'lucide-react';
+import { User, LogOut, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const UserMenu = () => {
@@ -64,10 +64,6 @@ const UserMenu = () => {
         <DropdownMenuItem onClick={() => navigate('/my-courses')} className="font-armenian">
           <BookOpen className="mr-2 h-4 w-4" />
           <span>Իմ դասընթացները</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => navigate('/settings')} className="font-armenian">
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Կարգավորումներ</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut} className="font-armenian">
