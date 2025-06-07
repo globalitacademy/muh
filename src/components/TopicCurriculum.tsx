@@ -9,11 +9,11 @@ import { useAuth } from '@/hooks/useAuth';
 
 interface TopicCurriculumProps {
   topics: Topic[];
-  isEnrolled: boolean;
+  hasFullAccess: boolean;
   onTopicClick: (topicId: string) => void;
 }
 
-const TopicCurriculum = ({ topics, isEnrolled, onTopicClick }: TopicCurriculumProps) => {
+const TopicCurriculum = ({ topics, hasFullAccess, onTopicClick }: TopicCurriculumProps) => {
   const { user } = useAuth();
 
   const freeTopics = topics.filter(t => t.is_free);
@@ -114,7 +114,7 @@ const TopicCurriculum = ({ topics, isEnrolled, onTopicClick }: TopicCurriculumPr
               <TopicItem
                 key={topic.id}
                 topic={topic}
-                canAccess={isEnrolled}
+                canAccess={hasFullAccess}
               />
             ))}
           </div>

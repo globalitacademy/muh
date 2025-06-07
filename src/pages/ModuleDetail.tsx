@@ -148,7 +148,7 @@ const ModuleDetail = () => {
               {topics && topics.length > 0 ? (
                 <TopicCurriculum
                   topics={topics}
-                  isEnrolled={hasFullAccess}
+                  hasFullAccess={hasFullAccess}
                   onTopicClick={handleTopicClick}
                 />
               ) : (
