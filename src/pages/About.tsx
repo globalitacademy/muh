@@ -53,6 +53,20 @@ const About = () => {
     }
   });
 
+  // Fetch real instructor data from database
+  const { data: instructors, isLoading: instructorsLoading } = useQuery({
+    queryKey: ['instructors'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('role', 'instructor')
+        .limit(6);
+
+      return data || [];
+    }
+  });
+
   const values = [
     {
       icon: <Target className="w-8 h-8" />,
@@ -77,27 +91,6 @@ const About = () => {
       title: language === 'hy' ? 'Գլոբալ հասանելիություն' : language === 'ru' ? 'Глобальная доступность' : 'Global Accessibility',
       description: language === 'hy' ? 'Բազմալեզու համակարգ և հասանելի հարթակ ցանկացած երկրից' : language === 'ru' ? 'Многоязычная система и доступная платформа из любой страны' : 'Multilingual system and accessible platform from any country',
       color: 'from-purple-500 to-pink-600'
-    }
-  ];
-
-  const team = [
-    {
-      name: language === 'hy' ? 'Արամ Գևորգյան' : language === 'ru' ? 'Арам Геворгян' : 'Aram Gevorgyan',
-      role: language === 'hy' ? 'Հիմնադիր և Գլխավոր տնօրեն' : language === 'ru' ? 'Основатель и Генеральный директор' : 'Founder & CEO',
-      experience: language === 'hy' ? '15+ տարի ծրագրավորման և կրթության ոլորտում' : language === 'ru' ? '15+ лет в области программирования и образования' : '15+ years in programming and education',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face'
-    },
-    {
-      name: language === 'hy' ? 'Աննա Հակոբյան' : language === 'ru' ? 'Анна Акопян' : 'Anna Hakobyan',
-      role: language === 'hy' ? 'Կրթական ղեկավար' : language === 'ru' ? 'Руководитель образования' : 'Head of Education',
-      experience: language === 'hy' ? '12+ տարի կրթական ծրագրերի մշակման մեջ' : language === 'ru' ? '12+ лет в разработке образовательных программ' : '12+ years in educational program development',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=300&fit=crop&crop=face'
-    },
-    {
-      name: language === 'hy' ? 'Դավիթ Մարտիրոսյան' : language === 'ru' ? 'Давид Мартиросян' : 'David Martirosyan',
-      role: language === 'hy' ? 'Տեխնիկական ղեկավար' : language === 'ru' ? 'Технический директор' : 'Technical Director',
-      experience: language === 'hy' ? '10+ տարի տվյալների գիտության և AI ոլորտում' : language === 'ru' ? '10+ лет в области науки о данных и ИИ' : '10+ years in data science and AI',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&crop=face'
     }
   ];
 
@@ -242,38 +235,63 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 font-armenian text-gradient">
-                {language === 'hy' ? 'Մեր ղեկավարական թիմը' : language === 'ru' ? 'Наша команда руководителей' : 'Our Leadership Team'}
+                {language === 'hy' ? 'Մեր դասախոսներ' : language === 'ru' ? 'Наши преподаватели' : 'Our Instructors'}
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-armenian">
                 {language === 'hy' 
-                  ? 'Մասնագետներ, որոնք նվիրված են ձեր հաջողությանը'
-                  : 'Professionals dedicated to your success'
+                  ? 'Փորձառու մասնագետներ, որոնք նվիրված են ձեր հաջողությանը'
+                  : 'Experienced professionals dedicated to your success'
                 }
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
-              {team.map((member, index) => (
-                <Card key={index} className="modern-card course-card-hover border-0 shadow-lg group overflow-hidden h-full">
-                  <CardContent className="p-6 lg:p-8 text-center h-full flex flex-col">
-                    <div className="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300">
-                      <img 
-                        src={member.image} 
-                        alt={member.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2 font-armenian group-hover:text-edu-blue transition-colors">
-                      {member.name}
-                    </h3>
-                    <p className="text-edu-blue font-medium mb-3 font-armenian">
-                      {member.role}
-                    </p>
-                    <p className="text-muted-foreground text-sm font-armenian leading-relaxed flex-grow">
-                      {member.experience}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
+              {instructorsLoading ? (
+                Array.from({ length: 6 }).map((_, index) => (
+                  <Card key={index} className="modern-card border-0 shadow-lg h-full">
+                    <CardContent className="p-6 lg:p-8 text-center h-full flex flex-col">
+                      <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-muted animate-pulse" />
+                      <div className="h-6 bg-muted rounded mb-2 animate-pulse" />
+                      <div className="h-4 bg-muted rounded mb-3 animate-pulse" />
+                      <div className="h-12 bg-muted rounded animate-pulse flex-grow" />
+                    </CardContent>
+                  </Card>
+                ))
+              ) : instructors && instructors.length > 0 ? (
+                instructors.map((instructor, index) => (
+                  <Card key={instructor.id} className="modern-card course-card-hover border-0 shadow-lg group overflow-hidden h-full">
+                    <CardContent className="p-6 lg:p-8 text-center h-full flex flex-col">
+                      <div className="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 bg-gradient-to-br from-edu-blue to-purple-600 flex items-center justify-center">
+                        {instructor.avatar_url ? (
+                          <img 
+                            src={instructor.avatar_url} 
+                            alt={instructor.name || 'Դասախոս'}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <Users className="w-12 h-12 text-white" />
+                        )}
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2 font-armenian group-hover:text-edu-blue transition-colors">
+                        {instructor.name || 'Դասախոս'}
+                      </h3>
+                      <p className="text-edu-blue font-medium mb-3 font-armenian">
+                        {language === 'hy' ? 'Դասախոս' : language === 'ru' ? 'Преподаватель' : 'Instructor'}
+                      </p>
+                      <p className="text-muted-foreground text-sm font-armenian leading-relaxed flex-grow">
+                        {instructor.department || instructor.field_of_study || 
+                          (language === 'hy' ? 'Փորձառու մասնագետ' : 'Experienced professional')
+                        }
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-muted-foreground font-armenian">
+                    {language === 'hy' ? 'Դասախոսներ չեն գտնվել' : 'No instructors found'}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </section>
