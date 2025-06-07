@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Clock, Users, Star, BookOpen, User } from 'lucide-react';
+import { ArrowLeft, Clock, Users, Star, BookOpen, User, GraduationCap } from 'lucide-react';
 import { useModule } from '@/hooks/useModules';
 import { useTopics } from '@/hooks/useTopics';
 import { useEnrollments, useEnrollModule } from '@/hooks/useEnrollments';
 import { useAuth } from '@/hooks/useAuth';
-import TopicCard from '@/components/TopicCard';
+import TopicCurriculum from '@/components/TopicCurriculum';
 import { Loader2 } from 'lucide-react';
+import { getDifficultyColor, getDifficultyText } from '@/utils/moduleUtils';
 
 const ModuleDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,32 +25,6 @@ const ModuleDetail = () => {
 
   const isEnrolled = enrollments?.some(e => e.module_id === id);
 
-  const getDifficultyColor = (level: string) => {
-    switch (level) {
-      case 'beginner':
-        return 'bg-green-100 text-green-800';
-      case 'intermediate':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'advanced':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getDifficultyText = (level: string) => {
-    switch (level) {
-      case 'beginner':
-        return 'Սկսնակ';
-      case 'intermediate':
-        return 'Միջին';
-      case 'advanced':
-        return 'Բարձր';
-      default:
-        return level;
-    }
-  };
-
   const handleEnroll = async () => {
     if (!user) {
       navigate('/auth');
@@ -57,6 +32,11 @@ const ModuleDetail = () => {
     }
     
     await enrollModule.mutateAsync(id!);
+  };
+
+  const handleTopicClick = (topicId: string) => {
+    // Navigate to topic detail page (to be implemented)
+    console.log('Navigate to topic:', topicId);
   };
 
   if (moduleLoading || topicsLoading) {
@@ -79,9 +59,6 @@ const ModuleDetail = () => {
       </div>
     );
   }
-
-  const freeTopics = topics?.filter(t => t.is_free) || [];
-  const paidTopics = topics?.filter(t => !t.is_free) || [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -142,7 +119,7 @@ const ModuleDetail = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                  <Star className="w-5 h-5 text-warning-yellow fill-current" />
                   <div>
                     <div className="font-semibold">{module.rating?.toFixed(1) || 'N/A'}</div>
                     <div className="text-sm text-muted-foreground font-armenian">գնահատական</div>
@@ -150,44 +127,34 @@ const ModuleDetail = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 mb-6">
+              <div className="flex items-center gap-2 mb-8">
                 <User className="w-5 h-5 text-muted-foreground" />
                 <span className="font-armenian">Մասնագետ: {module.instructor}</span>
               </div>
             </div>
 
-            {/* Topics */}
-            <div className="space-y-6">
-              {freeTopics.length > 0 && (
-                <div>
-                  <h2 className="text-2xl font-bold font-armenian mb-4">Անվճար դասեր</h2>
-                  <div className="space-y-4">
-                    {freeTopics.map((topic) => (
-                      <TopicCard
-                        key={topic.id}
-                        topic={topic}
-                        isEnrolled={true}
-                        onStart={() => console.log('Start topic:', topic.id)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {paidTopics.length > 0 && (
-                <div>
-                  <h2 className="text-2xl font-bold font-armenian mb-4">Վճարովի դասեր</h2>
-                  <div className="space-y-4">
-                    {paidTopics.map((topic) => (
-                      <TopicCard
-                        key={topic.id}
-                        topic={topic}
-                        isEnrolled={!!isEnrolled}
-                        onStart={() => console.log('Start topic:', topic.id)}
-                      />
-                    ))}
-                  </div>
-                </div>
+            {/* Curriculum Section */}
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold font-armenian mb-6 flex items-center gap-3">
+                <GraduationCap className="w-8 h-8 text-edu-blue" />
+                Դասընթացի ծրագիր
+              </h2>
+              
+              {topics && topics.length > 0 ? (
+                <TopicCurriculum
+                  topics={topics}
+                  isEnrolled={!!isEnrolled}
+                  onTopicClick={handleTopicClick}
+                />
+              ) : (
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground font-armenian">
+                      Դասերը շուտով կլինեն հասանելի
+                    </p>
+                  </CardContent>
+                </Card>
               )}
             </div>
           </div>
