@@ -3,15 +3,15 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { BookOpen, Users, BarChart3, MessageSquare, Award, Settings, PlusCircle } from 'lucide-react';
-import InstructorOverviewTab from '@/components/instructor/InstructorOverviewTab';
+import { BookOpen, Users, BarChart3, MessageSquare, Settings, Home } from 'lucide-react';
+import InstructorDashboardMain from '@/components/instructor/InstructorDashboardMain';
 import InstructorCoursesTab from '@/components/instructor/InstructorCoursesTab';
 import InstructorStudentsTab from '@/components/instructor/InstructorStudentsTab';
 import InstructorAnalyticsTab from '@/components/instructor/InstructorAnalyticsTab';
 
 const InstructorProfile = () => {
   const { data: profile, isLoading } = useUserProfile();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   if (isLoading) {
     return <div className="animate-pulse font-armenian">Բեռնվում է...</div>;
@@ -31,7 +31,7 @@ const InstructorProfile = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <p className="text-sm text-muted-foreground font-armenian">Բաժին</p>
               <p className="font-semibold">{profile?.department || 'Նշված չէ'}</p>
@@ -40,6 +40,10 @@ const InstructorProfile = () => {
               <p className="text-sm text-muted-foreground font-armenian">Կազմակերպություն</p>
               <p className="font-semibold">{profile?.organization || 'Նշված չէ'}</p>
             </div>
+            <div>
+              <p className="text-sm text-muted-foreground font-armenian">Հեռախոս</p>
+              <p className="font-semibold">{profile?.phone || 'Նշված չէ'}</p>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -47,28 +51,34 @@ const InstructorProfile = () => {
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="overview" className="font-armenian">
-            Ընդհանուր
+          <TabsTrigger value="dashboard" className="font-armenian">
+            <Home className="w-4 h-4 mr-2" />
+            Գլխավոր
           </TabsTrigger>
           <TabsTrigger value="courses" className="font-armenian">
+            <BookOpen className="w-4 h-4 mr-2" />
             Դասընթացներ
           </TabsTrigger>
           <TabsTrigger value="students" className="font-armenian">
+            <Users className="w-4 h-4 mr-2" />
             Ուսանողներ
           </TabsTrigger>
           <TabsTrigger value="analytics" className="font-armenian">
+            <BarChart3 className="w-4 h-4 mr-2" />
             Վերլուծություն
           </TabsTrigger>
           <TabsTrigger value="messages" className="font-armenian">
+            <MessageSquare className="w-4 h-4 mr-2" />
             Հաղորդագրություններ
           </TabsTrigger>
           <TabsTrigger value="settings" className="font-armenian">
+            <Settings className="w-4 h-4 mr-2" />
             Կարգավորումներ
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="mt-6">
-          <InstructorOverviewTab />
+        <TabsContent value="dashboard" className="mt-6">
+          <InstructorDashboardMain />
         </TabsContent>
 
         <TabsContent value="courses" className="mt-6">
