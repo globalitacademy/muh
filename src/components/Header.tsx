@@ -2,126 +2,166 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Globe } from 'lucide-react';
 
 const Header = () => {
-  const { language, setLanguage, t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false);
+  const location = useLocation();
 
-  const languages = [
-    { code: 'hy', name: 'Հայերեն', flag: '🇦🇲' },
-    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-    { code: 'en', name: 'English', flag: '🇺🇸' }
+  const navigationItems = [
+    { key: 'nav.home', href: '/' },
+    { key: 'nav.courses', href: '/courses' },
+    { key: 'nav.about', href: '/about' },
+    { key: 'nav.contact', href: '/contact' }
   ];
 
-  const currentLang = languages.find(lang => lang.code === language);
+  const languages = [
+    { code: 'hy', name: 'Հայերեն' },
+    { code: 'ru', name: 'Русский' },
+    { code: 'en', name: 'English' }
+  ];
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg gradient-card flex items-center justify-center">
-              <span className="text-white font-bold text-lg">L</span>
+          <Link to="/" className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-edu-blue rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-sm">ԿԱՍ</span>
             </div>
-            <span className="text-xl font-bold text-primary font-armenian">
-              {t('hero.title')}
+            <span className="font-bold text-xl text-edu-blue font-armenian">
+              Կրթություն առանց սահմանների
             </span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-foreground hover:text-primary transition-colors font-medium">
-              {t('nav.home')}
-            </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors font-medium">
-              {t('nav.courses')}
-            </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors font-medium">
-              {t('nav.about')}
-            </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors font-medium">
-              {t('nav.contact')}
-            </a>
+            {navigationItems.map((item) => (
+              <Link
+                key={item.key}
+                to={item.href}
+                className={`font-medium transition-colors font-armenian ${
+                  isActive(item.href)
+                    ? 'text-edu-blue'
+                    : 'text-gray-600 hover:text-edu-blue'
+                }`}
+              >
+                {t(item.key)}
+              </Link>
+            ))}
           </nav>
 
-          {/* Actions */}
-          <div className="flex items-center space-x-4">
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-4">
             {/* Language Selector */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="bg-white">
-                  <span className="mr-2">{currentLang?.flag}</span>
-                  <span className="hidden sm:inline">{currentLang?.name}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-white">
-                {languages.map((lang) => (
-                  <DropdownMenuItem
-                    key={lang.code}
-                    onClick={() => setLanguage(lang.code as any)}
-                    className="cursor-pointer"
-                  >
-                    <span className="mr-2">{lang.flag}</span>
-                    {lang.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Auth Buttons */}
-            <div className="hidden sm:flex items-center space-x-2">
-              <Button variant="ghost" size="sm">
-                {t('nav.login')}
+            <div className="relative">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsLanguageOpen(!isLanguageOpen)}
+                className="flex items-center space-x-1"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="text-sm">
+                  {languages.find(lang => lang.code === language)?.name}
+                </span>
               </Button>
-              <Button size="sm" className="bg-edu-blue hover:bg-edu-dark-blue">
-                {t('nav.register')}
-              </Button>
+              {isLanguageOpen && (
+                <div className="absolute top-full right-0 mt-1 bg-white border rounded-md shadow-lg py-1 z-50">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code as any);
+                        setIsLanguageOpen(false);
+                      }}
+                      className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
+                        language === lang.code ? 'bg-edu-light-blue' : ''
+                      }`}
+                    >
+                      {lang.name}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Mobile Menu Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </Button>
+            <Link to="/login">
+              <Button variant="ghost" className="font-armenian">
+                {t('nav.login')}
+              </Button>
+            </Link>
+            <Link to="/register">
+              <Button className="bg-edu-blue hover:bg-edu-dark-blue font-armenian">
+                {t('nav.register')}
+              </Button>
+            </Link>
           </div>
+
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </Button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t py-4 space-y-2">
-            <a href="#" className="block py-2 text-foreground hover:text-primary transition-colors">
-              {t('nav.home')}
-            </a>
-            <a href="#" className="block py-2 text-foreground hover:text-primary transition-colors">
-              {t('nav.courses')}
-            </a>
-            <a href="#" className="block py-2 text-foreground hover:text-primary transition-colors">
-              {t('nav.about')}
-            </a>
-            <a href="#" className="block py-2 text-foreground hover:text-primary transition-colors">
-              {t('nav.contact')}
-            </a>
-            <div className="pt-4 border-t space-y-2">
-              <Button variant="ghost" size="sm" className="w-full justify-start">
-                {t('nav.login')}
-              </Button>
-              <Button size="sm" className="w-full bg-edu-blue hover:bg-edu-dark-blue">
-                {t('nav.register')}
-              </Button>
-            </div>
+          <div className="md:hidden border-t bg-white">
+            <nav className="py-4 space-y-2">
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.key}
+                  to={item.href}
+                  className={`block px-4 py-2 font-medium font-armenian ${
+                    isActive(item.href)
+                      ? 'text-edu-blue bg-edu-light-blue'
+                      : 'text-gray-600 hover:text-edu-blue hover:bg-gray-50'
+                  }`}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {t(item.key)}
+                </Link>
+              ))}
+              <div className="px-4 py-2 border-t">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600 font-armenian">Լեզու</span>
+                  <select
+                    value={language}
+                    onChange={(e) => setLanguage(e.target.value as any)}
+                    className="text-sm border rounded px-2 py-1"
+                  >
+                    {languages.map((lang) => (
+                      <option key={lang.code} value={lang.code}>
+                        {lang.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="px-4 py-2 space-y-2">
+                <Link to="/login" className="block w-full">
+                  <Button variant="ghost" className="w-full font-armenian">
+                    {t('nav.login')}
+                  </Button>
+                </Link>
+                <Link to="/register" className="block w-full">
+                  <Button className="w-full bg-edu-blue hover:bg-edu-dark-blue font-armenian">
+                    {t('nav.register')}
+                  </Button>
+                </Link>
+              </div>
+            </nav>
           </div>
         )}
       </div>
