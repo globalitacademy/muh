@@ -5,9 +5,53 @@ import { Card, CardContent } from '@/components/ui/card';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Target, Users, Award, Globe, Star, CheckCircle } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 const About = () => {
   const { t, language } = useLanguage();
+
+  // Fetch real statistics from database
+  const { data: stats, isLoading } = useQuery({
+    queryKey: ['about-stats'],
+    queryFn: async () => {
+      // Get total students count
+      const { count: studentsCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'student');
+
+      // Get total instructors count
+      const { count: instructorsCount } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'instructor');
+
+      // Get total active modules count
+      const { count: modulesCount } = await supabase
+        .from('modules')
+        .select('*', { count: 'exact', head: true })
+        .eq('is_active', true);
+
+      // Get average rating from modules
+      const { data: ratingData } = await supabase
+        .from('modules')
+        .select('rating')
+        .not('rating', 'is', null)
+        .eq('is_active', true);
+
+      const averageRating = ratingData?.length > 0 
+        ? ratingData.reduce((sum, module) => sum + (module.rating || 0), 0) / ratingData.length
+        : 0;
+
+      return {
+        studentsCount: studentsCount || 0,
+        instructorsCount: instructorsCount || 0,
+        modulesCount: modulesCount || 0,
+        averageRating: averageRating
+      };
+    }
+  });
 
   const values = [
     {
@@ -58,10 +102,22 @@ const About = () => {
   ];
 
   const achievements = [
-    { number: '5000+', label: language === 'hy' ? 'Ուսանողներ' : 'Students' },
-    { number: '50+', label: language === 'hy' ? 'Դասախոսներ' : 'Instructors' },
-    { number: '150+', label: language === 'hy' ? 'Դասընթացներ' : 'Courses' },
-    { number: '4.8', label: language === 'hy' ? 'Միջին գնահատական' : 'Average Rating' }
+    { 
+      number: isLoading ? '...' : `${stats?.studentsCount || 0}`, 
+      label: language === 'hy' ? 'Ուսանողներ' : 'Students' 
+    },
+    { 
+      number: isLoading ? '...' : `${stats?.instructorsCount || 0}`, 
+      label: language === 'hy' ? 'Դասախոսներ' : 'Instructors' 
+    },
+    { 
+      number: isLoading ? '...' : `${stats?.modulesCount || 0}`, 
+      label: language === 'hy' ? 'Դասընթացներ' : 'Courses' 
+    },
+    { 
+      number: isLoading ? '...' : (stats?.averageRating ? stats.averageRating.toFixed(1) : '0.0'), 
+      label: language === 'hy' ? 'Միջին գնահատական' : 'Average Rating' 
+    }
   ];
 
   return (
