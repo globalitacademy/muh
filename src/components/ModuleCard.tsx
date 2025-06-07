@@ -24,13 +24,13 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
   const getDifficultyColor = (level: string) => {
     switch (level) {
       case 'beginner':
-        return 'bg-green-100 text-green-800';
+        return 'bg-success-green/20 text-success-green border-success-green/30';
       case 'intermediate':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-warning-yellow/20 text-warning-yellow border-warning-yellow/30';
       case 'advanced':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive/20 text-destructive border-destructive/30';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -61,7 +61,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
   };
 
   return (
-    <Card className="modern-card course-card-hover overflow-hidden group h-full flex flex-col">
+    <Card className="bg-card border-border course-card-hover overflow-hidden group h-full flex flex-col">
       <div className="relative">
         {module.image_url && (
           <img
@@ -71,11 +71,11 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
           />
         )}
         <div className="absolute top-4 left-4">
-          <Badge className={getDifficultyColor(module.difficulty_level)}>
+          <Badge className={`${getDifficultyColor(module.difficulty_level)} border`}>
             {getDifficultyText(module.difficulty_level)}
           </Badge>
         </div>
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
+        <div className="absolute top-4 right-4 bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 border border-border">
           <span className="text-sm font-semibold text-edu-blue">
             {module.price.toLocaleString()} ֏
           </span>
@@ -83,7 +83,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
       </div>
 
       <CardHeader className="pb-3">
-        <h3 className="text-xl font-bold font-armenian group-hover:text-edu-blue transition-colors line-clamp-2">
+        <h3 className="text-xl font-bold font-armenian group-hover:text-edu-blue transition-colors line-clamp-2 text-card-foreground">
           {module.title}
         </h3>
         <p className="text-sm text-muted-foreground font-armenian">
@@ -99,19 +99,19 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-muted-foreground" />
-            <span className="font-armenian">{module.duration_weeks} շաբաթ</span>
+            <span className="font-armenian text-card-foreground">{module.duration_weeks} շաբաթ</span>
           </div>
           <div className="flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-muted-foreground" />
-            <span className="font-armenian">{module.total_lessons} դաս</span>
+            <span className="font-armenian text-card-foreground">{module.total_lessons} դաս</span>
           </div>
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-muted-foreground" />
-            <span className="font-armenian">{module.students_count} ուսանող</span>
+            <span className="font-armenian text-card-foreground">{module.students_count} ուսանող</span>
           </div>
           <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-yellow-500 fill-current" />
-            <span>{module.rating?.toFixed(1) || 'N/A'}</span>
+            <Star className="w-4 h-4 text-warning-yellow fill-current" />
+            <span className="text-card-foreground">{module.rating?.toFixed(1) || 'N/A'}</span>
           </div>
         </div>
       </CardContent>
@@ -139,7 +139,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
             <Button 
               variant="outline" 
               onClick={handleViewModule}
-              className="w-full font-armenian"
+              className="w-full font-armenian border-border text-foreground hover:bg-accent"
             >
               Տեսնել մանրամասները
             </Button>

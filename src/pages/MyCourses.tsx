@@ -9,6 +9,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { BookOpen, Clock, Award, ArrowRight } from 'lucide-react';
 import { Loader2 } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const MyCourses = () => {
   const { user, loading } = useAuth();
@@ -18,7 +20,7 @@ const MyCourses = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -35,9 +37,10 @@ const MyCourses = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold font-armenian mb-2">Իմ դասընթացները</h1>
+          <h1 className="text-3xl font-bold font-armenian mb-2 text-foreground">Իմ դասընթացները</h1>
           <p className="text-muted-foreground font-armenian">
             Շարունակեք ձեր ուսումնական ճանապարհորդությունը
           </p>
@@ -48,18 +51,18 @@ const MyCourses = () => {
             <Loader2 className="h-8 w-8 animate-spin text-edu-blue" />
           </div>
         ) : enrolledModules.length === 0 ? (
-          <Card className="text-center py-12">
+          <Card className="text-center py-12 bg-card border-border">
             <CardContent className="space-y-4">
               <BookOpen className="h-12 w-12 text-muted-foreground mx-auto" />
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold font-armenian">
+                <h3 className="text-lg font-semibold font-armenian text-card-foreground">
                   Դուք դեռ չեք գրանցվել որևէ դասընթացի
                 </h3>
                 <p className="text-muted-foreground font-armenian">
                   Ուսումնասիրեք մեր մոդուլները և սկսեք ուսումը
                 </p>
               </div>
-              <Button onClick={() => navigate('/')} className="font-armenian">
+              <Button onClick={() => navigate('/courses')} className="font-armenian">
                 Ցուցադրել դասընթացները
               </Button>
             </CardContent>
@@ -67,11 +70,11 @@ const MyCourses = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {enrolledModules.map((moduleData: any) => (
-              <Card key={moduleData.id} className="modern-card course-card-hover">
+              <Card key={moduleData.id} className="bg-card border-border course-card-hover">
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle className="font-armenian line-clamp-2">
+                      <CardTitle className="font-armenian line-clamp-2 text-card-foreground">
                         {moduleData.title}
                       </CardTitle>
                       <p className="text-sm text-muted-foreground mt-1 font-armenian">
@@ -90,8 +93,8 @@ const MyCourses = () => {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="font-armenian">Առաջընթաց</span>
-                      <span>{moduleData.enrollment.progress_percentage}%</span>
+                      <span className="font-armenian text-card-foreground">Առաջընթաց</span>
+                      <span className="text-card-foreground">{moduleData.enrollment.progress_percentage}%</span>
                     </div>
                     <Progress value={moduleData.enrollment.progress_percentage} />
                   </div>
@@ -99,11 +102,11 @@ const MyCourses = () => {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-armenian">{moduleData.duration_weeks} շաբաթ</span>
+                      <span className="font-armenian text-card-foreground">{moduleData.duration_weeks} շաբաթ</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <BookOpen className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-armenian">{moduleData.total_lessons} դաս</span>
+                      <span className="font-armenian text-card-foreground">{moduleData.total_lessons} դաս</span>
                     </div>
                   </div>
 
@@ -116,7 +119,7 @@ const MyCourses = () => {
                       <ArrowRight className="w-4 h-4 ml-1" />
                     </Button>
                     {moduleData.enrollment.progress_percentage === 100 && (
-                      <Button variant="outline" size="icon" title="Վկայագիր">
+                      <Button variant="outline" size="icon" title="Վկայագիր" className="border-border">
                         <Award className="w-4 h-4" />
                       </Button>
                     )}
@@ -127,6 +130,7 @@ const MyCourses = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

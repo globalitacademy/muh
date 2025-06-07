@@ -73,6 +73,14 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    
+    /* Dark theme educational colors */
+    --education-blue: 213 94% 75%;
+    --education-orange: 24 100% 70%;
+    --education-light-blue: 213 94% 80%;
+    --education-dark-blue: 213 94% 60%;
+    --success-green: 142 76% 45%;
+    --warning-yellow: 45 93% 65%;
   }
 }
 
@@ -102,6 +110,11 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.dark .glass-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .course-card-hover {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -109,6 +122,10 @@
 .course-card-hover:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.dark .course-card-hover:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 /* Armenian font support */
@@ -213,10 +230,14 @@
 
 /* Card improvements */
 .modern-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: hsl(var(--card));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid hsl(var(--border));
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.dark .modern-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* Loading animation */
