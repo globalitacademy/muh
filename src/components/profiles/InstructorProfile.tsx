@@ -1,16 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { BookOpen, Users, BarChart3, Plus, Settings, MessageSquare } from 'lucide-react';
+import { BookOpen, Users, BarChart3, MessageSquare, Award, Settings, PlusCircle } from 'lucide-react';
+import InstructorOverviewTab from '@/components/instructor/InstructorOverviewTab';
+import InstructorCoursesTab from '@/components/instructor/InstructorCoursesTab';
+import InstructorStudentsTab from '@/components/instructor/InstructorStudentsTab';
+import InstructorAnalyticsTab from '@/components/instructor/InstructorAnalyticsTab';
 
 const InstructorProfile = () => {
   const { data: profile, isLoading } = useUserProfile();
+  const [activeTab, setActiveTab] = useState('overview');
 
   if (isLoading) {
-    return <div className="animate-pulse">Բեռնվում է...</div>;
+    return <div className="animate-pulse font-armenian">Բեռնվում է...</div>;
   }
 
   return (
@@ -40,101 +44,73 @@ const InstructorProfile = () => {
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-armenian">Դասախոսի գործողություններ</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="default">
-            <Plus className="w-5 h-5" />
-            <div className="text-left">
-              <p className="font-semibold">Նոր դասընթաց</p>
-              <p className="text-xs opacity-90">Ստեղծել դասընթաց</p>
-            </div>
-          </Button>
-          <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="outline">
-            <Users className="w-5 h-5" />
-            <div className="text-left">
-              <p className="font-semibold">Ուսանողներ</p>
-              <p className="text-xs text-muted-foreground">Կառավարել ուսանողներին</p>
-            </div>
-          </Button>
-          <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="outline">
-            <BarChart3 className="w-5 h-5" />
-            <div className="text-left">
-              <p className="font-semibold">Վիճակագրություն</p>
-              <p className="text-xs text-muted-foreground">Տեսնել վիճակագրությունը</p>
-            </div>
-          </Button>
-          <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="outline">
-            <MessageSquare className="w-5 h-5" />
-            <div className="text-left">
-              <p className="font-semibold">Հաղորդագրություններ</p>
-              <p className="text-xs text-muted-foreground">Ուսանողների հետ կապ</p>
-            </div>
-          </Button>
-          <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="outline">
-            <Settings className="w-5 h-5" />
-            <div className="text-left">
-              <p className="font-semibold">Կարգավորումներ</p>
-              <p className="text-xs text-muted-foreground">Պրոֆիլի կարգավորում</p>
-            </div>
-          </Button>
-        </CardContent>
-      </Card>
+      {/* Main Content Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="overview" className="font-armenian">
+            Ընդհանուր
+          </TabsTrigger>
+          <TabsTrigger value="courses" className="font-armenian">
+            Դասընթացներ
+          </TabsTrigger>
+          <TabsTrigger value="students" className="font-armenian">
+            Ուսանողներ
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="font-armenian">
+            Վերլուծություն
+          </TabsTrigger>
+          <TabsTrigger value="messages" className="font-armenian">
+            Հաղորդագրություններ
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="font-armenian">
+            Կարգավորումներ
+          </TabsTrigger>
+        </TabsList>
 
-      {/* My Courses */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-armenian">Իմ դասընթացները</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <h4 className="font-semibold font-armenian">JavaScript հիմունքներ</h4>
-                <p className="text-sm text-muted-foreground">24 ուսանող • 8 դաս</p>
-              </div>
-              <Badge variant="secondary">Ակտիվ</Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <h4 className="font-semibold font-armenian">React զարգացում</h4>
-                <p className="text-sm text-muted-foreground">18 ուսանող • 12 դաս</p>
-              </div>
-              <Badge variant="secondary">Ակտիվ</Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        <TabsContent value="overview" className="mt-6">
+          <InstructorOverviewTab />
+        </TabsContent>
 
-      {/* Statistics */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-armenian">Վիճակագրություն</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">5</p>
-              <p className="text-sm text-muted-foreground font-armenian">Դասընթացներ</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold">142</p>
-              <p className="text-sm text-muted-foreground font-armenian">Ուսանողներ</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold">4.8</p>
-              <p className="text-sm text-muted-foreground font-armenian">Գնահատական</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold">89%</p>
-              <p className="text-sm text-muted-foreground font-armenian">Ավարտելիություն</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        <TabsContent value="courses" className="mt-6">
+          <InstructorCoursesTab />
+        </TabsContent>
+
+        <TabsContent value="students" className="mt-6">
+          <InstructorStudentsTab />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-6">
+          <InstructorAnalyticsTab />
+        </TabsContent>
+
+        <TabsContent value="messages" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-armenian">Հաղորդագրություններ</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-12 text-muted-foreground">
+                <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p className="font-armenian">Հաղորդագրությունների ֆունկցիան շուտով</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="settings" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-armenian">Կարգավորումներ</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-center py-12 text-muted-foreground">
+                <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p className="font-armenian">Կարգավորումների ֆունկցիան շուտով</p>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
