@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import UserMenu from './UserMenu';
+import ThemeToggle from './ThemeToggle';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
@@ -22,7 +23,7 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50">
+    <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -33,7 +34,7 @@ const Header = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-edu-blue to-purple-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">L</span>
             </div>
-            <span className="text-xl font-bold text-gray-900 font-armenian">
+            <span className="text-xl font-bold text-foreground font-armenian">
               LearnHub
             </span>
           </div>
@@ -44,7 +45,7 @@ const Header = () => {
               <button
                 key={item.href}
                 onClick={() => navigate(item.href)}
-                className="text-gray-600 hover:text-edu-blue transition-colors font-armenian"
+                className="text-muted-foreground hover:text-foreground transition-colors font-armenian"
               >
                 {item.label}
               </button>
@@ -57,13 +58,14 @@ const Header = () => {
             <select
               value={currentLanguage}
               onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
-              className="bg-transparent border border-gray-200 rounded px-2 py-1 text-sm focus:outline-none focus:border-edu-blue"
+              className="bg-background border border-border rounded px-2 py-1 text-sm focus:outline-none focus:border-primary text-foreground"
             >
               <option value="hy">Հայ</option>
               <option value="en">EN</option>
               <option value="ru">РУ</option>
             </select>
 
+            <ThemeToggle />
             <UserMenu />
           </div>
 
@@ -82,7 +84,7 @@ const Header = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-100 bg-white">
+          <div className="md:hidden border-t border-border bg-background">
             <nav className="flex flex-col space-y-4 px-4 py-6">
               {menuItems.map((item) => (
                 <button
@@ -91,24 +93,27 @@ const Header = () => {
                     navigate(item.href);
                     setIsMenuOpen(false);
                   }}
-                  className="text-gray-600 hover:text-edu-blue transition-colors text-left font-armenian"
+                  className="text-muted-foreground hover:text-foreground transition-colors text-left font-armenian"
                 >
                   {item.label}
                 </button>
               ))}
               
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between pt-4 border-t border-border">
                 <select
                   value={currentLanguage}
                   onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
-                  className="bg-transparent border border-gray-200 rounded px-2 py-1 text-sm focus:outline-none focus:border-edu-blue"
+                  className="bg-background border border-border rounded px-2 py-1 text-sm focus:outline-none focus:border-primary text-foreground"
                 >
                   <option value="hy">Հայ</option>
                   <option value="en">EN</option>
                   <option value="ru">РУ</option>
                 </select>
                 
-                <UserMenu />
+                <div className="flex items-center space-x-2">
+                  <ThemeToggle />
+                  <UserMenu />
+                </div>
               </div>
             </nav>
           </div>
