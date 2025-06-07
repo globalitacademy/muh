@@ -1,4 +1,3 @@
-
 export interface Module {
   id: string;
   title: string;
@@ -60,4 +59,13 @@ export interface Enrollment {
   enrolled_at: string;
   completed_at?: string;
   progress_percentage: number;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name?: string;
+  role?: 'admin' | 'instructor' | 'student' | 'guest';
+  organization?: string;
+  avatar_url?: string;
 }
