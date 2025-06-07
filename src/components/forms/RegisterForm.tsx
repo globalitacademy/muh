@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import NameFields from './NameFields';
 import EmailField from './EmailField';
 import RoleField from './RoleField';
@@ -11,6 +12,8 @@ import PasswordFields from './PasswordFields';
 
 const RegisterForm = () => {
   const { language } = useLanguage();
+  const { signUp } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -34,12 +37,22 @@ const RegisterForm = () => {
     
     setIsLoading(true);
     
-    // Simulate registration process
-    setTimeout(() => {
-      console.log('Registration attempt:', formData);
-      alert(language === 'hy' ? 'Գրանցումը հաջող է!' : language === 'ru' ? 'Регистрация успешна!' : 'Registration successful!');
+    try {
+      const fullName = `${formData.firstName} ${formData.lastName}`.trim();
+      const { error } = await signUp(formData.email, formData.password, {
+        name: fullName,
+        role: formData.role,
+        groupNumber: formData.groupNumber
+      });
+
+      if (!error) {
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, name?: string) => {
+  const signUp = async (email: string, password: string, userData?: { name?: string; role?: string; groupNumber?: string }) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
@@ -44,7 +44,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            name: name || '',
+            name: userData?.name || '',
+            role: userData?.role || 'student',
+            groupNumber: userData?.groupNumber || '',
           }
         }
       });
