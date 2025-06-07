@@ -13,7 +13,7 @@ const InstructorAnalyticsTab = () => {
     return <div className="animate-pulse font-armenian">Բեռնվում է...</div>;
   }
 
-  const monthlyData = analytics?.monthlyEnrollments.map((value, index) => ({
+  const monthlyData = analytics?.monthlyEnrollments?.map((value, index) => ({
     month: ['Հուն', 'Փետ', 'Մար', 'Ապր', 'Մայ', 'Հուն', 'Հուլ', 'Օգս', 'Սեպ', 'Հոկ', 'Նոյ', 'Դեկ'][index],
     enrollments: value,
   })) || [];
@@ -57,7 +57,7 @@ const InstructorAnalyticsTab = () => {
                 <Award className="w-5 h-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{analytics?.averageRating.toFixed(1) || '0.0'}</p>
+                <p className="text-2xl font-bold">{analytics?.averageRating?.toFixed(1) || '0.0'}</p>
                 <p className="text-sm text-muted-foreground font-armenian">Գնահատական</p>
               </div>
             </div>
@@ -80,61 +80,78 @@ const InstructorAnalyticsTab = () => {
       </div>
 
       {/* Monthly Enrollments Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-armenian">Ամսական գրանցումներ</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="enrollments" stroke="#3b82f6" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      {monthlyData.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-armenian">Ամսական գրանցումներ</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={monthlyData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="enrollments" stroke="#3b82f6" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Course Performance */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-armenian">Դասընթացների կատարողականություն</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {analytics?.coursePerformance.map((course) => (
-              <div key={course.courseId} className="p-4 border rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold font-armenian">{course.title}</h4>
-                  <span className="text-sm text-muted-foreground">
-                    {course.studentsCount} ուսանող
-                  </span>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="font-armenian">Միջին առաջընթաց</span>
-                      <span>{Math.round(course.averageProgress)}%</span>
-                    </div>
-                    <Progress value={course.averageProgress} className="h-2" />
+      {analytics?.coursePerformance && analytics.coursePerformance.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-armenian">Դասընթացների կատարողականություն</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {analytics.coursePerformance.map((course) => (
+                <div key={course.courseId} className="p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold font-armenian">{course.title}</h4>
+                    <span className="text-sm text-muted-foreground">
+                      {course.studentsCount} ուսանող
+                    </span>
                   </div>
                   
-                  <div>
-                    <div className="flex items-center justify-between text-sm mb-1">
-                      <span className="font-armenian">Ավարտելիություն</span>
-                      <span>{Math.round(course.completionRate)}%</span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="font-armenian">Միջին առաջընթաց</span>
+                        <span>{Math.round(course.averageProgress)}%</span>
+                      </div>
+                      <Progress value={course.averageProgress} className="h-2" />
                     </div>
-                    <Progress value={course.completionRate} className="h-2" />
+                    
+                    <div>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="font-armenian">Ավարտելիություն</span>
+                        <span>{Math.round(course.completionRate)}%</span>
+                      </div>
+                      <Progress value={course.completionRate} className="h-2" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Empty State */}
+      {(!analytics || !analytics.coursePerformance || analytics.coursePerformance.length === 0) && (
+        <Card>
+          <CardContent className="py-12">
+            <div className="text-center text-muted-foreground">
+              <BarChart className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p className="font-armenian text-lg">Վերլուծական տվյալներ չկան</p>
+              <p className="text-sm">Տվյալները կհայտնվեն, երբ ուսանողներ գրանցվեն ձեր դասընթացներին</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

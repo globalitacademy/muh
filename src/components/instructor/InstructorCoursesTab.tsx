@@ -73,15 +73,15 @@ const InstructorCoursesTab = () => {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-blue-500" />
-                  <span>{course.students_count} ուսանող</span>
+                  <span>{course.students_count || 0} ուսանող</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-green-500" />
-                  <span>{course.total_lessons} դաս</span>
+                  <span>{course.total_lessons || 0} դաս</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-orange-500" />
-                  <span>{course.duration_weeks} շաբաթ</span>
+                  <span>{course.duration_weeks || 0} շաբաթ</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-lg font-bold text-primary">
@@ -94,7 +94,7 @@ const InstructorCoursesTab = () => {
                 <Badge variant={course.is_active ? 'default' : 'secondary'} className="font-armenian">
                   {course.is_active ? 'Ակտիվ' : 'Ապաակտիվ'}
                 </Badge>
-                {course.rating && (
+                {course.rating && course.rating > 0 && (
                   <div className="flex items-center gap-1">
                     <span className="text-yellow-500">⭐</span>
                     <span className="text-sm font-medium">{course.rating.toFixed(1)}</span>

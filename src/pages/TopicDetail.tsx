@@ -5,10 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, BookOpen, PenTool, CheckCircle, PlayCircle, Clock, Target } from 'lucide-react';
+import { ArrowLeft, BookOpen, PenTool, CheckCircle, Clock, Target } from 'lucide-react';
 import TopicContent from '@/components/TopicContent';
 import TopicExercises from '@/components/TopicExercises';
 import TopicQuiz from '@/components/TopicQuiz';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 const TopicDetail = () => {
   const { topicId } = useParams<{ topicId: string }>();
@@ -16,19 +18,23 @@ const TopicDetail = () => {
   const [activeTab, setActiveTab] = useState('content');
   const [progress, setProgress] = useState(0);
 
-  // Mock data - in real app this would come from database
-  const topic = {
-    id: topicId,
-    title: 'Ալգորիթմի սահմանումը և նրա ներկայացման եղանակները',
-    description: 'Ալգորիթմի հիմնական սահմանումը, նրա նշանակությունը և ներկայացման տարբեր մեթոդները',
-    duration: 120,
-    order_index: 1,
-    objectives: [
-      'Հասկանալ ալգորիթմի սահմանումը և նշանակությունը',
-      'Ծանոթանալ ալգորիթմների ներկայացման եղանակների հետ',
-      'Սովորել ալգորիթմների գրառման կանոնները'
-    ]
-  };
+  // Fetch topic data from database
+  const { data: topic, isLoading, error } = useQuery({
+    queryKey: ['topic', topicId],
+    queryFn: async () => {
+      if (!topicId) throw new Error('Topic ID is required');
+      
+      const { data, error } = await supabase
+        .from('topics')
+        .select('*')
+        .eq('id', topicId)
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!topicId
+  });
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -45,6 +51,38 @@ const TopicDetail = () => {
     // Navigate to next topic or back to module
     navigate(-1);
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse font-armenian">Բեռնվում է...</div>
+      </div>
+    );
+  }
+
+  if (error || !topic) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-8">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(-1)}
+            className="mb-6 text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Վերադառնալ մոդուլ
+          </Button>
+          
+          <div className="text-center py-12">
+            <h2 className="text-xl font-bold text-destructive mb-2 font-armenian">Սխալ</h2>
+            <p className="text-muted-foreground font-armenian">
+              Թեման չի գտնվել կամ սխալ է առաջացել բեռնելիս
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,34 +103,16 @@ const TopicDetail = () => {
             <span className="font-armenian">Դաս {topic.order_index}</span>
             <span>•</span>
             <Clock className="w-4 h-4" />
-            <span>{topic.duration} րոպե</span>
+            <span>{topic.duration_minutes} րոպե</span>
           </div>
           
           <h1 className="text-3xl font-bold font-armenian mb-4">{topic.title}</h1>
           
-          <p className="text-lg text-muted-foreground font-armenian mb-6">
-            {topic.description}
-          </p>
-
-          {/* Learning Objectives */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 font-armenian">
-                <Target className="w-5 h-5 text-edu-blue" />
-                Ուսումնական նպատակներ
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-2">
-                {topic.objectives.map((objective, index) => (
-                  <li key={index} className="flex items-start gap-2 font-armenian">
-                    <CheckCircle className="w-4 h-4 text-green-500 mt-1 flex-shrink-0" />
-                    <span>{objective}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
+          {topic.description && (
+            <p className="text-lg text-muted-foreground font-armenian mb-6">
+              {topic.description}
+            </p>
+          )}
 
           {/* Progress */}
           <div className="mb-6">
