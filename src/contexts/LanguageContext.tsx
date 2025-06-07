@@ -5,6 +5,7 @@ type Language = 'hy' | 'ru' | 'en';
 
 interface LanguageContextType {
   language: Language;
+  currentLanguage: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
 }
@@ -160,7 +161,12 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ 
+      language, 
+      currentLanguage: language, 
+      setLanguage, 
+      t 
+    }}>
       {children}
     </LanguageContext.Provider>
   );

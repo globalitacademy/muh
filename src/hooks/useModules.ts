@@ -20,7 +20,7 @@ export const useModules = () => {
       }
 
       console.log('Modules fetched:', data);
-      return data || [];
+      return (data || []) as Module[];
     },
   });
 };
@@ -41,7 +41,7 @@ export const useModule = (id: string) => {
         throw error;
       }
 
-      return data;
+      return data as Module;
     },
     enabled: !!id,
   });
