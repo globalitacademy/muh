@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Hash } from 'lucide-react';
 
 const Register = () => {
   const { language } = useLanguage();
@@ -18,7 +18,8 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'student'
+    role: 'student',
+    groupNumber: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -156,6 +157,27 @@ const Register = () => {
                       ))}
                     </select>
                   </div>
+                  
+                  {formData.role === 'student' && (
+                    <div>
+                      <Label htmlFor="groupNumber" className="font-armenian">
+                        {language === 'hy' ? 'Խմբի համար' : language === 'ru' ? 'Номер группы' : 'Group Number'}
+                      </Label>
+                      <div className="relative mt-1">
+                        <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                        <Input
+                          id="groupNumber"
+                          name="groupNumber"
+                          type="text"
+                          value={formData.groupNumber}
+                          onChange={handleChange}
+                          required={formData.role === 'student'}
+                          className="pl-10"
+                          placeholder={language === 'hy' ? 'Խմբի համար' : language === 'ru' ? 'Номер группы' : 'Group Number'}
+                        />
+                      </div>
+                    </div>
+                  )}
                   
                   <div>
                     <Label htmlFor="password" className="font-armenian">
