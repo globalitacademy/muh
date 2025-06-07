@@ -45,14 +45,14 @@ const Auth = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Button
           variant="ghost"
@@ -63,7 +63,7 @@ const Auth = () => {
           Վերադառնալ գլխավոր էջ
         </Button>
 
-        <Card className="shadow-xl border-0">
+        <Card className="shadow-xl border">
           <CardHeader className="text-center pb-8">
             <CardTitle className="text-2xl font-bold font-armenian">
               Բարի գալուստ
