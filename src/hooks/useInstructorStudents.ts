@@ -53,11 +53,11 @@ export const useInstructorStudents = () => {
         .from('enrollments')
         .select(`
           *,
-          profiles!inner (
+          profiles!enrollments_user_id_fkey (
             name,
             group_number
           ),
-          modules!inner (
+          modules!enrollments_module_id_fkey (
             title
           )
         `)
