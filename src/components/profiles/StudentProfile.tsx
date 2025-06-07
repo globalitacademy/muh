@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,6 +31,7 @@ import JobsTab from '@/components/profile/JobsTab';
 import MessagesTab from '@/components/profile/MessagesTab';
 import ExamsTab from '@/components/profile/ExamsTab';
 import ProfileSettingsTab from '@/components/profile/ProfileSettingsTab';
+import SettingsTab from '@/components/settings/SettingsTab';
 
 const StudentProfile = () => {
   const { data: profile, isLoading, error } = useUserProfile();
