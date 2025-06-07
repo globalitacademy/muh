@@ -48,28 +48,53 @@ export const useInstructorStudents = () => {
 
       const moduleIds = instructorModules.map(m => m.id);
 
-      // Then get enrollments for those modules with student profiles
-      const { data, error } = await supabase
+      // Get enrollments for those modules
+      const { data: enrollments, error: enrollmentsError } = await supabase
         .from('enrollments')
-        .select(`
-          *,
-          profiles!enrollments_user_id_fkey (
-            name,
-            group_number
-          ),
-          modules!enrollments_module_id_fkey (
-            title
-          )
-        `)
+        .select('*')
         .in('module_id', moduleIds)
         .order('enrolled_at', { ascending: false });
 
-      if (error) {
-        console.error('Error fetching instructor students:', error);
-        throw error;
+      if (enrollmentsError) {
+        console.error('Error fetching enrollments:', enrollmentsError);
+        throw enrollmentsError;
       }
 
-      return data || [];
+      if (!enrollments || enrollments.length === 0) {
+        return [];
+      }
+
+      // Get user profiles for the enrolled students
+      const userIds = enrollments.map(e => e.user_id).filter(Boolean);
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, name, group_number')
+        .in('id', userIds);
+
+      if (profilesError) {
+        console.error('Error fetching profiles:', profilesError);
+        throw profilesError;
+      }
+
+      // Get module details
+      const { data: modules, error: modulesDetailError } = await supabase
+        .from('modules')
+        .select('id, title')
+        .in('id', moduleIds);
+
+      if (modulesDetailError) {
+        console.error('Error fetching module details:', modulesDetailError);
+        throw modulesDetailError;
+      }
+
+      // Combine the data
+      const result = enrollments.map(enrollment => ({
+        ...enrollment,
+        profiles: profiles?.find(p => p.id === enrollment.user_id) || null,
+        modules: modules?.find(m => m.id === enrollment.module_id) || null,
+      }));
+
+      return result;
     },
     enabled: !!user,
   });
