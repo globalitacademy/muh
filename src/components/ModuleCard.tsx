@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -21,8 +20,8 @@ const ModuleCard = ({ module, orderIndex }: ModuleCardProps) => {
   const navigate = useNavigate();
 
   const isEnrolled = enrollments?.some(e => e.module_id === module.id);
-  const isAdmin = user?.role === 'admin';
-  const isInstructor = user?.role === 'instructor' && module.instructor === user?.name;
+  const isAdmin = user?.user_metadata?.role === 'admin';
+  const isInstructor = user?.user_metadata?.role === 'instructor' && module.instructor === user?.user_metadata?.name;
 
   const getModuleIcon = (category: string) => {
     switch (category) {
