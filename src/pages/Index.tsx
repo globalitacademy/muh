@@ -6,7 +6,6 @@ import Features from '@/components/Features';
 import Stats from '@/components/Stats';
 import Courses from '@/components/Courses';
 import Footer from '@/components/Footer';
-import ScrollToTop from '@/components/ScrollToTop';
 
 const Index = () => {
   return (
@@ -19,7 +18,6 @@ const Index = () => {
         <Courses />
       </main>
       <Footer />
-      <ScrollToTop />
     </div>
   );
 };
