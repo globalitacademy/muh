@@ -1,23 +1,16 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, User, Mail, Lock, ArrowLeft } from 'lucide-react';
+import { Loader2, ArrowLeft } from 'lucide-react';
+import SignInForm from '@/components/auth/SignInForm';
+import SignUpForm from '@/components/auth/SignUpForm';
 
 const Auth = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('student');
-  const [groupNumber, setGroupNumber] = useState('');
-  const { signIn, signUp, user, loading } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,30 +18,6 @@ const Auth = () => {
       navigate('/');
     }
   }, [user, loading, navigate]);
-
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      await signIn(email, password);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      await signUp(email, password, { 
-        name, 
-        role, 
-        groupNumber: role === 'student' ? groupNumber : undefined 
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -87,121 +56,11 @@ const Auth = () => {
               </TabsList>
 
               <TabsContent value="signin" className="space-y-4">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email" className="font-armenian">Էլ. փոստ</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="signin-email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
-                        placeholder="your@email.com"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password" className="font-armenian">Գաղտնաբառ</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="signin-password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10"
-                        placeholder="••••••••"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full font-armenian" disabled={isLoading}>
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Մուտք գործել
-                  </Button>
-                </form>
+                <SignInForm />
               </TabsContent>
 
               <TabsContent value="signup" className="space-y-4">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name" className="font-armenian">Անուն</Label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="signup-name"
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="pl-10"
-                        placeholder="Ձեր անունը"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email" className="font-armenian">Էլ. փոստ</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
-                        placeholder="your@email.com"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-role" className="font-armenian">Դեր</Label>
-                    <Select value={role} onValueChange={setRole}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Ընտրեք դեր" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="student">Ուսանող</SelectItem>
-                        <SelectItem value="instructor">Դասախոս</SelectItem>
-                        <SelectItem value="employer">Գործատու</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  {role === 'student' && (
-                    <div className="space-y-2">
-                      <Label htmlFor="group-number" className="font-armenian">Խմբի համար</Label>
-                      <Input
-                        id="group-number"
-                        type="text"
-                        value={groupNumber}
-                        onChange={(e) => setGroupNumber(e.target.value)}
-                        placeholder="Ձեր խմբի համարը"
-                      />
-                    </div>
-                  )}
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password" className="font-armenian">Գաղտնաբառ</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10"
-                        placeholder="••••••••"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <Button type="submit" className="w-full font-armenian" disabled={isLoading}>
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Ստեղծել հաշիվ
-                  </Button>
-                </form>
+                <SignUpForm />
               </TabsContent>
             </Tabs>
           </CardContent>
