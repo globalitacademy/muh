@@ -42,7 +42,7 @@ const Features = () => {
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-6">
             <Star className="w-4 h-4" />
-            <span className="font-medium font-armenian text-4xl">Ինչու՞ ընտրել մեզ</span>
+            <span className="font-medium font-armenian text-2xl">Ինչու՞ ընտրել մեզ</span>
           </div>
           
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-armenian leading-relaxed">
