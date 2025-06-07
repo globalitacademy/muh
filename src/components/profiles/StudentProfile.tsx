@@ -1,13 +1,41 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { BookOpen, Award, Clock, Users, Target } from 'lucide-react';
+import { 
+  User, 
+  BookOpen, 
+  Award, 
+  Briefcase, 
+  MessageCircle, 
+  Bell, 
+  Settings,
+  GraduationCap,
+  FolderOpen,
+  Calendar,
+  Mail,
+  Phone,
+  MapPin,
+  Globe,
+  Linkedin,
+  Eye,
+  EyeOff
+} from 'lucide-react';
+import PersonalInfoTab from '@/components/profile/PersonalInfoTab';
+import AcademicProgressTab from '@/components/profile/AcademicProgressTab';
+import PortfolioTab from '@/components/profile/PortfolioTab';
+import CertificatesTab from '@/components/profile/CertificatesTab';
+import JobsTab from '@/components/profile/JobsTab';
+import MessagesTab from '@/components/profile/MessagesTab';
+import ExamsTab from '@/components/profile/ExamsTab';
+import ProfileSettingsTab from '@/components/profile/ProfileSettingsTab';
 
 const StudentProfile = () => {
   const { data: profile, isLoading, error } = useUserProfile();
+  const [activeTab, setActiveTab] = useState('overview');
 
   console.log('StudentProfile - Loading:', isLoading);
   console.log('StudentProfile - Profile data:', profile);
@@ -38,98 +66,174 @@ const StudentProfile = () => {
     );
   }
 
-  console.log('StudentProfile - Rendering with profile:', {
-    name: profile.name,
-    role: profile.role,
-    group_number: profile.group_number,
-    department: profile.department
-  });
+  const getStatusBadge = (status: string | null) => {
+    switch (status) {
+      case 'active':
+        return <Badge variant="default" className="bg-green-100 text-green-800">Ակտիվ</Badge>;
+      case 'graduated':
+        return <Badge variant="secondary" className="bg-blue-100 text-blue-800">Ավարտած</Badge>;
+      case 'suspended':
+        return <Badge variant="destructive">Դադարեցված</Badge>;
+      default:
+        return <Badge variant="secondary">Անհայտ</Badge>;
+    }
+  };
 
   return (
     <div className="space-y-6">
       {/* Profile Header */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-armenian">
-            <Users className="w-5 h-5" />
-            Ուսանողի պրոֆիլ
-          </CardTitle>
-          <CardDescription className="font-armenian">
-            Բարի գալուստ, {profile?.name || 'Ուսանող'}!
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-muted-foreground font-armenian">Խմբի համար</p>
-              <p className="font-semibold">{profile?.group_number || 'Նշված չէ'}</p>
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
+                {profile.avatar_url ? (
+                  <img 
+                    src={profile.avatar_url} 
+                    alt={profile.name || 'Ուսանող'} 
+                    className="w-16 h-16 rounded-full object-cover"
+                  />
+                ) : (
+                  <User className="w-8 h-8 text-primary" />
+                )}
+              </div>
+              <div>
+                <CardTitle className="flex items-center gap-2 font-armenian">
+                  {profile.name || 'Ուսանող'}
+                </CardTitle>
+                <CardDescription className="font-armenian">
+                  {profile.field_of_study && (
+                    <span className="block">{profile.field_of_study}</span>
+                  )}
+                  <span>Խումբ: {profile.group_number || 'Նշված չէ'}</span>
+                </CardDescription>
+                <div className="flex items-center gap-2 mt-2">
+                  {getStatusBadge(profile.status)}
+                  {profile.is_visible_to_employers && (
+                    <Badge variant="outline" className="text-xs">
+                      <Eye className="w-3 h-3 mr-1" />
+                      Տեսանելի գործատուներին
+                    </Badge>
+                  )}
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground font-armenian">Բաժին</p>
-              <p className="font-semibold">{profile?.department || 'Նշված չէ'}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground font-armenian">Դեր</p>
-              <p className="font-semibold">{profile?.role || 'Նշված չէ'}</p>
+            <div className="flex items-center gap-2">
+              {profile.personal_website && (
+                <Button variant="outline" size="sm" asChild>
+                  <a href={profile.personal_website} target="_blank" rel="noopener noreferrer">
+                    <Globe className="w-4 h-4" />
+                  </a>
+                </Button>
+              )}
+              {profile.linkedin_url && (
+                <Button variant="outline" size="sm" asChild>
+                  <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer">
+                    <Linkedin className="w-4 h-4" />
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            {profile.phone && (
+              <div className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-muted-foreground" />
+                <span>{profile.phone}</span>
+              </div>
+            )}
+            {profile.address && (
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-muted-foreground" />
+                <span>{profile.address}</span>
+              </div>
+            )}
+            {profile.organization && (
+              <div className="flex items-center gap-2">
+                <Briefcase className="w-4 h-4 text-muted-foreground" />
+                <span>{profile.organization}</span>
+              </div>
+            )}
+          </div>
+          {profile.bio && (
+            <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+              <p className="text-sm">{profile.bio}</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-armenian">Արագ գործողություններ</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="outline">
-            <BookOpen className="w-5 h-5" />
-            <div className="text-left">
-              <p className="font-semibold">Դասընթացներ</p>
-              <p className="text-xs text-muted-foreground">Բոլոր դասընթացները</p>
-            </div>
-          </Button>
-          <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="outline">
-            <Target className="w-5 h-5" />
-            <div className="text-left">
-              <p className="font-semibold">Առաջընթաց</p>
-              <p className="text-xs text-muted-foreground">Տեսնել առաջընթացը</p>
-            </div>
-          </Button>
-          <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="outline">
-            <Award className="w-5 h-5" />
-            <div className="text-left">
-              <p className="font-semibold">Սերտիֆիկատներ</p>
-              <p className="text-xs text-muted-foreground">Իմ սերտիֆիկատները</p>
-            </div>
-          </Button>
-        </CardContent>
-      </Card>
+      {/* Tabs Navigation */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
+          <TabsTrigger value="overview" className="text-xs">
+            <User className="w-4 h-4 mr-1" />
+            Ընդհանուր
+          </TabsTrigger>
+          <TabsTrigger value="academic" className="text-xs">
+            <BookOpen className="w-4 h-4 mr-1" />
+            Ուսումնական
+          </TabsTrigger>
+          <TabsTrigger value="portfolio" className="text-xs">
+            <FolderOpen className="w-4 h-4 mr-1" />
+            Պորտֆոլիո
+          </TabsTrigger>
+          <TabsTrigger value="certificates" className="text-xs">
+            <Award className="w-4 h-4 mr-1" />
+            Վկայականներ
+          </TabsTrigger>
+          <TabsTrigger value="jobs" className="text-xs">
+            <Briefcase className="w-4 h-4 mr-1" />
+            Աշխատանք
+          </TabsTrigger>
+          <TabsTrigger value="messages" className="text-xs">
+            <MessageCircle className="w-4 h-4 mr-1" />
+            Հաղորդագրություններ
+          </TabsTrigger>
+          <TabsTrigger value="exams" className="text-xs">
+            <GraduationCap className="w-4 h-4 mr-1" />
+            Քննություններ
+          </TabsTrigger>
+          <TabsTrigger value="settings" className="text-xs">
+            <Settings className="w-4 h-4 mr-1" />
+            Կարգավորումներ
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Current Courses */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-armenian">Ընթացիկ դասընթացներ</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <h4 className="font-semibold font-armenian">JavaScript հիմունքներ</h4>
-                <p className="text-sm text-muted-foreground">75% ավարտված</p>
-              </div>
-              <Badge variant="secondary">Ընթացիկ</Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 border rounded-lg">
-              <div>
-                <h4 className="font-semibold font-armenian">React զարգացում</h4>
-                <p className="text-sm text-muted-foreground">45% ավարտված</p>
-              </div>
-              <Badge variant="secondary">Ընթացիկ</Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        <TabsContent value="overview" className="space-y-6">
+          <PersonalInfoTab profile={profile} />
+        </TabsContent>
+
+        <TabsContent value="academic" className="space-y-6">
+          <AcademicProgressTab />
+        </TabsContent>
+
+        <TabsContent value="portfolio" className="space-y-6">
+          <PortfolioTab />
+        </TabsContent>
+
+        <TabsContent value="certificates" className="space-y-6">
+          <CertificatesTab />
+        </TabsContent>
+
+        <TabsContent value="jobs" className="space-y-6">
+          <JobsTab />
+        </TabsContent>
+
+        <TabsContent value="messages" className="space-y-6">
+          <MessagesTab />
+        </TabsContent>
+
+        <TabsContent value="exams" className="space-y-6">
+          <ExamsTab />
+        </TabsContent>
+
+        <TabsContent value="settings" className="space-y-6">
+          <ProfileSettingsTab profile={profile} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -13,6 +13,14 @@ interface UserProfile {
   bio: string | null;
   organization: string | null;
   avatar_url: string | null;
+  birth_date: string | null;
+  address: string | null;
+  language_preference: 'hy' | 'ru' | 'en' | null;
+  status: 'active' | 'graduated' | 'suspended' | null;
+  field_of_study: string | null;
+  personal_website: string | null;
+  linkedin_url: string | null;
+  is_visible_to_employers: boolean | null;
 }
 
 export const useUserProfile = () => {
@@ -46,7 +54,6 @@ export const useUserProfile = () => {
       if (!data) {
         console.log('useUserProfile - No profile found, creating default profile from user metadata');
         
-        // Պորձենք ստեղծել պրոֆիլ օգտատերի metadata-ից
         const metadata = user.user_metadata || {};
         console.log('useUserProfile - User metadata:', metadata);
 
@@ -61,7 +68,15 @@ export const useUserProfile = () => {
             phone: null,
             bio: null,
             organization: null,
-            avatar_url: null
+            avatar_url: null,
+            birth_date: null,
+            address: null,
+            language_preference: 'hy',
+            status: 'active',
+            field_of_study: null,
+            personal_website: null,
+            linkedin_url: null,
+            is_visible_to_employers: false
           })
           .select()
           .single();
@@ -80,5 +95,29 @@ export const useUserProfile = () => {
     },
     enabled: !!user,
     retry: 1,
+  });
+};
+
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+  
+  return useMutation({
+    mutationFn: async (profileData: Partial<UserProfile>) => {
+      if (!user) throw new Error('No user found');
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({ ...profileData, updated_at: new Date().toISOString() })
+        .eq('id', user.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+    },
   });
 };
