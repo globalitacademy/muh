@@ -388,6 +388,7 @@ export type Database = {
           name: string | null
           organization: string | null
           phone: string | null
+          role: Database["public"]["Enums"]["app_role"] | null
           updated_at: string | null
         }
         Insert: {
@@ -400,6 +401,7 @@ export type Database = {
           name?: string | null
           organization?: string | null
           phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"] | null
           updated_at?: string | null
         }
         Update: {
@@ -412,6 +414,7 @@ export type Database = {
           name?: string | null
           organization?: string | null
           phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"] | null
           updated_at?: string | null
         }
         Relationships: []
@@ -650,6 +653,7 @@ export type Database = {
           assigned_by: string | null
           id: string
           is_active: boolean | null
+          role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Insert: {
@@ -657,6 +661,7 @@ export type Database = {
           assigned_by?: string | null
           id?: string
           is_active?: boolean | null
+          role?: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Update: {
@@ -664,6 +669,7 @@ export type Database = {
           assigned_by?: string | null
           id?: string
           is_active?: boolean | null
+          role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
         }
         Relationships: []
