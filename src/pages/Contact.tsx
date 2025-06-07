@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,10 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Users, Globe } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Users, BookOpen, Loader2 } from 'lucide-react';
+import { useContactStats } from '@/hooks/useContactStats';
 
 const Contact = () => {
   const { language } = useLanguage();
+  const { data: stats, isLoading: statsLoading } = useContactStats();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -60,21 +61,21 @@ const Contact = () => {
     }
   ];
 
-  const stats = [
+  const realStats = [
     {
       icon: <Users className="w-8 h-8" />,
-      number: '5000+',
+      number: statsLoading ? '...' : `${stats?.studentsCount || 0}+`,
       label: language === 'hy' ? 'Ուսանողներ' : language === 'ru' ? 'Студенты' : 'Students'
     },
     {
-      icon: <MessageCircle className="w-8 h-8" />,
-      number: '24/7',
-      label: language === 'hy' ? 'Աջակցություն' : language === 'ru' ? 'Поддержка' : 'Support'
+      icon: <BookOpen className="w-8 h-8" />,
+      number: statsLoading ? '...' : `${stats?.modulesCount || 0}`,
+      label: language === 'hy' ? 'Դասընթացներ' : language === 'ru' ? 'Курсы' : 'Courses'
     },
     {
-      icon: <Globe className="w-8 h-8" />,
-      number: '50+',
-      label: language === 'hy' ? 'Երկրներ' : language === 'ru' ? 'Страны' : 'Countries'
+      icon: <MessageCircle className="w-8 h-8" />,
+      number: statsLoading ? '...' : `${stats?.instructorsCount || 0}+`,
+      label: language === 'hy' ? 'Մանկավարժներ' : language === 'ru' ? 'Преподаватели' : 'Instructors'
     }
   ];
 
@@ -109,10 +110,10 @@ const Contact = () => {
               
               {/* Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                {stats.map((stat, index) => (
+                {realStats.map((stat, index) => (
                   <div key={index} className="glass-card p-6 rounded-2xl text-center hover:scale-105 transition-transform duration-300">
                     <div className="w-16 h-16 bg-gradient-to-br from-edu-blue to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white">
-                      {stat.icon}
+                      {statsLoading ? <Loader2 className="w-8 h-8 animate-spin" /> : stat.icon}
                     </div>
                     <div className="text-3xl font-bold text-foreground mb-2">{stat.number}</div>
                     <div className="text-muted-foreground font-armenian">{stat.label}</div>
