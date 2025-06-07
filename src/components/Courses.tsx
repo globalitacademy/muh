@@ -12,9 +12,7 @@ const Courses = () => {
           <h2 className="text-4xl font-bold mb-6 font-armenian text-gradient md:text-4xl">
             Ընտրեք ձեր մասնագիտությունը
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-armenian leading-relaxed">
-            Յուրաքանչյուր մասնագիտություն պարունակում է մոդուլային դասեր, որոնք կօգնեն ձեզ կառուցել ամուր գիտելիքների հիմք
-          </p>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-armenian leading-relaxed">Յուրաքանչյուր մասնագիտություն պարունակում է մոդուլային դասեր ըստ պետական հաստատված մասնագիտական չափորոշիչների, որոնք կօգնեն ձեզ կառուցել ամուր գիտելիքների հիմք</p>
         </div>
         
         <SpecialtiesList />
