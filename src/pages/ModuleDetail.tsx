@@ -184,7 +184,7 @@ const ModuleDetail = () => {
 
                 {user ? (
                   <div className="space-y-4">
-                    {isEnrolled ? (
+                    {hasFullAccess ? (
                       <>
                         <div className="text-center">
                           <div className="text-sm font-armenian mb-2">Ձեր առաջընթացը</div>
@@ -201,26 +201,51 @@ const ModuleDetail = () => {
                         </Button>
                       </>
                     ) : (
-                      <Button 
-                        onClick={handleEnroll}
-                        disabled={enrollModule.isPending}
-                        className="w-full btn-modern font-armenian"
-                      >
-                        {enrollModule.isPending ? 'Գրանցվում է...' : 'Գրանցվել հիմա'}
-                      </Button>
+                      <>
+                        <Button 
+                          onClick={handleEnroll}
+                          disabled={enrollModule.isPending}
+                          className="w-full btn-modern font-armenian"
+                        >
+                          {enrollModule.isPending ? 'Գրանցվում է...' : 'Գրանցվել հիմա'}
+                        </Button>
+                        
+                        {/* Company Code Input for authenticated users too */}
+                        <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
+                      </>
                     )}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <Button 
-                      onClick={() => navigate('/auth')}
-                      className="w-full btn-modern font-armenian"
-                    >
-                      Գրանցվել դասընթացի համար
-                    </Button>
-                    
-                    {/* Company Code Input */}
-                    <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
+                    {hasValidCompanyCode ? (
+                      <>
+                        <div className="text-center">
+                          <div className="text-sm font-armenian mb-2">Ունեք անվճար մուտք</div>
+                          <Progress value={0} className="mb-2" />
+                          <div className="text-xs text-muted-foreground">0% ավարտված</div>
+                        </div>
+                        <Button className="w-full btn-modern font-armenian" onClick={() => {
+                          const firstTopic = topics?.find(t => t.is_free) || topics?.[0];
+                          if (firstTopic) {
+                            handleTopicClick(firstTopic.id);
+                          }
+                        }}>
+                          Շարունակել ուսումը
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button 
+                          onClick={() => navigate('/auth')}
+                          className="w-full btn-modern font-armenian"
+                        >
+                          Գրանցվել դասընթացի համար
+                        </Button>
+                        
+                        {/* Company Code Input */}
+                        <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
+                      </>
+                    )}
                   </div>
                 )}
 
