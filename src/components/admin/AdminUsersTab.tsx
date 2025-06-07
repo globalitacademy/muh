@@ -11,7 +11,7 @@ const AdminUsersTab = () => {
   const { data: users, isLoading } = useAdminUsers();
   const updateUserRole = useUpdateUserRole();
 
-  const handleRoleChange = async (userId: string, newRole: string) => {
+  const handleRoleChange = async (userId: string, newRole: 'admin' | 'instructor' | 'student' | 'employer') => {
     await updateUserRole.mutateAsync({ userId, role: newRole });
   };
 
@@ -86,7 +86,7 @@ const AdminUsersTab = () => {
                   </Badge>
                   <Select 
                     value={user.role} 
-                    onValueChange={(newRole) => handleRoleChange(user.id, newRole)}
+                    onValueChange={(newRole: 'admin' | 'instructor' | 'student' | 'employer') => handleRoleChange(user.id, newRole)}
                     disabled={updateUserRole.isPending}
                   >
                     <SelectTrigger className="w-40">

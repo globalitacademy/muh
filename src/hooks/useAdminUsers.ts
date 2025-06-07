@@ -37,7 +37,7 @@ export const useUpdateUserRole = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, role }: { userId: string; role: string }) => {
+    mutationFn: async ({ userId, role }: { userId: string; role: 'admin' | 'instructor' | 'student' | 'employer' }) => {
       // Update in profiles table
       const { error: profileError } = await supabase
         .from('profiles')

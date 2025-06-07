@@ -29,7 +29,17 @@ export const useCreateModule = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (moduleData: Partial<Module>) => {
+    mutationFn: async (moduleData: {
+      title: string;
+      description: string;
+      category: string;
+      difficulty_level: 'beginner' | 'intermediate' | 'advanced';
+      duration_weeks: number;
+      price: number;
+      instructor: string;
+      total_lessons: number;
+      order_index: number;
+    }) => {
       const { data, error } = await supabase
         .from('modules')
         .insert([moduleData])
