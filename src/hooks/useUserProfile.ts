@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 interface UserProfile {
   id: string;
   name: string | null;
-  role: string | null;
+  role: 'admin' | 'instructor' | 'student' | 'employer' | null;
   group_number: string | null;
   department: string | null;
   phone: string | null;
@@ -62,7 +62,7 @@ export const useUserProfile = () => {
           .insert({
             id: user.id,
             name: metadata.name || null,
-            role: metadata.role || 'student',
+            role: (metadata.role as 'admin' | 'instructor' | 'student' | 'employer') || 'student',
             group_number: metadata.groupNumber || null,
             department: null,
             phone: null,
@@ -103,7 +103,7 @@ export const useUpdateProfile = () => {
   const { user } = useAuth();
   
   return useMutation({
-    mutationFn: async (profileData: Partial<UserProfile>) => {
+    mutationFn: async (profileData: Partial<Omit<UserProfile, 'id' | 'role'>>) => {
       if (!user) throw new Error('No user found');
       
       const { data, error } = await supabase
