@@ -1,10 +1,17 @@
 
 import React from 'react';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface RoleFieldProps {
   role: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   language: string;
 }
 
@@ -15,24 +22,36 @@ const RoleField = ({ role, onChange, language }: RoleFieldProps) => {
     { value: 'employer', label: language === 'hy' ? 'Գործատու' : language === 'ru' ? 'Работодатель' : 'Employer' }
   ];
 
+  const handleValueChange = (value: string) => {
+    // Create a synthetic event to match the expected interface
+    const syntheticEvent = {
+      target: {
+        name: 'role',
+        value: value
+      }
+    } as React.ChangeEvent<HTMLSelectElement>;
+    onChange(syntheticEvent);
+  };
+
+  const selectedRoleLabel = roles.find(r => r.value === role)?.label || roles[0].label;
+
   return (
     <div>
       <Label htmlFor="role" className="font-armenian">
         {language === 'hy' ? 'Դեր' : language === 'ru' ? 'Роль' : 'Role'}
       </Label>
-      <select
-        id="role"
-        name="role"
-        value={role}
-        onChange={onChange}
-        className="w-full mt-1 px-3 py-2 border border-input bg-background rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
-        {roles.map((roleOption) => (
-          <option key={roleOption.value} value={roleOption.value}>
-            {roleOption.label}
-          </option>
-        ))}
-      </select>
+      <Select value={role} onValueChange={handleValueChange}>
+        <SelectTrigger className="w-full mt-1">
+          <SelectValue placeholder={selectedRoleLabel} />
+        </SelectTrigger>
+        <SelectContent>
+          {roles.map((roleOption) => (
+            <SelectItem key={roleOption.value} value={roleOption.value}>
+              {roleOption.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 };
