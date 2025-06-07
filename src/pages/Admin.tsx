@@ -1,17 +1,20 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminRole } from '@/hooks/useAdminRole';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AdminSidebar from '@/components/admin/AdminSidebar';
 import AdminDashboard from '@/components/admin/AdminDashboard';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { Loader2 } from 'lucide-react';
 
 const Admin = () => {
   const { user, loading: authLoading } = useAuth();
   const { data: isAdmin, isLoading: adminLoading } = useAdminRole();
   const navigate = useNavigate();
+  const [activeSection, setActiveSection] = useState('overview');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -24,6 +27,12 @@ const Admin = () => {
       navigate('/');
     }
   }, [isAdmin, adminLoading, user, navigate]);
+
+  // Dispatch custom event when section changes
+  useEffect(() => {
+    const event = new CustomEvent('adminSectionChange', { detail: activeSection });
+    window.dispatchEvent(event);
+  }, [activeSection]);
 
   if (authLoading || adminLoading) {
     return (
@@ -38,17 +47,21 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="py-8">
-        <div className="container mx-auto px-4">
-          <AdminDashboard />
-        </div>
-      </main>
-
-      <Footer />
-    </div>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AdminSidebar 
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
+        />
+        <SidebarInset className="flex-1">
+          <Header />
+          <main className="flex-1 p-6">
+            <AdminDashboard />
+          </main>
+          <Footer />
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 
