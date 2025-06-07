@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, User, Mail, Lock, ArrowLeft } from 'lucide-react';
@@ -14,6 +15,8 @@ const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [role, setRole] = useState('student');
+  const [groupNumber, setGroupNumber] = useState('');
   const { signIn, signUp, user, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -37,7 +40,11 @@ const Auth = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signUp(email, password, { name });
+      await signUp(email, password, { 
+        name, 
+        role, 
+        groupNumber: role === 'student' ? groupNumber : undefined 
+      });
     } finally {
       setIsLoading(false);
     }
@@ -150,6 +157,31 @@ const Auth = () => {
                       />
                     </div>
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-role" className="font-armenian">Դեր</Label>
+                    <Select value={role} onValueChange={setRole}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Ընտրեք դեր" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="student">Ուսանող</SelectItem>
+                        <SelectItem value="instructor">Դասախոս</SelectItem>
+                        <SelectItem value="employer">Գործատու</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {role === 'student' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="group-number" className="font-armenian">Խմբի համար</Label>
+                      <Input
+                        id="group-number"
+                        type="text"
+                        value={groupNumber}
+                        onChange={(e) => setGroupNumber(e.target.value)}
+                        placeholder="Ձեր խմբի համարը"
+                      />
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label htmlFor="signup-password" className="font-armenian">Գաղտնաբառ</Label>
                     <div className="relative">
