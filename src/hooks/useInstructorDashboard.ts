@@ -57,13 +57,28 @@ export const useInstructorDashboard = () => {
       // Get enrollments for instructor's courses
       const { data: enrollments, error: enrollmentsError } = await supabase
         .from('enrollments')
-        .select(`
-          *,
-          profiles(name)
-        `)
+        .select('*')
         .in('module_id', courseIds);
 
       if (enrollmentsError) throw enrollmentsError;
+
+      // Get user profiles for enrolled students
+      const userIds = enrollments?.map(e => e.user_id).filter(Boolean) || [];
+      let profiles: any[] = [];
+      
+      if (userIds.length > 0) {
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .in('id', userIds);
+
+        if (profilesError) {
+          console.error('Error fetching profiles:', profilesError);
+          profiles = [];
+        } else {
+          profiles = profilesData || [];
+        }
+      }
 
       // Calculate stats
       const stats: CourseStats = {
@@ -76,16 +91,21 @@ export const useInstructorDashboard = () => {
       };
 
       // Format student progress
-      const studentProgress: StudentProgress[] = enrollments?.map(enrollment => ({
-        id: enrollment.id,
-        name: enrollment.profiles?.name || 'Անանուն',
-        email: enrollment.user_id,
-        courseName: courses?.find(c => c.id === enrollment.module_id)?.title || '',
-        progress: enrollment.progress_percentage || 0,
-        enrolledDate: enrollment.enrolled_at,
-        lastActivity: enrollment.enrolled_at,
-        status: enrollment.completed_at ? 'completed' : enrollment.progress_percentage > 0 ? 'active' : 'inactive'
-      })) || [];
+      const studentProgress: StudentProgress[] = enrollments?.map(enrollment => {
+        const profile = profiles.find(p => p.id === enrollment.user_id);
+        const course = courses?.find(c => c.id === enrollment.module_id);
+        
+        return {
+          id: enrollment.id,
+          name: profile?.name || 'Անանուն',
+          email: enrollment.user_id,
+          courseName: course?.title || '',
+          progress: enrollment.progress_percentage || 0,
+          enrolledDate: enrollment.enrolled_at,
+          lastActivity: enrollment.enrolled_at,
+          status: enrollment.completed_at ? 'completed' : enrollment.progress_percentage > 0 ? 'active' : 'inactive'
+        };
+      }) || [];
 
       // Format course performance
       const coursePerformance: CoursePerformance[] = courses?.map(course => {

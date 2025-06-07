@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Eye, Calendar } from 'lucide-react';
+import { MessageSquare, Eye, Calendar, Users } from 'lucide-react';
 import { StudentProgress } from '@/hooks/useInstructorDashboard';
 
 interface StudentProgressTableProps {
