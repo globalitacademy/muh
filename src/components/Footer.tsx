@@ -1,13 +1,11 @@
-
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Mail, Phone, MapPin, Twitter, Linkedin, Facebook } from 'lucide-react';
-
 const Footer = () => {
-  const { t } = useLanguage();
-
-  return (
-    <footer className="relative bg-background border-t border-border overflow-hidden">
+  const {
+    t
+  } = useLanguage();
+  return <footer className="relative bg-background border-t border-border overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-background to-purple-500/5"></div>
       
@@ -80,9 +78,7 @@ const Footer = () => {
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="text-muted-foreground font-armenian">
-                      info@limitlesslearning.am
-                    </p>
+                    <p className="text-muted-foreground font-armenian">info@gitest.am</p>
                   </div>
                 </div>
                 <div className="flex items-center group">
@@ -120,11 +116,7 @@ const Footer = () => {
               Ստացեք նոր դասընթացների և հատուկ առաջարկությունների մասին տեղեկություններ
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input 
-                type="email" 
-                placeholder="Ձեր էլ. փոստը"
-                className="flex-1 px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-edu-blue transition-colors"
-              />
+              <input type="email" placeholder="Ձեր էլ. փոստը" className="flex-1 px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-edu-blue transition-colors" />
               <button className="btn-modern text-white px-6 py-3 rounded-lg font-armenian font-semibold hover:scale-105 transition-transform">
                 Բաժանորդագրվել
               </button>
@@ -149,8 +141,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
