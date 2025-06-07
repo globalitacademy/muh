@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +16,7 @@ const Header = () => {
 
   const menuItems = [
     { href: '/', label: t('nav.home') },
-    { href: '/courses', label: t('nav.courses') },
+    { href: '/specialties', label: 'Մասնագիտություններ' },
     { href: '/about', label: t('nav.about') },
     { href: '/contact', label: t('nav.contact') },
   ];

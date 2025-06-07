@@ -8,6 +8,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
+import Specialties from "./pages/Specialties";
 import Courses from "./pages/Courses";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -31,6 +32,7 @@ const App = () => (
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/specialties" element={<Specialties />} />
                 <Route path="/courses" element={<Courses />} />
                 <Route path="/course/:id" element={<ModuleDetail />} />
                 <Route path="/topic/:topicId" element={<TopicDetail />} />
