@@ -1,6 +1,8 @@
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from './useAuth';
+import { toast } from 'sonner';
 
 interface Enrollment {
   id: string;
@@ -36,6 +38,38 @@ export const useEnrollments = () => {
 
       if (error) throw error;
       return data || [];
+    },
+  });
+};
+
+export const useEnrollModule = () => {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
+
+  return useMutation({
+    mutationFn: async (moduleId: string) => {
+      if (!user) throw new Error('User not authenticated');
+
+      const { data, error } = await supabase
+        .from('enrollments')
+        .insert({
+          user_id: user.id,
+          module_id: moduleId,
+          progress_percentage: 0,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['enrollments'] });
+      toast.success('Հաջողությամբ գրանցվեցիք դասընթացին');
+    },
+    onError: (error: any) => {
+      console.error('Error enrolling:', error);
+      toast.error('Սխալ է տեղի ունեցել գրանցման ժամանակ');
     },
   });
 };
