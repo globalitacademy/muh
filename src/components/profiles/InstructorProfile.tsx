@@ -8,6 +8,7 @@ import InstructorDashboardMain from '@/components/instructor/InstructorDashboard
 import InstructorCoursesTab from '@/components/instructor/InstructorCoursesTab';
 import InstructorStudentsTab from '@/components/instructor/InstructorStudentsTab';
 import InstructorAnalyticsTab from '@/components/instructor/InstructorAnalyticsTab';
+import SettingsTab from '@/components/settings/SettingsTab';
 
 const InstructorProfile = () => {
   const { data: profile, isLoading } = useUserProfile();
@@ -108,17 +109,7 @@ const InstructorProfile = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-armenian">Կարգավորումներ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <Settings className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p className="font-armenian">Կարգավորումների ֆունկցիան շուտով</p>
-              </div>
-            </CardContent>
-          </Card>
+          <SettingsTab />
         </TabsContent>
       </Tabs>
     </div>
