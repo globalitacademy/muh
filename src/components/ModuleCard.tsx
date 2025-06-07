@@ -33,33 +33,38 @@ const ModuleCard = ({
     }
     navigate(`/course/${module.id}`);
   };
-  return <Card className="relative overflow-hidden h-full flex flex-col bg-slate-900 border-2 border-blue-500/50 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:border-blue-400">
+  return (
+    <Card className="relative overflow-hidden h-full flex flex-col bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700/50 rounded-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl hover:border-blue-400/50 group">
       <CardContent className="p-8 flex flex-col items-center text-center h-full">
         {/* Module Icon */}
-        <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-6">
-          <span className="text-2xl text-blue-400">
-            {getModuleIcon(module.category)}
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-400/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <span className="text-3xl">
+            {getModuleIcon(module.category, module.title)}
           </span>
         </div>
 
         {/* Module Number */}
-        {orderIndex && <div className="text-white text-xl font-bold mb-4 font-armenian">
+        {orderIndex && (
+          <div className="text-blue-400 text-2xl font-bold mb-4 font-armenian">
             {orderIndex}.
-          </div>}
+          </div>
+        )}
 
         {/* Module Title */}
-        <h3 className="text-white text-xl font-bold mb-4 font-armenian leading-tight">
+        <h3 className="text-white text-xl font-bold mb-6 font-armenian leading-tight flex-grow flex items-center">
           {module.title}
         </h3>
 
-        {/* Module Description */}
-        
-
         {/* Start Learning Button */}
-        <Button onClick={handleStartLearning} disabled={enrollModule.isPending} variant="outline" className="w-auto px-8 py-2 bg-transparent border-slate-600 text-white hover:bg-slate-800 hover:border-slate-500 font-armenian transition-all duration-200">
+        <Button 
+          onClick={handleStartLearning} 
+          disabled={enrollModule.isPending} 
+          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 font-armenian font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
+        >
           {enrollModule.isPending ? 'Գրանցվում է...' : 'Սկսել ուսուցումը'}
         </Button>
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
 export default ModuleCard;
