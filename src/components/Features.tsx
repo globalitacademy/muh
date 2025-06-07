@@ -44,9 +44,7 @@ const Features = () => {
             <Star className="w-4 h-4" />
             <span className="font-medium font-armenian text-4xl">Ինչու՞ ընտրել մեզ</span>
           </div>
-          <h2 className="text-4xl font-bold mb-6 font-armenian text-gradient md:text-4xl">
-            {t('features.title')}
-          </h2>
+          
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-armenian leading-relaxed">
             Մենք առաջարկում ենք ամենաարդիական և արդյունավետ ուսումնական հարթակը
           </p>
@@ -71,7 +69,7 @@ const Features = () => {
         {/* Call to action */}
         <div className="text-center mt-16">
           <div className="glass-card rounded-2xl p-8 max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold mb-4 font-armenian">Պատրա՞ստ եք սկսելու</h3>
+            <h3 className="text-2xl font-bold mb-4 font-armenian">Պատրա՞ստ եք սկսել</h3>
             <p className="text-muted-foreground mb-6 font-armenian">
               Միացիր մեր համայնքին և սկսիր քո ուսումնական ճանապարհորդությունը
             </p>
