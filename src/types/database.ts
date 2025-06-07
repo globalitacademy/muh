@@ -18,6 +18,7 @@ export interface Module {
   students_count: number;
   rating?: number;
   is_active: boolean;
+  order_index?: number;
   created_at: string;
   updated_at: string;
 }

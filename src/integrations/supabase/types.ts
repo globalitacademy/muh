@@ -588,6 +588,7 @@ export type Database = {
           instructor_en: string | null
           instructor_ru: string | null
           is_active: boolean | null
+          order_index: number | null
           price: number
           rating: number | null
           students_count: number
@@ -611,6 +612,7 @@ export type Database = {
           instructor_en?: string | null
           instructor_ru?: string | null
           is_active?: boolean | null
+          order_index?: number | null
           price?: number
           rating?: number | null
           students_count?: number
@@ -634,6 +636,7 @@ export type Database = {
           instructor_en?: string | null
           instructor_ru?: string | null
           is_active?: boolean | null
+          order_index?: number | null
           price?: number
           rating?: number | null
           students_count?: number

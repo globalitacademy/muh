@@ -12,7 +12,7 @@ export const useModules = () => {
         .from('modules')
         .select('*')
         .eq('is_active', true)
-        .order('created_at', { ascending: false });
+        .order('order_index', { ascending: true });
 
       if (error) {
         console.error('Error fetching modules:', error);

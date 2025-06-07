@@ -11,7 +11,7 @@ interface ModuleCardProps {
   orderIndex?: number;
 }
 
-const ModuleCard = ({ module, orderIndex }: ModuleCardProps) => {
+const ModuleCard = ({ module }: ModuleCardProps) => {
   const navigate = useNavigate();
 
   const handleStartLearning = () => {
@@ -27,9 +27,9 @@ const ModuleCard = ({ module, orderIndex }: ModuleCardProps) => {
         </div>
 
         {/* Module Number */}
-        {orderIndex && (
+        {module.order_index && (
           <div className="text-blue-400 text-2xl font-bold mb-4 font-armenian">
-            {orderIndex}.
+            {module.order_index}.
           </div>
         )}
 
