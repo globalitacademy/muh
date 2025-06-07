@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +10,7 @@ import { useTopics } from '@/hooks/useTopics';
 import { useEnrollments, useEnrollModule } from '@/hooks/useEnrollments';
 import { useAuth } from '@/hooks/useAuth';
 import TopicCurriculum from '@/components/TopicCurriculum';
+import CompanyCodeInput from '@/components/CompanyCodeInput';
 import { Loader2 } from 'lucide-react';
 import { getDifficultyColor, getDifficultyText } from '@/utils/moduleUtils';
 
@@ -22,8 +22,10 @@ const ModuleDetail = () => {
   const { data: topics, isLoading: topicsLoading } = useTopics(id!);
   const { data: enrollments } = useEnrollments();
   const enrollModule = useEnrollModule();
+  const [hasValidCompanyCode, setHasValidCompanyCode] = useState(false);
 
   const isEnrolled = enrollments?.some(e => e.module_id === id);
+  const hasFullAccess = isEnrolled || hasValidCompanyCode;
 
   const handleEnroll = async () => {
     if (!user) {
@@ -36,6 +38,10 @@ const ModuleDetail = () => {
 
   const handleTopicClick = (topicId: string) => {
     navigate(`/topic/${topicId}`);
+  };
+
+  const handleCompanyCodeVerified = (isValid: boolean) => {
+    setHasValidCompanyCode(isValid);
   };
 
   if (moduleLoading || topicsLoading) {
@@ -142,7 +148,7 @@ const ModuleDetail = () => {
               {topics && topics.length > 0 ? (
                 <TopicCurriculum
                   topics={topics}
-                  isEnrolled={isEnrolled || false}
+                  isEnrolled={hasFullAccess}
                   onTopicClick={handleTopicClick}
                 />
               ) : (
@@ -205,12 +211,17 @@ const ModuleDetail = () => {
                     )}
                   </div>
                 ) : (
-                  <Button 
-                    onClick={() => navigate('/auth')}
-                    className="w-full btn-modern font-armenian"
-                  >
-                    Գրանցվել դասընթացի համար
-                  </Button>
+                  <div className="space-y-4">
+                    <Button 
+                      onClick={() => navigate('/auth')}
+                      className="w-full btn-modern font-armenian"
+                    >
+                      Գրանցվել դասընթացի համար
+                    </Button>
+                    
+                    {/* Company Code Input */}
+                    <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
+                  </div>
                 )}
 
                 <div className="border-t pt-4 space-y-2 text-sm">
