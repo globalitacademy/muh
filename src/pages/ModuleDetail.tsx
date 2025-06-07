@@ -143,7 +143,7 @@ const ModuleDetail = () => {
               {topics && topics.length > 0 ? (
                 <TopicCurriculum
                   topics={topics}
-                  isEnrolled={!!isEnrolled}
+                  isEnrolled={false}
                   onTopicClick={handleTopicClick}
                 />
               ) : (
@@ -164,7 +164,7 @@ const ModuleDetail = () => {
             <Card className="sticky top-8">
               <CardHeader>
                 <CardTitle className="text-center font-armenian">
-                  {isEnrolled ? 'Գրանցված եք' : 'Գրանցվել դասընթացին'}
+                  Ծրագրային մանրամասներ
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -177,24 +177,35 @@ const ModuleDetail = () => {
                   </div>
                 </div>
 
-                {isEnrolled ? (
+                {user ? (
                   <div className="space-y-4">
-                    <div className="text-center">
-                      <div className="text-sm font-armenian mb-2">Ձեր առաջընթացը</div>
-                      <Progress value={0} className="mb-2" />
-                      <div className="text-xs text-muted-foreground">0% ավարտված</div>
-                    </div>
-                    <Button className="w-full btn-modern font-armenian">
-                      Շարունակել ուսումը
-                    </Button>
+                    {isEnrolled ? (
+                      <>
+                        <div className="text-center">
+                          <div className="text-sm font-armenian mb-2">Ձեր առաջընթացը</div>
+                          <Progress value={0} className="mb-2" />
+                          <div className="text-xs text-muted-foreground">0% ավարտված</div>
+                        </div>
+                        <Button className="w-full btn-modern font-armenian">
+                          Շարունակել ուսումը
+                        </Button>
+                      </>
+                    ) : (
+                      <Button 
+                        onClick={handleEnroll}
+                        disabled={enrollModule.isPending}
+                        className="w-full btn-modern font-armenian"
+                      >
+                        {enrollModule.isPending ? 'Գրանցվում է...' : 'Գրանցվել հիմա'}
+                      </Button>
+                    )}
                   </div>
                 ) : (
                   <Button 
-                    onClick={handleEnroll}
-                    disabled={enrollModule.isPending}
+                    onClick={() => navigate('/auth')}
                     className="w-full btn-modern font-armenian"
                   >
-                    {enrollModule.isPending ? 'Գրանցվում է...' : 'Գրանցվել հիմա'}
+                    Գրանցվել դասընթացի համար
                   </Button>
                 )}
 

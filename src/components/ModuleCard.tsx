@@ -3,8 +3,6 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Module } from '@/types/database';
-import { useAuth } from '@/hooks/useAuth';
-import { useEnrollments, useEnrollModule } from '@/hooks/useEnrollments';
 import { useNavigate } from 'react-router-dom';
 import { getModuleIcon } from '@/utils/moduleUtils';
 
@@ -14,23 +12,9 @@ interface ModuleCardProps {
 }
 
 const ModuleCard = ({ module, orderIndex }: ModuleCardProps) => {
-  const { user } = useAuth();
-  const { data: enrollments } = useEnrollments();
-  const enrollModule = useEnrollModule();
   const navigate = useNavigate();
 
-  const isEnrolled = enrollments?.some(e => e.module_id === module.id);
-
-  const handleStartLearning = async () => {
-    if (!user) {
-      navigate('/auth');
-      return;
-    }
-
-    if (!isEnrolled) {
-      await enrollModule.mutateAsync(module.id);
-    }
-
+  const handleStartLearning = () => {
     navigate(`/course/${module.id}`);
   };
 
@@ -56,11 +40,10 @@ const ModuleCard = ({ module, orderIndex }: ModuleCardProps) => {
 
         {/* Start Learning Button */}
         <Button 
-          onClick={handleStartLearning} 
-          disabled={enrollModule.isPending} 
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 font-armenian font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
+          onClick={handleStartLearning}
+          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white border-0 font-armenian font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105"
         >
-          {enrollModule.isPending ? 'Գրանցվում է...' : 'Սկսել ուսուցումը'}
+          Սկսել ուսուցումը
         </Button>
       </CardContent>
     </Card>

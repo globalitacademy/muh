@@ -13,347 +13,94 @@ import {
   TestTube,
   Link,
   Settings,
-  BookOpen
+  BookOpen,
+  Layers,
+  LayoutDashboard,
+  Network,
+  FileText,
+  Image,
+  Zap
 } from 'lucide-react';
 
-export const getModuleIcon = (category: string, title?: string) => {
-  // First check by title for more specific matching
+export const getModuleIcon = (category?: string, title?: string) => {
+  const iconProps = {
+    width: 32,
+    height: 32,
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const
+  };
+
+  // Map specific module titles to icons
   if (title) {
     const lowerTitle = title.toLowerCase();
     
-    // Programming related
-    if (lowerTitle.includes('javascript') || lowerTitle.includes('js')) {
-      return React.createElement(Code, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('ալգորիթմ')) {
+      return React.createElement(Zap, iconProps);
     }
-    if (lowerTitle.includes('python')) {
-      return React.createElement(Code, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('ծրագրավորման հիմունք')) {
+      return React.createElement(Code, iconProps);
     }
-    if (lowerTitle.includes('java')) {
-      return React.createElement(Code, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('օբյեկտ կողմնորոշված ծրագրավորման ներածություն')) {
+      return React.createElement(Layers, iconProps);
     }
-    if (lowerTitle.includes('c++') || lowerTitle.includes('c#')) {
-      return React.createElement(Code, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('օբյեկտ կողմնորոշված մոդելի կիրառում')) {
+      return React.createElement(Settings, iconProps);
     }
-    if (lowerTitle.includes('react') || lowerTitle.includes('vue') || lowerTitle.includes('angular')) {
-      return React.createElement(Code, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('գրաֆիկական ինտերֆեյս')) {
+      return React.createElement(LayoutDashboard, iconProps);
     }
-    if (lowerTitle.includes('node')) {
-      return React.createElement(Server, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('համակարգչային ցանց')) {
+      return React.createElement(Network, iconProps);
     }
-    if (lowerTitle.includes('html') || lowerTitle.includes('css')) {
-      return React.createElement(Globe, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('ստատիկ վեբ')) {
+      return React.createElement(FileText, iconProps);
     }
-    
-    // Database and data
-    if (lowerTitle.includes('sql') || lowerTitle.includes('database') || lowerTitle.includes('տվյալ')) {
-      return React.createElement(Database, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('ջավասկրիպտ')) {
+      return React.createElement(Code, iconProps);
     }
-    if (lowerTitle.includes('mongodb') || lowerTitle.includes('nosql')) {
-      return React.createElement(Database, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('ռելյացիոն տվյալների բազա')) {
+      return React.createElement(Database, iconProps);
     }
-    
-    // Mobile development
-    if (lowerTitle.includes('android') || lowerTitle.includes('ios') || lowerTitle.includes('mobile')) {
-      return React.createElement(Smartphone, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('ոչ ռելյացիոն')) {
+      return React.createElement(Database, iconProps);
     }
-    if (lowerTitle.includes('flutter') || lowerTitle.includes('react native')) {
-      return React.createElement(Smartphone, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('դինամիկ վեբ')) {
+      return React.createElement(Globe, iconProps);
     }
-    
-    // DevOps and tools
-    if (lowerTitle.includes('git') || lowerTitle.includes('github')) {
-      return React.createElement(GitBranch, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('վեկտորային գրաֆիկա')) {
+      return React.createElement(Palette, iconProps);
     }
-    if (lowerTitle.includes('docker')) {
-      return React.createElement(Settings, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('կետային գրաֆիկա')) {
+      return React.createElement(Image, iconProps);
     }
-    if (lowerTitle.includes('aws') || lowerTitle.includes('cloud')) {
-      return React.createElement(Cloud, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
-    }
-    
-    // Design and UI/UX
-    if (lowerTitle.includes('photoshop') || lowerTitle.includes('figma')) {
-      return React.createElement(Palette, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
-    }
-    if (lowerTitle.includes('ui') || lowerTitle.includes('ux') || lowerTitle.includes('դիզայն')) {
-      return React.createElement(Palette, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
-    }
-    
-    // Security
-    if (lowerTitle.includes('անվտանգություն') || lowerTitle.includes('security')) {
-      return React.createElement(Shield, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
-    }
-    if (lowerTitle.includes('encryption') || lowerTitle.includes('cyber')) {
-      return React.createElement(Shield, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
-    }
-    
-    // AI and Machine Learning
-    if (lowerTitle.includes('ai') || lowerTitle.includes('machine learning') || lowerTitle.includes('ml')) {
-      return React.createElement(Brain, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
-    }
-    if (lowerTitle.includes('neural') || lowerTitle.includes('deep learning')) {
-      return React.createElement(Brain, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
-    }
-    
-    // Testing
-    if (lowerTitle.includes('test') || lowerTitle.includes('qa')) {
-      return React.createElement(TestTube, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
-    }
-    
-    // API and Backend
-    if (lowerTitle.includes('api') || lowerTitle.includes('backend')) {
-      return React.createElement(Link, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
-    }
-    if (lowerTitle.includes('microservice')) {
-      return React.createElement(Settings, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+    if (lowerTitle.includes('անվտանգություն')) {
+      return React.createElement(Shield, iconProps);
     }
   }
   
   // Fall back to category-based icons
   switch (category) {
     case 'ծրագրավորում':
-      return React.createElement(Code, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+      return React.createElement(Code, iconProps);
     case 'վեբ':
-      return React.createElement(Globe, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+      return React.createElement(Globe, iconProps);
     case 'տվյալներ':
-      return React.createElement(Database, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+      return React.createElement(Database, iconProps);
     case 'ցանցեր':
-      return React.createElement(Globe, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+      return React.createElement(Network, iconProps);
     case 'անվտանգություն':
-      return React.createElement(Shield, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+      return React.createElement(Shield, iconProps);
     case 'դիզայն':
     case 'UI/UX':
-      return React.createElement(Palette, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+      return React.createElement(Palette, iconProps);
     case 'mobile':
-      return React.createElement(Smartphone, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+      return React.createElement(Smartphone, iconProps);
     case 'ai':
-      return React.createElement(Brain, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+      return React.createElement(Brain, iconProps);
     default:
-      return React.createElement(BookOpen, {
-        width: 32,
-        height: 32,
-        stroke: "currentColor",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round"
-      });
+      return React.createElement(BookOpen, iconProps);
   }
 };
 
