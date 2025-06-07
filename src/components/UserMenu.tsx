@@ -11,11 +11,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
-import { User, LogOut, BookOpen } from 'lucide-react';
+import { useAdminRole } from '@/hooks/useAdminRole';
+import { User, LogOut, BookOpen, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
+  const { data: isAdmin } = useAdminRole();
   const navigate = useNavigate();
 
   if (!user) {
@@ -65,6 +67,12 @@ const UserMenu = () => {
           <BookOpen className="mr-2 h-4 w-4" />
           <span>Իմ դասընթացները</span>
         </DropdownMenuItem>
+        {isAdmin && (
+          <DropdownMenuItem onClick={() => navigate('/admin')} className="font-armenian">
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Ադմին վահանակ</span>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut} className="font-armenian">
           <LogOut className="mr-2 h-4 w-4" />
