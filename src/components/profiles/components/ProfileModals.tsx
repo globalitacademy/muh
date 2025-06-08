@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { AvatarUpload } from '@/components/ui/avatar-upload';
-import { CoverPhotoUpload } from '@/components/ui/cover-photo-upload';
+import AvatarUpload from '@/components/ui/avatar-upload';
+import CoverPhotoUpload from '@/components/ui/cover-photo-upload';
 
 interface ProfileModalsProps {
   isAvatarModalOpen: boolean;
@@ -25,7 +25,7 @@ const ProfileModals: React.FC<ProfileModalsProps> = ({
   onAvatarModalChange,
   onCoverModalChange,
   onAvatarChange,
-  onCoverPhotoChange
+  onCoverPhotoChange,
 }) => {
   return (
     <>
@@ -35,29 +35,24 @@ const ProfileModals: React.FC<ProfileModalsProps> = ({
           <DialogHeader>
             <DialogTitle className="font-armenian">Նկարի փոփոխություն</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <AvatarUpload
-              currentAvatarUrl={avatarUrl}
-              name={name}
-              onAvatarChange={onAvatarChange}
-              size="lg"
-            />
-          </div>
+          <AvatarUpload
+            currentImageUrl={avatarUrl}
+            onImageChange={onAvatarChange}
+            userName={name}
+          />
         </DialogContent>
       </Dialog>
 
       {/* Cover Photo Upload Modal */}
       <Dialog open={isCoverModalOpen} onOpenChange={onCoverModalChange}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="font-armenian">Ծածկագրի փոփոխություն</DialogTitle>
+            <DialogTitle className="font-armenian">Ծածկագիր փոփոխություն</DialogTitle>
           </DialogHeader>
-          <div className="py-4">
-            <CoverPhotoUpload
-              currentCoverUrl={coverUrl}
-              onCoverChange={onCoverPhotoChange}
-            />
-          </div>
+          <CoverPhotoUpload
+            currentImageUrl={coverUrl}
+            onImageChange={onCoverPhotoChange}
+          />
         </DialogContent>
       </Dialog>
     </>
