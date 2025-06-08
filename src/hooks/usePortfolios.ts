@@ -17,6 +17,7 @@ interface Portfolio {
   is_thesis_project: boolean | null;
   instructor_review: string | null;
   employer_review: string | null;
+  image_url: string | null;
   created_at: string;
   updated_at: string;
 }
