@@ -15,8 +15,6 @@ import AdminUserActivityTab from './AdminUserActivityTab';
 import AdminCurriculumTab from './curriculum/AdminCurriculumTab';
 import AdminAssessmentTab from './assessment/AdminAssessmentTab';
 import AdminResourcesTab from './resources/AdminResourcesTab';
-import AdminInstructorsTab from './users/AdminInstructorsTab';
-import AdminStudentsTab from './users/AdminStudentsTab';
 import AdminPermissionsTab from './users/AdminPermissionsTab';
 
 // Import new components for missing sections
@@ -63,10 +61,8 @@ const AdminDashboard = () => {
         return <AdminCurriculumTab />;
       case 'assessment':
         return <AdminAssessmentTab />;
-      case 'instructors':
-        return <AdminInstructorsTab />;
-      case 'students':
-        return <AdminStudentsTab />;
+      case 'users':
+        return <AdminUsersTab />;
       case 'permissions':
         return <AdminPermissionsTab />;
       case 'finance':
