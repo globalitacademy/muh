@@ -70,40 +70,33 @@ const ModuleDetailSidebar = ({
                 >
                   {enrollModule.isPending ? 'Գրանցվում է...' : 'Գրանցվել հիմա'}
                 </Button>
+                
+                {/* Company Code Input for authenticated users without access */}
+                <div className="border-t pt-4">
+                  <div className="text-sm font-armenian text-center mb-3 text-muted-foreground">
+                    Կամ օգտագործեք գործընկերոջ կոդ
+                  </div>
+                  <CompanyCodeInput onCodeVerified={onCompanyCodeVerified} />
+                </div>
               </>
-            )}
-            
-            {/* Company Code Input - always show for authenticated users */}
-            {!hasFullAccess && (
-              <CompanyCodeInput onCodeVerified={onCompanyCodeVerified} />
             )}
           </div>
         ) : (
           <div className="space-y-4">
-            {hasFullAccess ? (
-              <>
-                <div className="text-center">
-                  <div className="text-sm font-armenian mb-2">Ունեք անվճար մուտք</div>
-                  <Progress value={0} className="mb-2" />
-                  <div className="text-xs text-muted-foreground">0% ավարտված</div>
-                </div>
-                <Button className="w-full btn-modern font-armenian" onClick={onStartLearning}>
-                  Սկսել ուսուցումը
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button 
-                  onClick={onNavigateToAuth}
-                  className="w-full btn-modern font-armenian"
-                >
-                  Գրանցվել դասընթացի համար
-                </Button>
-              </>
-            )}
+            <Button 
+              onClick={onNavigateToAuth}
+              className="w-full btn-modern font-armenian"
+            >
+              Գրանցվել դասընթացի համար
+            </Button>
             
-            {/* Company Code Input - always show for non-authenticated users */}
-            <CompanyCodeInput onCodeVerified={onCompanyCodeVerified} />
+            {/* Company Code Input for non-authenticated users */}
+            <div className="border-t pt-4">
+              <div className="text-sm font-armenian text-center mb-3 text-muted-foreground">
+                Կամ օգտագործեք գործընկերոջ կոդ
+              </div>
+              <CompanyCodeInput onCodeVerified={onCompanyCodeVerified} />
+            </div>
           </div>
         )}
 
