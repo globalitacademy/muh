@@ -1,11 +1,18 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '@/hooks/useAuth';
+import { useEnhancedMessages, useSearchMessages } from '@/hooks/useEnhancedMessages';
+import { useAnnouncements, usePublishAnnouncement, useDeleteAnnouncement } from '@/hooks/useAnnouncements';
+import { useCommunicationStats } from '@/hooks/useCommunicationStats';
+import { useNotifications } from '@/hooks/useNotifications';
+import MessageDetailDialog from './MessageDetailDialog';
+import ComposeMessageDialog from './ComposeMessageDialog';
+import AnnouncementDialog from './AnnouncementDialog';
 import { 
   MessageSquare, 
   Bell, 
@@ -16,67 +23,107 @@ import {
   Search,
   Filter,
   Eye,
-  Archive
+  Archive,
+  Clock,
+  CheckCircle,
+  Trash2,
+  Edit
 } from 'lucide-react';
 
 const AdminCommunicationTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedMessage, setSelectedMessage] = useState(null);
+  const [isMessageDetailOpen, setIsMessageDetailOpen] = useState(false);
+  const [isComposeOpen, setIsComposeOpen] = useState(false);
+  const [isAnnouncementOpen, setIsAnnouncementOpen] = useState(false);
+  const [replyTo, setReplyTo] = useState(null);
 
-  // Mock data for communication
-  const messages = [
-    {
-      id: '1',
-      from: 'Արմեն Ավագյան',
-      subject: 'Հարց JavaScript դասընթացի մասին',
-      date: '2024-01-15 14:30',
-      isRead: false,
-      category: 'support'
-    },
-    {
-      id: '2',
-      from: 'Նարե Պողոսյան',
-      subject: 'Տեխնիկական խնդիր',
-      date: '2024-01-14 10:15',
-      isRead: true,
-      category: 'technical'
-    },
-    {
-      id: '3',
-      from: 'Դավիթ Մարտիրոսյան',
-      subject: 'Գնահատական վերաբերյալ',
-      date: '2024-01-13 16:45',
-      isRead: true,
-      category: 'academic'
-    }
-  ];
+  const { user } = useAuth();
+  const { data: messages, isLoading: messagesLoading } = useEnhancedMessages(user?.id);
+  const { data: searchResults } = useSearchMessages(searchTerm, user?.id);
+  const { data: announcements } = useAnnouncements();
+  const { data: notifications } = useNotifications();
+  const { data: stats } = useCommunicationStats();
+  const publishAnnouncementMutation = usePublishAnnouncement();
+  const deleteAnnouncementMutation = useDeleteAnnouncement();
 
-  const notifications = [
-    {
-      id: '1',
-      title: 'Նոր դասընթացի մեկնարկ',
-      content: 'React Advanced դասընթացը կմեկնարկի հունվարի 20-ին',
-      type: 'announcement',
-      audience: 'all',
-      scheduled: '2024-01-20 09:00',
-      status: 'scheduled'
-    },
-    {
-      id: '2',
-      title: 'Համակարգային նորացում',
-      content: 'Հարթակի նորացումը կիրականացվի կիրակի գիշերը',
-      type: 'system',
-      audience: 'all',
-      scheduled: '2024-01-21 02:00',
-      status: 'sent'
-    }
-  ];
+  // Use search results when searching, otherwise use all messages
+  const displayedMessages = searchTerm.trim() ? searchResults : messages;
 
-  const stats = {
-    totalMessages: 1247,
-    unreadMessages: 23,
-    sentNotifications: 156,
-    activeAnnouncements: 8
+  useEffect(() => {
+    // Real-time subscription for new messages
+    const channel = supabase
+      .channel('messages-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'messages'
+        },
+        () => {
+          // Refetch messages when changes occur
+          queryClient.invalidateQueries({ queryKey: ['enhanced-messages'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const handleMessageClick = (message) => {
+    setSelectedMessage(message);
+    setIsMessageDetailOpen(true);
   };
+
+  const handleReply = (message) => {
+    setReplyTo({
+      recipient_id: message.sender_id,
+      subject: message.subject
+    });
+    setIsComposeOpen(true);
+  };
+
+  const handleComposeNew = () => {
+    setReplyTo(null);
+    setIsComposeOpen(true);
+  };
+
+  const handlePublishAnnouncement = (id) => {
+    publishAnnouncementMutation.mutate(id);
+  };
+
+  const handleDeleteAnnouncement = (id) => {
+    if (confirm('Իսկապե՞ս ուզում եք ջնջել այս հայտարարությունը:')) {
+      deleteAnnouncementMutation.mutate(id);
+    }
+  };
+
+  const getAnnouncementTypeBadge = (type) => {
+    const types = {
+      general: { label: 'Ընդհանուր', color: 'bg-gray-500' },
+      announcement: { label: 'Հայտարարություն', color: 'bg-edu-blue' },
+      system: { label: 'Համակարգային', color: 'bg-warning-yellow' },
+      academic: { label: 'Ակադեմիական', color: 'bg-success-green' }
+    };
+    return types[type] || types.general;
+  };
+
+  const getPriorityBadge = (priority) => {
+    const priorities = {
+      low: { label: 'Ցածր', color: 'bg-gray-400' },
+      medium: { label: 'Միջին', color: 'bg-edu-blue' },
+      high: { label: 'Բարձր', color: 'bg-warning-yellow' },
+      urgent: { label: 'Արտակարգ', color: 'bg-red-500' }
+    };
+    return priorities[priority] || priorities.medium;
+  };
+
+  if (messagesLoading) {
+    return <div className="animate-pulse font-armenian">Բեռնվում է...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -91,7 +138,7 @@ const AdminCommunicationTab = () => {
             <Archive className="w-4 h-4 mr-2" />
             Արխիվ
           </Button>
-          <Button className="font-armenian btn-modern">
+          <Button onClick={handleComposeNew} className="font-armenian btn-modern">
             <Plus className="w-4 h-4 mr-2" />
             Նոր հաղորդագրություն
           </Button>
@@ -106,7 +153,7 @@ const AdminCommunicationTab = () => {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalMessages}</div>
+            <div className="text-2xl font-bold">{stats?.totalMessages || 0}</div>
             <p className="text-xs text-muted-foreground font-armenian">Բոլոր հաղորդագրությունները</p>
           </CardContent>
         </Card>
@@ -117,7 +164,7 @@ const AdminCommunicationTab = () => {
             <Mail className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-warning-yellow">{stats.unreadMessages}</div>
+            <div className="text-2xl font-bold text-warning-yellow">{stats?.unreadMessages || 0}</div>
             <p className="text-xs text-muted-foreground font-armenian">Նոր հաղորդագրություններ</p>
           </CardContent>
         </Card>
@@ -128,7 +175,7 @@ const AdminCommunicationTab = () => {
             <Bell className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-edu-blue">{stats.sentNotifications}</div>
+            <div className="text-2xl font-bold text-edu-blue">{stats?.sentNotifications || 0}</div>
             <p className="text-xs text-muted-foreground font-armenian">Այս ամիս</p>
           </CardContent>
         </Card>
@@ -139,7 +186,7 @@ const AdminCommunicationTab = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success-green">{stats.activeAnnouncements}</div>
+            <div className="text-2xl font-bold text-success-green">{stats?.activeAnnouncements || 0}</div>
             <p className="text-xs text-muted-foreground font-armenian">Ընթացիկ</p>
           </CardContent>
         </Card>
@@ -175,34 +222,57 @@ const AdminCommunicationTab = () => {
           {/* Messages List */}
           <Card className="modern-card">
             <CardHeader>
-              <CardTitle className="font-armenian">Մուտքային հաղորդագրություններ</CardTitle>
+              <CardTitle className="font-armenian">
+                {searchTerm ? 'Որոնման արդյունքներ' : 'Մուտքային հաղորդագրություններ'}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {messages.map((message) => (
-                  <div key={message.id} className={`flex items-center justify-between p-4 border rounded-lg ${!message.isRead ? 'bg-muted/30' : ''}`}>
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-edu-blue to-edu-orange flex items-center justify-center">
-                        <MessageSquare className="w-5 h-5 text-white" />
+                {displayedMessages?.length > 0 ? (
+                  displayedMessages.map((message) => (
+                    <div 
+                      key={message.id} 
+                      className={`flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-muted/50 ${!message.is_read ? 'bg-muted/30 border-edu-blue' : ''}`}
+                      onClick={() => handleMessageClick(message)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-edu-blue to-edu-orange flex items-center justify-center">
+                          <MessageSquare className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <p className={`font-semibold ${!message.is_read ? 'font-bold' : ''}`}>
+                            {message.sender?.name || 'Անանուն'}
+                          </p>
+                          <p className="text-sm text-muted-foreground">{message.subject || 'Առանց թեմայի'}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(message.sent_at).toLocaleString('hy-AM')}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className={`font-semibold ${!message.isRead ? 'font-bold' : ''}`}>{message.from}</p>
-                        <p className="text-sm text-muted-foreground">{message.subject}</p>
-                        <p className="text-xs text-muted-foreground">{message.date}</p>
+                      <div className="flex items-center gap-2">
+                        {!message.is_read && <div className="w-2 h-2 bg-edu-blue rounded-full"></div>}
+                        {message.sender?.role && (
+                          <Badge variant="outline">
+                            {message.sender.role === 'admin' ? 'Ադմին' : 
+                             message.sender.role === 'instructor' ? 'Դասավանդող' : 
+                             message.sender.role === 'student' ? 'Ուսանող' : 'Գործատու'}
+                          </Badge>
+                        )}
+                        <Button variant="outline" size="sm">
+                          <Eye className="w-4 h-4" />
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {!message.isRead && <div className="w-2 h-2 bg-edu-blue rounded-full"></div>}
-                      <Badge variant="outline">
-                        {message.category === 'support' ? 'Աջակցություն' : 
-                         message.category === 'technical' ? 'Տեխնիկական' : 'Ակադեմիական'}
-                      </Badge>
-                      <Button variant="outline" size="sm">
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p className="font-armenian">Հաղորդագրություններ չկան</p>
+                    <p className="text-sm">
+                      {searchTerm ? 'Որոնման արդյունքներ չգտնվեցին' : 'Դուք դեռ հաղորդագրություններ չեք ստացել'}
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
@@ -215,25 +285,34 @@ const AdminCommunicationTab = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {notifications.map((notification) => (
-                  <div key={notification.id} className="p-4 border rounded-lg">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h4 className="font-semibold">{notification.title}</h4>
-                        <p className="text-sm text-muted-foreground mt-1">{notification.content}</p>
-                        <p className="text-xs text-muted-foreground mt-2">Ժամանակացույց՝ {notification.scheduled}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Badge className={notification.status === 'sent' ? 'bg-success-green' : 'bg-warning-yellow'}>
-                          {notification.status === 'sent' ? 'Ուղարկված' : 'Ծրագրված'}
-                        </Badge>
-                        <Badge variant="outline">
-                          {notification.type === 'announcement' ? 'Հայտարարություն' : 'Համակարգային'}
-                        </Badge>
+                {notifications?.length > 0 ? (
+                  notifications.map((notification) => (
+                    <div key={notification.id} className="p-4 border rounded-lg">
+                      <div className="flex justify-between items-start mb-3">
+                        <div>
+                          <h4 className="font-semibold">{notification.title}</h4>
+                          <p className="text-sm text-muted-foreground mt-1">{notification.content}</p>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            {new Date(notification.created_at).toLocaleString('hy-AM')}
+                          </p>
+                        </div>
+                        <div className="flex gap-2">
+                          {!notification.is_read && (
+                            <Badge variant="destructive">Նոր</Badge>
+                          )}
+                          <Badge variant="outline">
+                            {notification.type === 'announcement' ? 'Հայտարարություն' : 'Համակարգային'}
+                          </Badge>
+                        </div>
                       </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Bell className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p className="font-armenian">Ծանուցումներ չկան</p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
@@ -242,56 +321,109 @@ const AdminCommunicationTab = () => {
         <TabsContent value="compose" className="space-y-6">
           <Card className="modern-card">
             <CardHeader>
-              <CardTitle className="font-armenian">Նոր հաղորդագրություն</CardTitle>
+              <CardTitle className="font-armenian">Բարի գալուստ նոր հաղորդագրության բաժին</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium font-armenian">Ստացողներ</label>
-                  <Input placeholder="Ընտրել ստացողներ..." />
-                </div>
-                <div>
-                  <label className="text-sm font-medium font-armenian">Թեմա</label>
-                  <Input placeholder="Հաղորդագրության թեմա..." />
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium font-armenian">Բովանդակություն</label>
-                <Textarea 
-                  placeholder="Գրեք ձեր հաղորդագրությունը..." 
-                  className="min-h-[200px]"
-                />
-              </div>
-              <div className="flex justify-end gap-3">
-                <Button variant="outline" className="font-armenian">Սևագիր պահել</Button>
-                <Button className="font-armenian btn-modern">
-                  <Send className="w-4 h-4 mr-2" />
-                  Ուղարկել
-                </Button>
-              </div>
+            <CardContent className="text-center py-12">
+              <Send className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <h3 className="text-xl font-semibold font-armenian mb-2">Ստեղծել նոր հաղորդագրություն</h3>
+              <p className="text-muted-foreground font-armenian mb-4">
+                Ուղարկեք հաղորդագրություն օգտվողներին
+              </p>
+              <Button onClick={handleComposeNew} className="font-armenian btn-modern">
+                <Plus className="w-4 h-4 mr-2" />
+                Նոր հաղորդագրություն
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
 
         <TabsContent value="announcements" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h4 className="text-lg font-semibold font-armenian">Հայտարարությունների կառավարում</h4>
+            <Button onClick={() => setIsAnnouncementOpen(true)} className="font-armenian btn-modern">
+              <Plus className="w-4 h-4 mr-2" />
+              Նոր հայտարարություն
+            </Button>
+          </div>
+
           <Card className="modern-card">
-            <CardHeader>
-              <CardTitle className="font-armenian">Հայտարարությունների կառավարում</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center py-12">
-              <Bell className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-              <h3 className="text-xl font-semibold font-armenian mb-2">Հայտարարությունների համակարգ</h3>
-              <p className="text-muted-foreground font-armenian mb-4">
-                Ստեղծեք և կառավարեք հանրային հայտարարությունները
-              </p>
-              <Button className="font-armenian btn-modern">
-                <Plus className="w-4 h-4 mr-2" />
-                Նոր հայտարարություն
-              </Button>
+            <CardContent>
+              <div className="space-y-4">
+                {announcements?.length > 0 ? (
+                  announcements.map((announcement) => (
+                    <div key={announcement.id} className="p-4 border rounded-lg">
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className="font-semibold">{announcement.title}</h4>
+                            <Badge className={`${getAnnouncementTypeBadge(announcement.type).color} text-white text-xs`}>
+                              {getAnnouncementTypeBadge(announcement.type).label}
+                            </Badge>
+                            <Badge className={`${getPriorityBadge(announcement.priority).color} text-white text-xs`}>
+                              {getPriorityBadge(announcement.priority).label}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">{announcement.content}</p>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span>Ստեղծված՝ {new Date(announcement.created_at).toLocaleDateString('hy-AM')}</span>
+                            <span>Կարգավիճակ՝ {announcement.status === 'published' ? 'Հրապարակված' : 'Սևագիր'}</span>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          {announcement.status === 'draft' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handlePublishAnnouncement(announcement.id)}
+                              className="font-armenian"
+                            >
+                              <CheckCircle className="w-4 h-4 mr-1" />
+                              Հրապարակել
+                            </Button>
+                          )}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteAnnouncement(announcement.id)}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Bell className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p className="font-armenian">Հայտարարություններ չկան</p>
+                    <p className="text-sm">Ստեղծեք ձեր առաջին հայտարարությունը</p>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Dialogs */}
+      <MessageDetailDialog
+        message={selectedMessage}
+        open={isMessageDetailOpen}
+        onOpenChange={setIsMessageDetailOpen}
+        onReply={handleReply}
+      />
+
+      <ComposeMessageDialog
+        open={isComposeOpen}
+        onOpenChange={setIsComposeOpen}
+        replyTo={replyTo}
+      />
+
+      <AnnouncementDialog
+        open={isAnnouncementOpen}
+        onOpenChange={setIsAnnouncementOpen}
+      />
     </div>
   );
 };
