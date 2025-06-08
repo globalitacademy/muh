@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play, Star, Users, Award, BookOpen, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { useContactStats } from '@/hooks/useContactStats';
+import NetworkAnimation from './NetworkAnimation';
 
 const Hero = () => {
   const {
@@ -14,14 +14,17 @@ const Hero = () => {
   const { data: stats, isLoading: statsLoading } = useContactStats();
 
   return <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-accent/5 pt-20">
+      {/* Network Animation Background */}
+      <NetworkAnimation />
+
       {/* Background decorations */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0" style={{ zIndex: 2 }}>
         <div className="absolute top-20 left-10 w-72 h-72 bg-edu-blue/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob dark:mix-blend-screen dark:opacity-30"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 dark:mix-blend-screen dark:opacity-30"></div>
         <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000 dark:mix-blend-screen dark:opacity-30"></div>
       </div>
 
-      <div className="relative container mx-auto px-4 py-24">
+      <div className="relative container mx-auto px-4 py-24" style={{ zIndex: 3 }}>
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-edu-blue/10 text-edu-blue mb-8 backdrop-blur-sm border border-edu-blue/20">
@@ -78,7 +81,7 @@ const Hero = () => {
       </div>
 
       {/* Floating elements */}
-      <div className="absolute top-1/4 left-10 hidden lg:block">
+      <div className="absolute top-1/4 left-10 hidden lg:block" style={{ zIndex: 4 }}>
         <div className="glass-card rounded-xl p-4 shadow-lg backdrop-blur-sm bg-card/80 border border-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
@@ -92,7 +95,7 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="absolute top-1/3 right-10 hidden lg:block">
+      <div className="absolute top-1/3 right-10 hidden lg:block" style={{ zIndex: 4 }}>
         <div className="glass-card rounded-xl p-4 shadow-lg backdrop-blur-sm bg-card/80 border border-border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
