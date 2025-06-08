@@ -43,7 +43,12 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess }) => {
   const onSubmit = async (data: StudentFormValues) => {
     try {
       await submitApplication.mutateAsync({
-        ...data,
+        name: data.name,
+        email: data.email,
+        phone: data.phone || null,
+        organization: data.organization || null,
+        department: data.department || null,
+        group_number: data.group_number || null,
         role: 'student',
       });
       form.reset();

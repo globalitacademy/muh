@@ -40,8 +40,13 @@ const AddEmployerForm: React.FC<AddEmployerFormProps> = ({ onSuccess }) => {
   const onSubmit = async (data: EmployerFormValues) => {
     try {
       await submitApplication.mutateAsync({
-        ...data,
+        name: data.name,
+        email: data.email,
+        phone: data.phone || null,
+        organization: data.organization || null,
+        department: data.department || null,
         role: 'employer',
+        group_number: null, // Employers don't have group numbers
       });
       form.reset();
       onSuccess?.();

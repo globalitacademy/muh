@@ -88,7 +88,15 @@ export const useRejectApplication = () => {
 
 export const useSubmitApplication = () => {
   return useMutation({
-    mutationFn: async (application: Omit<UserApplication, 'id' | 'status' | 'created_at' | 'updated_at' | 'reviewed_by' | 'reviewed_at' | 'rejection_reason'>) => {
+    mutationFn: async (application: {
+      name: string;
+      email: string;
+      phone?: string | null;
+      organization?: string | null;
+      role: 'admin' | 'instructor' | 'student' | 'employer';
+      department?: string | null;
+      group_number?: string | null;
+    }) => {
       const { error } = await supabase
         .from('user_applications')
         .insert([application]);
