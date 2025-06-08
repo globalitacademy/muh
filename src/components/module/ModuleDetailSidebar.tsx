@@ -53,7 +53,7 @@ const ModuleDetailSidebar = ({
 
   return (
     <div className="space-y-6">
-      <Card className="sticky top-8">
+      <Card>
         <CardHeader>
           <CardTitle className="text-center font-armenian">
             Ծրագրային մանրամասներ
