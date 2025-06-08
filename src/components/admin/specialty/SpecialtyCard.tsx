@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -18,7 +18,6 @@ interface SpecialtyCardProps {
   onDelete: (specialtyId: string) => void;
   onAddModule: (specialtyId: string) => void;
   onEditModule: (module: Module) => void;
-  onAddTopic: (moduleId: string) => void;
 }
 
 const SpecialtyCard = ({
@@ -28,8 +27,7 @@ const SpecialtyCard = ({
   onEdit,
   onDelete,
   onAddModule,
-  onEditModule,
-  onAddTopic
+  onEditModule
 }: SpecialtyCardProps) => {
   const getIconComponent = (iconName: string) => {
     const iconOption = iconOptions.find(opt => opt.value === iconName);
@@ -39,13 +37,11 @@ const SpecialtyCard = ({
   const SpecialtyModulesSection = ({ 
     specialtyId, 
     onAddModule, 
-    onEditModule, 
-    onAddTopic 
+    onEditModule
   }: {
     specialtyId: string;
     onAddModule: () => void;
     onEditModule: (module: Module) => void;
-    onAddTopic: (moduleId: string) => void;
   }) => {
     const { data: modules, isLoading } = useSpecialtyModules(specialtyId);
 
@@ -77,7 +73,7 @@ const SpecialtyCard = ({
                 key={module.id}
                 module={module}
                 onEdit={onEditModule}
-                onAddTopic={onAddTopic}
+                onAddTopic={() => {}} // Not used anymore, topics are managed internally
               />
             ))}
           </div>
@@ -139,7 +135,6 @@ const SpecialtyCard = ({
               specialtyId={specialty.id}
               onAddModule={() => onAddModule(specialty.id)}
               onEditModule={onEditModule}
-              onAddTopic={onAddTopic}
             />
           </CardContent>
         </CollapsibleContent>

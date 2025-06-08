@@ -109,11 +109,6 @@ const AdminSpecialtiesTab = () => {
     setModuleFormOpen(true);
   };
 
-  const handleAddTopic = (moduleId: string) => {
-    // TODO: Implement topic creation
-    console.log('Add topic for module:', moduleId);
-  };
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -146,7 +141,6 @@ const AdminSpecialtiesTab = () => {
             onDelete={handleDelete}
             onAddModule={handleAddModule}
             onEditModule={handleEditModule}
-            onAddTopic={handleAddTopic}
           />
         ))}
       </div>

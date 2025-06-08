@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, Edit, Trash2, Plus, BookOpen } from 'lucide-react';
+import { ChevronDown, Edit, Trash2, BookOpen } from 'lucide-react';
 import { Module } from '@/types/database';
 import { useDeleteModule } from '@/hooks/useAdminModules';
 import SpecialtyTopicsList from './SpecialtyTopicsList';
@@ -116,14 +116,6 @@ const SpecialtyModuleCard = ({ module, onEdit, onAddTopic }: SpecialtyModuleCard
                   <BookOpen className="w-4 h-4" />
                   Թեմաներ և դասեր
                 </h4>
-                <Button
-                  size="sm"
-                  onClick={() => onAddTopic(module.id)}
-                  className="font-armenian"
-                >
-                  <Plus className="w-4 h-4 mr-1" />
-                  Նոր թեմա
-                </Button>
               </div>
               <SpecialtyTopicsList moduleId={module.id} />
             </div>
