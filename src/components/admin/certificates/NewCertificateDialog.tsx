@@ -102,7 +102,7 @@ const NewCertificateDialog = ({ children }: NewCertificateDialogProps) => {
                 <SelectValue placeholder="Ընտրեք դասընթացը" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Ընդհանուր վկայական</SelectItem>
+                <SelectItem value="general">Ընդհանուր վկայական</SelectItem>
                 {modules?.map((module) => (
                   <SelectItem key={module.id} value={module.id}>
                     {module.title}
