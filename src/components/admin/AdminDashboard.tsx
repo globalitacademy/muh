@@ -23,6 +23,7 @@ import AdminCertificatesTab from './certificates/AdminCertificatesTab';
 import AdminCommunicationTab from './communication/AdminCommunicationTab';
 import AdminArchiveTab from './archive/AdminArchiveTab';
 import AdminOverviewTab from './overview/AdminOverviewTab';
+import AdminApplicationsTab from './applications/AdminApplicationsTab';
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -61,6 +62,8 @@ const AdminDashboard = () => {
         return <AdminCurriculumTab />;
       case 'assessment':
         return <AdminAssessmentTab />;
+      case 'applications':
+        return <AdminApplicationsTab />;
       case 'users':
         return <AdminUsersTab />;
       case 'permissions':

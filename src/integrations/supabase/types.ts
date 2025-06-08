@@ -1110,6 +1110,57 @@ export type Database = {
         }
         Relationships: []
       }
+      user_applications: {
+        Row: {
+          created_at: string
+          department: string | null
+          email: string
+          group_number: string | null
+          id: string
+          name: string
+          organization: string | null
+          phone: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          status: Database["public"]["Enums"]["application_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          email: string
+          group_number?: string | null
+          id?: string
+          name: string
+          organization?: string | null
+          phone?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          email?: string
+          group_number?: string | null
+          id?: string
+          name?: string
+          organization?: string | null
+          phone?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_goals: {
         Row: {
           category: string
@@ -1265,12 +1316,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_user_application: {
+        Args: { application_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _user_id: string
           _role: Database["public"]["Enums"]["app_role"]
         }
         Returns: boolean
+      }
+      reject_user_application: {
+        Args: { application_id: string; reason?: string }
+        Returns: undefined
       }
     }
     Enums: {

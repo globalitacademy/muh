@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from '@/components/ui/sidebar';
-import { BarChart3, BookOpen, Users, Settings, FileText, Activity, GraduationCap, Shield, DollarSign, Award, MessageSquare, FolderOpen, Archive, ChevronRight } from 'lucide-react';
+import { BarChart3, BookOpen, Users, Settings, FileText, Activity, GraduationCap, Shield, DollarSign, Award, MessageSquare, FolderOpen, Archive, ChevronRight, UserPlus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AdminSidebarProps {
@@ -59,6 +59,10 @@ const AdminSidebar = ({
     id: 'users',
     label: 'Օգտատերերի կառավարում',
     items: [{
+      id: 'applications',
+      label: 'Գրանցման դիմումներ',
+      icon: UserPlus
+    }, {
       id: 'users',
       label: 'Օգտատերերի կառավարում',
       icon: Users
