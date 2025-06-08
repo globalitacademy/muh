@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -36,7 +35,13 @@ export const useUserApplications = () => {
       }
 
       console.log('User applications fetched:', data);
-      return data || [];
+      // Map database status values to our interface
+      const mappedData = data?.map(app => ({
+        ...app,
+        status: app.status === 'accepted' ? 'approved' : app.status
+      })) || [];
+      
+      return mappedData as UserApplication[];
     },
   });
 };
