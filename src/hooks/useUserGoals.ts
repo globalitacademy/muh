@@ -3,34 +3,30 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 
-interface Portfolio {
+interface UserGoal {
   id: string;
   user_id: string;
   title: string;
   description: string | null;
-  project_url: string | null;
-  github_url: string | null;
-  files_url: string | null;
-  start_date: string | null;
-  end_date: string | null;
-  is_team_project: boolean | null;
-  is_thesis_project: boolean | null;
-  instructor_review: string | null;
-  employer_review: string | null;
+  category: 'academic' | 'career' | 'skill' | 'personal';
+  priority: 'high' | 'medium' | 'low';
+  deadline: string | null;
+  progress: number;
+  status: 'active' | 'completed' | 'paused';
   created_at: string;
   updated_at: string;
 }
 
-export const usePortfolios = () => {
+export const useUserGoals = () => {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ['portfolios', user?.id],
-    queryFn: async (): Promise<Portfolio[]> => {
+    queryKey: ['userGoals', user?.id],
+    queryFn: async (): Promise<UserGoal[]> => {
       if (!user) return [];
 
       const { data, error } = await supabase
-        .from('portfolios')
+        .from('user_goals')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -42,18 +38,18 @@ export const usePortfolios = () => {
   });
 };
 
-export const useAddPortfolio = () => {
+export const useAddUserGoal = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async (portfolioData: Omit<Portfolio, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
+    mutationFn: async (goalData: Omit<UserGoal, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
       if (!user) throw new Error('No user found');
 
       const { data, error } = await supabase
-        .from('portfolios')
+        .from('user_goals')
         .insert({
-          ...portfolioData,
+          ...goalData,
           user_id: user.id,
         })
         .select()
@@ -63,20 +59,20 @@ export const useAddPortfolio = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['portfolios'] });
+      queryClient.invalidateQueries({ queryKey: ['userGoals'] });
     },
   });
 };
 
-export const useUpdatePortfolio = () => {
+export const useUpdateUserGoal = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, ...portfolioData }: Partial<Portfolio> & { id: string }) => {
+    mutationFn: async ({ id, ...goalData }: Partial<UserGoal> & { id: string }) => {
       const { data, error } = await supabase
-        .from('portfolios')
+        .from('user_goals')
         .update({
-          ...portfolioData,
+          ...goalData,
           updated_at: new Date().toISOString(),
         })
         .eq('id', id)
@@ -87,25 +83,25 @@ export const useUpdatePortfolio = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['portfolios'] });
+      queryClient.invalidateQueries({ queryKey: ['userGoals'] });
     },
   });
 };
 
-export const useDeletePortfolio = () => {
+export const useDeleteUserGoal = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from('portfolios')
+        .from('user_goals')
         .delete()
         .eq('id', id);
 
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['portfolios'] });
+      queryClient.invalidateQueries({ queryKey: ['userGoals'] });
     },
   });
 };

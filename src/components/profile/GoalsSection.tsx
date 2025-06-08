@@ -7,42 +7,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Target, Plus, Calendar, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
-
-interface Goal {
-  id: string;
-  title: string;
-  description: string;
-  category: 'academic' | 'career' | 'skill' | 'personal';
-  priority: 'high' | 'medium' | 'low';
-  deadline: string;
-  progress: number;
-  status: 'active' | 'completed' | 'paused';
-}
+import { Target, Plus, Calendar, CheckCircle2, Clock, AlertCircle, Loader2 } from 'lucide-react';
+import { useUserGoals, useAddUserGoal, useUpdateUserGoal, useDeleteUserGoal } from '@/hooks/useUserGoals';
+import { toast } from 'sonner';
 
 const GoalsSection = () => {
-  const [goals, setGoals] = useState<Goal[]>([
-    {
-      id: '1',
-      title: 'React-ի խորացված ուսումնասիրություն',
-      description: 'Սովորել React-ի բոլոր առաջադեմ հնարավորությունները',
-      category: 'skill',
-      priority: 'high',
-      deadline: '2024-12-31',
-      progress: 65,
-      status: 'active'
-    },
-    {
-      id: '2',
-      title: 'Դիպլոմային թեզի ավարտ',
-      description: 'Ավարտել և պաշտպանել դիպլոմային աշխատանքը',
-      category: 'academic',
-      priority: 'high',
-      deadline: '2024-06-15',
-      progress: 80,
-      status: 'active'
-    }
-  ]);
+  const { data: goals = [], isLoading } = useUserGoals();
+  const addGoalMutation = useAddUserGoal();
+  const updateGoalMutation = useUpdateUserGoal();
+  const deleteGoalMutation = useDeleteUserGoal();
 
   const [isAdding, setIsAdding] = useState(false);
   const [newGoal, setNewGoal] = useState({
@@ -82,13 +55,18 @@ const GoalsSection = () => {
     }
   };
 
-  const addGoal = () => {
-    if (newGoal.title && newGoal.deadline) {
-      setGoals([...goals, {
-        ...newGoal,
-        id: Date.now().toString(),
-        status: 'active'
-      }]);
+  const addGoal = async () => {
+    if (!newGoal.title.trim()) {
+      toast.error('Նպատակի վերնագիրը պարտադիր է');
+      return;
+    }
+    if (!newGoal.deadline) {
+      toast.error('Ավարտման ժամկետը պարտադիր է');
+      return;
+    }
+
+    try {
+      await addGoalMutation.mutateAsync(newGoal);
       setNewGoal({
         title: '',
         description: '',
@@ -98,16 +76,30 @@ const GoalsSection = () => {
         progress: 0
       });
       setIsAdding(false);
+      toast.success('Նպատակը հաջողությամբ ավելացվեց');
+    } catch (error) {
+      toast.error('Սխալ նպատակը ավելացնելիս');
     }
   };
 
-  const updateProgress = (id: string, progress: number) => {
-    setGoals(goals.map(goal => 
-      goal.id === id 
-        ? { ...goal, progress, status: progress === 100 ? 'completed' : 'active' }
-        : goal
-    ));
+  const updateProgress = async (id: string, progress: number) => {
+    try {
+      const status = progress === 100 ? 'completed' : 'active';
+      await updateGoalMutation.mutateAsync({ id, progress, status });
+    } catch (error) {
+      toast.error('Սխալ առաջընթացը թարմացնելիս');
+    }
   };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -121,6 +113,7 @@ const GoalsSection = () => {
           size="sm" 
           onClick={() => setIsAdding(true)}
           className="font-armenian"
+          disabled={isAdding}
         >
           <Plus className="w-4 h-4 mr-2" />
           Նոր նպատակ
@@ -170,8 +163,21 @@ const GoalsSection = () => {
                 />
               </div>
               <div className="flex gap-2">
-                <Button size="sm" onClick={addGoal}>Ավելացնել</Button>
-                <Button size="sm" variant="outline" onClick={() => setIsAdding(false)}>Չեղարկել</Button>
+                <Button 
+                  size="sm" 
+                  onClick={addGoal}
+                  disabled={addGoalMutation.isPending}
+                >
+                  {addGoalMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Ավելացնել'}
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => setIsAdding(false)}
+                  disabled={addGoalMutation.isPending}
+                >
+                  Չեղարկել
+                </Button>
               </div>
             </div>
           </Card>
@@ -187,26 +193,35 @@ const GoalsSection = () => {
                       {getStatusIcon(goal.status)}
                       <h4 className="font-semibold">{goal.title}</h4>
                     </div>
-                    <p className="text-sm text-muted-foreground">{goal.description}</p>
+                    {goal.description && (
+                      <p className="text-sm text-muted-foreground">{goal.description}</p>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <Badge variant="secondary" className={getCategoryColor(goal.category)}>
-                      {goal.category}
+                      {goal.category === 'academic' ? 'Ուսումնական' :
+                       goal.category === 'career' ? 'Կարիերա' :
+                       goal.category === 'skill' ? 'Հմտություն' :
+                       goal.category === 'personal' ? 'Անձնական' : goal.category}
                     </Badge>
                     <Badge variant="secondary" className={getPriorityColor(goal.priority)}>
-                      {goal.priority}
+                      {goal.priority === 'high' ? 'Բարձր' :
+                       goal.priority === 'medium' ? 'Միջին' :
+                       goal.priority === 'low' ? 'Ցածր' : goal.priority}
                     </Badge>
                   </div>
                 </div>
                 
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      Ավարտ՝ {new Date(goal.deadline).toLocaleDateString('hy-AM')}
-                    </span>
-                    <span>{goal.progress}%</span>
-                  </div>
+                  {goal.deadline && (
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3" />
+                        Ավարտ՝ {new Date(goal.deadline).toLocaleDateString('hy-AM')}
+                      </span>
+                      <span>{goal.progress}%</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-2">
                     <Progress value={goal.progress} className="flex-1" />
                     <input
@@ -216,6 +231,7 @@ const GoalsSection = () => {
                       value={goal.progress}
                       onChange={(e) => updateProgress(goal.id, parseInt(e.target.value))}
                       className="w-20"
+                      disabled={updateGoalMutation.isPending}
                     />
                   </div>
                 </div>

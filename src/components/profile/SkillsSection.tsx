@@ -6,24 +6,20 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, X, Code, Database, Globe, Palette } from 'lucide-react';
-
-interface Skill {
-  id: string;
-  name: string;
-  level: number;
-  category: 'technical' | 'design' | 'business' | 'language';
-}
+import { Plus, X, Code, Database, Globe, Palette, Loader2 } from 'lucide-react';
+import { useUserSkills, useAddUserSkill, useDeleteUserSkill } from '@/hooks/useUserSkills';
+import { toast } from 'sonner';
 
 const SkillsSection = () => {
-  const [skills, setSkills] = useState<Skill[]>([
-    { id: '1', name: 'React', level: 85, category: 'technical' },
-    { id: '2', name: 'TypeScript', level: 80, category: 'technical' },
-    { id: '3', name: 'UI/UX Design', level: 75, category: 'design' },
-    { id: '4', name: 'Project Management', level: 70, category: 'business' },
-  ]);
+  const { data: skills = [], isLoading } = useUserSkills();
+  const addSkillMutation = useAddUserSkill();
+  const deleteSkillMutation = useDeleteUserSkill();
   
-  const [newSkill, setNewSkill] = useState({ name: '', level: 50, category: 'technical' as const });
+  const [newSkill, setNewSkill] = useState({ 
+    name: '', 
+    level: 50, 
+    category: 'technical' as const 
+  });
   const [isAdding, setIsAdding] = useState(false);
 
   const getCategoryIcon = (category: string) => {
@@ -46,23 +42,46 @@ const SkillsSection = () => {
     }
   };
 
-  const addSkill = () => {
-    if (newSkill.name) {
-      setSkills([...skills, { ...newSkill, id: Date.now().toString() }]);
+  const addSkill = async () => {
+    if (!newSkill.name.trim()) {
+      toast.error('Հմտության անունը պարտադիր է');
+      return;
+    }
+
+    try {
+      await addSkillMutation.mutateAsync(newSkill);
       setNewSkill({ name: '', level: 50, category: 'technical' });
       setIsAdding(false);
+      toast.success('Հմտությունը հաջողությամբ ավելացվեց');
+    } catch (error) {
+      toast.error('Սխալ հմտությունը ավելացնելիս');
     }
   };
 
-  const removeSkill = (id: string) => {
-    setSkills(skills.filter(skill => skill.id !== id));
+  const removeSkill = async (id: string) => {
+    try {
+      await deleteSkillMutation.mutateAsync(id);
+      toast.success('Հմտությունը հաջողությամբ ջնջվեց');
+    } catch (error) {
+      toast.error('Սխալ հմտությունը ջնջելիս');
+    }
   };
 
   const groupedSkills = skills.reduce((acc, skill) => {
     if (!acc[skill.category]) acc[skill.category] = [];
     acc[skill.category].push(skill);
     return acc;
-  }, {} as Record<string, Skill[]>);
+  }, {} as Record<string, typeof skills>);
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="flex items-center justify-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -76,6 +95,7 @@ const SkillsSection = () => {
           size="sm" 
           onClick={() => setIsAdding(true)}
           className="font-armenian"
+          disabled={isAdding}
         >
           <Plus className="w-4 h-4 mr-2" />
           Ավելացնել
@@ -91,7 +111,10 @@ const SkillsSection = () => {
                 onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
               />
               <div className="flex gap-2">
-                <Select value={newSkill.category} onValueChange={(value: any) => setNewSkill({ ...newSkill, category: value })}>
+                <Select 
+                  value={newSkill.category} 
+                  onValueChange={(value: any) => setNewSkill({ ...newSkill, category: value })}
+                >
                   <SelectTrigger className="w-[150px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -118,8 +141,21 @@ const SkillsSection = () => {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button size="sm" onClick={addSkill}>Ավելացնել</Button>
-                <Button size="sm" variant="outline" onClick={() => setIsAdding(false)}>Չեղարկել</Button>
+                <Button 
+                  size="sm" 
+                  onClick={addSkill}
+                  disabled={addSkillMutation.isPending}
+                >
+                  {addSkillMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Ավելացնել'}
+                </Button>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => setIsAdding(false)}
+                  disabled={addSkillMutation.isPending}
+                >
+                  Չեղարկել
+                </Button>
               </div>
             </div>
           </Card>
@@ -129,7 +165,12 @@ const SkillsSection = () => {
           <div key={category} className="space-y-3">
             <div className="flex items-center gap-2">
               {getCategoryIcon(category)}
-              <h4 className="font-semibold capitalize">{category}</h4>
+              <h4 className="font-semibold capitalize">
+                {category === 'technical' ? 'Տեխնիկական' : 
+                 category === 'design' ? 'Դիզայն' :
+                 category === 'business' ? 'Բիզնես' :
+                 category === 'language' ? 'Լեզուներ' : category}
+              </h4>
               <Badge variant="secondary" className={getCategoryColor(category)}>
                 {categorySkills.length}
               </Badge>
@@ -149,8 +190,13 @@ const SkillsSection = () => {
                     size="sm"
                     onClick={() => removeSkill(skill.id)}
                     className="text-muted-foreground hover:text-destructive"
+                    disabled={deleteSkillMutation.isPending}
                   >
-                    <X className="w-4 h-4" />
+                    {deleteSkillMutation.isPending ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <X className="w-4 h-4" />
+                    )}
                   </Button>
                 </div>
               ))}
