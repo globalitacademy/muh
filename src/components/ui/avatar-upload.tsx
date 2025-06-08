@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
-import { Camera, Upload, Trash2, Edit } from 'lucide-react';
+import { Camera, Trash2, AlertCircle } from 'lucide-react';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { ImageEditor } from './image-editor';
 import { toast } from 'sonner';
@@ -24,7 +24,8 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
-  const { uploadImage, deleteImage, uploading, uploadProgress } = useImageUpload({
+  const [error, setError] = useState<string | null>(null);
+  const { uploadImage, deleteImage, uploading, uploadProgress, validateFile } = useImageUpload({
     bucket: 'avatars',
     maxSizeMB: 5
   });
@@ -37,43 +38,83 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    console.log('AvatarUpload: File selected:', file?.name);
+    
     if (file) {
+      setError(null);
+      const validationError = validateFile(file);
+      
+      if (validationError) {
+        setError(validationError);
+        toast.error(validationError);
+        return;
+      }
+      
       setSelectedFile(file);
       setIsEditorOpen(true);
     }
+    
+    // Clear the input value so the same file can be selected again
+    event.target.value = '';
   };
 
   const handleImageSave = async (editedFile: File) => {
+    console.log('AvatarUpload: Saving edited avatar');
+    
     try {
+      setError(null);
       const url = await uploadImage(editedFile, 'avatar');
       if (url) {
         onAvatarChange(url);
         toast.success('Նկարը հաջողությամբ վերբեռնվեց');
+        console.log('AvatarUpload: Avatar uploaded successfully:', url);
       }
     } catch (error) {
-      toast.error('Սխալ նկարը վերբեռնելիս');
-      console.error('Avatar upload error:', error);
+      const errorMessage = 'Սխալ նկարը վերբեռնելիս';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      console.error('AvatarUpload: Upload error:', error);
+    } finally {
+      setIsEditorOpen(false);
+      setSelectedFile(null);
     }
   };
 
   const handleDelete = async () => {
     if (!currentAvatarUrl) return;
     
+    console.log('AvatarUpload: Deleting current avatar');
+    
     try {
+      setError(null);
       await deleteImage(currentAvatarUrl);
       onAvatarChange(null);
       toast.success('Նկարը հաջողությամբ ջնջվեց');
+      console.log('AvatarUpload: Avatar deleted successfully');
     } catch (error) {
-      toast.error('Սխալ նկարը ջնջելիս');
-      console.error('Avatar delete error:', error);
+      const errorMessage = 'Սխալ նկարը ջնջելիս';
+      setError(errorMessage);
+      toast.error(errorMessage);
+      console.error('AvatarUpload: Delete error:', error);
     }
   };
 
+  const handleEditorClose = () => {
+    console.log('AvatarUpload: Closing editor');
+    setIsEditorOpen(false);
+    setSelectedFile(null);
+  };
+
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-start gap-4">
       <div className="relative">
         <Avatar className={sizeClasses[size]}>
-          <AvatarImage src={currentAvatarUrl || undefined} />
+          <AvatarImage 
+            src={currentAvatarUrl || undefined} 
+            onError={(e) => {
+              console.error('AvatarUpload: Avatar image load error:', e);
+            }}
+          />
           <AvatarFallback className="text-lg">
             {name.charAt(0).toUpperCase()}
           </AvatarFallback>
@@ -86,7 +127,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
         )}
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 flex-1">
         <div className="flex gap-2">
           <Button
             variant="outline"
@@ -111,11 +152,18 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
         </div>
 
         {uploading && (
-          <Progress value={uploadProgress} className="w-24" />
+          <Progress value={uploadProgress} className="w-32" />
+        )}
+
+        {error && (
+          <div className="flex items-center gap-2 p-2 bg-red-50 border border-red-200 rounded text-red-700">
+            <AlertCircle className="w-3 h-3" />
+            <span className="text-xs">{error}</span>
+          </div>
         )}
 
         <p className="text-xs text-muted-foreground">
-          PNG, JPG մինչև 5MB
+          PNG, JPG, WebP մինչև 5MB
         </p>
       </div>
 
@@ -130,10 +178,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       <ImageEditor
         imageFile={selectedFile}
         isOpen={isEditorOpen}
-        onClose={() => {
-          setIsEditorOpen(false);
-          setSelectedFile(null);
-        }}
+        onClose={handleEditorClose}
         onSave={handleImageSave}
         aspectRatio={1}
       />

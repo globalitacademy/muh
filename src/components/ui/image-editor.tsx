@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Card } from '@/components/ui/card';
-import { Crop, RotateCw, Download, Scissors, Loader2 } from 'lucide-react';
+import { Crop, RotateCw, Download, Loader2 } from 'lucide-react';
 
 interface ImageEditorProps {
   imageFile: File | null;
@@ -29,31 +29,46 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
   const imageRef = useRef<HTMLImageElement>(null);
 
   React.useEffect(() => {
-    if (imageFile) {
+    if (imageFile && isOpen) {
       const url = URL.createObjectURL(imageFile);
       setImageUrl(url);
-      return () => URL.revokeObjectURL(url);
+      // Reset editing state when new image is loaded
+      setCropArea({ x: 0, y: 0, width: 100, height: 100 });
+      setRotation(0);
+      console.log('ImageEditor: New image loaded', imageFile.name);
+      return () => {
+        URL.revokeObjectURL(url);
+      };
     }
-  }, [imageFile]);
+  }, [imageFile, isOpen]);
 
   const processImage = useCallback(async () => {
-    if (!imageRef.current || !canvasRef.current) return;
+    if (!imageRef.current || !canvasRef.current || !imageFile) {
+      console.error('ImageEditor: Missing required elements for processing');
+      return;
+    }
 
     setIsProcessing(true);
+    console.log('ImageEditor: Starting image processing');
     
     try {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       const img = imageRef.current;
 
-      if (!ctx) return;
+      if (!ctx) {
+        throw new Error('Could not get canvas context');
+      }
 
-      // Set canvas size based on crop area
-      const cropWidth = (img.naturalWidth * cropArea.width) / 100;
-      const cropHeight = (img.naturalHeight * cropArea.height) / 100;
+      // Calculate crop dimensions
+      const cropWidth = Math.max(1, (img.naturalWidth * cropArea.width) / 100);
+      const cropHeight = Math.max(1, (img.naturalHeight * cropArea.height) / 100);
       
       canvas.width = cropWidth;
       canvas.height = cropHeight;
+
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Apply rotation and cropping
       ctx.save();
@@ -80,38 +95,64 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
       // Convert canvas to blob
       canvas.toBlob((blob) => {
         if (blob) {
-          const editedFile = new File([blob], imageFile?.name || 'edited-image.png', {
+          const editedFile = new File([blob], imageFile.name || 'edited-image.png', {
             type: 'image/png'
           });
+          console.log('ImageEditor: Image processed successfully');
           onSave(editedFile);
           onClose();
+        } else {
+          throw new Error('Failed to create blob from canvas');
         }
       }, 'image/png', 0.9);
     } catch (error) {
-      console.error('Error processing image:', error);
+      console.error('ImageEditor: Error processing image:', error);
     } finally {
       setIsProcessing(false);
     }
   }, [cropArea, rotation, imageFile, onSave, onClose]);
 
+  const handleClose = () => {
+    setImageUrl('');
+    setCropArea({ x: 0, y: 0, width: 100, height: 100 });
+    setRotation(0);
+    onClose();
+  };
+
+  if (!isOpen || !imageFile) {
+    return null;
+  }
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh]">
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-armenian">Նկարի խմբագրում</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           {imageUrl && (
-            <div className="relative">
+            <div className="relative bg-gray-100 rounded-lg p-4">
               <img
                 ref={imageRef}
                 src={imageUrl}
                 alt="Խմբագրվող նկար"
-                className="max-w-full max-h-96 mx-auto"
+                className="max-w-full max-h-96 mx-auto block"
                 style={{
                   transform: `rotate(${rotation}deg)`,
-                  clipPath: `inset(${cropArea.y}% ${100 - cropArea.x - cropArea.width}% ${100 - cropArea.y - cropArea.height}% ${cropArea.x}%)`
+                  filter: `brightness(1)`,
+                }}
+                onLoad={() => console.log('ImageEditor: Image loaded in preview')}
+                onError={(e) => console.error('ImageEditor: Image load error:', e)}
+              />
+              <div 
+                className="absolute border-2 border-blue-500 bg-blue-200 bg-opacity-30"
+                style={{
+                  left: `${cropArea.x}%`,
+                  top: `${cropArea.y}%`,
+                  width: `${cropArea.width}%`,
+                  height: `${cropArea.height}%`,
+                  pointerEvents: 'none'
                 }}
               />
             </div>
@@ -125,42 +166,50 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
               </h3>
               <div className="space-y-3">
                 <div>
-                  <label className="text-sm text-muted-foreground">X դիրք</label>
+                  <label className="text-sm text-muted-foreground block mb-1">X դիրք (%)</label>
                   <Slider
                     value={[cropArea.x]}
                     onValueChange={([x]) => setCropArea(prev => ({ ...prev, x }))}
                     max={100 - cropArea.width}
                     step={1}
+                    className="w-full"
                   />
+                  <span className="text-xs text-gray-500">{cropArea.x}%</span>
                 </div>
                 <div>
-                  <label className="text-sm text-muted-foreground">Y դիրք</label>
+                  <label className="text-sm text-muted-foreground block mb-1">Y դիրք (%)</label>
                   <Slider
                     value={[cropArea.y]}
                     onValueChange={([y]) => setCropArea(prev => ({ ...prev, y }))}
                     max={100 - cropArea.height}
                     step={1}
+                    className="w-full"
                   />
+                  <span className="text-xs text-gray-500">{cropArea.y}%</span>
                 </div>
                 <div>
-                  <label className="text-sm text-muted-foreground">Լայնություն</label>
+                  <label className="text-sm text-muted-foreground block mb-1">Լայնություն (%)</label>
                   <Slider
                     value={[cropArea.width]}
                     onValueChange={([width]) => setCropArea(prev => ({ ...prev, width }))}
                     min={10}
                     max={100 - cropArea.x}
                     step={1}
+                    className="w-full"
                   />
+                  <span className="text-xs text-gray-500">{cropArea.width}%</span>
                 </div>
                 <div>
-                  <label className="text-sm text-muted-foreground">Բարձրություն</label>
+                  <label className="text-sm text-muted-foreground block mb-1">Բարձրություն (%)</label>
                   <Slider
                     value={[cropArea.height]}
                     onValueChange={([height]) => setCropArea(prev => ({ ...prev, height }))}
                     min={10}
                     max={100 - cropArea.y}
                     step={1}
+                    className="w-full"
                   />
+                  <span className="text-xs text-gray-500">{cropArea.height}%</span>
                 </div>
               </div>
             </Card>
@@ -177,8 +226,16 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
                   min={-180}
                   max={180}
                   step={15}
+                  className="w-full"
                 />
                 <p className="text-sm text-muted-foreground">{rotation}°</p>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setRotation(0)}
+                >
+                  Վերականգնել պտտումը
+                </Button>
               </div>
             </Card>
           </div>
@@ -186,8 +243,8 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
           <canvas ref={canvasRef} className="hidden" />
         </div>
 
-        <div className="flex justify-end gap-2 pt-4">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex justify-end gap-2 pt-4 border-t">
+          <Button variant="outline" onClick={handleClose} disabled={isProcessing}>
             Չեղարկել
           </Button>
           <Button onClick={processImage} disabled={isProcessing}>
