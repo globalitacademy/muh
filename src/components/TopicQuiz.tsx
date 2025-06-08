@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -50,14 +49,29 @@ const TopicQuiz = ({ topicId, onComplete }: TopicQuizProps) => {
     enabled: !!topicId
   });
 
-  // Parse quiz questions from JSON
+  // Parse quiz questions from JSON with proper type casting
   const questions: QuizQuestion[] = React.useMemo(() => {
     if (!topic?.quiz_questions) return [];
     
     try {
-      if (Array.isArray(topic.quiz_questions)) {
-        return topic.quiz_questions;
+      // Handle the case where quiz_questions might be a JSON string or already parsed
+      let questionsData = topic.quiz_questions;
+      
+      if (typeof questionsData === 'string') {
+        questionsData = JSON.parse(questionsData);
       }
+      
+      // Ensure it's an array and validate the structure
+      if (Array.isArray(questionsData)) {
+        return questionsData.filter((question: any) => 
+          question && 
+          typeof question === 'object' && 
+          question.question && 
+          Array.isArray(question.options) && 
+          typeof question.correct === 'number'
+        ) as QuizQuestion[];
+      }
+      
       return [];
     } catch (error) {
       console.error('Error parsing quiz questions:', error);

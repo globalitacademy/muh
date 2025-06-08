@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -48,14 +47,29 @@ const TopicExercises = ({ topicId, onComplete }: TopicExercisesProps) => {
     enabled: !!topicId
   });
 
-  // Parse exercises from JSON
+  // Parse exercises from JSON with proper type casting
   const exercises: Exercise[] = React.useMemo(() => {
     if (!topic?.exercises) return [];
     
     try {
-      if (Array.isArray(topic.exercises)) {
-        return topic.exercises;
+      // Handle the case where exercises might be a JSON string or already parsed
+      let exercisesData = topic.exercises;
+      
+      if (typeof exercisesData === 'string') {
+        exercisesData = JSON.parse(exercisesData);
       }
+      
+      // Ensure it's an array and validate the structure
+      if (Array.isArray(exercisesData)) {
+        return exercisesData.filter((exercise: any) => 
+          exercise && 
+          typeof exercise === 'object' && 
+          exercise.id && 
+          exercise.title && 
+          exercise.description
+        ) as Exercise[];
+      }
+      
       return [];
     } catch (error) {
       console.error('Error parsing exercises:', error);
