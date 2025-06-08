@@ -34,7 +34,7 @@ const ModuleDetailHeader = ({ module, topicsCount }: ModuleDetailHeaderProps) =>
       )}
       
       <div className="flex items-start justify-between mb-4">
-        <h1 className="text-3xl font-bold font-armenian">{module.title}</h1>
+        <h1 className="text-3xl font-bold font-armenian text-foreground">{module.title}</h1>
         <Badge className={getDifficultyColor(module.difficulty_level)}>
           {getDifficultyText(module.difficulty_level)}
         </Badge>
