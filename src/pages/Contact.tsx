@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +10,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Users, BookOpen, Loader2 } from 'lucide-react';
 import { useContactStats } from '@/hooks/useContactStats';
-import MapboxMap from '@/components/ui/mapbox-map';
+import GoogleMap from '@/components/ui/google-map';
 
 const Contact = () => {
   const { language } = useLanguage();
@@ -165,7 +166,7 @@ const Contact = () => {
 
                 {/* Real Interactive Map */}
                 <div className="glass-card rounded-2xl overflow-hidden">
-                  <MapboxMap className="aspect-video" />
+                  <GoogleMap className="aspect-video" />
                 </div>
               </div>
 
