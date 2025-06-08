@@ -1,31 +1,34 @@
 
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Edit } from 'lucide-react';
 import { UserProfile } from '@/hooks/useAdminUsers';
 import EditInstructorForm from './EditInstructorForm';
 
 interface EditInstructorDialogProps {
-  instructor: UserProfile | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  instructor: UserProfile;
   onSuccess?: () => void;
 }
 
 const EditInstructorDialog: React.FC<EditInstructorDialogProps> = ({
   instructor,
-  open,
-  onOpenChange,
   onSuccess,
 }) => {
-  if (!instructor) return null;
+  const [open, setOpen] = useState(false);
 
   const handleSuccess = () => {
-    onOpenChange(false);
+    setOpen(false);
     onSuccess?.();
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="sm">
+          <Edit className="w-4 h-4" />
+        </Button>
+      </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-armenian">Դասախոսի տվյալների խմբագրում</DialogTitle>
@@ -33,7 +36,7 @@ const EditInstructorDialog: React.FC<EditInstructorDialogProps> = ({
         <EditInstructorForm 
           instructor={instructor}
           onSuccess={handleSuccess}
-          onCancel={() => onOpenChange(false)}
+          onCancel={() => setOpen(false)}
         />
       </DialogContent>
     </Dialog>

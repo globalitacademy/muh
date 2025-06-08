@@ -1,25 +1,25 @@
 
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { User, Mail, Phone, Building, Users, FileText, Calendar } from 'lucide-react';
+import { Eye, User, Mail, Phone, Building, Users, FileText, Calendar } from 'lucide-react';
 import { UserProfile } from '@/hooks/useAdminUsers';
 
 interface ViewInstructorDialogProps {
-  instructor: UserProfile | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  instructor: UserProfile;
 }
 
-const ViewInstructorDialog: React.FC<ViewInstructorDialogProps> = ({
-  instructor,
-  open,
-  onOpenChange,
-}) => {
-  if (!instructor) return null;
+const ViewInstructorDialog: React.FC<ViewInstructorDialogProps> = ({ instructor }) => {
+  const [open, setOpen] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="sm">
+          <Eye className="w-4 h-4" />
+        </Button>
+      </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-armenian flex items-center gap-3">

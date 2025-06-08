@@ -17,7 +17,7 @@ interface UserProfile {
   birth_date: string | null;
   address: string | null;
   language_preference: 'hy' | 'ru' | 'en' | null;
-  status: 'active' | 'graduated' | 'suspended' | null;
+  status: 'active' | 'graduated' | 'suspended' | 'blocked' | 'deleted' | null;
   field_of_study: string | null;
   personal_website: string | null;
   linkedin_url: string | null;
