@@ -2,89 +2,81 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  Code, 
-  Shield, 
-  Palette, 
-  Network, 
-  Bot, 
-  Brain,
-  ArrowRight 
-} from 'lucide-react';
+import { ArrowRight, Code, Shield, Palette, Network, Bot, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useModules } from '@/hooks/useModules';
+import { useSpecialties } from '@/hooks/useSpecialties';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
-const specialties = [
-  {
-    id: 'programming',
-    title: 'Ծրագրավորում',
-    description: 'Սովորեք ժամանակակից ծրագրավորման լեզուներ և տեխնոլոգիաներ',
-    icon: Code,
-    color: 'from-blue-500 to-cyan-500'
-  },
-  {
-    id: 'cybersecurity',
-    title: 'Կիբեռանվտանգություն',
-    description: 'Պաշտպանեք համակարգերը և տվյալները կիբեր սպառնալիքներից',
-    icon: Shield,
-    moduleCount: 0,
-    color: 'from-red-500 to-orange-500'
-  },
-  {
-    id: 'design',
-    title: 'Վեբ և գրաֆիկ դիզայն',
-    description: 'Ստեղծեք գեղեցիկ և ֆունկցիոնալ դիզայններ',
-    icon: Palette,
-    moduleCount: 0,
-    color: 'from-purple-500 to-pink-500'
-  },
-  {
-    id: 'networking',
-    title: 'Համակարգչային ցանցեր',
-    description: 'Կառավարեք և կարգավորեք համակարգչային ցանցերը',
-    icon: Network,
-    moduleCount: 0,
-    color: 'from-green-500 to-emerald-500'
-  },
-  {
-    id: 'robotics',
-    title: 'Ռոբոտաշինություն',
-    description: 'Նախագծեք և ստեղծեք ինտելեկտուալ ռոբոտային համակարգեր',
-    icon: Bot,
-    moduleCount: 0,
-    color: 'from-indigo-500 to-blue-500'
-  },
-  {
-    id: 'ai',
-    title: 'Արհեստական Բանականություն',
-    description: 'Ուսումնասիրեք մեքենայական ուսուցման և AI տեխնոլոգիաները',
-    icon: Brain,
-    moduleCount: 0,
-    color: 'from-yellow-500 to-amber-500'
-  }
-];
+const iconMap = {
+  Code,
+  Shield,
+  Palette,
+  Network,
+  Bot,
+  Brain,
+};
 
 const SpecialtiesList = () => {
   const navigate = useNavigate();
-  const { data: modules, isLoading } = useModules();
+  const { data: specialties, isLoading } = useSpecialties();
+
+  // Get module counts for each specialty
+  const { data: moduleCounts } = useQuery({
+    queryKey: ['specialtyModuleCounts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('modules')
+        .select('specialty_id')
+        .eq('is_active', true);
+
+      if (error) throw error;
+
+      const counts: Record<string, number> = {};
+      data?.forEach((module) => {
+        if (module.specialty_id) {
+          counts[module.specialty_id] = (counts[module.specialty_id] || 0) + 1;
+        }
+      });
+
+      return counts;
+    },
+    enabled: !!specialties,
+  });
 
   const handleSpecialtyClick = (specialtyId: string) => {
-    if (specialtyId === 'programming') {
+    // For now, navigate to courses page for programming specialty
+    const programmingSpecialty = specialties?.find(s => s.name === 'Ծրագրավորում');
+    if (programmingSpecialty && specialtyId === programmingSpecialty.id) {
       navigate('/courses');
     } else {
-      // Հետագայում այլ մասնագիտությունների համար էջեր
-      console.log(`Navigating to ${specialtyId} specialty`);
+      // For other specialties, show coming soon message
+      console.log(`Coming soon: ${specialtyId} specialty`);
     }
   };
 
-  // Ծրագրավորման մասնագիտության համար մոդուլների քանակը
-  const programmingModuleCount = modules ? modules.length : 0;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-edu-blue"></div>
+      </div>
+    );
+  }
+
+  if (!specialties || specialties.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-muted-foreground font-armenian">Մասնագիտություններ չեն գտնվել</div>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
       {specialties.map((specialty) => {
-        const IconComponent = specialty.icon;
-        const moduleCount = specialty.id === 'programming' ? programmingModuleCount : specialty.moduleCount || 0;
+        const IconComponent = iconMap[specialty.icon as keyof typeof iconMap] || Code;
+        const moduleCount = moduleCounts?.[specialty.id] || 0;
+        const isProgramming = specialty.name === 'Ծրագրավորում';
         
         return (
           <Card key={specialty.id} className="group hover:shadow-lg transition-all duration-300 border-border bg-card h-full flex flex-col">
@@ -93,7 +85,7 @@ const SpecialtiesList = () => {
                 <IconComponent className="w-8 h-8 text-white" />
               </div>
               <CardTitle className="text-xl font-armenian text-card-foreground h-12 flex items-center justify-center">
-                {specialty.title}
+                {specialty.name}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-center space-y-4 flex-grow flex flex-col justify-between p-6 pt-0">
@@ -104,7 +96,7 @@ const SpecialtiesList = () => {
                 
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground h-6">
                   <span className="font-armenian">
-                    {isLoading && specialty.id === 'programming' ? 'Բեռնվում է...' : `${moduleCount} մոդուլ`}
+                    {moduleCount} մոդուլ
                   </span>
                 </div>
               </div>
@@ -112,10 +104,10 @@ const SpecialtiesList = () => {
               <Button 
                 onClick={() => handleSpecialtyClick(specialty.id)}
                 className="w-full btn-modern text-white font-armenian group-hover:scale-105 transition-transform mt-auto"
-                disabled={moduleCount === 0}
+                disabled={!isProgramming && moduleCount === 0}
               >
-                {moduleCount > 0 ? 'Սկսել ուսումը' : 'Շուտով'}
-                {moduleCount > 0 && <ArrowRight className="w-4 h-4 ml-2" />}
+                {isProgramming || moduleCount > 0 ? 'Սկսել ուսումը' : 'Շուտով'}
+                {(isProgramming || moduleCount > 0) && <ArrowRight className="w-4 h-4 ml-2" />}
               </Button>
             </CardContent>
           </Card>

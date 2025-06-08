@@ -39,6 +39,7 @@ export const useCreateModule = () => {
       instructor: string;
       total_lessons: number;
       order_index: number;
+      specialty_id?: string;
     }) => {
       const { data, error } = await supabase
         .from('modules')
@@ -52,6 +53,7 @@ export const useCreateModule = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adminModules'] });
       queryClient.invalidateQueries({ queryKey: ['modules'] });
+      queryClient.invalidateQueries({ queryKey: ['specialtyModuleCounts'] });
       toast.success('Մոդուլը հաջողությամբ ստեղծվել է');
     },
     onError: (error) => {
@@ -79,6 +81,7 @@ export const useUpdateModule = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adminModules'] });
       queryClient.invalidateQueries({ queryKey: ['modules'] });
+      queryClient.invalidateQueries({ queryKey: ['specialtyModuleCounts'] });
       toast.success('Մոդուլը հաջողությամբ թարմացվել է');
     },
     onError: (error) => {
@@ -103,6 +106,7 @@ export const useDeleteModule = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adminModules'] });
       queryClient.invalidateQueries({ queryKey: ['modules'] });
+      queryClient.invalidateQueries({ queryKey: ['specialtyModuleCounts'] });
       toast.success('Մոդուլը հաջողությամբ ջնջվել է');
     },
     onError: (error) => {

@@ -665,6 +665,7 @@ export type Database = {
           order_index: number | null
           price: number
           rating: number | null
+          specialty_id: string | null
           students_count: number
           title: string
           title_en: string | null
@@ -689,6 +690,7 @@ export type Database = {
           order_index?: number | null
           price?: number
           rating?: number | null
+          specialty_id?: string | null
           students_count?: number
           title: string
           title_en?: string | null
@@ -713,6 +715,7 @@ export type Database = {
           order_index?: number | null
           price?: number
           rating?: number | null
+          specialty_id?: string | null
           students_count?: number
           title?: string
           title_en?: string | null
@@ -720,7 +723,15 @@ export type Database = {
           total_lessons?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "modules_specialty_id_fkey"
+            columns: ["specialty_id"]
+            isOneToOne: false
+            referencedRelation: "specialties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notifications: {
         Row: {
@@ -983,6 +994,54 @@ export type Database = {
           },
         ]
       }
+      specialties: {
+        Row: {
+          color: string
+          created_at: string
+          description: string | null
+          description_en: string | null
+          description_ru: string | null
+          icon: string
+          id: string
+          is_active: boolean
+          name: string
+          name_en: string | null
+          name_ru: string | null
+          order_index: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          name_en?: string | null
+          name_ru?: string | null
+          order_index?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          name_en?: string | null
+          name_ru?: string | null
+          order_index?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       topics: {
         Row: {
           content: string | null
@@ -991,10 +1050,13 @@ export type Database = {
           description_en: string | null
           description_ru: string | null
           duration_minutes: number | null
+          exercises: Json | null
           id: string
           is_free: boolean | null
           module_id: string | null
           order_index: number
+          quiz_questions: Json | null
+          resources: Json | null
           title: string
           title_en: string | null
           title_ru: string | null
@@ -1008,10 +1070,13 @@ export type Database = {
           description_en?: string | null
           description_ru?: string | null
           duration_minutes?: number | null
+          exercises?: Json | null
           id?: string
           is_free?: boolean | null
           module_id?: string | null
           order_index?: number
+          quiz_questions?: Json | null
+          resources?: Json | null
           title: string
           title_en?: string | null
           title_ru?: string | null
@@ -1025,10 +1090,13 @@ export type Database = {
           description_en?: string | null
           description_ru?: string | null
           duration_minutes?: number | null
+          exercises?: Json | null
           id?: string
           is_free?: boolean | null
           module_id?: string | null
           order_index?: number
+          quiz_questions?: Json | null
+          resources?: Json | null
           title?: string
           title_en?: string | null
           title_ru?: string | null
