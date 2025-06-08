@@ -10,4 +10,5 @@ export interface Exercise {
   type?: string;
   options?: string[];
   answer?: string;
+  correct_answer?: string; // For consistency with quiz format
 }

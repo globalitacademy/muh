@@ -3,8 +3,8 @@ export interface QuizQuestion {
   id: string | number;
   question: string;
   options: string[];
-  correct: number;
-  correct_answer?: number; // Alternative field name that might be used
+  correct: number; // Keep as number for internal use
+  correct_answer?: string; // Original string answer from database
   explanation?: string;
 }
 

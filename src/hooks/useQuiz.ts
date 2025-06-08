@@ -47,6 +47,26 @@ export const useQuiz = (topicId: string) => {
     return data;
   };
 
+  // Helper function to find correct option index from string answer
+  const findCorrectOptionIndex = (options: string[], correctAnswer: string): number => {
+    if (!correctAnswer) return 0;
+    
+    // Try to find exact match
+    const exactMatch = options.findIndex(option => 
+      option.trim().toLowerCase() === correctAnswer.trim().toLowerCase()
+    );
+    
+    if (exactMatch !== -1) return exactMatch;
+    
+    // Try to find partial match
+    const partialMatch = options.findIndex(option => 
+      option.toLowerCase().includes(correctAnswer.toLowerCase()) ||
+      correctAnswer.toLowerCase().includes(option.toLowerCase())
+    );
+    
+    return partialMatch !== -1 ? partialMatch : 0;
+  };
+
   // Parse quiz questions from JSON with improved parsing
   const questions: QuizQuestion[] = useMemo(() => {
     if (!topic?.quiz_questions) {
@@ -70,28 +90,53 @@ export const useQuiz = (topicId: string) => {
       
       // Validate and filter questions
       const validQuestions = questionsData.filter((question: any) => {
-        const isValid = question && 
-          typeof question === 'object' && 
-          question.question && 
-          Array.isArray(question.options) && 
-          question.options.length > 0 &&
-          (typeof question.correct === 'number' || typeof question.correct_answer === 'number');
+        const hasQuestion = question && typeof question === 'object' && question.question;
+        const hasOptions = Array.isArray(question.options) && question.options.length > 0;
+        const hasCorrectAnswer = question.correct_answer || typeof question.correct === 'number';
+        
+        const isValid = hasQuestion && hasOptions && hasCorrectAnswer;
         
         if (!isValid) {
-          console.log('Invalid question found:', question);
+          console.log('Invalid question found:', {
+            question: question?.question,
+            options: question?.options,
+            correct_answer: question?.correct_answer,
+            correct: question?.correct,
+            fullQuestion: question
+          });
         }
         
         return isValid;
-      }).map((question: any, index: number) => ({
-        // Ensure required fields with fallbacks
-        id: question.id || `question-${index}`,
-        question: question.question,
-        options: question.options,
-        correct: typeof question.correct === 'number' ? question.correct : question.correct_answer,
-        explanation: question.explanation
-      })) as QuizQuestion[];
+      }).map((question: any, index: number) => {
+        // Determine correct answer index
+        let correctIndex = 0;
+        
+        if (typeof question.correct === 'number') {
+          correctIndex = question.correct;
+        } else if (question.correct_answer && Array.isArray(question.options)) {
+          correctIndex = findCorrectOptionIndex(question.options, question.correct_answer);
+        }
+        
+        console.log('Processing question:', {
+          question: question.question,
+          options: question.options,
+          original_correct: question.correct,
+          original_correct_answer: question.correct_answer,
+          calculated_correct_index: correctIndex
+        });
+        
+        return {
+          id: question.id || `question-${index}`,
+          question: question.question,
+          options: question.options,
+          correct: correctIndex,
+          correct_answer: question.correct_answer,
+          explanation: question.explanation
+        };
+      }) as QuizQuestion[];
       
-      console.log('Valid questions found:', validQuestions.length, validQuestions);
+      console.log('Valid questions found:', validQuestions.length);
+      console.log('Processed questions:', validQuestions);
       return validQuestions;
       
     } catch (error) {
@@ -120,10 +165,24 @@ export const useQuiz = (topicId: string) => {
       // Calculate score and show results
       let correctAnswers = 0;
       questions.forEach((question, index) => {
-        if (parseInt(quizState.answers[index]) === question.correct) {
+        const userAnswer = parseInt(quizState.answers[index]);
+        console.log('Checking answer for question', index, {
+          userAnswer,
+          correctAnswer: question.correct,
+          isCorrect: userAnswer === question.correct
+        });
+        
+        if (userAnswer === question.correct) {
           correctAnswers++;
         }
       });
+      
+      console.log('Final score calculation:', {
+        correctAnswers,
+        totalQuestions: questions.length,
+        answers: quizState.answers
+      });
+      
       setQuizState(prev => ({
         ...prev,
         score: correctAnswers,

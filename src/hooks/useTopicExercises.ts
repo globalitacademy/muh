@@ -66,32 +66,42 @@ export const useTopicExercises = (topicId: string) => {
       
       // Validate and filter exercises
       const validExercises = exercisesData.filter((exercise: any) => {
-        const isValid = exercise && 
-          typeof exercise === 'object' && 
-          (exercise.id || exercise.title) && // At least one identifier
-          (exercise.title || exercise.question) && // At least some content
-          (exercise.description || exercise.question);
+        const hasBasicInfo = exercise && typeof exercise === 'object';
+        const hasTitle = exercise.title || exercise.question;
+        const hasContent = exercise.description || exercise.question;
+        
+        const isValid = hasBasicInfo && hasTitle && hasContent;
         
         if (!isValid) {
-          console.log('Invalid exercise found:', exercise);
+          console.log('Invalid exercise found:', {
+            hasBasicInfo,
+            hasTitle,
+            hasContent,
+            exercise
+          });
         }
         
         return isValid;
-      }).map((exercise: any) => ({
-        // Ensure required fields with fallbacks
-        id: exercise.id || `exercise-${Date.now()}-${Math.random()}`,
-        title: exercise.title || exercise.question || 'Վարժություն',
-        description: exercise.description || exercise.question || '',
-        difficulty: exercise.difficulty || 'միջին',
-        hint: exercise.hint,
-        expectedAnswer: exercise.expectedAnswer || exercise.answer,
-        question: exercise.question,
-        type: exercise.type,
-        options: exercise.options,
-        answer: exercise.answer
-      })) as Exercise[];
+      }).map((exercise: any, index: number) => {
+        console.log('Processing exercise:', exercise);
+        
+        return {
+          id: exercise.id || `exercise-${Date.now()}-${index}`,
+          title: exercise.title || exercise.question || 'Վարժություն',
+          description: exercise.description || exercise.question || '',
+          difficulty: exercise.difficulty || 'միջին',
+          hint: exercise.hint,
+          expectedAnswer: exercise.expectedAnswer || exercise.answer || exercise.correct_answer,
+          question: exercise.question,
+          type: exercise.type,
+          options: exercise.options,
+          answer: exercise.answer,
+          correct_answer: exercise.correct_answer
+        };
+      }) as Exercise[];
       
-      console.log('Valid exercises found:', validExercises.length, validExercises);
+      console.log('Valid exercises found:', validExercises.length);
+      console.log('Processed exercises:', validExercises);
       return validExercises;
       
     } catch (error) {
