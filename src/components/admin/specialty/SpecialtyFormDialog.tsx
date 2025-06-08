@@ -102,11 +102,7 @@ const SpecialtyFormDialog = ({
               <Label htmlFor="icon" className="font-armenian">Պատկերակ</Label>
               <Select 
                 value={formData.icon} 
-                onValueChange={(value) => {
-                  if (value && value.trim() !== '') {
-                    setFormData({ ...formData, icon: value });
-                  }
-                }}
+                onValueChange={(value) => setFormData({ ...formData, icon: value })}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -114,9 +110,6 @@ const SpecialtyFormDialog = ({
                 <SelectContent>
                   {iconOptions.map((option) => {
                     const IconComponent = option.icon;
-                    if (!option.value || option.value.trim() === '') {
-                      return null;
-                    }
                     return (
                       <SelectItem key={option.value} value={option.value}>
                         <div className="flex items-center gap-2">
@@ -134,29 +127,20 @@ const SpecialtyFormDialog = ({
               <Label htmlFor="color" className="font-armenian">Գույն</Label>
               <Select 
                 value={formData.color} 
-                onValueChange={(value) => {
-                  if (value && value.trim() !== '') {
-                    setFormData({ ...formData, color: value });
-                  }
-                }}
+                onValueChange={(value) => setFormData({ ...formData, color: value })}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {colorOptions.map((option) => {
-                    if (!option.value || option.value.trim() === '') {
-                      return null;
-                    }
-                    return (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-4 h-4 rounded bg-gradient-to-r ${option.value}`}></div>
-                          {option.label}
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
+                  {colorOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded bg-gradient-to-r ${option.value}`}></div>
+                        {option.label}
+                      </div>
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

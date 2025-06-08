@@ -8,7 +8,7 @@ export const iconOptions = [
   { value: 'Network', label: 'Network', icon: Network },
   { value: 'Bot', label: 'Bot', icon: Bot },
   { value: 'Brain', label: 'Brain', icon: Brain },
-].filter(option => option.value && option.value.trim() !== '');
+];
 
 export const colorOptions = [
   { value: 'from-blue-500 to-cyan-500', label: 'Կապույտ' },
@@ -17,4 +17,4 @@ export const colorOptions = [
   { value: 'from-green-500 to-emerald-500', label: 'Կանաչ' },
   { value: 'from-indigo-500 to-blue-500', label: 'Ինդիգո' },
   { value: 'from-yellow-500 to-amber-500', label: 'Դեղին' },
-].filter(option => option.value && option.value.trim() !== '');
+];
