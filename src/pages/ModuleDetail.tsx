@@ -8,6 +8,8 @@ import { useTopics } from '@/hooks/useTopics';
 import { useEnrollments, useEnrollModule } from '@/hooks/useEnrollments';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import ModuleDetailHeader from '@/components/module/ModuleDetailHeader';
 import ModuleDetailCurriculum from '@/components/module/ModuleDetailCurriculum';
 import ModuleDetailSidebar from '@/components/module/ModuleDetailSidebar';
@@ -58,27 +60,37 @@ const ModuleDetail = () => {
 
   if (moduleLoading || topicsLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-edu-blue" />
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="h-8 w-8 animate-spin text-edu-blue" />
+        </div>
+        <Footer />
       </div>
     );
   }
 
   if (!module) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold font-armenian">Դասընթացը չի գտնվել</h2>
-          <Button onClick={() => navigate('/')} className="mt-4 font-armenian">
-            Վերադառնալ գլխավոր էջ
-          </Button>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold font-armenian">Դասընթացը չի գտնվել</h2>
+            <Button onClick={() => navigate('/')} className="mt-4 font-armenian">
+              Վերադառնալ գլխավոր էջ
+            </Button>
+          </div>
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
+      
       <div className="container mx-auto px-4 py-8">
         <Button
           variant="ghost"
@@ -119,6 +131,8 @@ const ModuleDetail = () => {
           </div>
         </div>
       </div>
+      
+      <Footer />
     </div>
   );
 };

@@ -6,13 +6,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { ArrowLeft, BookOpen, PenTool, CheckCircle, Clock, Target, Lock } from 'lucide-react';
+import { 
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import TopicContent from '@/components/TopicContent';
 import TopicExercises from '@/components/TopicExercises';
 import TopicQuiz from '@/components/TopicQuiz';
+import TopicNavigation from '@/components/TopicNavigation';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnrollments } from '@/hooks/useEnrollments';
+import { useTopicNavigation } from '@/hooks/useTopicNavigation';
 
 const TopicDetail = () => {
   const { topicId } = useParams<{ topicId: string }>();
@@ -56,6 +68,12 @@ const TopicDetail = () => {
     },
     enabled: !!topicId
   });
+
+  // Get navigation data
+  const { data: navigationData } = useTopicNavigation(
+    topicId || '', 
+    topic?.module_id || ''
+  );
 
   // Check if user has access to this topic
   const hasAccess = React.useMemo(() => {
@@ -112,8 +130,12 @@ const TopicDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-pulse font-armenian">Բեռնվում է...</div>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center py-20">
+          <div className="animate-pulse font-armenian">Բեռնվում է...</div>
+        </div>
+        <Footer />
       </div>
     );
   }
@@ -122,6 +144,7 @@ const TopicDetail = () => {
     console.error('TopicDetail - Error state:', error);
     return (
       <div className="min-h-screen bg-background">
+        <Header />
         <div className="container mx-auto px-4 py-8">
           <Button
             variant="ghost"
@@ -139,6 +162,7 @@ const TopicDetail = () => {
             </p>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -147,6 +171,7 @@ const TopicDetail = () => {
     console.log('TopicDetail - No topic found for ID:', topicId);
     return (
       <div className="min-h-screen bg-background">
+        <Header />
         <div className="container mx-auto px-4 py-8">
           <Button
             variant="ghost"
@@ -164,6 +189,7 @@ const TopicDetail = () => {
             </p>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -172,6 +198,7 @@ const TopicDetail = () => {
   if (!hasAccess) {
     return (
       <div className="min-h-screen bg-background">
+        <Header />
         <div className="container mx-auto px-4 py-8">
           <Button
             variant="ghost"
@@ -198,21 +225,36 @@ const TopicDetail = () => {
             </Button>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
+      
       <div className="container mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
-          onClick={handleBackToModule}
-          className="mb-6 text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Վերադառնալ մոդուլ
-        </Button>
+        {/* Breadcrumb Navigation */}
+        <Breadcrumb className="mb-6">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink onClick={() => navigate('/')} className="font-armenian cursor-pointer">
+                Գլխավոր
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink onClick={handleBackToModule} className="font-armenian cursor-pointer">
+                {topic.modules?.title || 'Մոդուլ'}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="font-armenian">{topic.title}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
         {/* Topic Header */}
         <div className="mb-8">
@@ -277,7 +319,20 @@ const TopicDetail = () => {
             <TopicQuiz topicId={topicId!} onComplete={handleCompleteLesson} />
           </TabsContent>
         </Tabs>
+
+        {/* Topic Navigation */}
+        {navigationData && (
+          <TopicNavigation
+            currentTopic={navigationData.currentTopic}
+            previousTopic={navigationData.previousTopic}
+            nextTopic={navigationData.nextTopic}
+            moduleId={topic.module_id}
+            hasAccess={hasAccess}
+          />
+        )}
       </div>
+      
+      <Footer />
     </div>
   );
 };
