@@ -4,6 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlayCircle, FileText, Image, Code, CheckCircle } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import ReactMarkdown from 'react-markdown';
 
 interface TopicContentProps {
   topicId: string;
@@ -13,88 +16,66 @@ interface TopicContentProps {
 const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
   const [completedSections, setCompletedSections] = useState<string[]>([]);
 
-  const content = {
-    video: {
-      url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      title: 'Ալգորիթմի սահմանումը - տեսանյութ դաս'
-    },
-    theory: {
-      sections: [
-        {
-          id: 'definition',
-          title: 'Ալգորիթմի սահմանումը',
-          content: `
-            <h3>Ինչ է ալգորիթմը?</h3>
-            <p>Ալգորիթմը գործողությունների հստակ հաջորդականություն է, որն ուղղված է որոշակի խնդրի լուծմանը:</p>
-            
-            <h4>Ալգորիթմի հիմնական բնութագրիչները՝</h4>
-            <ul>
-              <li><strong>Մուտք (Input):</strong> Ալգորիթմը ստանում է մեկ կամ մի քանի մուտքային տվյալներ</li>
-              <li><strong>Ելք (Output):</strong> Ալգորիթմը արտադրում է մեկ կամ մի քանի ելքային արդյունքներ</li>
-              <li><strong>Որոշակիություն:</strong> Յուրաքանչյուր քայլ պետք է լինի հստակ և միանշանակ</li>
-              <li><strong>Վերջնություն:</strong> Ալգորիթմը պետք է ավարտվի սահմանափակ քայլերից հետո</li>
-              <li><strong>Արդյունավետություն:</strong> Ալգորիթմը պետք է լուծի խնդիրը ողջամիտ ժամանակում</li>
-            </ul>
-          `
-        },
-        {
-          id: 'representation',
-          title: 'Ալգորիթմների ներկայացման եղանակները',
-          content: `
-            <h3>Ալգորիթմների ներկայացման հիմնական եղանակները՝</h3>
-            
-            <h4>1. Բնական լեզվով նկարագրություն</h4>
-            <p>Ալգորիթմը նկարագրվում է բնական լեզվով, քայլ առ քայլ:</p>
-            
-            <h4>2. Ալգորիթմական լեզու (Pseudocode)</h4>
-            <p>Կիսաֆորմալ լեզու, որը համատեղում է բնական լեզվի պարզությունը և ծրագրավորման լեզվի ճշգրտությունը:</p>
-            
-            <h4>3. Հոսքի սխեմա (Flowchart)</h4>
-            <p>Գրաֆիկական ներկայացում՝ բլոկ-սխեմաների միջոցով:</p>
-            
-            <h4>4. Ծրագրավորման լեզու</h4>
-            <p>Ալգորիթմի ուղղակի իրականացումը որևէ ծրագրավորման լեզվով:</p>
-          `
-        }
-      ]
-    },
-    examples: [
-      {
-        title: 'Օրինակ 1: Երկու թվի գումարման ալգորիթմ',
-        content: `
-          <h4>Բնական լեզվով:</h4>
-          <ol>
-            <li>Կարդալ առաջին թիվը (a)</li>
-            <li>Կարդալ երկրորդ թիվը (b)</li>
-            <li>Հաշվել գումարը (sum = a + b)</li>
-            <li>Տպել արդյունքը</li>
-          </ol>
-          
-          <h4>Pseudocode-ով:</h4>
-          <pre><code>
-BEGIN
-    READ a
-    READ b
-    sum ← a + b
-    PRINT sum
-END
-          </code></pre>
-        `
+  // Fetch topic content from database
+  const { data: topic, isLoading, error } = useQuery({
+    queryKey: ['topic-content', topicId],
+    queryFn: async () => {
+      console.log('Fetching topic content for:', topicId);
+      const { data, error } = await supabase
+        .from('topics')
+        .select('title, content, video_url, exercises, resources')
+        .eq('id', topicId)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching topic content:', error);
+        throw error;
       }
-    ]
-  };
+      
+      console.log('Topic content fetched:', data);
+      return data;
+    },
+    enabled: !!topicId
+  });
 
   const markSectionComplete = (sectionId: string) => {
     if (!completedSections.includes(sectionId)) {
       const newCompleted = [...completedSections, sectionId];
       setCompletedSections(newCompleted);
       
-      // If all sections are completed, enable the complete button
-      if (newCompleted.length === content.theory.sections.length + content.examples.length) {
+      // Calculate total sections needed for completion
+      const totalSections = 2; // video + theory content
+      if (newCompleted.length >= totalSections) {
         setTimeout(onComplete, 1000);
       }
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <div className="animate-pulse font-armenian">Բեռնվում է բովանդակությունը...</div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error || !topic) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-muted-foreground font-armenian">
+              Սխալ է տեղի ունեցել բովանդակությունը բեռնելիս
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -107,12 +88,23 @@ END
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
-            <div className="text-center">
-              <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-              <p className="text-muted-foreground font-armenian">Տեսանյութը շուտով կլինի հասանելի</p>
+          {topic.video_url ? (
+            <div className="aspect-video mb-4">
+              <iframe
+                src={topic.video_url}
+                className="w-full h-full rounded-lg"
+                allowFullScreen
+                title={`${topic.title} - Տեսանյութ դաս`}
+              />
             </div>
-          </div>
+          ) : (
+            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
+              <div className="text-center">
+                <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground font-armenian">Տեսանյութը շուտով կլինի հասանելի</p>
+              </div>
+            </div>
+          )}
           <Button 
             onClick={() => markSectionComplete('video')}
             disabled={completedSections.includes('video')}
@@ -131,80 +123,58 @@ END
       </Card>
 
       {/* Theory Content */}
-      <Tabs defaultValue="theory" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="theory" className="font-armenian">
-            <FileText className="w-4 h-4 mr-2" />
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 font-armenian">
+            <FileText className="w-5 h-5 text-edu-blue" />
             Տեսական նյութ
-          </TabsTrigger>
-          <TabsTrigger value="examples" className="font-armenian">
-            <Code className="w-4 h-4 mr-2" />
-            Օրինակներ
-          </TabsTrigger>
-        </TabsList>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {topic.content ? (
+            <div className="prose prose-sm max-w-none font-armenian mb-4">
+              <ReactMarkdown>{topic.content}</ReactMarkdown>
+            </div>
+          ) : (
+            <p className="text-muted-foreground font-armenian mb-4">
+              Տեսական նյութը շուտով կլինի հասանելի
+            </p>
+          )}
+          
+          <Button 
+            onClick={() => markSectionComplete('theory')}
+            disabled={completedSections.includes('theory')}
+            className="font-armenian"
+            variant={completedSections.includes('theory') ? "default" : "outline"}
+          >
+            {completedSections.includes('theory') ? (
+              <>
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Ավարտված
+              </>
+            ) : (
+              'Նշել որպես ավարտված'
+            )}
+          </Button>
+        </CardContent>
+      </Card>
 
-        <TabsContent value="theory" className="space-y-4">
-          {content.theory.sections.map((section) => (
-            <Card key={section.id}>
-              <CardHeader>
-                <CardTitle className="font-armenian">{section.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div 
-                  className="prose prose-sm max-w-none font-armenian"
-                  dangerouslySetInnerHTML={{ __html: section.content }}
-                />
-                <Button 
-                  onClick={() => markSectionComplete(section.id)}
-                  disabled={completedSections.includes(section.id)}
-                  className="mt-4 font-armenian"
-                  variant={completedSections.includes(section.id) ? "default" : "outline"}
-                >
-                  {completedSections.includes(section.id) ? (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Ավարտված
-                    </>
-                  ) : (
-                    'Նշել որպես ավարտված'
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-
-        <TabsContent value="examples" className="space-y-4">
-          {content.examples.map((example, index) => (
-            <Card key={index}>
-              <CardHeader>
-                <CardTitle className="font-armenian">{example.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div 
-                  className="prose prose-sm max-w-none font-armenian"
-                  dangerouslySetInnerHTML={{ __html: example.content }}
-                />
-                <Button 
-                  onClick={() => markSectionComplete(`example-${index}`)}
-                  disabled={completedSections.includes(`example-${index}`)}
-                  className="mt-4 font-armenian"
-                  variant={completedSections.includes(`example-${index}`) ? "default" : "outline"}
-                >
-                  {completedSections.includes(`example-${index}`) ? (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Ուսումնասիրված
-                    </>
-                  ) : (
-                    'Նշել որպես ուսումնասիրված'
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-      </Tabs>
+      {/* Resources Section (if available) */}
+      {topic.resources && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-armenian">
+              <Code className="w-5 h-5 text-edu-blue" />
+              Լրացուցիչ ռեսուրսներ
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="prose prose-sm max-w-none font-armenian">
+              <ReactMarkdown>{JSON.stringify(topic.resources)}</ReactMarkdown>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

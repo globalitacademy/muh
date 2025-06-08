@@ -6,10 +6,20 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, XCircle, Award, RotateCcw } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TopicQuizProps {
   topicId: string;
   onComplete: () => void;
+}
+
+interface QuizQuestion {
+  id: string | number;
+  question: string;
+  options: string[];
+  correct: number;
+  explanation?: string;
 }
 
 const TopicQuiz = ({ topicId, onComplete }: TopicQuizProps) => {
@@ -18,68 +28,42 @@ const TopicQuiz = ({ topicId, onComplete }: TopicQuizProps) => {
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
 
-  const questions = [
-    {
-      id: 1,
-      question: 'Ինչպիսի՞ն է ալգորիթմի հիմնական բնութագիրը:',
-      options: [
-        'Պետք է լինի անվերջ',
-        'Պետք է լինի վերջավոր և որոշակի',
-        'Պետք է գրված լինի ծրագրավորման լեզվով',
-        'Պետք է լինի միշտ բարդ'
-      ],
-      correct: 1,
-      explanation: 'Ալգորիթմը պետք է լինի վերջավոր (ունենա ավարտ) և որոշակի (յուրաքանչյուր քայլ հստակ)'
+  // Fetch quiz questions from database
+  const { data: topic, isLoading, error } = useQuery({
+    queryKey: ['topic-quiz', topicId],
+    queryFn: async () => {
+      console.log('Fetching topic quiz for:', topicId);
+      const { data, error } = await supabase
+        .from('topics')
+        .select('title, quiz_questions')
+        .eq('id', topicId)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching topic quiz:', error);
+        throw error;
+      }
+      
+      console.log('Topic quiz fetched:', data);
+      return data;
     },
-    {
-      id: 2,
-      question: 'Ո՞ր ներկայացման եղանակը չի հանդիսանում ալգորիթմի ներկայացման ձև:',
-      options: [
-        'Բնական լեզվով նկարագրություն',
-        'Հոսքի սխեմա (Flowchart)',
-        'Pseudocode',
-        'Երաժշտական նոտագրություն'
-      ],
-      correct: 3,
-      explanation: 'Երաժշտական նոտագրությունը չի օգտագործվում ալգորիթմների ներկայացման համար'
-    },
-    {
-      id: 3,
-      question: 'Ալգորիթմի ո՞ր հատկությունն է ապահովում, որ ալգորիթմը կտա ճիշտ արդյունք:',
-      options: [
-        'Վերջնություն',
-        'Մուտք',
-        'Որոշակիություն',
-        'Ելք'
-      ],
-      correct: 2,
-      explanation: 'Որոշակիությունը ապահովում է, որ յուրաքանչյուր քայլ հստակ է և միանշանակ, ինչը հանգեցնում է ճիշտ արդյունքի'
-    },
-    {
-      id: 4,
-      question: 'Pseudocode-ի ո՞ր առավելությունն է ամենակարևորը:',
-      options: [
-        'Միշտ աշխատում է համակարգչում',
-        'Համատեղում է պարզությունն ու ճշգրտությունը',
-        'Ամենաարագ գրելու եղանակն է',
-        'Միակ ճիշտ ներկայացման եղանակն է'
-      ],
-      correct: 1,
-      explanation: 'Pseudocode-ը համատեղում է բնական լեզվի պարզությունը և ծրագրավորման լեզվի ճշգրտությունը'
-    },
-    {
-      id: 5,
-      question: 'Ալգորիթմի մուտքային տվյալները կարող են լինել:',
-      options: [
-        'Միայն թվեր',
-        'Միայն տեքստ',
-        'Մեկ կամ մի քանի տարբեր տեսակի տվյալներ',
-        'Միշտ պետք է լինեն նույն տեսակի'
-      ],
-      correct: 2,
-      explanation: 'Ալգորիթմը կարող է ունենալ մեկ կամ մի քանի մուտքային տվյալներ, որոնք կարող են լինել տարբեր տեսակի'
+    enabled: !!topicId
+  });
+
+  // Parse quiz questions from JSON
+  const questions: QuizQuestion[] = React.useMemo(() => {
+    if (!topic?.quiz_questions) return [];
+    
+    try {
+      if (Array.isArray(topic.quiz_questions)) {
+        return topic.quiz_questions;
+      }
+      return [];
+    } catch (error) {
+      console.error('Error parsing quiz questions:', error);
+      return [];
     }
-  ];
+  }, [topic?.quiz_questions]);
 
   const handleAnswerSelect = (value: string) => {
     setAnswers(prev => ({
@@ -120,6 +104,48 @@ const TopicQuiz = ({ topicId, onComplete }: TopicQuizProps) => {
   const handleComplete = () => {
     onComplete();
   };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-8 text-center">
+          <div className="animate-pulse font-armenian">Բեռնվում է թեստը...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="p-8 text-center">
+          <p className="text-muted-foreground font-armenian">
+            Սխալ է տեղի ունեցել թեստը բեռնելիս
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!questions.length) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-armenian">
+            Ստուգողական թեստ
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground font-armenian text-center">
+            Թեստի հարցերը շուտով կլինեն հասանելի
+          </p>
+          <Button onClick={onComplete} className="w-full mt-4 font-armenian">
+            Ավարտել դասը
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const progress = showResults ? 100 : ((currentQuestion + 1) / questions.length) * 100;
   const scorePercentage = (score / questions.length) * 100;
@@ -165,9 +191,11 @@ const TopicQuiz = ({ topicId, onComplete }: TopicQuizProps) => {
                   )}
                   <div className="flex-1">
                     <p className="font-medium font-armenian">{question.question}</p>
-                    <p className="text-sm text-muted-foreground font-armenian mt-1">
-                      {question.explanation}
-                    </p>
+                    {question.explanation && (
+                      <p className="text-sm text-muted-foreground font-armenian mt-1">
+                        {question.explanation}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

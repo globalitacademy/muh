@@ -5,42 +5,63 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { PenTool, CheckCircle, AlertCircle, Lightbulb } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TopicExercisesProps {
   topicId: string;
   onComplete: () => void;
 }
 
+interface Exercise {
+  id: string;
+  title: string;
+  description: string;
+  difficulty: string;
+  hint?: string;
+  expectedAnswer?: string;
+}
+
 const TopicExercises = ({ topicId, onComplete }: TopicExercisesProps) => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [completedExercises, setCompletedExercises] = useState<string[]>([]);
 
-  const exercises = [
-    {
-      id: 'ex1',
-      title: 'Վարժություն 1: Ալգորիթմի նկարագրություն',
-      description: 'Նկարագրեք բնական լեզվով "Թեյ պատրաստելու" ալգորիթմը:',
-      difficulty: 'Հեշտ',
-      hint: 'Մտածեք քայլ առ քայլ՝ ինչ գործողություններ եք կատարում թեյ պատրաստելիս:',
-      expectedAnswer: 'Պետք է ներառել՝ ջուր տաքացնել, թեյի տերև ավելացնել, թաղել, ծառայել:'
+  // Fetch exercises from database
+  const { data: topic, isLoading, error } = useQuery({
+    queryKey: ['topic-exercises', topicId],
+    queryFn: async () => {
+      console.log('Fetching topic exercises for:', topicId);
+      const { data, error } = await supabase
+        .from('topics')
+        .select('title, exercises')
+        .eq('id', topicId)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching topic exercises:', error);
+        throw error;
+      }
+      
+      console.log('Topic exercises fetched:', data);
+      return data;
     },
-    {
-      id: 'ex2', 
-      title: 'Վարժություն 2: Pseudocode գրում',
-      description: 'Գրեք pseudocode երեք թվերից մեծագույնը գտնելու համար:',
-      difficulty: 'Միջին',
-      hint: 'Օգտագործեք IF-THEN-ELSE կառուցվածքները համեմատություններ կատարելու համար:',
-      expectedAnswer: 'READ a, b, c; IF a>b AND a>c THEN max=a; ELSE IF b>c THEN max=b; ELSE max=c'
-    },
-    {
-      id: 'ex3',
-      title: 'Վարժություն 3: Ալգորիթմի վերլուծություն',
-      description: 'Վերլուծեք հետևյալ ալգորիթմը և բացատրեք, թե ինչ է անում:\n\n1. READ number\n2. sum = 0\n3. WHILE number > 0\n4.   digit = number MOD 10\n5.   sum = sum + digit\n6.   number = number DIV 10\n7. PRINT sum',
-      difficulty: 'Բարդ',
-      hint: 'Ուշադրություն դարձրեք MOD և DIV գործողություններին:',
-      expectedAnswer: 'Այս ալգորիթմը հաշվում է թվի թվանշանների գումարը:'
+    enabled: !!topicId
+  });
+
+  // Parse exercises from JSON
+  const exercises: Exercise[] = React.useMemo(() => {
+    if (!topic?.exercises) return [];
+    
+    try {
+      if (Array.isArray(topic.exercises)) {
+        return topic.exercises;
+      }
+      return [];
+    } catch (error) {
+      console.error('Error parsing exercises:', error);
+      return [];
     }
-  ];
+  }, [topic?.exercises]);
 
   const handleAnswerChange = (exerciseId: string, value: string) => {
     setAnswers(prev => ({
@@ -61,13 +82,66 @@ const TopicExercises = ({ topicId, onComplete }: TopicExercisesProps) => {
   };
 
   const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case 'Հեշտ': return 'bg-green-100 text-green-800';
-      case 'Միջին': return 'bg-yellow-100 text-yellow-800';
-      case 'Բարդ': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+    switch (difficulty?.toLowerCase()) {
+      case 'հեշտ':
+      case 'easy': 
+        return 'bg-green-100 text-green-800';
+      case 'միջին':
+      case 'medium': 
+        return 'bg-yellow-100 text-yellow-800';
+      case 'բարդ':
+      case 'hard': 
+        return 'bg-red-100 text-red-800';
+      default: 
+        return 'bg-gray-100 text-gray-800';
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <div className="animate-pulse font-armenian">Բեռնվում են վարժությունները...</div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <p className="text-muted-foreground font-armenian">
+              Սխալ է տեղի ունեցել վարժությունները բեռնելիս
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!exercises.length) {
+    return (
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-armenian">
+              <PenTool className="w-5 h-5 text-edu-blue" />
+              Գործնական վարժություններ
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground font-armenian text-center">
+              Վարժությունները շուտով կլինեն հասանելի
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -93,24 +167,28 @@ const TopicExercises = ({ topicId, onComplete }: TopicExercisesProps) => {
           <CardHeader>
             <div className="flex items-start justify-between">
               <CardTitle className="font-armenian">{exercise.title}</CardTitle>
-              <Badge className={getDifficultyColor(exercise.difficulty)}>
-                {exercise.difficulty}
-              </Badge>
+              {exercise.difficulty && (
+                <Badge className={getDifficultyColor(exercise.difficulty)}>
+                  {exercise.difficulty}
+                </Badge>
+              )}
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="font-armenian whitespace-pre-line">{exercise.description}</p>
             
             {/* Hint */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <div className="flex items-start gap-2">
-                <Lightbulb className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium text-blue-800 font-armenian">Հուշում</p>
-                  <p className="text-sm text-blue-700 font-armenian">{exercise.hint}</p>
+            {exercise.hint && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <Lightbulb className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-blue-800 font-armenian">Հուշում</p>
+                    <p className="text-sm text-blue-700 font-armenian">{exercise.hint}</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* Answer Input */}
             <div className="space-y-2">
@@ -150,7 +228,7 @@ const TopicExercises = ({ topicId, onComplete }: TopicExercisesProps) => {
             </div>
 
             {/* Show expected answer after completion */}
-            {completedExercises.includes(exercise.id) && (
+            {completedExercises.includes(exercise.id) && exercise.expectedAnswer && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                 <p className="text-sm font-medium text-green-800 font-armenian mb-1">Ակնկալվող պատասխան՝</p>
                 <p className="text-sm text-green-700 font-armenian">{exercise.expectedAnswer}</p>
@@ -160,7 +238,7 @@ const TopicExercises = ({ topicId, onComplete }: TopicExercisesProps) => {
         </Card>
       ))}
 
-      {completedExercises.length === exercises.length && (
+      {exercises.length > 0 && completedExercises.length === exercises.length && (
         <Card className="border-green-200 bg-green-50">
           <CardContent className="pt-6">
             <div className="text-center">
