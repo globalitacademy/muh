@@ -6,13 +6,18 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Upload, Search, Plus, User, Award, BookOpen, Star, Edit, Eye } from 'lucide-react';
-import { useAdminUsers } from '@/hooks/useAdminUsers';
+import { useAdminUsers, UserProfile } from '@/hooks/useAdminUsers';
 import { Loader2 } from 'lucide-react';
 import AddInstructorForm from './AddInstructorForm';
+import ViewInstructorDialog from './ViewInstructorDialog';
+import EditInstructorDialog from './EditInstructorDialog';
 
 const AdminInstructorsTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [selectedInstructor, setSelectedInstructor] = useState<UserProfile | null>(null);
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const { data: users, isLoading, error } = useAdminUsers();
   
   if (isLoading) {
@@ -44,6 +49,21 @@ const AdminInstructorsTab = () => {
 
   const handleAddSuccess = () => {
     setIsAddDialogOpen(false);
+  };
+
+  const handleViewInstructor = (instructor: UserProfile) => {
+    setSelectedInstructor(instructor);
+    setIsViewDialogOpen(true);
+  };
+
+  const handleEditInstructor = (instructor: UserProfile) => {
+    setSelectedInstructor(instructor);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleEditSuccess = () => {
+    setIsEditDialogOpen(false);
+    setSelectedInstructor(null);
   };
 
   return (
@@ -111,10 +131,20 @@ const AdminInstructorsTab = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleViewInstructor(instructor)}
+                    title="Դիտել տվյալները"
+                  >
                     <Eye className="w-4 h-4" />
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleEditInstructor(instructor)}
+                    title="Խմբագրել"
+                  >
                     <Edit className="w-4 h-4" />
                   </Button>
                 </div>
@@ -174,6 +204,21 @@ const AdminInstructorsTab = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* View Instructor Dialog */}
+      <ViewInstructorDialog
+        instructor={selectedInstructor}
+        open={isViewDialogOpen}
+        onOpenChange={setIsViewDialogOpen}
+      />
+
+      {/* Edit Instructor Dialog */}
+      <EditInstructorDialog
+        instructor={selectedInstructor}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onSuccess={handleEditSuccess}
+      />
     </div>
   );
 };
