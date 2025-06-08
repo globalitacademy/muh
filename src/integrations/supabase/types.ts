@@ -757,6 +757,7 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           birth_date: string | null
+          cover_photo_url: string | null
           created_at: string | null
           department: string | null
           field_of_study: string | null
@@ -780,6 +781,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           birth_date?: string | null
+          cover_photo_url?: string | null
           created_at?: string | null
           department?: string | null
           field_of_study?: string | null
@@ -803,6 +805,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           birth_date?: string | null
+          cover_photo_url?: string | null
           created_at?: string | null
           department?: string | null
           field_of_study?: string | null
