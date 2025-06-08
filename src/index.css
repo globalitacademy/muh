@@ -151,14 +151,14 @@
 }
 
 .hover-interactive {
-  @apply transition-colors hover:bg-[hsl(var(--hover-bg))];
+  @apply transition-all duration-200 hover:bg-[hsl(var(--hover-bg))] hover:shadow-sm;
 }
 
 .hover-muted {
   @apply transition-colors hover:bg-[hsl(var(--hover-muted))];
 }
 
-/* Smooth animations */
+/* Enhanced animations */
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out;
 }
@@ -209,15 +209,16 @@
 
 ::-webkit-scrollbar-track {
   background: hsl(var(--muted));
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--education-blue));
+  background: linear-gradient(to bottom, hsl(var(--education-blue)), hsl(var(--education-dark-blue)));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--education-dark-blue));
+  background: linear-gradient(to bottom, hsl(var(--education-dark-blue)), hsl(var(--education-blue)));
 }
 
 /* Text gradient */
@@ -251,16 +252,27 @@
   left: 100%;
 }
 
-/* Card improvements */
+/* Enhanced card styles */
 .modern-card {
-  background: hsl(var(--card));
+  background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted) / 0.3));
   backdrop-filter: blur(10px);
-  border: 1px solid hsl(var(--border));
+  border: 1px solid hsl(var(--border) / 0.5);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .modern-card {
+  background: linear-gradient(145deg, hsl(var(--card)), hsl(var(--muted) / 0.1));
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.modern-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.dark .modern-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
 
 /* Loading animation */
@@ -286,4 +298,62 @@
   80%, 100% {
     content: '...';
   }
+}
+
+/* Enhanced focus styles for accessibility */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-edu-blue focus:ring-offset-2 focus:ring-offset-background;
+}
+
+/* Glassmorphism effect for admin panels */
+.admin-glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark .admin-glass {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Status indicators */
+.status-indicator {
+  position: relative;
+}
+
+.status-indicator::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: hsl(var(--success-green));
+  animation: pulse 2s infinite;
+}
+
+/* Improved transitions */
+.smooth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar for admin panels */
+.admin-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-scroll::-webkit-scrollbar-track {
+  background: hsl(var(--muted) / 0.3);
+  border-radius: 3px;
+}
+
+.admin-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, hsl(var(--edu-blue) / 0.5), hsl(var(--edu-orange) / 0.5));
+  border-radius: 3px;
+}
+
+.admin-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, hsl(var(--edu-blue)), hsl(var(--edu-orange)));
 }
