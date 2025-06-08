@@ -62,20 +62,11 @@ export const useFinancialTransactions = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('financial_transactions')
-        .select(`
-          *,
-          profiles!financial_transactions_user_id_fkey(name),
-          modules!financial_transactions_course_id_fkey(title)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-
-      return data?.map(transaction => ({
-        ...transaction,
-        user_name: transaction.profiles?.name || 'Unknown User',
-        course_title: transaction.modules?.title || 'Unknown Course'
-      })) as FinancialTransaction[];
+      return data as FinancialTransaction[];
     },
   });
 };
@@ -97,7 +88,7 @@ export const useCoursePricing = () => {
 
       return data?.map(pricing => ({
         ...pricing,
-        course_title: pricing.modules?.title || 'Unknown Course'
+        course_title: pricing.modules?.title || 'Անհայտ դասընթաց'
       })) as CoursePricing[];
     },
   });
@@ -142,7 +133,7 @@ export const useFinancialStats = () => {
         .eq('payment_status', 'completed')
         .eq('transaction_type', 'payment')
         .gte('transaction_date', `${currentMonth}-01`)
-        .lt('transaction_date', `${currentMonth}-32`);
+        .lt('transaction_date', `${new Date().getFullYear()}-${(new Date().getMonth() + 2).toString().padStart(2, '0')}-01`);
 
       if (monthlyError) throw monthlyError;
 

@@ -14,73 +14,37 @@ import {
   Plus,
   Settings,
   Eye,
-  Edit
+  Edit,
+  GraduationCap
 } from 'lucide-react';
+import { useCertificates } from '@/hooks/useCertificates';
 
 const AdminCertificatesTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { data: certificates, isLoading } = useCertificates();
 
-  // Mock data for certificates
-  const certificates = [
-    {
-      id: '1',
-      studentName: 'Արմեն Ավագյան',
-      courseName: 'JavaScript Հիմունքներ',
-      issuedDate: '2024-01-15',
-      certificateType: 'completion',
-      qrCode: 'QR123456',
-      downloadUrl: '#'
-    },
-    {
-      id: '2',
-      studentName: 'Նարե Պողոսյան',
-      courseName: 'React Development',
-      issuedDate: '2024-01-10',
-      certificateType: 'diploma',
-      qrCode: 'QR789012',
-      downloadUrl: '#'
-    },
-    {
-      id: '3',
-      studentName: 'Դավիթ Մարտիրոսյան',
-      courseName: 'Full Stack Development',
-      issuedDate: '2024-01-08',
-      certificateType: 'completion',
-      qrCode: 'QR345678',
-      downloadUrl: '#'
-    }
-  ];
+  // Filter certificates based on search
+  const filteredCertificates = certificates?.filter(cert => 
+    cert.modules?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cert.user_id.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
 
-  const templates = [
-    {
-      id: '1',
-      name: 'Ստանդարտ ավարտական վկայական',
-      type: 'completion',
-      isActive: true,
-      lastModified: '2024-01-01'
-    },
-    {
-      id: '2',
-      name: 'Դիպլոմի ստանդարտ',
-      type: 'diploma',
-      isActive: true,
-      lastModified: '2023-12-15'
-    },
-    {
-      id: '3',
-      name: 'Մասնակցության վկայական',
-      type: 'participation',
-      isActive: false,
-      lastModified: '2023-11-20'
-    }
-  ];
-
+  // Calculate stats from real data
   const stats = {
-    totalIssued: 1285,
-    thisMonth: 67,
-    pendingApproval: 23,
-    templates: 5
+    totalIssued: certificates?.length || 0,
+    thisMonth: certificates?.filter(cert => {
+      const issuedDate = new Date(cert.issued_at);
+      const currentDate = new Date();
+      return issuedDate.getMonth() === currentDate.getMonth() && 
+             issuedDate.getFullYear() === currentDate.getFullYear();
+    }).length || 0,
+    pendingApproval: 0, // This would need a status field in the certificates table
+    diplomas: certificates?.filter(cert => cert.is_diploma).length || 0
   };
+
+  if (isLoading) {
+    return <div className="animate-pulse">Բեռնվում է...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -128,23 +92,25 @@ const AdminCertificatesTab = () => {
 
         <Card className="modern-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-armenian">Սպասում է հաստատման</CardTitle>
-            <QrCode className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium font-armenian">Դիպլոմներ</CardTitle>
+            <GraduationCap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-warning-yellow">{stats.pendingApproval}</div>
-            <p className="text-xs text-muted-foreground font-armenian">Վկայականներ</p>
+            <div className="text-2xl font-bold text-warning-yellow">{stats.diplomas}</div>
+            <p className="text-xs text-muted-foreground font-armenian">Տրված դիպլոմներ</p>
           </CardContent>
         </Card>
 
         <Card className="modern-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-armenian">Շաբլոնները</CardTitle>
+            <CardTitle className="text-sm font-medium font-armenian">Ակտիվություն</CardTitle>
             <Settings className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success-green">{stats.templates}</div>
-            <p className="text-xs text-muted-foreground font-armenian">Ակտիվ շաբլոններ</p>
+            <div className="text-2xl font-bold text-success-green">
+              {stats.totalIssued > 0 ? Math.round((stats.thisMonth / stats.totalIssued) * 100) : 0}%
+            </div>
+            <p className="text-xs text-muted-foreground font-armenian">Ամսական աճ</p>
           </CardContent>
         </Card>
       </div>
@@ -176,36 +142,62 @@ const AdminCertificatesTab = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {certificates.map((cert) => (
-                  <div key={cert.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-edu-blue to-edu-orange flex items-center justify-center">
-                        <Award className="w-6 h-6 text-white" />
+                {filteredCertificates.length > 0 ? (
+                  filteredCertificates.map((cert) => (
+                    <div key={cert.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-edu-blue to-edu-orange flex items-center justify-center">
+                          {cert.is_diploma ? (
+                            <GraduationCap className="w-6 h-6 text-white" />
+                          ) : (
+                            <Award className="w-6 h-6 text-white" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-semibold">{cert.user_id}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {cert.modules?.title || 'Ընդհանուր վկայական'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Տրված՝ {new Date(cert.issued_at).toLocaleDateString('hy-AM')}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="font-semibold">{cert.studentName}</p>
-                        <p className="text-sm text-muted-foreground">{cert.courseName}</p>
-                        <p className="text-xs text-muted-foreground">Տրված՝ {cert.issuedDate}</p>
+                      <div className="flex items-center gap-2">
+                        <Badge className={cert.is_diploma ? 'bg-edu-orange' : 'bg-edu-blue'}>
+                          {cert.is_diploma ? 'Դիպլոմ' : 'Ավարտական'}
+                        </Badge>
+                        <div className="flex gap-1">
+                          <Button variant="outline" size="sm">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          {cert.certificate_url && (
+                            <Button variant="outline" size="sm" asChild>
+                              <a href={cert.certificate_url} target="_blank" rel="noopener noreferrer">
+                                <Download className="w-4 h-4" />
+                              </a>
+                            </Button>
+                          )}
+                          {cert.qr_code && (
+                            <Button variant="outline" size="sm">
+                              <QrCode className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Badge className={cert.certificateType === 'diploma' ? 'bg-edu-orange' : 'bg-edu-blue'}>
-                        {cert.certificateType === 'diploma' ? 'Դիպլոմ' : 'Ավարտական'}
-                      </Badge>
-                      <div className="flex gap-1">
-                        <Button variant="outline" size="sm">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Download className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <QrCode className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Award className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p className="font-armenian">
+                      {searchTerm ? 'Որոնման արդյունքներ չկան' : 'Վկայականներ դեռ չկան'}
+                    </p>
+                    <p className="text-sm">
+                      {searchTerm ? 'Փորձեք այլ որոնման բառ' : 'Վկայականները կհայտնվեն այստեղ'}
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
@@ -216,36 +208,16 @@ const AdminCertificatesTab = () => {
             <CardHeader>
               <CardTitle className="font-armenian">Վկայականների շաբլոններ</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {templates.map((template) => (
-                  <div key={template.id} className="p-4 border rounded-lg">
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <h4 className="font-semibold">{template.name}</h4>
-                        <p className="text-sm text-muted-foreground">Վերջին փոփոխություն՝ {template.lastModified}</p>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Badge className={template.isActive ? 'bg-success-green' : 'bg-muted'}>
-                        {template.isActive ? 'Ակտիվ' : 'Ապաակտիվ'}
-                      </Badge>
-                      <Badge variant="outline">
-                        {template.type === 'diploma' ? 'Դիպլոմ' : 
-                         template.type === 'completion' ? 'Ավարտական' : 'Մասնակցություն'}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <CardContent className="text-center py-12">
+              <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <h3 className="text-xl font-semibold font-armenian mb-2">Շաբլոնների կառավարում</h3>
+              <p className="text-muted-foreground font-armenian mb-4">
+                Ստեղծեք և կառավարեք վկայականների շաբլոնները
+              </p>
+              <Button className="font-armenian btn-modern">
+                <Plus className="w-4 h-4 mr-2" />
+                Նոր շաբլոն
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
