@@ -1,3 +1,4 @@
+
 export interface Module {
   id: string;
   title: string;
@@ -19,6 +20,7 @@ export interface Module {
   rating?: number;
   is_active: boolean;
   order_index?: number;
+  specialty_id?: string; // Added missing property
   created_at: string;
   updated_at: string;
 }
@@ -37,6 +39,9 @@ export interface Topic {
   duration_minutes: number;
   order_index: number;
   is_free: boolean;
+  exercises?: any; // Added missing property
+  quiz_questions?: any; // Added missing property
+  resources?: any; // Added missing property
   created_at: string;
   updated_at: string;
 }

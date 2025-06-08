@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAdminSpecialties, useCreateSpecialty, useUpdateSpecialty, useDeleteSpecialty } from '@/hooks/useSpecialties';
 import { useSpecialtyModules } from '@/hooks/useSpecialtyModules';
@@ -22,7 +23,7 @@ const iconOptions = [
   { value: 'Network', label: 'Network', icon: Network },
   { value: 'Bot', label: 'Bot', icon: Bot },
   { value: 'Brain', label: 'Brain', icon: Brain },
-].filter(option => option.value && option.value.trim() !== ''); // Filter out any empty values
+].filter(option => option.value && option.value.trim() !== '');
 
 const colorOptions = [
   { value: 'from-blue-500 to-cyan-500', label: 'Կապույտ' },
@@ -31,7 +32,7 @@ const colorOptions = [
   { value: 'from-green-500 to-emerald-500', label: 'Կանաչ' },
   { value: 'from-indigo-500 to-blue-500', label: 'Ինդիգո' },
   { value: 'from-yellow-500 to-amber-500', label: 'Դեղին' },
-].filter(option => option.value && option.value.trim() !== ''); // Filter out any empty values
+].filter(option => option.value && option.value.trim() !== '');
 
 const AdminSpecialtiesTab = () => {
   const { data: specialties, isLoading } = useAdminSpecialties();
@@ -46,6 +47,19 @@ const AdminSpecialtiesTab = () => {
   const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string>('');
   const [editingModule, setEditingModule] = useState<Module | null>(null);
 
+  // Add the missing formData state
+  const [formData, setFormData] = useState<CreateSpecialtyData>({
+    name: '',
+    name_en: '',
+    name_ru: '',
+    description: '',
+    description_en: '',
+    description_ru: '',
+    icon: 'Code',
+    color: 'from-blue-500 to-cyan-500',
+    order_index: 0,
+  });
+
   const resetForm = () => {
     setFormData({
       name: '',
@@ -54,8 +68,8 @@ const AdminSpecialtiesTab = () => {
       description: '',
       description_en: '',
       description_ru: '',
-      icon: 'Code', // Ensure this is never empty
-      color: 'from-blue-500 to-cyan-500', // Ensure this is never empty
+      icon: 'Code',
+      color: 'from-blue-500 to-cyan-500',
       order_index: 0,
     });
     setIsCreateModalOpen(false);
