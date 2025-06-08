@@ -1,28 +1,13 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { 
-  FolderOpen, 
-  Plus, 
-  ExternalLink, 
-  Github, 
-  FileText, 
-  Calendar,
-  Users,
-  GraduationCap,
-  Star,
-  Briefcase,
-  Loader2,
-  Edit,
-  Trash2
-} from 'lucide-react';
+import { FolderOpen, Plus, Loader2 } from 'lucide-react';
 import { usePortfolios, useAddPortfolio, useUpdatePortfolio, useDeletePortfolio } from '@/hooks/usePortfolios';
 import { toast } from 'sonner';
+import PortfolioForm from './portfolio/PortfolioForm';
+import PortfolioCard from './portfolio/PortfolioCard';
+import EmptyPortfolioState from './portfolio/EmptyPortfolioState';
 
 const EnhancedPortfolioTab = () => {
   const { data: portfolios = [], isLoading } = usePortfolios();
@@ -145,223 +130,29 @@ const EnhancedPortfolioTab = () => {
 
         <CardContent className="space-y-6">
           {(isAdding || editingId) && (
-            <Card className="p-4 border-dashed">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    placeholder="Ծրագրի անունը *"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input
-                      type="date"
-                      placeholder="Սկսման ամսաթիվ"
-                      value={formData.start_date}
-                      onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-                    />
-                    <Input
-                      type="date"
-                      placeholder="Ավարտման ամսաթիվ"
-                      value={formData.end_date}
-                      onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <Textarea
-                  placeholder="Ծրագրի նկարագրությունը"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Input
-                    placeholder="Ծրագրի URL"
-                    value={formData.project_url}
-                    onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
-                  />
-                  <Input
-                    placeholder="GitHub URL"
-                    value={formData.github_url}
-                    onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
-                  />
-                  <Input
-                    placeholder="Ֆայլերի URL"
-                    value={formData.files_url}
-                    onChange={(e) => setFormData({ ...formData, files_url: e.target.value })}
-                  />
-                </div>
-
-                <div className="flex items-center gap-6">
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="team-project"
-                      checked={formData.is_team_project}
-                      onCheckedChange={(checked) => setFormData({ ...formData, is_team_project: checked })}
-                    />
-                    <Label htmlFor="team-project" className="text-sm font-armenian">
-                      Թիմային ծրագիր
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="thesis-project"
-                      checked={formData.is_thesis_project}
-                      onCheckedChange={(checked) => setFormData({ ...formData, is_thesis_project: checked })}
-                    />
-                    <Label htmlFor="thesis-project" className="text-sm font-armenian">
-                      Դիպլոմային աշխատանք
-                    </Label>
-                  </div>
-                </div>
-
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={handleSubmit}
-                    disabled={addPortfolioMutation.isPending || updatePortfolioMutation.isPending}
-                  >
-                    {(addPortfolioMutation.isPending || updatePortfolioMutation.isPending) ? (
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    ) : null}
-                    {editingId ? 'Թարմացնել' : 'Ավելացնել'}
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={resetForm}
-                    disabled={addPortfolioMutation.isPending || updatePortfolioMutation.isPending}
-                  >
-                    Չեղարկել
-                  </Button>
-                </div>
-              </div>
-            </Card>
+            <PortfolioForm
+              formData={formData}
+              setFormData={setFormData}
+              onSubmit={handleSubmit}
+              onCancel={resetForm}
+              isSubmitting={addPortfolioMutation.isPending || updatePortfolioMutation.isPending}
+              isEditing={!!editingId}
+            />
           )}
 
           <div className="grid gap-6">
             {portfolios.map((portfolio) => (
-              <Card key={portfolio.id} className="relative overflow-hidden">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <FolderOpen className="w-5 h-5 text-primary" />
-                        {portfolio.title}
-                      </CardTitle>
-                      <div className="flex items-center gap-2 mt-2">
-                        {portfolio.is_team_project && (
-                          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                            <Users className="w-3 h-3 mr-1" />
-                            Թիմային
-                          </Badge>
-                        )}
-                        {portfolio.is_thesis_project && (
-                          <Badge variant="secondary" className="bg-purple-100 text-purple-800">
-                            <GraduationCap className="w-3 h-3 mr-1" />
-                            Դիպլոմային
-                          </Badge>
-                        )}
-                        {portfolio.start_date && (
-                          <Badge variant="outline" className="text-xs">
-                            <Calendar className="w-3 h-3 mr-1" />
-                            {new Date(portfolio.start_date).toLocaleDateString('hy-AM')}
-                            {portfolio.end_date && ` - ${new Date(portfolio.end_date).toLocaleDateString('hy-AM')}`}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEdit(portfolio)}
-                      >
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(portfolio.id)}
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  {portfolio.description && (
-                    <p className="text-muted-foreground leading-relaxed">
-                      {portfolio.description}
-                    </p>
-                  )}
-
-                  <div className="flex flex-wrap gap-2">
-                    {portfolio.project_url && (
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={portfolio.project_url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Ծրագիր
-                        </a>
-                      </Button>
-                    )}
-                    {portfolio.github_url && (
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={portfolio.github_url} target="_blank" rel="noopener noreferrer">
-                          <Github className="w-4 h-4 mr-2" />
-                          GitHub
-                        </a>
-                      </Button>
-                    )}
-                    {portfolio.files_url && (
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={portfolio.files_url} target="_blank" rel="noopener noreferrer">
-                          <FileText className="w-4 h-4 mr-2" />
-                          Ֆայլեր
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-
-                  {(portfolio.instructor_review || portfolio.employer_review) && (
-                    <div className="border-t pt-4 space-y-3">
-                      {portfolio.instructor_review && (
-                        <div className="bg-blue-50 p-3 rounded-lg">
-                          <div className="flex items-center gap-2 mb-1">
-                            <Star className="w-4 h-4 text-blue-600" />
-                            <span className="text-sm font-medium text-blue-800">Դասախոսի գնահատական</span>
-                          </div>
-                          <p className="text-sm text-blue-700">{portfolio.instructor_review}</p>
-                        </div>
-                      )}
-                      {portfolio.employer_review && (
-                        <div className="bg-green-50 p-3 rounded-lg">
-                          <div className="flex items-center gap-2 mb-1">
-                            <Briefcase className="w-4 h-4 text-green-600" />
-                            <span className="text-sm font-medium text-green-800">Գործատուի գնահատական</span>
-                          </div>
-                          <p className="text-sm text-green-700">{portfolio.employer_review}</p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <PortfolioCard
+                key={portfolio.id}
+                portfolio={portfolio}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
 
           {portfolios.length === 0 && !isAdding && (
-            <div className="text-center py-12 text-muted-foreground">
-              <FolderOpen className="w-16 h-16 mx-auto mb-4 opacity-50" />
-              <h3 className="text-lg font-semibold mb-2 font-armenian">Ծրագրեր չեն ավելացվել</h3>
-              <p className="text-sm mb-4">Ավելացրեք ձեր ծրագրերը՝ պորտֆոլիոն ցուցադրելու համար</p>
-              <Button onClick={() => setIsAdding(true)} className="font-armenian">
-                <Plus className="w-4 h-4 mr-2" />
-                Ավելացնել առաջին ծրագիրը
-              </Button>
-            </div>
+            <EmptyPortfolioState onAddFirst={() => setIsAdding(true)} />
           )}
         </CardContent>
       </Card>
