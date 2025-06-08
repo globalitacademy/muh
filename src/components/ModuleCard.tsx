@@ -15,7 +15,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
   const navigate = useNavigate();
 
   const handleStartLearning = () => {
-    navigate(`/course/${module.id}`);
+    navigate(`/module/${module.id}`);
   };
 
   return (

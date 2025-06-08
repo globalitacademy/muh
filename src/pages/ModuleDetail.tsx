@@ -45,12 +45,16 @@ const ModuleDetail = () => {
     setHasValidCompanyCode(isValid);
   };
 
-  const handleContinueLearning = () => {
-    // For the main "Continue Learning" button, find the first available topic
-    const firstTopic = topics?.find(t => t.is_free) || topics?.[0];
+  const handleStartLearning = () => {
+    // Find the first topic by order_index
+    const sortedTopics = topics?.sort((a, b) => a.order_index - b.order_index);
+    const firstTopic = sortedTopics?.[0];
+    
     if (firstTopic) {
-      console.log('Continue learning - navigating to first available topic:', firstTopic.id);
+      console.log('Starting learning - navigating to first topic:', firstTopic.id);
       handleTopicClick(firstTopic.id);
+    } else {
+      console.log('No topics available for this module');
     }
   };
 
@@ -201,8 +205,8 @@ const ModuleDetail = () => {
                           <Progress value={0} className="mb-2" />
                           <div className="text-xs text-muted-foreground">0% ավարտված</div>
                         </div>
-                        <Button className="w-full btn-modern font-armenian" onClick={handleContinueLearning}>
-                          Շարունակել ուսումը
+                        <Button className="w-full btn-modern font-armenian" onClick={handleStartLearning}>
+                          Սկսել ուսուցումը
                         </Button>
                       </>
                     ) : (
@@ -215,7 +219,6 @@ const ModuleDetail = () => {
                           {enrollModule.isPending ? 'Գրանցվում է...' : 'Գրանցվել հիմա'}
                         </Button>
                         
-                        {/* Company Code Input for authenticated users too */}
                         <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
                       </>
                     )}
@@ -229,8 +232,8 @@ const ModuleDetail = () => {
                           <Progress value={0} className="mb-2" />
                           <div className="text-xs text-muted-foreground">0% ավարտված</div>
                         </div>
-                        <Button className="w-full btn-modern font-armenian" onClick={handleContinueLearning}>
-                          Շարունակել ուսումը
+                        <Button className="w-full btn-modern font-armenian" onClick={handleStartLearning}>
+                          Սկսել ուսուցումը
                         </Button>
                       </>
                     ) : (
@@ -242,7 +245,6 @@ const ModuleDetail = () => {
                           Գրանցվել դասընթացի համար
                         </Button>
                         
-                        {/* Company Code Input */}
                         <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
                       </>
                     )}
