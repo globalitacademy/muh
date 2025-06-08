@@ -18,6 +18,9 @@ import {
   GraduationCap
 } from 'lucide-react';
 import { useCertificates } from '@/hooks/useCertificates';
+import NewCertificateDialog from './NewCertificateDialog';
+import CertificateTemplateDialog from './CertificateTemplateDialog';
+import CertificateSettingsDialog from './CertificateSettingsDialog';
 
 const AdminCertificatesTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,14 +58,18 @@ const AdminCertificatesTab = () => {
           <p className="text-muted-foreground font-armenian">Կառավարեք և ստեղծեք վկայականներ</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" className="font-armenian">
-            <Settings className="w-4 h-4 mr-2" />
-            Կարգավորումներ
-          </Button>
-          <Button className="font-armenian btn-modern">
-            <Plus className="w-4 h-4 mr-2" />
-            Նոր վկայական
-          </Button>
+          <CertificateSettingsDialog>
+            <Button variant="outline" className="font-armenian">
+              <Settings className="w-4 h-4 mr-2" />
+              Կարգավորումներ
+            </Button>
+          </CertificateSettingsDialog>
+          <NewCertificateDialog>
+            <Button className="font-armenian btn-modern">
+              <Plus className="w-4 h-4 mr-2" />
+              Նոր վկայական
+            </Button>
+          </NewCertificateDialog>
         </div>
       </div>
 
@@ -214,10 +221,12 @@ const AdminCertificatesTab = () => {
               <p className="text-muted-foreground font-armenian mb-4">
                 Ստեղծեք և կառավարեք վկայականների շաբլոնները
               </p>
-              <Button className="font-armenian btn-modern">
-                <Plus className="w-4 h-4 mr-2" />
-                Նոր շաբլոն
-              </Button>
+              <CertificateTemplateDialog>
+                <Button className="font-armenian btn-modern">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Նոր շաբլոն
+                </Button>
+              </CertificateTemplateDialog>
             </CardContent>
           </Card>
         </TabsContent>
@@ -233,10 +242,12 @@ const AdminCertificatesTab = () => {
               <p className="text-muted-foreground font-armenian mb-4">
                 Կարգավորեք վկայականների գեներացման պարամետրները
               </p>
-              <Button className="font-armenian btn-modern">
-                <Settings className="w-4 h-4 mr-2" />
-                Կարգավորել
-              </Button>
+              <CertificateSettingsDialog>
+                <Button className="font-armenian btn-modern">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Կարգավորել
+                </Button>
+              </CertificateSettingsDialog>
             </CardContent>
           </Card>
         </TabsContent>
