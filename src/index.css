@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss/base";
 @import "tailwindcss/components";
@@ -177,9 +178,38 @@
   * {
     @apply border-border;
   }
+  
+  /* GLOBAL OVERFLOW PREVENTION - Critical for mobile */
+  html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+  
   body {
     @apply bg-background text-foreground;
     font-family: 'Noto Sans Armenian', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
+  }
+  
+  /* Container overflow protection */
+  .container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Prevent any element from creating horizontal scroll */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Image and media overflow protection */
+  img, video, canvas, iframe {
+    max-width: 100%;
+    height: auto;
   }
   
   /* Enhanced scrollbar styles for webkit browsers */
@@ -469,4 +499,34 @@
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--scrollbar-thumb-hover));
+}
+
+/* MOBILE OVERFLOW PREVENTION */
+.page-container {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Animation overflow protection */
+.animation-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Enhanced mobile layout utilities */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Prevent text from overflowing on small screens */
+  h1, h2, h3, h4, h5, h6 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
 }

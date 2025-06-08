@@ -9,9 +9,9 @@ import Footer from '@/components/Footer';
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full page-container">
       <Header />
-      <main>
+      <main className="w-full overflow-x-hidden">
         <Hero />
         <Features />
         <Stats />
