@@ -13,10 +13,10 @@ interface ModuleDetailOverviewProps {
 const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps) => {
   const getDifficultyColor = (level: string) => {
     switch (level) {
-      case 'beginner': return 'bg-green-100 text-green-800';
-      case 'intermediate': return 'bg-yellow-100 text-yellow-800';
-      case 'advanced': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'beginner': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+      case 'intermediate': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+      case 'advanced': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   };
 
@@ -59,42 +59,42 @@ const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Calendar className="w-4 h-4 text-blue-600" />
+            <div className="flex items-center gap-3 p-3 bg-edu-blue/10 dark:bg-edu-blue/20 rounded-lg border border-edu-blue/20">
+              <div className="p-2 bg-edu-blue/20 dark:bg-edu-blue/30 rounded-lg">
+                <Calendar className="w-4 h-4 text-edu-blue" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-blue-600">{module.duration_weeks}</p>
+                <p className="text-2xl font-bold text-edu-blue">{module.duration_weeks}</p>
                 <p className="text-xs text-muted-foreground font-armenian">շաբաթ</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <BookOpen className="w-4 h-4 text-green-600" />
+            <div className="flex items-center gap-3 p-3 bg-success-green/10 dark:bg-success-green/20 rounded-lg border border-success-green/20">
+              <div className="p-2 bg-success-green/20 dark:bg-success-green/30 rounded-lg">
+                <BookOpen className="w-4 h-4 text-success-green" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">{topicsCount}</p>
+                <p className="text-2xl font-bold text-success-green">{topicsCount}</p>
                 <p className="text-xs text-muted-foreground font-armenian">դաս</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Users className="w-4 h-4 text-orange-600" />
+            <div className="flex items-center gap-3 p-3 bg-edu-orange/10 dark:bg-edu-orange/20 rounded-lg border border-edu-orange/20">
+              <div className="p-2 bg-edu-orange/20 dark:bg-edu-orange/30 rounded-lg">
+                <Users className="w-4 h-4 text-edu-orange" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-orange-600">{module.students_count}</p>
+                <p className="text-2xl font-bold text-edu-orange">{module.students_count}</p>
                 <p className="text-xs text-muted-foreground font-armenian">ուսանող</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Star className="w-4 h-4 text-purple-600" />
+            <div className="flex items-center gap-3 p-3 bg-warning-yellow/10 dark:bg-warning-yellow/20 rounded-lg border border-warning-yellow/20">
+              <div className="p-2 bg-warning-yellow/20 dark:bg-warning-yellow/30 rounded-lg">
+                <Star className="w-4 h-4 text-warning-yellow" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-purple-600">{module.rating?.toFixed(1) || '0.0'}</p>
+                <p className="text-2xl font-bold text-warning-yellow">{module.rating?.toFixed(1) || '0.0'}</p>
                 <p className="text-xs text-muted-foreground font-armenian">գնահատական</p>
               </div>
             </div>
