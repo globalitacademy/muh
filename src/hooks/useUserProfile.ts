@@ -89,11 +89,11 @@ export const useUserProfile = () => {
         }
 
         console.log('useUserProfile - Created new profile:', insertedProfile);
-        return insertedProfile;
+        return insertedProfile as UserProfile;
       }
 
       console.log('useUserProfile - Returning existing profile:', data);
-      return data;
+      return data as UserProfile;
     },
     enabled: !!user,
     retry: 1,
