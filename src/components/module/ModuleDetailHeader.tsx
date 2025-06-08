@@ -2,12 +2,25 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Module } from '@/types/database';
-import { getDifficultyColor, getDifficultyText } from '@/utils/moduleUtils';
+import { getDifficultyText } from '@/utils/moduleUtils';
 
 interface ModuleDetailHeaderProps {
   module: Module;
   topicsCount: number;
 }
+
+const getDifficultyColor = (level: string) => {
+  switch (level) {
+    case 'beginner':
+      return 'bg-success-green/20 text-success-green border-success-green/30';
+    case 'intermediate':
+      return 'bg-warning-yellow/20 text-warning-yellow border-warning-yellow/30';
+    case 'advanced':
+      return 'bg-destructive/20 text-destructive border-destructive/30';
+    default:
+      return 'bg-muted text-muted-foreground border-border';
+  }
+};
 
 const ModuleDetailHeader = ({ module, topicsCount }: ModuleDetailHeaderProps) => {
   return (
