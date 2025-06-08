@@ -9,37 +9,37 @@ const Features = () => {
   
   const features = [
     {
-      icon: <Lightbulb className="w-8 h-8" />,
+      icon: <Lightbulb className="w-6 sm:w-8 h-6 sm:h-8" />,
       title: t('features.quality.title'),
       description: t('features.quality.desc'),
       color: 'from-blue-500 to-purple-600'
     },
     {
-      icon: <Clock className="w-8 h-8" />,
+      icon: <Clock className="w-6 sm:w-8 h-6 sm:h-8" />,
       title: t('features.flexible.title'),
       description: t('features.flexible.desc'),
       color: 'from-green-500 to-teal-600'
     },
     {
-      icon: <Users className="w-8 h-8" />,
+      icon: <Users className="w-6 sm:w-8 h-6 sm:h-8" />,
       title: t('features.support.title'),
       description: t('features.support.desc'),
       color: 'from-orange-500 to-red-600'
     },
     {
-      icon: <Star className="w-8 h-8" />,
+      icon: <Star className="w-6 sm:w-8 h-6 sm:h-8" />,
       title: 'Փորձագիտական գնահատում',
       description: 'Ստացիր հետադարձ կապ մասնագետներից և բարելավի՛ր քո հմտությունները',
       color: 'from-yellow-500 to-orange-600'
     },
     {
-      icon: <BookOpen className="w-8 h-8" />,
+      icon: <BookOpen className="w-6 sm:w-8 h-6 sm:h-8" />,
       title: 'Ինտերակտիվ ուսուցում',
       description: 'Գործնական առաջադրանքներ և իրական նախագծեր ուսումնառության համար',
       color: 'from-purple-500 to-pink-600'
     },
     {
-      icon: <Trophy className="w-8 h-8" />,
+      icon: <Trophy className="w-6 sm:w-8 h-6 sm:h-8" />,
       title: 'Վկայագրեր',
       description: 'Ստացիր ճանաչված վկայագրեր դասընթացների ավարտին',
       color: 'from-indigo-500 to-blue-600'
@@ -47,33 +47,33 @@ const Features = () => {
   ];
 
   return (
-    <section className="py-24 bg-background">
+    <section className="py-16 sm:py-20 lg:py-24 bg-background">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-6">
-            <Star className="w-4 h-4" />
-            <span className="font-medium font-armenian text-2xl">Ինչու՞ ընտրել մեզ</span>
+        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-4 sm:mb-6">
+            <Star className="w-3 sm:w-4 h-3 sm:h-4" />
+            <span className="font-medium font-armenian text-lg sm:text-xl lg:text-2xl">Ինչու՞ ընտրել մեզ</span>
           </div>
           
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-armenian leading-relaxed">
+          <p className="text-lg sm:text-xl lg:text-xl text-muted-foreground max-w-3xl mx-auto font-armenian leading-relaxed px-2">
             Մենք առաջարկում ենք ամենաարդիական և արդյունավետ ուսումնական հարթակը
           </p>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
           {features.map((feature, index) => (
             <Card 
               key={index} 
-              className="modern-card course-card-hover border border-border/20 shadow-lg overflow-hidden group hover:border-edu-blue/50 transition-all duration-300"
+              className="modern-card course-card-hover border border-border/20 shadow-lg overflow-hidden group hover:border-edu-blue/50 transition-all duration-300 hover:scale-105"
             >
-              <CardContent className="p-8">
-                <div className={`w-16 h-16 mx-auto mb-6 bg-gradient-to-r ${feature.color} text-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+              <CardContent className="p-6 sm:p-8">
+                <div className={`w-12 sm:w-16 h-12 sm:h-16 mx-auto mb-4 sm:mb-6 bg-gradient-to-r ${feature.color} text-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                   {feature.icon}
                 </div>
-                <h3 className="text-xl font-semibold mb-4 font-armenian text-center group-hover:text-edu-blue transition-colors">
+                <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 font-armenian text-center group-hover:text-edu-blue transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground font-armenian text-center leading-relaxed">
+                <p className="text-muted-foreground font-armenian text-center leading-relaxed text-sm sm:text-base">
                   {feature.description}
                 </p>
               </CardContent>
@@ -81,14 +81,14 @@ const Features = () => {
           ))}
         </div>
 
-        {/* Call to action */}
-        <div className="text-center mt-16">
-          <div className="glass-card rounded-2xl p-8 max-w-2xl mx-auto border border-border/30">
-            <h3 className="text-2xl font-bold mb-4 font-armenian">Պատրա՞ստ եք սկսել</h3>
-            <p className="text-muted-foreground mb-6 font-armenian">
+        {/* Call to action - Mobile optimized */}
+        <div className="text-center mt-12 sm:mt-16">
+          <div className="glass-card rounded-2xl p-6 sm:p-8 max-w-2xl mx-auto border border-border/30">
+            <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 font-armenian">Պատրա՞ստ եք սկսել</h3>
+            <p className="text-muted-foreground mb-4 sm:mb-6 font-armenian text-sm sm:text-base">
               Միացիր մեր համայնքին և սկսիր քո ուսումնական ճանապարհորդությունը
             </p>
-            <button className="btn-modern text-white px-8 py-3 rounded-xl font-armenian font-semibold">
+            <button className="btn-modern text-white px-6 sm:px-8 py-3 rounded-xl font-armenian font-semibold w-full sm:w-auto min-h-[48px]">
               Սկսել հիմա
             </button>
           </div>
