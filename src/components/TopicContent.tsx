@@ -16,6 +16,31 @@ interface TopicContentProps {
 const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
   const [completedSections, setCompletedSections] = useState<string[]>([]);
 
+  // Helper function to convert YouTube URL to embed format
+  const getYouTubeEmbedUrl = (url: string): string | null => {
+    if (!url) return null;
+    
+    try {
+      // Handle different YouTube URL formats
+      const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+      const match = url.match(youtubeRegex);
+      
+      if (match && match[1]) {
+        return `https://www.youtube.com/embed/${match[1]}`;
+      }
+      
+      // If it's already an embed URL, return as is
+      if (url.includes('youtube.com/embed/')) {
+        return url;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error parsing YouTube URL:', error);
+      return null;
+    }
+  };
+
   // Fetch topic content from database
   const { data: topic, isLoading, error } = useQuery({
     queryKey: ['topic-content', topicId],
@@ -77,6 +102,9 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
     );
   }
 
+  // Get the proper embed URL for the video
+  const embedUrl = getYouTubeEmbedUrl(topic.video_url);
+
   return (
     <div className="space-y-6">
       {/* Video Section */}
@@ -88,14 +116,25 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {topic.video_url ? (
+          {embedUrl ? (
             <div className="aspect-video mb-4">
               <iframe
-                src={topic.video_url}
+                src={embedUrl}
                 className="w-full h-full rounded-lg"
                 allowFullScreen
                 title={`${topic.title} - Տեսանյութ դաս`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               />
+            </div>
+          ) : topic.video_url ? (
+            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
+              <div className="text-center">
+                <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
+                <p className="text-muted-foreground font-armenian mb-2">Անվավեր տեսանյութի հղում</p>
+                <p className="text-xs text-muted-foreground font-armenian">
+                  Խնդրում ենք ստուգել YouTube հղումը
+                </p>
+              </div>
             </div>
           ) : (
             <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
