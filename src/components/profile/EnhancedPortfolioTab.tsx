@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -96,6 +95,8 @@ const EnhancedPortfolioTab = () => {
       end_date: portfolio.end_date || '',
       is_team_project: portfolio.is_team_project || false,
       is_thesis_project: portfolio.is_thesis_project || false,
+      instructor_review: portfolio.instructor_review || '',
+      employer_review: portfolio.employer_review || '',
     });
     setEditingId(portfolio.id);
     setIsAdding(true);
