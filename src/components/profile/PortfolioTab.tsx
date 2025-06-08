@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { usePortfolios, useCreatePortfolio, useDeletePortfolio } from '@/hooks/usePortfolios';
+import { usePortfolios, useAddPortfolio, useDeletePortfolio } from '@/hooks/usePortfolios';
 import { FolderOpen, ExternalLink, Github, Plus, Calendar, Users, GraduationCap } from 'lucide-react';
 
 const PortfolioTab = () => {
   const { data: portfolios, isLoading } = usePortfolios();
-  const createPortfolioMutation = useCreatePortfolio();
+  const addPortfolioMutation = useAddPortfolio();
   const deletePortfolioMutation = useDeletePortfolio();
 
   if (isLoading) {

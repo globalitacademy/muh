@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,7 +23,8 @@ const GoalsSection = () => {
     category: 'skill' as const,
     priority: 'medium' as const,
     deadline: '',
-    progress: 0
+    progress: 0,
+    status: 'active' as const
   });
 
   const getCategoryColor = (category: string) => {
@@ -73,7 +73,8 @@ const GoalsSection = () => {
         category: 'skill',
         priority: 'medium',
         deadline: '',
-        progress: 0
+        progress: 0,
+        status: 'active'
       });
       setIsAdding(false);
       toast.success('Նպատակը հաջողությամբ ավելացվեց');

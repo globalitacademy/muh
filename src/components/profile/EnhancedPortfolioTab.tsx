@@ -43,6 +43,8 @@ const EnhancedPortfolioTab = () => {
     end_date: '',
     is_team_project: false,
     is_thesis_project: false,
+    instructor_review: '',
+    employer_review: '',
   });
 
   const resetForm = () => {
@@ -56,6 +58,8 @@ const EnhancedPortfolioTab = () => {
       end_date: '',
       is_team_project: false,
       is_thesis_project: false,
+      instructor_review: '',
+      employer_review: '',
     });
     setIsAdding(false);
     setEditingId(null);

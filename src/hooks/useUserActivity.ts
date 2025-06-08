@@ -29,7 +29,7 @@ export const useUserActivity = () => {
         .order('date', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return data as UserActivity[] || [];
     },
     enabled: !!user,
   });
