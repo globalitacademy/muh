@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText } from 'lucide-react';
+import CertificateRenderer from './CertificateRenderer';
 
 interface CertificateTemplate {
   id: string;
@@ -55,7 +56,7 @@ const CertificateTemplatePreviewDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-armenian">Շաբլոնի նախադիտում</DialogTitle>
         </DialogHeader>
@@ -88,43 +89,43 @@ const CertificateTemplatePreviewDialog = ({
                 </div>
               )}
               
-              <div className="mb-4">
-                <h4 className="text-sm font-semibold font-armenian mb-2">Ստեղծման ամսաթիվ</h4>
-                <p className="text-sm text-muted-foreground">
-                  {new Date(template.created_at).toLocaleDateString('hy-AM')}
-                </p>
+              <div className="text-xs text-muted-foreground">
+                Ստեղծված՝ {new Date(template.created_at).toLocaleDateString('hy-AM')}
               </div>
-
-              {template.design_config && (
-                <div>
-                  <h4 className="text-sm font-semibold font-armenian mb-2">Դիզայնի կոնֆիգուրացիա</h4>
-                  <div className="bg-muted p-3 rounded-lg">
-                    <pre className="text-xs text-muted-foreground overflow-x-auto">
-                      {JSON.stringify(template.design_config, null, 2)}
-                    </pre>
-                  </div>
-                </div>
-              )}
             </CardContent>
           </Card>
 
-          {/* Template Preview Area */}
+          {/* Certificate Preview */}
           <Card className="modern-card">
             <CardHeader>
               <CardTitle className="font-armenian">Վկայականի նախադիտում</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center min-h-[300px] flex items-center justify-center">
-                <div className="text-muted-foreground">
-                  <FileText className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p className="font-armenian text-lg mb-2">Վկայականի նախադիտում</p>
-                  <p className="text-sm">
-                    Այստեղ կցուցադրվի վկայականի տեսքը՝ հիմնված {template.name} շաբլոնի վրա
-                  </p>
-                </div>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-lg">
+                <CertificateRenderer
+                  templateName={template.name}
+                  templateType={template.template_type}
+                  designConfig={template.design_config}
+                />
               </div>
             </CardContent>
           </Card>
+
+          {/* Design Configuration (for debugging) */}
+          {template.design_config && (
+            <Card className="modern-card">
+              <CardHeader>
+                <CardTitle className="font-armenian text-sm">Դիզայնի կոնֆիգուրացիա</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted p-3 rounded-lg">
+                  <pre className="text-xs text-muted-foreground overflow-x-auto max-h-32">
+                    {JSON.stringify(template.design_config, null, 2)}
+                  </pre>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </DialogContent>
     </Dialog>
