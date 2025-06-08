@@ -67,7 +67,7 @@ const TopicExercises = ({ topicId, onComplete }: TopicExercisesProps) => {
           exercise.id && 
           exercise.title && 
           exercise.description
-        ) as Exercise[];
+        ) as unknown as Exercise[];
       }
       
       return [];

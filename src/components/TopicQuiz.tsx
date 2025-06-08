@@ -69,7 +69,7 @@ const TopicQuiz = ({ topicId, onComplete }: TopicQuizProps) => {
           question.question && 
           Array.isArray(question.options) && 
           typeof question.correct === 'number'
-        ) as QuizQuestion[];
+        ) as unknown as QuizQuestion[];
       }
       
       return [];
