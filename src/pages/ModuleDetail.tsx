@@ -63,7 +63,7 @@ const ModuleDetail = () => {
       <div className="min-h-screen bg-background">
         <Header />
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-8 w-8 animate-spin text-edu-blue" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
         <Footer />
       </div>
@@ -76,7 +76,7 @@ const ModuleDetail = () => {
         <Header />
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
-            <h2 className="text-2xl font-bold font-armenian">Դասընթացը չի գտնվել</h2>
+            <h2 className="text-2xl font-bold font-armenian text-foreground">Դասընթացը չի գտնվել</h2>
             <Button onClick={() => navigate('/')} className="mt-4 font-armenian">
               Վերադառնալ գլխավոր էջ
             </Button>
@@ -95,7 +95,7 @@ const ModuleDetail = () => {
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
-          className="mb-6 text-muted-foreground hover:text-foreground"
+          className="mb-6 text-muted-foreground hover:text-foreground hover:bg-hover-bg"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Վերադառնալ գլխավոր էջ
