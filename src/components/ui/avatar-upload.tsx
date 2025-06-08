@@ -68,9 +68,9 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       console.log('AvatarUpload: Starting upload of edited avatar');
       const url = await uploadImage(editedFile, 'avatar');
       if (url) {
-        console.log('AvatarUpload: Upload successful, updating avatar URL:', url);
+        console.log('AvatarUpload: Upload successful, calling onAvatarChange with URL:', url);
         onAvatarChange(url);
-        toast.success('Նկարը հաջողությամբ վերբեռնվեց');
+        // Don't show success toast here - let the parent component handle it
       }
     } catch (error) {
       const errorMessage = 'Սխալ նկարը վերբեռնելիս';
@@ -91,9 +91,9 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
     try {
       setError(null);
       await deleteImage(currentAvatarUrl);
+      console.log('AvatarUpload: Avatar deleted successfully, calling onAvatarChange with null');
       onAvatarChange(null);
-      toast.success('Նկարը հաջողությամբ ջնջվեց');
-      console.log('AvatarUpload: Avatar deleted successfully');
+      // Don't show success toast here - let the parent component handle it
     } catch (error) {
       const errorMessage = 'Սխալ նկարը ջնջելիս';
       console.error('AvatarUpload: Delete error:', error);

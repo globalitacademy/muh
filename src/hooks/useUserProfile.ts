@@ -13,6 +13,7 @@ interface UserProfile {
   bio: string | null;
   organization: string | null;
   avatar_url: string | null;
+  cover_photo_url: string | null;
   birth_date: string | null;
   address: string | null;
   language_preference: 'hy' | 'ru' | 'en' | null;
@@ -69,6 +70,7 @@ export const useUserProfile = () => {
             bio: null,
             organization: null,
             avatar_url: null,
+            cover_photo_url: null,
             birth_date: null,
             address: null,
             language_preference: 'hy',
@@ -104,7 +106,12 @@ export const useUpdateProfile = () => {
   
   return useMutation({
     mutationFn: async (profileData: Partial<Omit<UserProfile, 'id' | 'role'>>) => {
-      if (!user) throw new Error('No user found');
+      console.log('useUpdateProfile - Starting update with data:', profileData);
+      
+      if (!user) {
+        console.error('useUpdateProfile - No user found');
+        throw new Error('No user found');
+      }
       
       const { data, error } = await supabase
         .from('profiles')
@@ -113,11 +120,23 @@ export const useUpdateProfile = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('useUpdateProfile - Update error:', error);
+        throw error;
+      }
+      
+      console.log('useUpdateProfile - Update successful:', data);
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('useUpdateProfile - onSuccess callback, invalidating queries');
+      // Invalidate and refetch user profile
       queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+      // Update the cache immediately with the new data
+      queryClient.setQueryData(['userProfile', user?.id], data);
     },
+    onError: (error) => {
+      console.error('useUpdateProfile - onError callback:', error);
+    }
   });
 };

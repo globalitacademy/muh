@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useUserProfile } from '@/hooks/useUserProfile';
+import { useUserProfile, useUpdateProfile } from '@/hooks/useUserProfile';
 import { 
   User, 
   BookOpen, 
@@ -36,10 +36,13 @@ import ExamsTab from '@/components/profile/ExamsTab';
 import ProfileSettingsTab from '@/components/profile/ProfileSettingsTab';
 import SettingsTab from '@/components/settings/SettingsTab';
 import { AvatarUpload } from '@/components/ui/avatar-upload';
+import { CoverPhotoUpload } from '@/components/ui/cover-photo-upload';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
 const StudentProfile = () => {
   const { data: profile, isLoading, error } = useUserProfile();
+  const updateProfileMutation = useUpdateProfile();
   const [activeTab, setActiveTab] = useState('overview');
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
@@ -86,10 +89,29 @@ const StudentProfile = () => {
     }
   };
 
-  const handleAvatarChange = (url: string | null) => {
+  const handleAvatarChange = async (url: string | null) => {
     console.log('StudentProfile: Avatar changed to:', url);
-    // The ProfileSettingsTab will handle the actual profile update
-    setIsAvatarModalOpen(false);
+    try {
+      await updateProfileMutation.mutateAsync({ avatar_url: url });
+      toast.success('Նկարը հաջողությամբ թարմացվեց');
+      setIsAvatarModalOpen(false);
+    } catch (error) {
+      console.error('StudentProfile: Error updating avatar:', error);
+      toast.error('Սխալ նկարը թարմացնելիս');
+    }
+  };
+
+  const handleCoverPhotoChange = async (url: string | null) => {
+    console.log('StudentProfile: Cover photo changed to:', url);
+    try {
+      // Assuming we add cover_photo_url field to profiles table
+      await updateProfileMutation.mutateAsync({ cover_photo_url: url });
+      toast.success('Ծածկագիրը հաջողությամբ թարմացվեց');
+      setIsCoverModalOpen(false);
+    } catch (error) {
+      console.error('StudentProfile: Error updating cover photo:', error);
+      toast.error('Սխալ ծածկագիրը թարմացնելիս');
+    }
   };
 
   const handleCoverPhotoClick = () => {
@@ -108,6 +130,13 @@ const StudentProfile = () => {
       <div className="relative">
         {/* Cover Photo */}
         <div className="h-48 bg-gradient-to-r from-primary/20 via-secondary/20 to-primary/20 rounded-t-lg relative overflow-hidden">
+          {profile.cover_photo_url && (
+            <img 
+              src={profile.cover_photo_url} 
+              alt="Ծածկագիր" 
+              className="w-full h-full object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           <Button 
             variant="secondary" 
@@ -253,9 +282,10 @@ const StudentProfile = () => {
             <DialogTitle className="font-armenian">Ծածկագրի փոփոխություն</DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            <p className="text-center text-muted-foreground">
-              Ծածկագրի ֆունկցիան շուտով կավելացվի
-            </p>
+            <CoverPhotoUpload
+              currentCoverUrl={profile.cover_photo_url}
+              onCoverChange={handleCoverPhotoChange}
+            />
           </div>
         </DialogContent>
       </Dialog>
