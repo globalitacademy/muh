@@ -3,10 +3,7 @@ import React, { useState, useEffect } from 'react';
 import AdminOverviewTab from './overview/AdminOverviewTab';
 import AdminAnalyticsTab from './AdminAnalyticsTab';
 import AdminReportsTab from './AdminReportsTab';
-import AdminModulesTab from './AdminModulesTab';
 import AdminSpecialtiesTab from './AdminSpecialtiesTab';
-import AdminTopicsTab from './AdminTopicsTab';
-import AdminCurriculumTab from './curriculum/AdminCurriculumTab';
 import AdminAssessmentTab from './assessment/AdminAssessmentTab';
 import AdminApplicationsTab from './applications/AdminApplicationsTab';
 import AdminUsersTab from './AdminUsersTab';
@@ -43,12 +40,6 @@ const AdminDashboard = () => {
         return <AdminReportsTab />;
       case 'specialties':
         return <AdminSpecialtiesTab />;
-      case 'modules':
-        return <AdminModulesTab />;
-      case 'topics':
-        return <AdminTopicsTab />;
-      case 'curriculum':
-        return <AdminCurriculumTab />;
       case 'assessment':
         return <AdminAssessmentTab />;
       case 'applications':

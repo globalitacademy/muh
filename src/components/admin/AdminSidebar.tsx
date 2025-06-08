@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from '@/components/ui/sidebar';
-import { BarChart3, BookOpen, Users, Settings, FileText, Activity, GraduationCap, Shield, DollarSign, Award, MessageSquare, FolderOpen, Archive, ChevronRight, UserPlus, Layers, List } from 'lucide-react';
+import { BarChart3, Users, Settings, FileText, Activity, GraduationCap, Shield, DollarSign, Award, MessageSquare, FolderOpen, Archive, ChevronRight, UserPlus, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AdminSidebarProps {
@@ -46,18 +46,6 @@ const AdminSidebar = ({
       id: 'specialties',
       label: 'Մասնագիտություններ',
       icon: Layers
-    }, {
-      id: 'modules',
-      label: 'Մոդուլներ',
-      icon: BookOpen
-    }, {
-      id: 'topics',
-      label: 'Թեմաներ (դասեր)',
-      icon: List
-    }, {
-      id: 'curriculum',
-      label: 'Ուսումնական ծրագրեր',
-      icon: GraduationCap
     }, {
       id: 'assessment',
       label: 'Գնահատում և քննություններ',
