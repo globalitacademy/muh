@@ -10,6 +10,8 @@ import { useEnhancedMessages, useSearchMessages } from '@/hooks/useEnhancedMessa
 import { useAnnouncements, usePublishAnnouncement, useDeleteAnnouncement } from '@/hooks/useAnnouncements';
 import { useCommunicationStats } from '@/hooks/useCommunicationStats';
 import { useNotifications } from '@/hooks/useNotifications';
+import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient } from '@tanstack/react-query';
 import MessageDetailDialog from './MessageDetailDialog';
 import ComposeMessageDialog from './ComposeMessageDialog';
 import AnnouncementDialog from './AnnouncementDialog';
@@ -39,6 +41,7 @@ const AdminCommunicationTab = () => {
   const [replyTo, setReplyTo] = useState(null);
 
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { data: messages, isLoading: messagesLoading } = useEnhancedMessages(user?.id);
   const { data: searchResults } = useSearchMessages(searchTerm, user?.id);
   const { data: announcements } = useAnnouncements();
@@ -71,7 +74,7 @@ const AdminCommunicationTab = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [queryClient]);
 
   const handleMessageClick = (message) => {
     setSelectedMessage(message);

@@ -39,7 +39,7 @@ export const useCommunicationStats = () => {
 
       // Get active announcements count
       const { count: activeAnnouncements } = await supabase
-        .from('announcements')
+        .from('announcements' as any)
         .select('*', { count: 'exact', head: true })
         .eq('status', 'published');
 

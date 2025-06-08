@@ -68,13 +68,13 @@ export const useMessageAttachments = (messageId: string) => {
     queryKey: ['message-attachments', messageId],
     queryFn: async (): Promise<MessageAttachment[]> => {
       const { data, error } = await supabase
-        .from('message_attachments')
+        .from('message_attachments' as any)
         .select('*')
         .eq('message_id', messageId)
         .order('uploaded_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as MessageAttachment[];
     },
     enabled: !!messageId,
   });
@@ -109,7 +109,7 @@ export const useSendMessage = () => {
           // Upload file to Supabase storage (if storage is configured)
           // For now, we'll create placeholder entries
           await supabase
-            .from('message_attachments')
+            .from('message_attachments' as any)
             .insert({
               message_id: message.id,
               filename: file.name,

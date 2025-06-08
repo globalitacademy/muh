@@ -33,12 +33,12 @@ export const useAnnouncements = () => {
     queryKey: ['announcements'],
     queryFn: async (): Promise<Announcement[]> => {
       const { data, error } = await supabase
-        .from('announcements')
+        .from('announcements' as any)
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as Announcement[];
     },
   });
 };
@@ -48,13 +48,13 @@ export const usePublishedAnnouncements = () => {
     queryKey: ['published-announcements'],
     queryFn: async (): Promise<Announcement[]> => {
       const { data, error } = await supabase
-        .from('announcements')
+        .from('announcements' as any)
         .select('*')
         .eq('status', 'published')
         .order('published_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as Announcement[];
     },
   });
 };
@@ -65,7 +65,7 @@ export const useCreateAnnouncement = () => {
   return useMutation({
     mutationFn: async (announcementData: CreateAnnouncementData): Promise<Announcement> => {
       const { data, error } = await supabase
-        .from('announcements')
+        .from('announcements' as any)
         .insert({
           ...announcementData,
           created_by: (await supabase.auth.getUser()).data.user?.id,
@@ -74,7 +74,7 @@ export const useCreateAnnouncement = () => {
         .single();
 
       if (error) throw error;
-      return data;
+      return data as Announcement;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['announcements'] });
@@ -89,7 +89,7 @@ export const usePublishAnnouncement = () => {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
       const { error } = await supabase
-        .from('announcements')
+        .from('announcements' as any)
         .update({ 
           status: 'published',
           published_at: new Date().toISOString(),
@@ -112,7 +112,7 @@ export const useDeleteAnnouncement = () => {
   return useMutation({
     mutationFn: async (id: string): Promise<void> => {
       const { error } = await supabase
-        .from('announcements')
+        .from('announcements' as any)
         .delete()
         .eq('id', id);
 
