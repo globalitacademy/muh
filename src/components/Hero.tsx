@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play, Star, Users, Award, BookOpen, Loader2 } from 'lucide-react';
@@ -48,7 +49,7 @@ const Hero = () => {
             </Button>
             <Button variant="outline" size="lg" className="px-8 py-4 text-lg font-armenian backdrop-blur-sm border-border bg-background/80 text-foreground hover:bg-accent" onClick={() => navigate('/about')}>
               <Play className="mr-2 w-5 h-5" />
-              Դիտել ցուցադրությունը
+              Մեր մասին
             </Button>
           </div>
 
