@@ -120,11 +120,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             <div className="relative z-10">
               <ProfileAvatar
                 key={avatarKey}
-                src={avatarUrl}
-                alt={profile.name || 'Profile'}
-                size="lg"
-                onClick={onAvatarClick}
-                showCamera={true}
+                avatarUrl={avatarUrl}
+                name={profile.name || 'Profile'}
+                onAvatarClick={onAvatarClick}
               />
             </div>
 

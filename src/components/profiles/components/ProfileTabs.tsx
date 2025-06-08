@@ -141,7 +141,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
         </TabsContent>
 
         <TabsContent value="settings" className="mt-6">
-          <ProfileSettingsTab />
+          <ProfileSettingsTab profile={profile} />
         </TabsContent>
       </div>
     </Tabs>

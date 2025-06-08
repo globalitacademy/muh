@@ -1,8 +1,8 @@
 
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import AvatarUpload from '@/components/ui/avatar-upload';
-import CoverPhotoUpload from '@/components/ui/cover-photo-upload';
+import { AvatarUpload } from '@/components/ui/avatar-upload';
+import { CoverPhotoUpload } from '@/components/ui/cover-photo-upload';
 
 interface ProfileModalsProps {
   isAvatarModalOpen: boolean;
@@ -36,9 +36,9 @@ const ProfileModals: React.FC<ProfileModalsProps> = ({
             <DialogTitle className="font-armenian">Նկարի փոփոխություն</DialogTitle>
           </DialogHeader>
           <AvatarUpload
-            currentImageUrl={avatarUrl}
-            onImageChange={onAvatarChange}
-            userName={name}
+            currentAvatarUrl={avatarUrl}
+            onAvatarChange={onAvatarChange}
+            name={name}
           />
         </DialogContent>
       </Dialog>
@@ -50,8 +50,8 @@ const ProfileModals: React.FC<ProfileModalsProps> = ({
             <DialogTitle className="font-armenian">Ծածկագիր փոփոխություն</DialogTitle>
           </DialogHeader>
           <CoverPhotoUpload
-            currentImageUrl={coverUrl}
-            onImageChange={onCoverPhotoChange}
+            currentCoverUrl={coverUrl}
+            onCoverChange={onCoverPhotoChange}
           />
         </DialogContent>
       </Dialog>
