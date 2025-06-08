@@ -170,21 +170,26 @@ const About = () => {
                 }
               </p>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
               {values.map((value, index) => (
-                <Card key={index} className="modern-card course-card-hover border-0 shadow-lg group overflow-hidden h-full">
-                  <CardContent className="p-6 lg:p-8 text-center h-full flex flex-col">
-                    <div className={`w-16 h-16 mx-auto mb-6 bg-gradient-to-r ${value.color} text-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                      {value.icon}
+                <div key={index} className="group relative">
+                  <div className="glass-card rounded-3xl p-8 h-full border-0 shadow-xl backdrop-blur-lg bg-gradient-to-br from-card/80 to-card/40 hover:from-card/90 hover:to-card/60 transition-all duration-500">
+                    <div className="flex items-start gap-6">
+                      <div className={`flex-shrink-0 w-20 h-20 bg-gradient-to-r ${value.color} text-white rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg`}>
+                        {value.icon}
+                      </div>
+                      <div className="flex-grow">
+                        <h3 className="text-2xl font-bold mb-4 font-armenian group-hover:text-edu-blue transition-colors duration-300">
+                          {value.title}
+                        </h3>
+                        <p className="text-muted-foreground font-armenian leading-relaxed text-lg">
+                          {value.description}
+                        </p>
+                      </div>
                     </div>
-                    <h3 className="text-lg font-semibold mb-4 font-armenian group-hover:text-edu-blue transition-colors">
-                      {value.title}
-                    </h3>
-                    <p className="text-muted-foreground font-armenian leading-relaxed text-sm flex-grow">
-                      {value.description}
-                    </p>
-                  </CardContent>
-                </Card>
+                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${value.color} opacity-5 rounded-full -translate-y-8 translate-x-8 group-hover:opacity-10 transition-opacity duration-300`}></div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
