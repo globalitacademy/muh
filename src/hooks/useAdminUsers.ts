@@ -22,6 +22,7 @@ export interface UserStats {
   totalInstructors: number;
   totalStudents: number;
   totalAdmins: number;
+  totalEmployers: number;
   activeUsers: number;
   newUsersThisMonth: number;
 }
@@ -77,6 +78,14 @@ export const useUserStats = () => {
 
       if (adminsError) throw adminsError;
 
+      // Get employers count
+      const { count: employersCount, error: employersError } = await supabase
+        .from('profiles')
+        .select('*', { count: 'exact', head: true })
+        .eq('role', 'employer');
+
+      if (employersError) throw employersError;
+
       // Get active users (status = 'active')
       const { count: activeUsersCount, error: activeUsersError } = await supabase
         .from('profiles')
@@ -100,6 +109,7 @@ export const useUserStats = () => {
         totalInstructors: instructorsCount || 0,
         totalStudents: studentsCount || 0,
         totalAdmins: adminsCount || 0,
+        totalEmployers: employersCount || 0,
         activeUsers: activeUsersCount || 0,
         newUsersThisMonth: newUsersCount || 0,
       };
@@ -112,6 +122,9 @@ export const useUpdateUserRole = () => {
 
   return useMutation({
     mutationFn: async ({ userId, role }: { userId: string; role: 'admin' | 'instructor' | 'student' | 'employer' }) => {
+      // Get current user for audit log
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
       // Update in profiles table
       const { error: profileError } = await supabase
         .from('profiles')
@@ -126,9 +139,25 @@ export const useUpdateUserRole = () => {
         .upsert({ user_id: userId, role }, { onConflict: 'user_id,role' });
 
       if (roleError) throw roleError;
+
+      // Log the action
+      if (currentUser) {
+        await supabase
+          .from('admin_audit_logs')
+          .insert({
+            admin_id: currentUser.id,
+            target_user_id: userId,
+            action: 'role_changed',
+            details: { new_role: role }
+          });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+      queryClient.invalidateQueries({ queryKey: ['adminInstructors'] });
+      queryClient.invalidateQueries({ queryKey: ['adminStudents'] });
+      queryClient.invalidateQueries({ queryKey: ['adminEmployers'] });
+      queryClient.invalidateQueries({ queryKey: ['adminInstructorsWithGroups'] });
       queryClient.invalidateQueries({ queryKey: ['userStats'] });
       queryClient.invalidateQueries({ queryKey: ['adminStats'] });
       toast.success('Օգտատիրոջ ռոլը հաջողությամբ թարմացվել է');
@@ -136,6 +165,44 @@ export const useUpdateUserRole = () => {
     onError: (error) => {
       console.error('Error updating user role:', error);
       toast.error('Օգտատիրոջ ռոլի թարմացման սխալ');
+    },
+  });
+};
+
+export const useManageInstructorGroups = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ instructorId, groups }: { instructorId: string; groups: string[] }) => {
+      // First, remove existing groups for this instructor
+      const { error: deleteError } = await supabase
+        .from('instructor_groups')
+        .delete()
+        .eq('instructor_id', instructorId);
+
+      if (deleteError) throw deleteError;
+
+      // Then add new groups
+      if (groups.length > 0) {
+        const groupRecords = groups.map(group => ({
+          instructor_id: instructorId,
+          group_number: group
+        }));
+
+        const { error: insertError } = await supabase
+          .from('instructor_groups')
+          .insert(groupRecords);
+
+        if (insertError) throw insertError;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminInstructorsWithGroups'] });
+      toast.success('Դասախոսի խմբերը հաջողությամբ թարմացվել են');
+    },
+    onError: (error) => {
+      console.error('Error managing instructor groups:', error);
+      toast.error('Դասախոսի խմբերի թարմացման սխալ');
     },
   });
 };

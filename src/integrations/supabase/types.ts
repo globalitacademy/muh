@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admin_audit_logs: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_user_id: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_user_id?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_audit_logs_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_audit_logs_target_user_id_fkey"
+            columns: ["target_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       availability: {
         Row: {
           capacity: number
@@ -435,6 +477,38 @@ export type Database = {
             columns: ["excursion_id"]
             isOneToOne: false
             referencedRelation: "excursions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      instructor_groups: {
+        Row: {
+          created_at: string
+          group_number: string
+          id: string
+          instructor_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          group_number: string
+          id?: string
+          instructor_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          group_number?: string
+          id?: string
+          instructor_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "instructor_groups_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1203,7 +1277,12 @@ export type Database = {
       app_role: "admin" | "instructor" | "student" | "employer"
       application_status: "pending" | "rejected" | "accepted"
       language_preference: "hy" | "ru" | "en"
-      profile_status: "active" | "graduated" | "suspended"
+      profile_status:
+        | "active"
+        | "graduated"
+        | "suspended"
+        | "blocked"
+        | "deleted"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1322,7 +1401,13 @@ export const Constants = {
       app_role: ["admin", "instructor", "student", "employer"],
       application_status: ["pending", "rejected", "accepted"],
       language_preference: ["hy", "ru", "en"],
-      profile_status: ["active", "graduated", "suspended"],
+      profile_status: [
+        "active",
+        "graduated",
+        "suspended",
+        "blocked",
+        "deleted",
+      ],
     },
   },
 } as const

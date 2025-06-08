@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, User, Shield, GraduationCap } from 'lucide-react';
-import AdminInstructorsTab from './users/AdminInstructorsTab';
-import AdminStudentsTab from './users/AdminStudentsTab';
+import { Users, User, Shield, GraduationCap, Building2 } from 'lucide-react';
+import EnhancedAdminInstructorsTab from './users/EnhancedAdminInstructorsTab';
+import EnhancedAdminStudentsTab from './users/EnhancedAdminStudentsTab';
+import AdminEmployersTab from './users/AdminEmployersTab';
 import AdminPermissionsTab from './users/AdminPermissionsTab';
 
 const AdminUsersTab = () => {
@@ -25,7 +26,7 @@ const AdminUsersTab = () => {
       {/* User Management Tabs */}
       <div className="glass-card rounded-2xl p-2 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
         <Tabs defaultValue="instructors" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-muted/50 p-1 rounded-xl">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/50 p-1 rounded-xl">
             <TabsTrigger value="instructors" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               <GraduationCap className="w-4 h-4 mr-2" />
               Դասախոսներ
@@ -33,6 +34,10 @@ const AdminUsersTab = () => {
             <TabsTrigger value="students" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               <User className="w-4 h-4 mr-2" />
               Ուսանողներ
+            </TabsTrigger>
+            <TabsTrigger value="employers" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
+              <Building2 className="w-4 h-4 mr-2" />
+              Գործատուներ
             </TabsTrigger>
             <TabsTrigger value="permissions" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               <Shield className="w-4 h-4 mr-2" />
@@ -42,11 +47,15 @@ const AdminUsersTab = () => {
 
           <div className="min-h-[600px]">
             <TabsContent value="instructors" className="mt-6">
-              <AdminInstructorsTab />
+              <EnhancedAdminInstructorsTab />
             </TabsContent>
 
             <TabsContent value="students" className="mt-6">
-              <AdminStudentsTab />
+              <EnhancedAdminStudentsTab />
+            </TabsContent>
+
+            <TabsContent value="employers" className="mt-6">
+              <AdminEmployersTab />
             </TabsContent>
 
             <TabsContent value="permissions" className="mt-6">
