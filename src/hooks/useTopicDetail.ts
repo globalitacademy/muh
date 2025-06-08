@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -10,7 +9,7 @@ export const useTopicDetail = () => {
   const { topicId } = useParams<{ topicId: string }>();
   const { user } = useAuth();
   const { data: enrollments } = useEnrollments();
-  const [activeTab, setActiveTab] = useState('content');
+  const [activeTab, setActiveTab] = useState('video'); // Start with video tab
   const [progress, setProgress] = useState(0);
 
   console.log('TopicDetail - Topic ID from params:', topicId);
@@ -74,10 +73,12 @@ export const useTopicDetail = () => {
     
     setActiveTab(value);
     // Update progress based on completed sections
-    if (value === 'exercises' && progress < 33) {
-      setProgress(33);
-    } else if (value === 'quiz' && progress < 66) {
-      setProgress(66);
+    if (value === 'content' && progress < 25) {
+      setProgress(25);
+    } else if (value === 'exercises' && progress < 50) {
+      setProgress(50);
+    } else if (value === 'quiz' && progress < 75) {
+      setProgress(75);
     }
   };
 
