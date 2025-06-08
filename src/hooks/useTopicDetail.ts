@@ -9,7 +9,7 @@ export const useTopicDetail = () => {
   const { topicId } = useParams<{ topicId: string }>();
   const { user } = useAuth();
   const { data: enrollments } = useEnrollments();
-  const [activeTab, setActiveTab] = useState('video'); // Start with video tab
+  const [activeTab, setActiveTab] = useState('content'); // Start with theoretical content
   const [progress, setProgress] = useState(0);
 
   console.log('TopicDetail - Topic ID from params:', topicId);
@@ -73,7 +73,7 @@ export const useTopicDetail = () => {
     
     setActiveTab(value);
     // Update progress based on completed sections
-    if (value === 'content' && progress < 25) {
+    if (value === 'video' && progress < 25) {
       setProgress(25);
     } else if (value === 'exercises' && progress < 50) {
       setProgress(50);

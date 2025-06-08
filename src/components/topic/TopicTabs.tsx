@@ -18,13 +18,13 @@ const TopicTabs = ({ topicId, activeTab, onTabChange, onCompleteLesson }: TopicT
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-6">
       <TabsList className="grid w-full grid-cols-4">
-        <TabsTrigger value="video" className="font-armenian">
-          <PlayCircle className="w-4 h-4 mr-2" />
-          Տեսադաս
-        </TabsTrigger>
         <TabsTrigger value="content" className="font-armenian">
           <BookOpen className="w-4 h-4 mr-2" />
           Տեսական մաս
+        </TabsTrigger>
+        <TabsTrigger value="video" className="font-armenian">
+          <PlayCircle className="w-4 h-4 mr-2" />
+          Տեսադաս
         </TabsTrigger>
         <TabsTrigger value="exercises" className="font-armenian">
           <PenTool className="w-4 h-4 mr-2" />
@@ -36,12 +36,12 @@ const TopicTabs = ({ topicId, activeTab, onTabChange, onCompleteLesson }: TopicT
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="video" className="space-y-6">
-        <TopicVideoLesson topicId={topicId} onComplete={() => onTabChange('content')} />
+      <TabsContent value="content" className="space-y-6">
+        <TopicContent topicId={topicId} onComplete={() => onTabChange('video')} />
       </TabsContent>
 
-      <TabsContent value="content" className="space-y-6">
-        <TopicContent topicId={topicId} onComplete={() => onTabChange('exercises')} />
+      <TabsContent value="video" className="space-y-6">
+        <TopicVideoLesson topicId={topicId} onComplete={() => onTabChange('exercises')} />
       </TabsContent>
 
       <TabsContent value="exercises" className="space-y-6">
