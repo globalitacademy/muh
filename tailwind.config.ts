@@ -59,7 +59,11 @@ export default {
 				'edu-light-blue': 'hsl(var(--education-light-blue))',
 				'edu-dark-blue': 'hsl(var(--education-dark-blue))',
 				'success-green': 'hsl(var(--success-green))',
-				'warning-yellow': 'hsl(var(--warning-yellow))'
+				'warning-yellow': 'hsl(var(--warning-yellow))',
+				// Hover colors
+				'hover-bg': 'hsl(var(--hover-bg))',
+				'hover-card': 'hsl(var(--hover-card))',
+				'hover-muted': 'hsl(var(--hover-muted))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

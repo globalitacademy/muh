@@ -80,7 +80,7 @@ const SpecialtyTopicsList = ({ moduleId }: SpecialtyTopicsListProps) => {
               <Card key={topic.id} className="border-l-4 border-l-blue-500">
                 <Collapsible open={isExpanded} onOpenChange={() => toggleTopic(topic.id)}>
                   <CollapsibleTrigger asChild>
-                    <CardContent className="p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                    <CardContent className="p-4 cursor-pointer hover-interactive transition-colors">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <span className="text-sm font-medium text-blue-600 min-w-[2rem]">
@@ -156,7 +156,7 @@ const SpecialtyTopicsList = ({ moduleId }: SpecialtyTopicsListProps) => {
                             <FileText className="w-4 h-4" />
                             <span className="text-sm font-medium font-armenian">Բովանդակություն:</span>
                           </div>
-                          <div className="p-3 bg-gray-50 rounded text-sm max-h-32 overflow-y-auto whitespace-pre-wrap">
+                          <div className="p-3 bg-muted rounded text-sm max-h-32 overflow-y-auto whitespace-pre-wrap">
                             {topic.content.substring(0, 300)}
                             {topic.content.length > 300 && '...'}
                           </div>

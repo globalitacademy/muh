@@ -88,7 +88,7 @@ const SpecialtyCard = ({
     <Card className="group">
       <Collapsible open={isExpanded} onOpenChange={onToggle}>
         <CollapsibleTrigger asChild>
-          <CardHeader className="cursor-pointer hover:bg-gray-50 transition-colors">
+          <CardHeader className="cursor-pointer hover-interactive transition-colors">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <ChevronDown className={`h-5 w-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
@@ -104,7 +104,7 @@ const SpecialtyCard = ({
                 <div className="text-xs text-muted-foreground font-armenian">
                   Հերթ՝ {specialty.order_index}
                 </div>
-                <span className={`text-xs px-2 py-1 rounded-full ${specialty.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} font-armenian`}>
+                <span className={`text-xs px-2 py-1 rounded-full ${specialty.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-300'} font-armenian`}>
                   {specialty.is_active ? 'Ակտիվ' : 'Ոչ ակտիվ'}
                 </span>
                 <Button 

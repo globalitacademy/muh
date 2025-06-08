@@ -51,6 +51,11 @@
     --gradient-end: 320 100% 68%;
     --glass-bg: 255 255 255 / 0.1;
     --glass-border: 255 255 255 / 0.2;
+    
+    /* Hover states for light theme */
+    --hover-bg: 210 40% 98%;
+    --hover-card: 210 40% 96%;
+    --hover-muted: 210 40% 94%;
   }
 
   .dark {
@@ -81,6 +86,11 @@
     --education-dark-blue: 213 94% 60%;
     --success-green: 142 76% 45%;
     --warning-yellow: 45 93% 65%;
+    
+    /* Hover states for dark theme */
+    --hover-bg: 217.2 32.6% 22%;
+    --hover-card: 217.2 32.6% 20%;
+    --hover-muted: 217.2 32.6% 25%;
   }
 }
 
@@ -133,6 +143,19 @@
 
 .font-armenian {
   font-family: 'Noto Sans Armenian', 'Inter', sans-serif;
+}
+
+/* Hover utility classes for consistent theming */
+.hover-card {
+  @apply transition-colors hover:bg-[hsl(var(--hover-card))];
+}
+
+.hover-interactive {
+  @apply transition-colors hover:bg-[hsl(var(--hover-bg))];
+}
+
+.hover-muted {
+  @apply transition-colors hover:bg-[hsl(var(--hover-muted))];
 }
 
 /* Smooth animations */
