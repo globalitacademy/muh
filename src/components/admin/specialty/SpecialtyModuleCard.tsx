@@ -7,6 +7,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { ChevronDown, Edit, Trash2, BookOpen, Users, Star, Clock } from 'lucide-react';
 import { Module } from '@/types/database';
 import { useDeleteModule } from '@/hooks/useAdminModules';
+import { cn } from '@/lib/utils';
 import SpecialtyTopicsList from './SpecialtyTopicsList';
 
 interface SpecialtyModuleCardProps {
