@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -218,9 +219,12 @@ const ModuleDetail = () => {
                         >
                           {enrollModule.isPending ? 'Գրանցվում է...' : 'Գրանցվել հիմա'}
                         </Button>
-                        
-                        <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
                       </>
+                    )}
+                    
+                    {/* Company Code Input - always show for authenticated users */}
+                    {!hasFullAccess && (
+                      <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
                     )}
                   </div>
                 ) : (
@@ -244,10 +248,11 @@ const ModuleDetail = () => {
                         >
                           Գրանցվել դասընթացի համար
                         </Button>
-                        
-                        <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
                       </>
                     )}
+                    
+                    {/* Company Code Input - always show for non-authenticated users */}
+                    <CompanyCodeInput onCodeVerified={handleCompanyCodeVerified} />
                   </div>
                 )}
 
