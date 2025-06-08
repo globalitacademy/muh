@@ -34,32 +34,68 @@ export const useQuiz = (topicId: string) => {
     enabled: !!topicId
   });
 
-  // Parse quiz questions from JSON with proper type casting
+  // Helper function to recursively parse JSON strings
+  const recursiveJSONParse = (data: any): any => {
+    if (typeof data === 'string') {
+      try {
+        const parsed = JSON.parse(data);
+        return recursiveJSONParse(parsed); // Recursively parse in case of double encoding
+      } catch {
+        return data; // Return as is if parsing fails
+      }
+    }
+    return data;
+  };
+
+  // Parse quiz questions from JSON with improved parsing
   const questions: QuizQuestion[] = useMemo(() => {
-    if (!topic?.quiz_questions) return [];
+    if (!topic?.quiz_questions) {
+      console.log('No quiz questions data found');
+      return [];
+    }
     
     try {
-      // Handle the case where quiz_questions might be a JSON string or already parsed
-      let questionsData = topic.quiz_questions;
+      console.log('Raw quiz questions data:', topic.quiz_questions);
       
-      if (typeof questionsData === 'string') {
-        questionsData = JSON.parse(questionsData);
+      // Use recursive parsing to handle double-encoded JSON
+      let questionsData = recursiveJSONParse(topic.quiz_questions);
+      
+      console.log('Parsed quiz questions data:', questionsData);
+      
+      // Ensure it's an array
+      if (!Array.isArray(questionsData)) {
+        console.log('Quiz questions data is not an array:', typeof questionsData);
+        return [];
       }
       
-      // Ensure it's an array and validate the structure
-      if (Array.isArray(questionsData)) {
-        return questionsData.filter((question: any) => 
-          question && 
+      // Validate and filter questions
+      const validQuestions = questionsData.filter((question: any) => {
+        const isValid = question && 
           typeof question === 'object' && 
           question.question && 
           Array.isArray(question.options) && 
-          typeof question.correct === 'number'
-        ) as unknown as QuizQuestion[];
-      }
+          question.options.length > 0 &&
+          (typeof question.correct === 'number' || typeof question.correct_answer === 'number');
+        
+        if (!isValid) {
+          console.log('Invalid question found:', question);
+        }
+        
+        return isValid;
+      }).map((question: any, index: number) => ({
+        // Ensure required fields with fallbacks
+        id: question.id || `question-${index}`,
+        question: question.question,
+        options: question.options,
+        correct: typeof question.correct === 'number' ? question.correct : question.correct_answer,
+        explanation: question.explanation
+      })) as QuizQuestion[];
       
-      return [];
+      console.log('Valid questions found:', validQuestions.length, validQuestions);
+      return validQuestions;
+      
     } catch (error) {
-      console.error('Error parsing quiz questions:', error);
+      console.error('Error parsing quiz questions:', error, 'Raw data:', topic.quiz_questions);
       return [];
     }
   }, [topic?.quiz_questions]);

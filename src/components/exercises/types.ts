@@ -6,4 +6,8 @@ export interface Exercise {
   difficulty: string;
   hint?: string;
   expectedAnswer?: string;
+  question?: string;
+  type?: string;
+  options?: string[];
+  answer?: string;
 }

@@ -30,32 +30,72 @@ export const useTopicExercises = (topicId: string) => {
     enabled: !!topicId
   });
 
-  // Parse exercises from JSON with proper type casting
+  // Helper function to recursively parse JSON strings
+  const recursiveJSONParse = (data: any): any => {
+    if (typeof data === 'string') {
+      try {
+        const parsed = JSON.parse(data);
+        return recursiveJSONParse(parsed); // Recursively parse in case of double encoding
+      } catch {
+        return data; // Return as is if parsing fails
+      }
+    }
+    return data;
+  };
+
+  // Parse exercises from JSON with improved parsing
   const exercises: Exercise[] = useMemo(() => {
-    if (!topic?.exercises) return [];
+    if (!topic?.exercises) {
+      console.log('No exercises data found');
+      return [];
+    }
     
     try {
-      // Handle the case where exercises might be a JSON string or already parsed
-      let exercisesData = topic.exercises;
+      console.log('Raw exercises data:', topic.exercises);
       
-      if (typeof exercisesData === 'string') {
-        exercisesData = JSON.parse(exercisesData);
+      // Use recursive parsing to handle double-encoded JSON
+      let exercisesData = recursiveJSONParse(topic.exercises);
+      
+      console.log('Parsed exercises data:', exercisesData);
+      
+      // Ensure it's an array
+      if (!Array.isArray(exercisesData)) {
+        console.log('Exercises data is not an array:', typeof exercisesData);
+        return [];
       }
       
-      // Ensure it's an array and validate the structure
-      if (Array.isArray(exercisesData)) {
-        return exercisesData.filter((exercise: any) => 
-          exercise && 
+      // Validate and filter exercises
+      const validExercises = exercisesData.filter((exercise: any) => {
+        const isValid = exercise && 
           typeof exercise === 'object' && 
-          exercise.id && 
-          exercise.title && 
-          exercise.description
-        ) as unknown as Exercise[];
-      }
+          (exercise.id || exercise.title) && // At least one identifier
+          (exercise.title || exercise.question) && // At least some content
+          (exercise.description || exercise.question);
+        
+        if (!isValid) {
+          console.log('Invalid exercise found:', exercise);
+        }
+        
+        return isValid;
+      }).map((exercise: any) => ({
+        // Ensure required fields with fallbacks
+        id: exercise.id || `exercise-${Date.now()}-${Math.random()}`,
+        title: exercise.title || exercise.question || 'Վարժություն',
+        description: exercise.description || exercise.question || '',
+        difficulty: exercise.difficulty || 'միջին',
+        hint: exercise.hint,
+        expectedAnswer: exercise.expectedAnswer || exercise.answer,
+        question: exercise.question,
+        type: exercise.type,
+        options: exercise.options,
+        answer: exercise.answer
+      })) as Exercise[];
       
-      return [];
+      console.log('Valid exercises found:', validExercises.length, validExercises);
+      return validExercises;
+      
     } catch (error) {
-      console.error('Error parsing exercises:', error);
+      console.error('Error parsing exercises:', error, 'Raw data:', topic.exercises);
       return [];
     }
   }, [topic?.exercises]);

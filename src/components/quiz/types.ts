@@ -4,6 +4,7 @@ export interface QuizQuestion {
   question: string;
   options: string[];
   correct: number;
+  correct_answer?: number; // Alternative field name that might be used
   explanation?: string;
 }
 
