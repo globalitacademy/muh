@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss/base";
 @import "tailwindcss/components";
@@ -105,8 +106,20 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    
+    /* Educational theme colors */
     --edu-blue: 221.2 83.2% 53.3%;
+    --edu-orange: 24 100% 50%;
+    --edu-light-blue: 195 100% 85%;
+    --edu-dark-blue: 221.2 83.2% 43.3%;
     --edu-purple: 262.1 83.3% 57.8%;
+    --success-green: 142 71% 45%;
+    --warning-yellow: 48 96% 53%;
+    
+    /* Hover colors */
+    --hover-bg: 210 40% 94%;
+    --hover-card: 210 40% 98%;
+    --hover-muted: 210 40% 92%;
   }
 
   .dark {
@@ -134,6 +147,20 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    
+    /* Educational theme colors - Dark mode */
+    --edu-blue: 217.2 91.2% 59.8%;
+    --edu-orange: 24 100% 60%;
+    --edu-light-blue: 195 100% 75%;
+    --edu-dark-blue: 221.2 83.2% 33.3%;
+    --edu-purple: 262.1 83.3% 67.8%;
+    --success-green: 142 71% 55%;
+    --warning-yellow: 48 96% 63%;
+    
+    /* Hover colors - Dark mode */
+    --hover-bg: 217.2 32.6% 20%;
+    --hover-card: 217.2 32.6% 22%;
+    --hover-muted: 217.2 32.6% 18%;
   }
 }
 
@@ -151,12 +178,37 @@
   font-family: 'Noto Sans Armenian', system-ui, -apple-system, sans-serif;
 }
 
+/* Educational color utilities */
 .text-edu-blue {
   color: hsl(var(--edu-blue));
 }
 
 .bg-edu-blue {
   background-color: hsl(var(--edu-blue));
+}
+
+.text-edu-orange {
+  color: hsl(var(--edu-orange));
+}
+
+.bg-edu-orange {
+  background-color: hsl(var(--edu-orange));
+}
+
+.text-edu-light-blue {
+  color: hsl(var(--edu-light-blue));
+}
+
+.bg-edu-light-blue {
+  background-color: hsl(var(--edu-light-blue));
+}
+
+.text-edu-dark-blue {
+  color: hsl(var(--edu-dark-blue));
+}
+
+.bg-edu-dark-blue {
+  background-color: hsl(var(--edu-dark-blue));
 }
 
 .text-edu-purple {
@@ -167,6 +219,27 @@
   background-color: hsl(var(--edu-purple));
 }
 
+.text-success-green {
+  color: hsl(var(--success-green));
+}
+
+.bg-success-green {
+  background-color: hsl(var(--success-green));
+}
+
+.text-warning-yellow {
+  color: hsl(var(--warning-yellow));
+}
+
+.bg-warning-yellow {
+  background-color: hsl(var(--warning-yellow));
+}
+
+/* Interactive utilities */
 .hover-interactive {
   @apply transition-all duration-200 hover:shadow-md;
+}
+
+.text-gradient {
+  @apply bg-gradient-to-r from-edu-blue to-edu-purple bg-clip-text text-transparent;
 }

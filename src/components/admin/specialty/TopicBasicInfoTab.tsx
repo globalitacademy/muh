@@ -4,20 +4,22 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
+interface TopicBasicInfoFormData {
+  title: string;
+  title_en: string;
+  title_ru: string;
+  description: string;
+  description_en: string;
+  description_ru: string;
+  video_url: string;
+  duration_minutes: number;
+  order_index: number;
+  is_free: boolean;
+}
+
 interface TopicBasicInfoTabProps {
-  formData: {
-    title: string;
-    title_en: string;
-    title_ru: string;
-    description: string;
-    description_en: string;
-    description_ru: string;
-    video_url: string;
-    duration_minutes: number;
-    order_index: number;
-    is_free: boolean;
-  };
-  onFormDataChange: (updates: Partial<typeof formData>) => void;
+  formData: TopicBasicInfoFormData;
+  onFormDataChange: (updates: Partial<TopicBasicInfoFormData>) => void;
 }
 
 const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProps) => {

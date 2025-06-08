@@ -54,10 +54,11 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				// Educational theme colors
-				'edu-blue': 'hsl(var(--education-blue))',
-				'edu-orange': 'hsl(var(--education-orange))',
-				'edu-light-blue': 'hsl(var(--education-light-blue))',
-				'edu-dark-blue': 'hsl(var(--education-dark-blue))',
+				'edu-blue': 'hsl(var(--edu-blue))',
+				'edu-orange': 'hsl(var(--edu-orange))',
+				'edu-light-blue': 'hsl(var(--edu-light-blue))',
+				'edu-dark-blue': 'hsl(var(--edu-dark-blue))',
+				'edu-purple': 'hsl(var(--edu-purple))',
 				'success-green': 'hsl(var(--success-green))',
 				'warning-yellow': 'hsl(var(--warning-yellow))',
 				// Hover colors

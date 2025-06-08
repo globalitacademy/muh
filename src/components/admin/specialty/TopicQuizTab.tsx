@@ -3,11 +3,13 @@ import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
+interface TopicQuizFormData {
+  quiz_questions: string;
+}
+
 interface TopicQuizTabProps {
-  formData: {
-    quiz_questions: string;
-  };
-  onFormDataChange: (updates: Partial<typeof formData>) => void;
+  formData: TopicQuizFormData;
+  onFormDataChange: (updates: Partial<TopicQuizFormData>) => void;
 }
 
 const TopicQuizTab = ({ formData, onFormDataChange }: TopicQuizTabProps) => {

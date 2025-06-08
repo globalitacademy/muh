@@ -3,12 +3,14 @@ import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 
+interface TopicExercisesFormData {
+  exercises: string;
+  resources: string;
+}
+
 interface TopicExercisesTabProps {
-  formData: {
-    exercises: string;
-    resources: string;
-  };
-  onFormDataChange: (updates: Partial<typeof formData>) => void;
+  formData: TopicExercisesFormData;
+  onFormDataChange: (updates: Partial<TopicExercisesFormData>) => void;
 }
 
 const TopicExercisesTab = ({ formData, onFormDataChange }: TopicExercisesTabProps) => {
