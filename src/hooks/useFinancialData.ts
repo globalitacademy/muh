@@ -110,6 +110,7 @@ export const usePaymentSettings = () => {
       const { data, error } = await supabase
         .from('payment_settings')
         .select('*')
+        .eq('provider', 'idram')
         .single();
 
       if (error) throw error;
