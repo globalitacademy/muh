@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -33,6 +33,8 @@ const ModuleDetailSidebar = ({
 }: ModuleDetailSidebarProps) => {
   const [tempAccess, setTempAccess] = useState(false);
   const [accessTimer, setAccessTimer] = useState<NodeJS.Timeout | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState(0);
+  const [countdownTimer, setCountdownTimer] = useState<NodeJS.Timeout | null>(null);
 
   const handleTempCodeVerified = (isValid: boolean) => {
     if (isValid) {
@@ -40,13 +42,53 @@ const ModuleDetailSidebar = ({
       onCompanyCodeVerified(true);
       
       // Set timer for 60 minutes (3600000 ms)
+      const endTime = Date.now() + 3600000;
+      setTimeRemaining(3600000);
+      
       const timer = setTimeout(() => {
         setTempAccess(false);
         onCompanyCodeVerified(false);
+        setTimeRemaining(0);
+        if (countdownTimer) {
+          clearInterval(countdownTimer);
+          setCountdownTimer(null);
+        }
       }, 3600000);
       
       setAccessTimer(timer);
+
+      // Start countdown
+      const countdown = setInterval(() => {
+        const remaining = endTime - Date.now();
+        if (remaining <= 0) {
+          setTimeRemaining(0);
+          clearInterval(countdown);
+          setCountdownTimer(null);
+        } else {
+          setTimeRemaining(remaining);
+        }
+      }, 1000);
+      
+      setCountdownTimer(countdown);
     }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (accessTimer) {
+        clearTimeout(accessTimer);
+      }
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+      }
+    };
+  }, [accessTimer, countdownTimer]);
+
+  const formatTimeRemaining = (milliseconds: number) => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
   const effectiveAccess = hasFullAccess || tempAccess;
@@ -81,9 +123,17 @@ const ModuleDetailSidebar = ({
                   <Button className="w-full btn-modern font-armenian" onClick={onStartLearning}>
                     Սկսել ուսուցումը
                   </Button>
-                  {tempAccess && (
-                    <div className="text-xs text-center text-warning-yellow font-armenian">
-                      Ժամանակավոր մուտք՝ 60 րոպե
+                  {tempAccess && timeRemaining > 0 && (
+                    <div className="text-center p-3 bg-warning-yellow/10 rounded-lg border border-warning-yellow/30">
+                      <div className="text-sm font-medium text-warning-yellow font-armenian mb-1">
+                        Ժամանակավոր մուտք
+                      </div>
+                      <div className="text-lg font-bold text-warning-yellow font-mono">
+                        {formatTimeRemaining(timeRemaining)}
+                      </div>
+                      <div className="text-xs text-warning-yellow/80 font-armenian">
+                        մնացած ժամանակ
+                      </div>
                     </div>
                   )}
                 </>
