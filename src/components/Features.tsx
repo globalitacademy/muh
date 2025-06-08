@@ -1,43 +1,53 @@
+
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Lightbulb, Clock, Users, Star, BookOpen, Trophy } from 'lucide-react';
+
 const Features = () => {
-  const {
-    t
-  } = useLanguage();
-  const features = [{
-    icon: <Lightbulb className="w-8 h-8" />,
-    title: t('features.quality.title'),
-    description: t('features.quality.desc'),
-    color: 'from-blue-500 to-purple-600'
-  }, {
-    icon: <Clock className="w-8 h-8" />,
-    title: t('features.flexible.title'),
-    description: t('features.flexible.desc'),
-    color: 'from-green-500 to-teal-600'
-  }, {
-    icon: <Users className="w-8 h-8" />,
-    title: t('features.support.title'),
-    description: t('features.support.desc'),
-    color: 'from-orange-500 to-red-600'
-  }, {
-    icon: <Star className="w-8 h-8" />,
-    title: 'Փորձագիտական գնահատում',
-    description: 'Ստացիր հետադարձ կապ մասնագետներից և բարելավի՛ր քո հմտությունները',
-    color: 'from-yellow-500 to-orange-600'
-  }, {
-    icon: <BookOpen className="w-8 h-8" />,
-    title: 'Ինտերակտիվ ուսուցում',
-    description: 'Գործնական առաջադրանքներ և իրական նախագծեր ուսումնառության համար',
-    color: 'from-purple-500 to-pink-600'
-  }, {
-    icon: <Trophy className="w-8 h-8" />,
-    title: 'Վկայագրեր',
-    description: 'Ստացիր ճանաչված վկայագրեր դասընթացների ավարտին',
-    color: 'from-indigo-500 to-blue-600'
-  }];
-  return <section className="py-24 bg-background">
+  const { t } = useLanguage();
+  
+  const features = [
+    {
+      icon: <Lightbulb className="w-8 h-8" />,
+      title: t('features.quality.title'),
+      description: t('features.quality.desc'),
+      color: 'from-blue-500 to-purple-600'
+    },
+    {
+      icon: <Clock className="w-8 h-8" />,
+      title: t('features.flexible.title'),
+      description: t('features.flexible.desc'),
+      color: 'from-green-500 to-teal-600'
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: t('features.support.title'),
+      description: t('features.support.desc'),
+      color: 'from-orange-500 to-red-600'
+    },
+    {
+      icon: <Star className="w-8 h-8" />,
+      title: 'Փորձագիտական գնահատում',
+      description: 'Ստացիր հետադարձ կապ մասնագետներից և բարելավի՛ր քո հմտությունները',
+      color: 'from-yellow-500 to-orange-600'
+    },
+    {
+      icon: <BookOpen className="w-8 h-8" />,
+      title: 'Ինտերակտիվ ուսուցում',
+      description: 'Գործնական առաջադրանքներ և իրական նախագծեր ուսումնառության համար',
+      color: 'from-purple-500 to-pink-600'
+    },
+    {
+      icon: <Trophy className="w-8 h-8" />,
+      title: 'Վկայագրեր',
+      description: 'Ստացիր ճանաչված վկայագրեր դասընթացների ավարտին',
+      color: 'from-indigo-500 to-blue-600'
+    }
+  ];
+
+  return (
+    <section className="py-24 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-6">
@@ -51,7 +61,11 @@ const Features = () => {
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {features.map((feature, index) => <Card key={index} className="modern-card course-card-hover border-0 shadow-lg overflow-hidden group">
+          {features.map((feature, index) => (
+            <Card 
+              key={index} 
+              className="modern-card course-card-hover border border-border/20 shadow-lg overflow-hidden group hover:border-edu-blue/50 transition-all duration-300"
+            >
               <CardContent className="p-8">
                 <div className={`w-16 h-16 mx-auto mb-6 bg-gradient-to-r ${feature.color} text-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                   {feature.icon}
@@ -63,12 +77,13 @@ const Features = () => {
                   {feature.description}
                 </p>
               </CardContent>
-            </Card>)}
+            </Card>
+          ))}
         </div>
 
         {/* Call to action */}
         <div className="text-center mt-16">
-          <div className="glass-card rounded-2xl p-8 max-w-2xl mx-auto">
+          <div className="glass-card rounded-2xl p-8 max-w-2xl mx-auto border border-border/30">
             <h3 className="text-2xl font-bold mb-4 font-armenian">Պատրա՞ստ եք սկսել</h3>
             <p className="text-muted-foreground mb-6 font-armenian">
               Միացիր մեր համայնքին և սկսիր քո ուսումնական ճանապարհորդությունը
@@ -79,6 +94,8 @@ const Features = () => {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default Features;
