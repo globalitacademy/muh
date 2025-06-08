@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -14,6 +13,14 @@ interface CertificateTemplate {
 }
 
 interface CreateTemplateData {
+  name: string;
+  description?: string;
+  template_type: 'certificate' | 'diploma' | 'participation';
+  design_config: string;
+}
+
+interface UpdateTemplateData {
+  id: string;
   name: string;
   description?: string;
   template_type: 'certificate' | 'diploma' | 'participation';
@@ -57,6 +64,41 @@ export const useCreateCertificateTemplate = () => {
           template_type: templateData.template_type,
           design_config: parsedConfig,
         })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data as CertificateTemplate;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['certificate-templates'] });
+    },
+  });
+};
+
+export const useUpdateCertificateTemplate = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (templateData: UpdateTemplateData): Promise<CertificateTemplate> => {
+      let parsedConfig = {};
+      try {
+        parsedConfig = templateData.design_config ? JSON.parse(templateData.design_config) : {};
+      } catch (error) {
+        // If parsing fails, store as string in a wrapper object
+        parsedConfig = { config: templateData.design_config };
+      }
+
+      const { data, error } = await supabase
+        .from('certificate_templates')
+        .update({
+          name: templateData.name,
+          description: templateData.description,
+          template_type: templateData.template_type,
+          design_config: parsedConfig,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', templateData.id)
         .select()
         .single();
 
