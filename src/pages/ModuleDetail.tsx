@@ -11,7 +11,7 @@ import { Loader2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ModuleDetailHeader from '@/components/module/ModuleDetailHeader';
-import ModuleDetailCurriculum from '@/components/module/ModuleDetailCurriculum';
+import ModuleDetailTabs from '@/components/module/ModuleDetailTabs';
 import ModuleDetailSidebar from '@/components/module/ModuleDetailSidebar';
 
 const ModuleDetail = () => {
@@ -109,7 +109,8 @@ const ModuleDetail = () => {
               topicsCount={topics?.length || 0} 
             />
 
-            <ModuleDetailCurriculum
+            <ModuleDetailTabs
+              module={module}
               topics={topics}
               hasFullAccess={hasFullAccess}
               onTopicClick={handleTopicClick}

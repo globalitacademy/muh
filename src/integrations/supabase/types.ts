@@ -647,6 +647,51 @@ export type Database = {
           },
         ]
       }
+      module_instructors: {
+        Row: {
+          created_at: string
+          group_number: string | null
+          id: string
+          instructor_id: string
+          is_primary: boolean | null
+          module_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          group_number?: string | null
+          id?: string
+          instructor_id: string
+          is_primary?: boolean | null
+          module_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          group_number?: string | null
+          id?: string
+          instructor_id?: string
+          is_primary?: boolean | null
+          module_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "module_instructors_instructor_id_fkey"
+            columns: ["instructor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "module_instructors_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       modules: {
         Row: {
           category: string
