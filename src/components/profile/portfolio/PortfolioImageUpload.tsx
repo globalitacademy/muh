@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Card } from '@/components/ui/card';
-import { Upload, X, Edit, AlertCircle } from 'lucide-react';
+import { Upload, X, Edit, AlertCircle, Camera } from 'lucide-react';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { ImageEditor } from '@/components/ui/image-editor';
 import { toast } from 'sonner';
@@ -28,18 +28,20 @@ export const PortfolioImageUpload: React.FC<PortfolioImageUploadProps> = ({
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log('PortfolioImageUpload: File selected:', file?.name);
+    console.log('PortfolioImageUpload: File selected from input:', file?.name, file?.size, file?.type);
     
     if (file) {
       setError(null);
       const validationError = validateFile(file);
       
       if (validationError) {
+        console.error('PortfolioImageUpload: File validation failed:', validationError);
         setError(validationError);
         toast.error(validationError);
         return;
       }
       
+      console.log('PortfolioImageUpload: File passed validation, opening editor');
       setSelectedFile(file);
       setIsEditorOpen(true);
     }
@@ -49,21 +51,22 @@ export const PortfolioImageUpload: React.FC<PortfolioImageUploadProps> = ({
   };
 
   const handleImageSave = async (editedFile: File) => {
-    console.log('PortfolioImageUpload: Saving edited image');
+    console.log('PortfolioImageUpload: Received edited file from ImageEditor:', editedFile.name, editedFile.size);
     
     try {
       setError(null);
+      console.log('PortfolioImageUpload: Starting upload of edited portfolio image');
       const url = await uploadImage(editedFile);
       if (url) {
+        console.log('PortfolioImageUpload: Upload successful, updating image URL:', url);
         onImageChange(url);
         toast.success('Նկարը հաջողությամբ վերբեռնվեց');
-        console.log('PortfolioImageUpload: Image uploaded successfully:', url);
       }
     } catch (error) {
       const errorMessage = 'Սխալ նկարը վերբեռնելիս';
+      console.error('PortfolioImageUpload: Upload error:', error);
       setError(errorMessage);
       toast.error(errorMessage);
-      console.error('PortfolioImageUpload: Upload error:', error);
     } finally {
       setIsEditorOpen(false);
       setSelectedFile(null);
@@ -73,26 +76,31 @@ export const PortfolioImageUpload: React.FC<PortfolioImageUploadProps> = ({
   const handleDelete = async () => {
     if (!currentImageUrl) return;
     
-    console.log('PortfolioImageUpload: Deleting current image');
+    console.log('PortfolioImageUpload: Starting portfolio image deletion');
     
     try {
       setError(null);
       await deleteImage(currentImageUrl);
       onImageChange(null);
       toast.success('Նկարը հաջողությամբ ջնջվեց');
-      console.log('PortfolioImageUpload: Image deleted successfully');
+      console.log('PortfolioImageUpload: Portfolio image deleted successfully');
     } catch (error) {
       const errorMessage = 'Սխալ նկարը ջնջելիս';
+      console.error('PortfolioImageUpload: Delete error:', error);
       setError(errorMessage);
       toast.error(errorMessage);
-      console.error('PortfolioImageUpload: Delete error:', error);
     }
   };
 
   const handleEditorClose = () => {
-    console.log('PortfolioImageUpload: Closing editor');
+    console.log('PortfolioImageUpload: Closing image editor');
     setIsEditorOpen(false);
     setSelectedFile(null);
+  };
+
+  const triggerFileInput = () => {
+    console.log('PortfolioImageUpload: Triggering file input click');
+    document.getElementById('portfolio-image-input')?.click();
   };
 
   return (
@@ -103,8 +111,9 @@ export const PortfolioImageUpload: React.FC<PortfolioImageUploadProps> = ({
             src={currentImageUrl}
             alt="Portfolio նկար"
             className="w-full h-48 object-cover"
+            onLoad={() => console.log('PortfolioImageUpload: Portfolio image loaded successfully')}
             onError={(e) => {
-              console.error('PortfolioImageUpload: Image load error:', e);
+              console.error('PortfolioImageUpload: Portfolio image load error:', e);
               setError('Նկարը չի կարող բեռնվել');
             }}
           />
@@ -112,7 +121,7 @@ export const PortfolioImageUpload: React.FC<PortfolioImageUploadProps> = ({
             <Button
               size="sm"
               variant="secondary"
-              onClick={() => document.getElementById('portfolio-image-input')?.click()}
+              onClick={triggerFileInput}
               disabled={uploading}
               title="Փոխել նկարը"
             >
@@ -132,14 +141,14 @@ export const PortfolioImageUpload: React.FC<PortfolioImageUploadProps> = ({
       ) : (
         <Card className="border-dashed border-2 hover:border-primary/50 transition-colors">
           <div className="p-8 text-center">
-            <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <Camera className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
             <h3 className="font-medium mb-2">Ավելացնել նկար</h3>
             <p className="text-sm text-muted-foreground mb-4">
               PNG, JPG, WebP մինչև 10MB
             </p>
             <Button
               variant="outline"
-              onClick={() => document.getElementById('portfolio-image-input')?.click()}
+              onClick={triggerFileInput}
               disabled={uploading}
             >
               <Upload className="w-4 h-4 mr-2" />

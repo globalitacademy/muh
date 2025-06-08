@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { useUpdateProfile } from '@/hooks/useUserProfile';
 import { Settings, Save, User, Bell, Globe, Eye } from 'lucide-react';
+import { AvatarUpload } from '@/components/ui/avatar-upload';
 import { toast } from 'sonner';
 
 interface ProfileSettingsTabProps {
@@ -28,7 +29,25 @@ const ProfileSettingsTab = ({ profile }: ProfileSettingsTabProps) => {
     linkedin_url: profile?.linkedin_url || '',
     language_preference: profile?.language_preference || 'hy',
     is_visible_to_employers: profile?.is_visible_to_employers || false,
+    avatar_url: profile?.avatar_url || null,
   });
+
+  React.useEffect(() => {
+    if (profile) {
+      setFormData({
+        name: profile?.name || '',
+        phone: profile?.phone || '',
+        bio: profile?.bio || '',
+        address: profile?.address || '',
+        field_of_study: profile?.field_of_study || '',
+        personal_website: profile?.personal_website || '',
+        linkedin_url: profile?.linkedin_url || '',
+        language_preference: profile?.language_preference || 'hy',
+        is_visible_to_employers: profile?.is_visible_to_employers || false,
+        avatar_url: profile?.avatar_url || null,
+      });
+    }
+  }, [profile]);
 
   const handleSave = async () => {
     try {
@@ -39,8 +58,31 @@ const ProfileSettingsTab = ({ profile }: ProfileSettingsTabProps) => {
     }
   };
 
+  const handleAvatarChange = (url: string | null) => {
+    console.log('ProfileSettingsTab: Avatar changed to:', url);
+    setFormData(prev => ({ ...prev, avatar_url: url }));
+  };
+
   return (
     <div className="space-y-6">
+      {/* Profile Picture */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-armenian flex items-center gap-2">
+            <User className="w-5 h-5" />
+            Նկար
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AvatarUpload
+            currentAvatarUrl={formData.avatar_url}
+            name={formData.name}
+            onAvatarChange={handleAvatarChange}
+            size="lg"
+          />
+        </CardContent>
+      </Card>
+
       {/* Personal Information */}
       <Card>
         <CardHeader>

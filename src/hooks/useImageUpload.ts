@@ -21,31 +21,44 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
   } = options;
 
   const validateFile = (file: File): string | null => {
-    console.log('useImageUpload: Validating file:', file.name, file.type, file.size);
+    console.log('useImageUpload: Validating file:', {
+      name: file.name,
+      type: file.type,
+      size: file.size,
+      maxSizeMB,
+      allowedTypes
+    });
     
     if (!allowedTypes.includes(file.type)) {
-      return 'Չթույլատրված ֆայլի տիպ։ Օգտագործեք JPEG, PNG կամ WebP ֆորմատը։';
+      const error = 'Չթույլատրված ֆայլի տիպ։ Օգտագործեք JPEG, PNG կամ WebP ֆորմատը։';
+      console.error('useImageUpload: File type validation failed:', error);
+      return error;
     }
 
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     if (file.size > maxSizeBytes) {
-      return `Ֆայլի չափը չպետք է գերազանցի ${maxSizeMB}MB։`;
+      const error = `Ֆայլի չափը չպետք է գերազանցի ${maxSizeMB}MB։`;
+      console.error('useImageUpload: File size validation failed:', error);
+      return error;
     }
 
+    console.log('useImageUpload: File validation passed');
     return null;
   };
 
   const uploadImage = async (file: File, fileName?: string): Promise<string | null> => {
-    console.log('useImageUpload: Starting upload for file:', file.name);
+    console.log('useImageUpload: Starting upload process for file:', file.name);
     
     if (!user) {
-      console.error('useImageUpload: No user found');
+      console.error('useImageUpload: No authenticated user found');
       throw new Error('Օգտատերը չի գտնվել');
     }
 
+    console.log('useImageUpload: User authenticated:', user.id);
+
     const validationError = validateFile(file);
     if (validationError) {
-      console.error('useImageUpload: Validation failed:', validationError);
+      console.error('useImageUpload: File validation failed:', validationError);
       throw new Error(validationError);
     }
 
@@ -57,9 +70,10 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
       const finalFileName = fileName || `${Date.now()}.${fileExt}`;
       const filePath = `${user.id}/${finalFileName}`;
 
-      console.log('useImageUpload: Uploading to path:', filePath);
+      console.log('useImageUpload: Uploading to bucket:', bucket);
+      console.log('useImageUpload: File path:', filePath);
 
-      setUploadProgress(50);
+      setUploadProgress(25);
 
       const { data, error } = await supabase.storage
         .from(bucket)
@@ -73,8 +87,8 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
         throw error;
       }
 
-      console.log('useImageUpload: Upload successful, getting public URL');
-      setUploadProgress(80);
+      console.log('useImageUpload: Upload successful, data:', data);
+      setUploadProgress(75);
 
       const { data: { publicUrl } } = supabase.storage
         .from(bucket)
@@ -83,21 +97,23 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
       console.log('useImageUpload: Public URL obtained:', publicUrl);
       setUploadProgress(100);
       
+      // Add a small delay to show the progress
+      setTimeout(() => setUploadProgress(0), 1000);
+      
       return publicUrl;
     } catch (error) {
-      console.error('useImageUpload: Upload failed:', error);
+      console.error('useImageUpload: Upload failed with error:', error);
       throw error;
     } finally {
       setUploading(false);
-      setTimeout(() => setUploadProgress(0), 1000);
     }
   };
 
   const deleteImage = async (url: string): Promise<void> => {
-    console.log('useImageUpload: Deleting image:', url);
+    console.log('useImageUpload: Starting delete process for URL:', url);
     
     if (!user) {
-      console.error('useImageUpload: No user found for deletion');
+      console.error('useImageUpload: No authenticated user found for deletion');
       throw new Error('Օգտատերը չի գտնվել');
     }
 
@@ -106,7 +122,8 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
       const urlParts = url.split('/');
       const filePath = urlParts.slice(-2).join('/'); // user_id/filename
       
-      console.log('useImageUpload: Deleting from path:', filePath);
+      console.log('useImageUpload: Deleting from bucket:', bucket);
+      console.log('useImageUpload: File path for deletion:', filePath);
 
       const { error } = await supabase.storage
         .from(bucket)
@@ -119,7 +136,7 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
       
       console.log('useImageUpload: Image deleted successfully');
     } catch (error) {
-      console.error('useImageUpload: Delete failed:', error);
+      console.error('useImageUpload: Delete failed with error:', error);
       throw error;
     }
   };

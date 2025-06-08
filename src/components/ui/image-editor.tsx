@@ -30,26 +30,30 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
 
   React.useEffect(() => {
     if (imageFile && isOpen) {
+      console.log('ImageEditor: Loading new image file:', imageFile.name, imageFile.size);
       const url = URL.createObjectURL(imageFile);
       setImageUrl(url);
       // Reset editing state when new image is loaded
       setCropArea({ x: 0, y: 0, width: 100, height: 100 });
       setRotation(0);
-      console.log('ImageEditor: New image loaded', imageFile.name);
+      setIsProcessing(false);
+      console.log('ImageEditor: Image URL created and state reset');
       return () => {
         URL.revokeObjectURL(url);
+        console.log('ImageEditor: Image URL revoked');
       };
     }
   }, [imageFile, isOpen]);
 
   const processImage = useCallback(async () => {
+    console.log('ImageEditor: Starting image processing...');
+    
     if (!imageRef.current || !canvasRef.current || !imageFile) {
       console.error('ImageEditor: Missing required elements for processing');
       return;
     }
 
     setIsProcessing(true);
-    console.log('ImageEditor: Starting image processing');
     
     try {
       const canvas = canvasRef.current;
@@ -60,12 +64,18 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
         throw new Error('Could not get canvas context');
       }
 
+      console.log('ImageEditor: Image natural dimensions:', img.naturalWidth, 'x', img.naturalHeight);
+      console.log('ImageEditor: Crop area:', cropArea);
+      console.log('ImageEditor: Rotation:', rotation);
+
       // Calculate crop dimensions
       const cropWidth = Math.max(1, (img.naturalWidth * cropArea.width) / 100);
       const cropHeight = Math.max(1, (img.naturalHeight * cropArea.height) / 100);
       
       canvas.width = cropWidth;
       canvas.height = cropHeight;
+
+      console.log('ImageEditor: Canvas dimensions set to:', canvas.width, 'x', canvas.height);
 
       // Clear canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -77,6 +87,8 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
 
       const sourceX = (img.naturalWidth * cropArea.x) / 100;
       const sourceY = (img.naturalHeight * cropArea.y) / 100;
+
+      console.log('ImageEditor: Drawing image with source coordinates:', sourceX, sourceY);
 
       ctx.drawImage(
         img,
@@ -92,16 +104,18 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
       
       ctx.restore();
 
+      console.log('ImageEditor: Image drawn on canvas, converting to blob...');
+
       // Convert canvas to blob
       canvas.toBlob((blob) => {
         if (blob) {
           const editedFile = new File([blob], imageFile.name || 'edited-image.png', {
             type: 'image/png'
           });
-          console.log('ImageEditor: Image processed successfully');
+          console.log('ImageEditor: Image processed successfully, file size:', editedFile.size);
           onSave(editedFile);
-          onClose();
         } else {
+          console.error('ImageEditor: Failed to create blob from canvas');
           throw new Error('Failed to create blob from canvas');
         }
       }, 'image/png', 0.9);
@@ -110,12 +124,14 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
     } finally {
       setIsProcessing(false);
     }
-  }, [cropArea, rotation, imageFile, onSave, onClose]);
+  }, [cropArea, rotation, imageFile, onSave]);
 
   const handleClose = () => {
+    console.log('ImageEditor: Closing editor');
     setImageUrl('');
     setCropArea({ x: 0, y: 0, width: 100, height: 100 });
     setRotation(0);
+    setIsProcessing(false);
     onClose();
   };
 
@@ -132,7 +148,7 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
 
         <div className="space-y-4">
           {imageUrl && (
-            <div className="relative bg-gray-100 rounded-lg p-4">
+            <div className="relative bg-gray-100 rounded-lg p-4 min-h-[300px] flex items-center justify-center">
               <img
                 ref={imageRef}
                 src={imageUrl}
@@ -140,19 +156,20 @@ export const ImageEditor: React.FC<ImageEditorProps> = ({
                 className="max-w-full max-h-96 mx-auto block"
                 style={{
                   transform: `rotate(${rotation}deg)`,
-                  filter: `brightness(1)`,
                 }}
-                onLoad={() => console.log('ImageEditor: Image loaded in preview')}
-                onError={(e) => console.error('ImageEditor: Image load error:', e)}
+                onLoad={() => console.log('ImageEditor: Preview image loaded successfully')}
+                onError={(e) => {
+                  console.error('ImageEditor: Preview image load error:', e);
+                  console.error('ImageEditor: Image URL:', imageUrl);
+                }}
               />
               <div 
-                className="absolute border-2 border-blue-500 bg-blue-200 bg-opacity-30"
+                className="absolute border-2 border-blue-500 bg-blue-200 bg-opacity-30 pointer-events-none"
                 style={{
                   left: `${cropArea.x}%`,
                   top: `${cropArea.y}%`,
                   width: `${cropArea.width}%`,
                   height: `${cropArea.height}%`,
-                  pointerEvents: 'none'
                 }}
               />
             </div>

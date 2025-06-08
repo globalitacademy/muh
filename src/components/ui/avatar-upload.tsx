@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
-import { Camera, Trash2, AlertCircle } from 'lucide-react';
+import { Camera, Trash2, AlertCircle, Upload } from 'lucide-react';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { ImageEditor } from './image-editor';
 import { toast } from 'sonner';
@@ -38,18 +38,20 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    console.log('AvatarUpload: File selected:', file?.name);
+    console.log('AvatarUpload: File selected from input:', file?.name, file?.size, file?.type);
     
     if (file) {
       setError(null);
       const validationError = validateFile(file);
       
       if (validationError) {
+        console.error('AvatarUpload: File validation failed:', validationError);
         setError(validationError);
         toast.error(validationError);
         return;
       }
       
+      console.log('AvatarUpload: File passed validation, opening editor');
       setSelectedFile(file);
       setIsEditorOpen(true);
     }
@@ -59,21 +61,22 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   };
 
   const handleImageSave = async (editedFile: File) => {
-    console.log('AvatarUpload: Saving edited avatar');
+    console.log('AvatarUpload: Received edited file from ImageEditor:', editedFile.name, editedFile.size);
     
     try {
       setError(null);
+      console.log('AvatarUpload: Starting upload of edited avatar');
       const url = await uploadImage(editedFile, 'avatar');
       if (url) {
+        console.log('AvatarUpload: Upload successful, updating avatar URL:', url);
         onAvatarChange(url);
         toast.success('Նկարը հաջողությամբ վերբեռնվեց');
-        console.log('AvatarUpload: Avatar uploaded successfully:', url);
       }
     } catch (error) {
       const errorMessage = 'Սխալ նկարը վերբեռնելիս';
+      console.error('AvatarUpload: Upload error:', error);
       setError(errorMessage);
       toast.error(errorMessage);
-      console.error('AvatarUpload: Upload error:', error);
     } finally {
       setIsEditorOpen(false);
       setSelectedFile(null);
@@ -83,7 +86,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   const handleDelete = async () => {
     if (!currentAvatarUrl) return;
     
-    console.log('AvatarUpload: Deleting current avatar');
+    console.log('AvatarUpload: Starting avatar deletion');
     
     try {
       setError(null);
@@ -93,16 +96,21 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       console.log('AvatarUpload: Avatar deleted successfully');
     } catch (error) {
       const errorMessage = 'Սխալ նկարը ջնջելիս';
+      console.error('AvatarUpload: Delete error:', error);
       setError(errorMessage);
       toast.error(errorMessage);
-      console.error('AvatarUpload: Delete error:', error);
     }
   };
 
   const handleEditorClose = () => {
-    console.log('AvatarUpload: Closing editor');
+    console.log('AvatarUpload: Closing image editor');
     setIsEditorOpen(false);
     setSelectedFile(null);
+  };
+
+  const triggerFileInput = () => {
+    console.log('AvatarUpload: Triggering file input click');
+    document.getElementById('avatar-input')?.click();
   };
 
   return (
@@ -111,6 +119,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
         <Avatar className={sizeClasses[size]}>
           <AvatarImage 
             src={currentAvatarUrl || undefined} 
+            onLoad={() => console.log('AvatarUpload: Avatar image loaded successfully')}
             onError={(e) => {
               console.error('AvatarUpload: Avatar image load error:', e);
             }}
@@ -132,7 +141,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => document.getElementById('avatar-input')?.click()}
+            onClick={triggerFileInput}
             disabled={uploading}
           >
             <Camera className="w-4 h-4 mr-2" />
