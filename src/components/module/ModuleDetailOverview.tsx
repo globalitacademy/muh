@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,45 +5,43 @@ import { Clock, Calendar, Users, Star, Target, BookOpen } from 'lucide-react';
 import { Module } from '@/types/database';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-
 interface ModuleDetailOverviewProps {
   module: Module;
   topicsCount: number;
 }
-
-const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps) => {
+const ModuleDetailOverview = ({
+  module,
+  topicsCount
+}: ModuleDetailOverviewProps) => {
   // Fetch real statistics from database
-  const { data: moduleStats } = useQuery({
+  const {
+    data: moduleStats
+  } = useQuery({
     queryKey: ['moduleStats', module.id],
     queryFn: async () => {
       // Get enrollment count
-      const { data: enrollments, error: enrollError } = await supabase
-        .from('enrollments')
-        .select('id')
-        .eq('module_id', module.id);
-
+      const {
+        data: enrollments,
+        error: enrollError
+      } = await supabase.from('enrollments').select('id').eq('module_id', module.id);
       if (enrollError) {
         console.error('Error fetching enrollments:', enrollError);
       }
 
       // Get completed enrollments count
-      const { data: completedEnrollments, error: completedError } = await supabase
-        .from('enrollments')
-        .select('id')
-        .eq('module_id', module.id)
-        .not('completed_at', 'is', null);
-
+      const {
+        data: completedEnrollments,
+        error: completedError
+      } = await supabase.from('enrollments').select('id').eq('module_id', module.id).not('completed_at', 'is', null);
       if (completedError) {
         console.error('Error fetching completed enrollments:', completedError);
       }
 
       // Get user progress data for rating calculation
-      const { data: progressData, error: progressError } = await supabase
-        .from('user_progress')
-        .select('progress_percentage')
-        .eq('module_id', module.id)
-        .gt('progress_percentage', 0);
-
+      const {
+        data: progressData,
+        error: progressError
+      } = await supabase.from('user_progress').select('progress_percentage').eq('module_id', module.id).gt('progress_percentage', 0);
       if (progressError) {
         console.error('Error fetching progress data:', progressError);
       }
@@ -54,9 +51,8 @@ const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps
       if (progressData && progressData.length > 0) {
         const avgProgress = progressData.reduce((sum, p) => sum + p.progress_percentage, 0) / progressData.length;
         // Convert progress percentage to a 1-5 rating scale
-        averageRating = Math.max(1, Math.min(5, (avgProgress / 100) * 4 + 1));
+        averageRating = Math.max(1, Math.min(5, avgProgress / 100 * 4 + 1));
       }
-
       return {
         enrollmentsCount: enrollments?.length || 0,
         completedCount: completedEnrollments?.length || 0,
@@ -66,27 +62,31 @@ const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps
     },
     enabled: !!module.id
   });
-
   const getDifficultyColor = (level: string) => {
     switch (level) {
-      case 'beginner': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
-      case 'intermediate': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
-      case 'advanced': return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
-      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+      case 'beginner':
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
+      case 'intermediate':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
+      case 'advanced':
+        return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
     }
   };
-
   const getDifficultyText = (level: string) => {
     switch (level) {
-      case 'beginner': return 'Նախնական';
-      case 'intermediate': return 'Միջին';
-      case 'advanced': return 'Բարձր';
-      default: return level;
+      case 'beginner':
+        return 'Նախնական';
+      case 'intermediate':
+        return 'Միջին';
+      case 'advanced':
+        return 'Բարձր';
+      default:
+        return level;
     }
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       {/* Main Description */}
       <Card>
         <CardHeader>
@@ -98,7 +98,7 @@ const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps
           </p>
           
           <div className="flex items-center gap-2">
-            <Badge className={getDifficultyColor(module.difficulty_level)}>
+            <Badge className="">
               {getDifficultyText(module.difficulty_level)}
             </Badge>
             <Badge variant="outline" className="font-armenian">
@@ -225,8 +225,6 @@ const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default ModuleDetailOverview;
