@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,6 @@ import { Progress } from '@/components/ui/progress';
 import { Module } from '@/types/database';
 import { User } from '@supabase/supabase-js';
 import CompanyCodeInput from '@/components/CompanyCodeInput';
-
 interface ModuleDetailSidebarProps {
   module: Module;
   user: User | null;
@@ -20,7 +18,6 @@ interface ModuleDetailSidebarProps {
   onNavigateToAuth: () => void;
   onCompanyCodeVerified: (isValid: boolean) => void;
 }
-
 const ModuleDetailSidebar = ({
   module,
   user,
@@ -35,16 +32,14 @@ const ModuleDetailSidebar = ({
   const [accessTimer, setAccessTimer] = useState<NodeJS.Timeout | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const [countdownTimer, setCountdownTimer] = useState<NodeJS.Timeout | null>(null);
-
   const handleTempCodeVerified = (isValid: boolean) => {
     if (isValid) {
       setTempAccess(true);
       onCompanyCodeVerified(true);
-      
+
       // Set timer for 60 minutes (3600000 ms)
       const endTime = Date.now() + 3600000;
       setTimeRemaining(3600000);
-      
       const timer = setTimeout(() => {
         setTempAccess(false);
         onCompanyCodeVerified(false);
@@ -54,7 +49,6 @@ const ModuleDetailSidebar = ({
           setCountdownTimer(null);
         }
       }, 3600000);
-      
       setAccessTimer(timer);
 
       // Start countdown
@@ -68,11 +62,9 @@ const ModuleDetailSidebar = ({
           setTimeRemaining(remaining);
         }
       }, 1000);
-      
       setCountdownTimer(countdown);
     }
   };
-
   useEffect(() => {
     return () => {
       if (accessTimer) {
@@ -83,23 +75,17 @@ const ModuleDetailSidebar = ({
       }
     };
   }, [accessTimer, countdownTimer]);
-
   const formatTimeRemaining = (milliseconds: number) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
-
   const effectiveAccess = hasFullAccess || tempAccess;
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-center font-armenian">
-            Ծրագրային մանրամասներ
-          </CardTitle>
+          <CardTitle className="text-center font-armenian">Արժեք</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center">
@@ -111,10 +97,8 @@ const ModuleDetailSidebar = ({
             </div>
           </div>
 
-          {user ? (
-            <div className="space-y-4">
-              {effectiveAccess ? (
-                <>
+          {user ? <div className="space-y-4">
+              {effectiveAccess ? <>
                   <div className="text-center">
                     <div className="text-sm font-armenian mb-2">Ձեր առաջընթացը</div>
                     <Progress value={0} className="mb-2" />
@@ -123,8 +107,7 @@ const ModuleDetailSidebar = ({
                   <Button className="w-full btn-modern font-armenian" onClick={onStartLearning}>
                     Սկսել ուսուցումը
                   </Button>
-                  {tempAccess && timeRemaining > 0 && (
-                    <div className="text-center p-3 bg-warning-yellow/10 rounded-lg border border-warning-yellow/30">
+                  {tempAccess && timeRemaining > 0 && <div className="text-center p-3 bg-warning-yellow/10 rounded-lg border border-warning-yellow/30">
                       <div className="text-sm font-medium text-warning-yellow font-armenian mb-1">
                         Ժամանակավոր մուտք
                       </div>
@@ -134,27 +117,13 @@ const ModuleDetailSidebar = ({
                       <div className="text-xs text-warning-yellow/80 font-armenian">
                         մնացած ժամանակ
                       </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <Button 
-                  onClick={onEnroll}
-                  disabled={enrollModule.isPending}
-                  className="w-full btn-modern font-armenian"
-                >
+                    </div>}
+                </> : <Button onClick={onEnroll} disabled={enrollModule.isPending} className="w-full btn-modern font-armenian">
                   {enrollModule.isPending ? 'Գրանցվում է...' : 'Գրանցվել հիմա'}
-                </Button>
-              )}
-            </div>
-          ) : (
-            <Button 
-              onClick={onNavigateToAuth}
-              className="w-full btn-modern font-armenian"
-            >
+                </Button>}
+            </div> : <Button onClick={onNavigateToAuth} className="w-full btn-modern font-armenian">
               Գրանցվել դասընթացի համար
-            </Button>
-          )}
+            </Button>}
 
           <div className="border-t pt-4 space-y-2 text-sm">
             <div className="flex justify-between font-armenian">
@@ -197,8 +166,6 @@ const ModuleDetailSidebar = ({
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default ModuleDetailSidebar;
