@@ -83,15 +83,15 @@ const AdminSpecialtiesTab = () => {
   const handleEdit = (specialty: Specialty) => {
     setEditingSpecialty(specialty);
     setFormData({
-      name: specialty.name,
+      name: specialty.name || '',
       name_en: specialty.name_en || '',
       name_ru: specialty.name_ru || '',
       description: specialty.description || '',
       description_en: specialty.description_en || '',
       description_ru: specialty.description_ru || '',
-      icon: specialty.icon,
-      color: specialty.color,
-      order_index: specialty.order_index,
+      icon: specialty.icon || 'Code',
+      color: specialty.color || 'from-blue-500 to-cyan-500',
+      order_index: specialty.order_index || 0,
     });
     setIsCreateModalOpen(true);
   };
@@ -245,7 +245,7 @@ const AdminSpecialtiesTab = () => {
               <div>
                 <Label htmlFor="icon" className="font-armenian">Պատկերակ</Label>
                 <Select 
-                  value={formData.icon} 
+                  value={formData.icon || 'Code'} 
                   onValueChange={(value) => setFormData({ ...formData, icon: value })}
                 >
                   <SelectTrigger>
@@ -270,7 +270,7 @@ const AdminSpecialtiesTab = () => {
               <div>
                 <Label htmlFor="color" className="font-armenian">Գույն</Label>
                 <Select 
-                  value={formData.color} 
+                  value={formData.color || 'from-blue-500 to-cyan-500'} 
                   onValueChange={(value) => setFormData({ ...formData, color: value })}
                 >
                   <SelectTrigger>
@@ -295,7 +295,7 @@ const AdminSpecialtiesTab = () => {
                   id="order_index"
                   type="number"
                   value={formData.order_index}
-                  onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) })}
+                  onChange={(e) => setFormData({ ...formData, order_index: parseInt(e.target.value) || 0 })}
                   required
                 />
               </div>
