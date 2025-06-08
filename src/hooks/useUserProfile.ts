@@ -97,6 +97,8 @@ export const useUserProfile = () => {
     },
     enabled: !!user,
     retry: 1,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -129,11 +131,18 @@ export const useUpdateProfile = () => {
       return data;
     },
     onSuccess: (data) => {
-      console.log('useUpdateProfile - onSuccess callback, invalidating queries');
-      // Invalidate and refetch user profile
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-      // Update the cache immediately with the new data
+      console.log('useUpdateProfile - onSuccess callback, updating cache with fresh data');
+      
+      // Update the specific user profile cache immediately
       queryClient.setQueryData(['userProfile', user?.id], data);
+      
+      // Also invalidate to trigger a refetch in all components using this data
+      queryClient.invalidateQueries({ 
+        queryKey: ['userProfile'],
+        refetchType: 'active' 
+      });
+      
+      console.log('useUpdateProfile - Cache updated and queries invalidated');
     },
     onError: (error) => {
       console.error('useUpdateProfile - onError callback:', error);

@@ -9,15 +9,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminRole } from '@/hooks/useAdminRole';
+import { useUserProfile } from '@/hooks/useUserProfile';
 import { User, LogOut, BookOpen, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
   const { data: isAdmin } = useAdminRole();
+  const { data: profile, isLoading: profileLoading } = useUserProfile();
   const navigate = useNavigate();
 
   if (!user) {
@@ -32,17 +34,33 @@ const UserMenu = () => {
     );
   }
 
-  const getInitials = (email: string) => {
+  const getInitials = (name: string | null, email: string) => {
+    if (name && name.trim()) {
+      const names = name.trim().split(' ');
+      if (names.length >= 2) {
+        return (names[0].charAt(0) + names[1].charAt(0)).toUpperCase();
+      }
+      return names[0].charAt(0).toUpperCase();
+    }
     return email.charAt(0).toUpperCase();
   };
+
+  const displayName = profile?.name || user.user_metadata?.name || 'Օգտատեր';
+  const initials = getInitials(profile?.name || user.user_metadata?.name, user.email || 'U');
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
+            <AvatarImage 
+              src={profile?.avatar_url || undefined}
+              alt={displayName}
+              onLoad={() => console.log('UserMenu: Avatar loaded successfully')}
+              onError={() => console.log('UserMenu: Avatar load failed')}
+            />
             <AvatarFallback>
-              {getInitials(user.email || 'U')}
+              {initials}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -51,7 +69,7 @@ const UserMenu = () => {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {user.user_metadata?.name || 'Օգտատեր'}
+              {displayName}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}

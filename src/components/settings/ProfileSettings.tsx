@@ -9,10 +9,12 @@ import { User, Save } from 'lucide-react';
 import { useUserProfile, useUpdateProfile } from '@/hooks/useUserProfile';
 import { AvatarUpload } from '@/components/ui/avatar-upload';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 const ProfileSettings = () => {
   const { data: profile } = useUserProfile();
   const updateProfileMutation = useUpdateProfile();
+  const queryClient = useQueryClient();
   
   const [formData, setFormData] = useState({
     name: profile?.name || '',
@@ -53,8 +55,27 @@ const ProfileSettings = () => {
     }
   };
 
-  const handleAvatarChange = (url: string | null) => {
+  const handleAvatarChange = async (url: string | null) => {
+    console.log('ProfileSettings: Avatar changed to:', url);
+    
+    // Update local form data immediately for UI feedback
     setFormData(prev => ({ ...prev, avatar_url: url }));
+    
+    try {
+      // Update the profile in the database
+      await updateProfileMutation.mutateAsync({ avatar_url: url });
+      
+      // Invalidate all related queries to ensure fresh data everywhere
+      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+      
+      console.log('ProfileSettings: Avatar updated successfully in database');
+      toast.success('Նկարը հաջողությամբ թարմացվեց');
+    } catch (error) {
+      console.error('ProfileSettings: Error updating avatar:', error);
+      // Revert local state on error
+      setFormData(prev => ({ ...prev, avatar_url: profile?.avatar_url || null }));
+      toast.error('Սխալ նկարը թարմացնելիս');
+    }
   };
 
   return (
