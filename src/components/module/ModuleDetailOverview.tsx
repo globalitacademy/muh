@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Calendar, Users, Star, Target, BookOpen } from 'lucide-react';
 import { Module } from '@/types/database';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ModuleDetailOverviewProps {
   module: Module;
@@ -11,6 +13,60 @@ interface ModuleDetailOverviewProps {
 }
 
 const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps) => {
+  // Fetch real statistics from database
+  const { data: moduleStats } = useQuery({
+    queryKey: ['moduleStats', module.id],
+    queryFn: async () => {
+      // Get enrollment count
+      const { data: enrollments, error: enrollError } = await supabase
+        .from('enrollments')
+        .select('id')
+        .eq('module_id', module.id);
+
+      if (enrollError) {
+        console.error('Error fetching enrollments:', enrollError);
+      }
+
+      // Get completed enrollments count
+      const { data: completedEnrollments, error: completedError } = await supabase
+        .from('enrollments')
+        .select('id')
+        .eq('module_id', module.id)
+        .not('completed_at', 'is', null);
+
+      if (completedError) {
+        console.error('Error fetching completed enrollments:', completedError);
+      }
+
+      // Get user progress data for rating calculation
+      const { data: progressData, error: progressError } = await supabase
+        .from('user_progress')
+        .select('progress_percentage')
+        .eq('module_id', module.id)
+        .gt('progress_percentage', 0);
+
+      if (progressError) {
+        console.error('Error fetching progress data:', progressError);
+      }
+
+      // Calculate average rating based on completion rates
+      let averageRating = 0;
+      if (progressData && progressData.length > 0) {
+        const avgProgress = progressData.reduce((sum, p) => sum + p.progress_percentage, 0) / progressData.length;
+        // Convert progress percentage to a 1-5 rating scale
+        averageRating = Math.max(1, Math.min(5, (avgProgress / 100) * 4 + 1));
+      }
+
+      return {
+        enrollmentsCount: enrollments?.length || 0,
+        completedCount: completedEnrollments?.length || 0,
+        averageRating: averageRating,
+        reviewsCount: progressData?.length || 0
+      };
+    },
+    enabled: !!module.id
+  });
+
   const getDifficultyColor = (level: string) => {
     switch (level) {
       case 'beginner': return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
@@ -84,7 +140,7 @@ const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps
                 <Users className="w-4 h-4 text-edu-orange" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-edu-orange">{module.students_count}</p>
+                <p className="text-2xl font-bold text-edu-orange">{moduleStats?.enrollmentsCount || 0}</p>
                 <p className="text-xs text-muted-foreground font-armenian">ուսանող</p>
               </div>
             </div>
@@ -94,7 +150,9 @@ const ModuleDetailOverview = ({ module, topicsCount }: ModuleDetailOverviewProps
                 <Star className="w-4 h-4 text-warning-yellow" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-warning-yellow">{module.rating?.toFixed(1) || '0.0'}</p>
+                <p className="text-2xl font-bold text-warning-yellow">
+                  {moduleStats?.averageRating ? moduleStats.averageRating.toFixed(1) : '0.0'}
+                </p>
                 <p className="text-xs text-muted-foreground font-armenian">գնահատական</p>
               </div>
             </div>
