@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Module } from '@/types/database';
-import { User } from '@/types/auth';
+import { User } from '@supabase/supabase-js';
 import CompanyCodeInput from '@/components/CompanyCodeInput';
 
 interface ModuleDetailSidebarProps {
