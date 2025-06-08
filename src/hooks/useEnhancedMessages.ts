@@ -74,7 +74,7 @@ export const useMessageAttachments = (messageId: string) => {
         .order('uploaded_at', { ascending: false });
 
       if (error) throw error;
-      return (data || []) as MessageAttachment[];
+      return (data as unknown) as MessageAttachment[];
     },
     enabled: !!messageId,
   });

@@ -38,7 +38,7 @@ export const useAnnouncements = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return (data || []) as Announcement[];
+      return (data as unknown) as Announcement[];
     },
   });
 };
@@ -54,7 +54,7 @@ export const usePublishedAnnouncements = () => {
         .order('published_at', { ascending: false });
 
       if (error) throw error;
-      return (data || []) as Announcement[];
+      return (data as unknown) as Announcement[];
     },
   });
 };
@@ -74,7 +74,7 @@ export const useCreateAnnouncement = () => {
         .single();
 
       if (error) throw error;
-      return data as Announcement;
+      return data as unknown as Announcement;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['announcements'] });
