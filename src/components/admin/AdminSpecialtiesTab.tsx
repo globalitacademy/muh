@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAdminSpecialties, useCreateSpecialty, useUpdateSpecialty, useDeleteSpecialty } from '@/hooks/useSpecialties';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -245,7 +244,7 @@ const AdminSpecialtiesTab = () => {
               <div>
                 <Label htmlFor="icon" className="font-armenian">Պատկերակ</Label>
                 <Select 
-                  value={formData.icon || 'Code'} 
+                  value={formData.icon} 
                   onValueChange={(value) => setFormData({ ...formData, icon: value })}
                 >
                   <SelectTrigger>
@@ -270,7 +269,7 @@ const AdminSpecialtiesTab = () => {
               <div>
                 <Label htmlFor="color" className="font-armenian">Գույն</Label>
                 <Select 
-                  value={formData.color || 'from-blue-500 to-cyan-500'} 
+                  value={formData.color} 
                   onValueChange={(value) => setFormData({ ...formData, color: value })}
                 >
                   <SelectTrigger>
