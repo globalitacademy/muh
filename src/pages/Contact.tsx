@@ -9,6 +9,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Users, BookOpen, Loader2 } from 'lucide-react';
 import { useContactStats } from '@/hooks/useContactStats';
+import MapboxMap from '@/components/ui/mapbox-map';
 
 const Contact = () => {
   const { language } = useLanguage();
@@ -38,7 +39,7 @@ const Contact = () => {
     {
       icon: <MapPin className="w-6 h-6" />,
       title: language === 'hy' ? 'Հասցե' : language === 'ru' ? 'Адрес' : 'Address',
-      info: language === 'hy' ? 'Երևան, Կասկադ, Թամանյան 1' : language === 'ru' ? 'Ереван, Каскад, Таманян 1' : 'Yerevan, Cascade, Tamanyan 1',
+      info: language === 'hy' ? 'Երևան, Մամիկոնյանց 52' : language === 'ru' ? 'Ереван, Мамиконянц 52' : 'Yerevan, Mamikonyanc 52',
       color: 'from-edu-blue to-purple-500'
     },
     {
@@ -162,22 +163,9 @@ const Contact = () => {
                   ))}
                 </div>
 
-                {/* Interactive Map */}
-                <div className="glass-card rounded-2xl overflow-hidden group">
-                  <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/10 to-purple-500/10"></div>
-                    <div className="text-center z-10">
-                      <div className="w-16 h-16 bg-gradient-to-br from-edu-blue to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white group-hover:scale-110 transition-transform duration-300">
-                        <MapPin className="w-8 h-8" />
-                      </div>
-                      <h3 className="text-xl font-semibold font-armenian text-foreground mb-2">
-                        {language === 'hy' ? 'Գտեք մեզ քարտեզում' : language === 'ru' ? 'Найдите нас на карте' : 'Find us on the map'}
-                      </h3>
-                      <p className="text-muted-foreground font-armenian">
-                        {language === 'hy' ? 'Երևան, Կասկադ' : language === 'ru' ? 'Ереван, Каскад' : 'Yerevan, Cascade'}
-                      </p>
-                    </div>
-                  </div>
+                {/* Real Interactive Map */}
+                <div className="glass-card rounded-2xl overflow-hidden">
+                  <MapboxMap className="aspect-video" />
                 </div>
               </div>
 
