@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
+import { PortfolioImageUpload } from './PortfolioImageUpload';
 
 interface PortfolioFormData {
   title: string;
@@ -20,6 +21,7 @@ interface PortfolioFormData {
   is_thesis_project: boolean;
   instructor_review: string;
   employer_review: string;
+  image_url: string;
 }
 
 interface PortfolioFormProps {
@@ -39,6 +41,10 @@ const PortfolioForm: React.FC<PortfolioFormProps> = ({
   isSubmitting,
   isEditing
 }) => {
+  const handleImageChange = (url: string | null) => {
+    setFormData({ ...formData, image_url: url || '' });
+  };
+
   return (
     <Card className="p-4 border-dashed">
       <div className="space-y-4">
@@ -70,6 +76,15 @@ const PortfolioForm: React.FC<PortfolioFormProps> = ({
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           rows={3}
         />
+
+        {/* Image Upload Section */}
+        <div>
+          <Label className="text-sm font-medium mb-2 block">Ծրագրի նկար</Label>
+          <PortfolioImageUpload
+            currentImageUrl={formData.image_url}
+            onImageChange={handleImageChange}
+          />
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Input

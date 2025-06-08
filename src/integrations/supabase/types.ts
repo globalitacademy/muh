@@ -695,6 +695,7 @@ export type Database = {
           files_url: string | null
           github_url: string | null
           id: string
+          image_url: string | null
           instructor_review: string | null
           is_team_project: boolean | null
           is_thesis_project: boolean | null
@@ -712,6 +713,7 @@ export type Database = {
           files_url?: string | null
           github_url?: string | null
           id?: string
+          image_url?: string | null
           instructor_review?: string | null
           is_team_project?: boolean | null
           is_thesis_project?: boolean | null
@@ -729,6 +731,7 @@ export type Database = {
           files_url?: string | null
           github_url?: string | null
           id?: string
+          image_url?: string | null
           instructor_review?: string | null
           is_team_project?: boolean | null
           is_thesis_project?: boolean | null

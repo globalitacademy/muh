@@ -30,6 +30,7 @@ interface Portfolio {
   is_thesis_project: boolean | null;
   instructor_review: string | null;
   employer_review: string | null;
+  image_url: string | null;
 }
 
 interface PortfolioCardProps {
@@ -45,6 +46,17 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({
 }) => {
   return (
     <Card className="relative overflow-hidden">
+      {portfolio.image_url && (
+        <div className="relative h-48 overflow-hidden">
+          <img
+            src={portfolio.image_url}
+            alt={portfolio.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+        </div>
+      )}
+
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">

@@ -29,6 +29,7 @@ const EnhancedPortfolioTab = () => {
     is_thesis_project: false,
     instructor_review: '',
     employer_review: '',
+    image_url: '',
   });
 
   const resetForm = () => {
@@ -44,6 +45,7 @@ const EnhancedPortfolioTab = () => {
       is_thesis_project: false,
       instructor_review: '',
       employer_review: '',
+      image_url: '',
     });
     setIsAdding(false);
     setEditingId(null);
@@ -82,6 +84,7 @@ const EnhancedPortfolioTab = () => {
       is_thesis_project: portfolio.is_thesis_project || false,
       instructor_review: portfolio.instructor_review || '',
       employer_review: portfolio.employer_review || '',
+      image_url: portfolio.image_url || '',
     });
     setEditingId(portfolio.id);
     setIsAdding(true);

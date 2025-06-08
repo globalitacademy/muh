@@ -5,10 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Camera, Save, User } from 'lucide-react';
+import { User, Save } from 'lucide-react';
 import { useUserProfile, useUpdateProfile } from '@/hooks/useUserProfile';
+import { AvatarUpload } from '@/components/ui/avatar-upload';
 import { toast } from 'sonner';
 
 const ProfileSettings = () => {
@@ -25,7 +24,25 @@ const ProfileSettings = () => {
     field_of_study: profile?.field_of_study || '',
     personal_website: profile?.personal_website || '',
     linkedin_url: profile?.linkedin_url || '',
+    avatar_url: profile?.avatar_url || null,
   });
+
+  React.useEffect(() => {
+    if (profile) {
+      setFormData({
+        name: profile.name || '',
+        phone: profile.phone || '',
+        bio: profile.bio || '',
+        address: profile.address || '',
+        department: profile.department || '',
+        organization: profile.organization || '',
+        field_of_study: profile.field_of_study || '',
+        personal_website: profile.personal_website || '',
+        linkedin_url: profile.linkedin_url || '',
+        avatar_url: profile.avatar_url || null,
+      });
+    }
+  }, [profile]);
 
   const handleSave = async () => {
     try {
@@ -34,6 +51,10 @@ const ProfileSettings = () => {
     } catch (error) {
       toast.error('Սխալ է տեղի ունեցել');
     }
+  };
+
+  const handleAvatarChange = (url: string | null) => {
+    setFormData(prev => ({ ...prev, avatar_url: url }));
   };
 
   return (
@@ -47,22 +68,12 @@ const ProfileSettings = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-4">
-            <Avatar className="w-20 h-20">
-              <AvatarFallback className="text-2xl">
-                {formData.name?.charAt(0) || 'U'}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <Button variant="outline" className="flex items-center gap-2">
-                <Camera className="w-4 h-4" />
-                Փոխել նկարը
-              </Button>
-              <p className="text-sm text-muted-foreground mt-2">
-                Առաջարկվող չափ՝ 400x400px
-              </p>
-            </div>
-          </div>
+          <AvatarUpload
+            currentAvatarUrl={formData.avatar_url}
+            name={formData.name}
+            onAvatarChange={handleAvatarChange}
+            size="lg"
+          />
         </CardContent>
       </Card>
 
