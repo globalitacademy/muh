@@ -8,9 +8,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Upload, Search, Plus, User, Award, BookOpen, Star, Edit, Eye } from 'lucide-react';
 import { useAdminUsers } from '@/hooks/useAdminUsers';
 import { Loader2 } from 'lucide-react';
+import AddInstructorForm from './AddInstructorForm';
 
 const AdminInstructorsTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { data: users, isLoading, error } = useAdminUsers();
   
   if (isLoading) {
@@ -40,6 +42,10 @@ const AdminInstructorsTab = () => {
     instructor.department?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleAddSuccess = () => {
+    setIsAddDialogOpen(false);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -58,22 +64,21 @@ const AdminInstructorsTab = () => {
               className="pl-10 w-64"
             />
           </div>
-          <Dialog>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button className="font-armenian btn-modern">
                 <Plus className="w-4 h-4 mr-2" />
                 Ավելացնել դասախոս
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="font-armenian">Նոր դասախոս</DialogTitle>
               </DialogHeader>
-              <div className="text-center py-8">
-                <User className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-                <p className="font-armenian text-muted-foreground">Դասախոս ավելացման ձևաթուղթ</p>
-                <p className="text-sm text-muted-foreground">Մշակման փուլում</p>
-              </div>
+              <AddInstructorForm 
+                onSuccess={handleAddSuccess}
+                onCancel={() => setIsAddDialogOpen(false)}
+              />
             </DialogContent>
           </Dialog>
         </div>
