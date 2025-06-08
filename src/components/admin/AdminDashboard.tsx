@@ -68,8 +68,10 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto">
-      {renderActiveSection()}
+    <div className="container mx-auto max-w-none px-0">
+      <div className="overflow-hidden">
+        {renderActiveSection()}
+      </div>
     </div>
   );
 };

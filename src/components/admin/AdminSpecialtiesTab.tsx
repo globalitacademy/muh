@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAdminSpecialties, useCreateSpecialty, useUpdateSpecialty, useDeleteSpecialty } from '@/hooks/useSpecialties';
 import { Button } from '@/components/ui/button';
@@ -118,15 +117,16 @@ const AdminSpecialtiesTab = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold font-armenian">Մասնագիտությունների կառավարում</h2>
+    <div className="space-y-4 md:space-y-6 p-2 md:p-0">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <h2 className="text-xl md:text-2xl font-bold font-armenian">Մասնագիտությունների կառավարում</h2>
         <Button 
           onClick={() => setIsCreateModalOpen(true)}
-          className="font-armenian"
+          className="font-armenian w-full sm:w-auto"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Նոր մասնագիտություն ավելացնել
+          <span className="hidden sm:inline">Նոր մասնագիտություն ավելացնել</span>
+          <span className="sm:hidden">Ավելացնել</span>
         </Button>
       </div>
 
