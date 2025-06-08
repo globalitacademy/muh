@@ -1,6 +1,6 @@
-
 import React, { useState } from 'react';
 import { useAdminSpecialties, useCreateSpecialty, useUpdateSpecialty, useDeleteSpecialty } from '@/hooks/useSpecialties';
+import { useSpecialtyModules } from '@/hooks/useSpecialtyModules';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,8 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Loader2, Plus, Edit, Trash2, Code, Shield, Palette, Network, Bot, Brain } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Loader2, Plus, Edit, Trash2, Code, Shield, Palette, Network, Bot, Brain, ChevronDown, BookOpen } from 'lucide-react';
 import { Specialty, CreateSpecialtyData } from '@/types/specialty';
+import { Module } from '@/types/database';
+import SpecialtyModuleCard from './specialty/SpecialtyModuleCard';
+import ModuleFormDialog from './specialty/ModuleFormDialog';
 
 const iconOptions = [
   { value: 'Code', label: 'Code', icon: Code },
@@ -37,17 +41,10 @@ const AdminSpecialtiesTab = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingSpecialty, setEditingSpecialty] = useState<Specialty | null>(null);
-  const [formData, setFormData] = useState<CreateSpecialtyData>({
-    name: '',
-    name_en: '',
-    name_ru: '',
-    description: '',
-    description_en: '',
-    description_ru: '',
-    icon: 'Code',
-    color: 'from-blue-500 to-cyan-500',
-    order_index: 0,
-  });
+  const [expandedSpecialties, setExpandedSpecialties] = useState<Set<string>>(new Set());
+  const [moduleFormOpen, setModuleFormOpen] = useState(false);
+  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string>('');
+  const [editingModule, setEditingModule] = useState<Module | null>(null);
 
   const resetForm = () => {
     setFormData({
@@ -102,9 +99,86 @@ const AdminSpecialtiesTab = () => {
     }
   };
 
+  const toggleSpecialty = (specialtyId: string) => {
+    const newExpanded = new Set(expandedSpecialties);
+    if (newExpanded.has(specialtyId)) {
+      newExpanded.delete(specialtyId);
+    } else {
+      newExpanded.add(specialtyId);
+    }
+    setExpandedSpecialties(newExpanded);
+  };
+
+  const handleAddModule = (specialtyId: string) => {
+    setSelectedSpecialtyId(specialtyId);
+    setEditingModule(null);
+    setModuleFormOpen(true);
+  };
+
+  const handleEditModule = (module: Module) => {
+    setSelectedSpecialtyId(module.specialty_id || '');
+    setEditingModule(module);
+    setModuleFormOpen(true);
+  };
+
+  const handleAddTopic = (moduleId: string) => {
+    // TODO: Implement topic creation
+    console.log('Add topic for module:', moduleId);
+  };
+
   const getIconComponent = (iconName: string) => {
     const iconOption = iconOptions.find(opt => opt.value === iconName);
     return iconOption ? iconOption.icon : Code;
+  };
+
+  const SpecialtyModulesSection = ({ 
+    specialtyId, 
+    onAddModule, 
+    onEditModule, 
+    onAddTopic 
+  }: {
+    specialtyId: string;
+    onAddModule: () => void;
+    onEditModule: (module: Module) => void;
+    onAddTopic: (moduleId: string) => void;
+  }) => {
+    const { data: modules, isLoading } = useSpecialtyModules(specialtyId);
+
+    if (isLoading) {
+      return <div className="text-center py-4 font-armenian">Բեռնում...</div>;
+    }
+
+    return (
+      <div className="border-t pt-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2 font-armenian">
+            <BookOpen className="w-5 h-5" />
+            Մոդուլներ ({modules?.length || 0})
+          </h3>
+          <Button onClick={onAddModule} className="font-armenian">
+            <Plus className="w-4 h-4 mr-2" />
+            Նոր մոդուլ ավելացնել
+          </Button>
+        </div>
+        
+        {!modules || modules.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground font-armenian">
+            Այս մասնագիտությունում դեռ մոդուլներ չկան
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {modules.map((module) => (
+              <SpecialtyModuleCard
+                key={module.id}
+                module={module}
+                onEdit={onEditModule}
+                onAddTopic={onAddTopic}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
   };
 
   if (isLoading) {
@@ -128,52 +202,73 @@ const AdminSpecialtiesTab = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="space-y-4">
         {specialties?.map((specialty) => {
           const IconComponent = getIconComponent(specialty.icon);
+          const isExpanded = expandedSpecialties.has(specialty.id);
+          
           return (
-            <Card key={specialty.id} className="group hover:shadow-lg transition-all duration-300">
-              <CardHeader className="text-center pb-4">
-                <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${specialty.color} mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                  <IconComponent className="w-8 h-8 text-white" />
-                </div>
-                <CardTitle className="font-armenian">{specialty.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground font-armenian">{specialty.description}</p>
-                <div className="flex justify-between items-center text-xs text-muted-foreground">
-                  <span>Հերթ՝ {specialty.order_index}</span>
-                  <span className={specialty.is_active ? 'text-green-600' : 'text-red-600'}>
-                    {specialty.is_active ? 'Ակտիվ' : 'Ոչ ակտիվ'}
-                  </span>
-                </div>
-                <div className="flex gap-2 pt-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleEdit(specialty)}
-                    className="flex-1 font-armenian"
-                  >
-                    <Edit className="w-4 h-4 mr-1" />
-                    Խմբագրել
-                  </Button>
-                  <Button 
-                    variant="destructive" 
-                    size="sm"
-                    onClick={() => handleDelete(specialty.id)}
-                    className="flex-1 font-armenian"
-                  >
-                    <Trash2 className="w-4 h-4 mr-1" />
-                    Ջնջել
-                  </Button>
-                </div>
-              </CardContent>
+            <Card key={specialty.id} className="group">
+              <Collapsible open={isExpanded} onOpenChange={() => toggleSpecialty(specialty.id)}>
+                <CollapsibleTrigger asChild>
+                  <CardHeader className="cursor-pointer hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <ChevronDown className={`h-5 w-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                        <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${specialty.color} flex items-center justify-center`}>
+                          <IconComponent className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <CardTitle className="font-armenian text-xl">{specialty.name}</CardTitle>
+                          <p className="text-sm text-muted-foreground font-armenian mt-1">{specialty.description}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                        <div className="text-xs text-muted-foreground font-armenian">
+                          Հերթ՝ {specialty.order_index}
+                        </div>
+                        <span className={`text-xs px-2 py-1 rounded-full ${specialty.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'} font-armenian`}>
+                          {specialty.is_active ? 'Ակտիվ' : 'Ոչ ակտիվ'}
+                        </span>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleEdit(specialty)}
+                          className="font-armenian"
+                        >
+                          <Edit className="w-4 h-4 mr-1" />
+                          Խմբագրել
+                        </Button>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleDelete(specialty.id)}
+                          className="font-armenian"
+                        >
+                          <Trash2 className="w-4 h-4 mr-1" />
+                          Ջնջել
+                        </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardContent className="pt-0">
+                    <SpecialtyModulesSection 
+                      specialtyId={specialty.id}
+                      onAddModule={() => handleAddModule(specialty.id)}
+                      onEditModule={handleEditModule}
+                      onAddTopic={handleAddTopic}
+                    />
+                  </CardContent>
+                </CollapsibleContent>
+              </Collapsible>
             </Card>
           );
         })}
       </div>
 
-      {/* Create/Edit Modal */}
+      {/* Create/Edit Specialty Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={(open) => !open && resetForm()}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -344,6 +439,14 @@ const AdminSpecialtiesTab = () => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Module Form Dialog */}
+      <ModuleFormDialog
+        isOpen={moduleFormOpen}
+        onClose={() => setModuleFormOpen(false)}
+        specialtyId={selectedSpecialtyId}
+        editingModule={editingModule}
+      />
     </div>
   );
 };
