@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -39,13 +38,16 @@ import { AvatarUpload } from '@/components/ui/avatar-upload';
 import { CoverPhotoUpload } from '@/components/ui/cover-photo-upload';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 const StudentProfile = () => {
-  const { data: profile, isLoading, error } = useUserProfile();
+  const { data: profile, isLoading, error, refetch: refetchProfile } = useUserProfile();
   const updateProfileMutation = useUpdateProfile();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('overview');
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
+  const [forceRefreshKey, setForceRefreshKey] = useState(0);
 
   console.log('StudentProfile - Loading:', isLoading);
   console.log('StudentProfile - Profile data:', profile);
@@ -89,10 +91,49 @@ const StudentProfile = () => {
     }
   };
 
+  // Add cache busting to avatar URL
+  const getAvatarUrl = (url: string | null) => {
+    if (!url) return null;
+    const timestamp = Date.now() + forceRefreshKey;
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}v=${timestamp}`;
+  };
+
+  // Create unique key for forcing re-render
+  const avatarKey = `student-avatar-${forceRefreshKey}-${profile.avatar_url ? 'has-url' : 'no-url'}`;
+
   const handleAvatarChange = async (url: string | null) => {
     console.log('StudentProfile: Avatar changed to:', url);
+    
     try {
+      console.log('StudentProfile: Starting database update for avatar');
+      
+      // Force refresh the avatar display immediately
+      setForceRefreshKey(prev => prev + 1);
+      
+      // Update the profile in the database
       await updateProfileMutation.mutateAsync({ avatar_url: url });
+      
+      console.log('StudentProfile: Database update successful, invalidating cache');
+      
+      // Force complete cache refresh with multiple strategies
+      await Promise.all([
+        // Invalidate all user profile queries
+        queryClient.invalidateQueries({ queryKey: ['userProfile'] }),
+        // Refetch the current profile data
+        refetchProfile(),
+        // Remove cached data to force fresh fetch
+        queryClient.removeQueries({ queryKey: ['userProfile'] }),
+      ]);
+      
+      // Small delay to ensure cache refresh, then force another invalidation
+      setTimeout(() => {
+        console.log('StudentProfile: Performing delayed cache refresh');
+        queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+        setForceRefreshKey(prev => prev + 1);
+      }, 500);
+      
+      console.log('StudentProfile: Avatar updated successfully');
       toast.success('Նկարը հաջողությամբ թարմացվեց');
       setIsAvatarModalOpen(false);
     } catch (error) {
@@ -155,11 +196,18 @@ const StudentProfile = () => {
             <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
               <div className="relative">
                 <div className="w-24 h-24 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center border-4 border-white shadow-lg">
-                  {profile.avatar_url ? (
+                  {getAvatarUrl(profile.avatar_url) ? (
                     <img 
-                      src={profile.avatar_url} 
+                      key={avatarKey}
+                      src={getAvatarUrl(profile.avatar_url)} 
                       alt={profile.name || 'Ուսանող'} 
                       className="w-24 h-24 rounded-full object-cover"
+                      onLoad={() => {
+                        console.log('StudentProfile: Avatar image loaded successfully with URL:', getAvatarUrl(profile.avatar_url));
+                      }}
+                      onError={(e) => {
+                        console.error('StudentProfile: Avatar image load error for URL:', getAvatarUrl(profile.avatar_url), e);
+                      }}
                     />
                   ) : (
                     <User className="w-12 h-12 text-primary" />
@@ -266,7 +314,7 @@ const StudentProfile = () => {
           </DialogHeader>
           <div className="py-4">
             <AvatarUpload
-              currentAvatarUrl={profile.avatar_url}
+              currentAvatarUrl={getAvatarUrl(profile.avatar_url)}
               name={profile.name || 'Ուսանող'}
               onAvatarChange={handleAvatarChange}
               size="lg"
