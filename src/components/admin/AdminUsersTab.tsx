@@ -1,50 +1,24 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Users, User, Shield, GraduationCap, Building2, UserPlus } from 'lucide-react';
+import { Users, User, Shield, GraduationCap, Building2 } from 'lucide-react';
 import EnhancedAdminInstructorsTab from './users/EnhancedAdminInstructorsTab';
 import EnhancedAdminStudentsTab from './users/EnhancedAdminStudentsTab';
 import AdminEmployersTab from './users/AdminEmployersTab';
 import AdminPermissionsTab from './users/AdminPermissionsTab';
-import AddStudentForm from './users/AddStudentForm';
-import AddEmployerForm from './users/AddEmployerForm';
 
 const AdminUsersTab = () => {
-  const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
-  const [isAddEmployerModalOpen, setIsAddEmployerModalOpen] = useState(false);
-
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="glass-card rounded-2xl p-6 animate-fade-in-up">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl">
-              <Users className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold font-armenian text-gradient">Օգտատերերի կառավարում</h2>
-              <p className="text-muted-foreground font-armenian">Կառավարեք բոլոր օգտատերերի դերերը և կարգավիճակները</p>
-            </div>
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl">
+            <Users className="w-6 h-6 text-white" />
           </div>
-          <div className="flex gap-2">
-            <Button 
-              onClick={() => setIsAddStudentModalOpen(true)}
-              className="font-armenian"
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Ավելացնել ուսանող
-            </Button>
-            <Button 
-              onClick={() => setIsAddEmployerModalOpen(true)}
-              className="font-armenian"
-              variant="outline"
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Ավելացնել գործատու
-            </Button>
+          <div>
+            <h2 className="text-2xl font-bold font-armenian text-gradient">Օգտատերերի կառավարում</h2>
+            <p className="text-muted-foreground font-armenian">Կառավարեք բոլոր օգտատերերի դերերը և կարգավիճակները</p>
           </div>
         </div>
       </div>
@@ -90,26 +64,6 @@ const AdminUsersTab = () => {
           </div>
         </Tabs>
       </div>
-
-      {/* Add Student Modal */}
-      <Dialog open={isAddStudentModalOpen} onOpenChange={setIsAddStudentModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="font-armenian">Ուսանող ավելացնել</DialogTitle>
-          </DialogHeader>
-          <AddStudentForm onSuccess={() => setIsAddStudentModalOpen(false)} />
-        </DialogContent>
-      </Dialog>
-
-      {/* Add Employer Modal */}
-      <Dialog open={isAddEmployerModalOpen} onOpenChange={setIsAddEmployerModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="font-armenian">Գործատու ավելացնել</DialogTitle>
-          </DialogHeader>
-          <AddEmployerForm onSuccess={() => setIsAddEmployerModalOpen(false)} />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

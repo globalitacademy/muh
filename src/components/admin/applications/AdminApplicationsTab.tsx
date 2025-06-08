@@ -10,6 +10,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { UserPlus, Check, X, Eye, Clock, Users, GraduationCap, Building2 } from 'lucide-react';
 import { useUserApplications, useApproveApplication, useRejectApplication, UserApplication } from '@/hooks/useUserApplications';
 import { format } from 'date-fns';
+import AddStudentForm from '../users/AddStudentForm';
+import AddEmployerForm from '../users/AddEmployerForm';
 
 const AdminApplicationsTab = () => {
   const { data: applications, isLoading } = useUserApplications();
@@ -19,6 +21,8 @@ const AdminApplicationsTab = () => {
   const [selectedApplication, setSelectedApplication] = useState<UserApplication | null>(null);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
+  const [isAddEmployerModalOpen, setIsAddEmployerModalOpen] = useState(false);
 
   const handleApprove = (applicationId: string) => {
     approveApplication.mutate({ applicationId });
@@ -165,13 +169,32 @@ const AdminApplicationsTab = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="glass-card rounded-2xl p-6 animate-fade-in-up">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl">
-            <UserPlus className="w-6 h-6 text-white" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl">
+              <UserPlus className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold font-armenian text-gradient">Գրանցման դիմումներ</h2>
+              <p className="text-muted-foreground font-armenian">Կառավարեք նոր օգտատերերի գրանցման հայտերը</p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-2xl font-bold font-armenian text-gradient">Գրանցման դիմումներ</h2>
-            <p className="text-muted-foreground font-armenian">Կառավարեք նոր օգտատերերի գրանցման հայտերը</p>
+          <div className="flex gap-2">
+            <Button 
+              onClick={() => setIsAddStudentModalOpen(true)}
+              className="font-armenian"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Ավելացնել ուսանող
+            </Button>
+            <Button 
+              onClick={() => setIsAddEmployerModalOpen(true)}
+              className="font-armenian"
+              variant="outline"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Ավելացնել գործատու
+            </Button>
           </div>
         </div>
       </div>
@@ -298,6 +321,26 @@ const AdminApplicationsTab = () => {
           </div>
         </Tabs>
       </div>
+
+      {/* Add Student Modal */}
+      <Dialog open={isAddStudentModalOpen} onOpenChange={setIsAddStudentModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-armenian">Ուսանող ավելացնել</DialogTitle>
+          </DialogHeader>
+          <AddStudentForm onSuccess={() => setIsAddStudentModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Employer Modal */}
+      <Dialog open={isAddEmployerModalOpen} onOpenChange={setIsAddEmployerModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-armenian">Գործատու ավելացնել</DialogTitle>
+          </DialogHeader>
+          <AddEmployerForm onSuccess={() => setIsAddEmployerModalOpen(false)} />
+        </DialogContent>
+      </Dialog>
 
       {/* Reject Modal */}
       <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>

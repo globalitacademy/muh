@@ -13,7 +13,7 @@ const AdminSidebar = ({
   activeSection = 'overview',
   onSectionChange
 }: AdminSidebarProps) => {
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['main', 'content']);
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['main', 'content', 'users']);
   
   const toggleGroup = (groupId: string) => {
     setExpandedGroups(prev => prev.includes(groupId) ? prev.filter(id => id !== groupId) : [...prev, groupId]);
@@ -64,7 +64,7 @@ const AdminSidebar = ({
       icon: UserPlus
     }, {
       id: 'users',
-      label: 'Օգտատերերի կառավարում',
+      label: 'Օգտատերեր',
       icon: Users
     }, {
       id: 'permissions',
