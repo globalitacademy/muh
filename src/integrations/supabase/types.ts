@@ -223,6 +223,56 @@ export type Database = {
           },
         ]
       }
+      course_pricing: {
+        Row: {
+          base_price: number
+          course_id: string
+          created_at: string
+          currency: string
+          discount_percentage: number | null
+          final_price: number
+          id: string
+          is_active: boolean
+          updated_at: string
+          valid_from: string
+          valid_until: string | null
+        }
+        Insert: {
+          base_price: number
+          course_id: string
+          created_at?: string
+          currency?: string
+          discount_percentage?: number | null
+          final_price: number
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Update: {
+          base_price?: number
+          course_id?: string
+          created_at?: string
+          currency?: string
+          discount_percentage?: number | null
+          final_price?: number
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          valid_from?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_pricing_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       destinations: {
         Row: {
           description: string | null
@@ -445,6 +495,68 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      financial_transactions: {
+        Row: {
+          amount: number
+          course_id: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          idram_order_id: string | null
+          idram_transaction_id: string | null
+          metadata: Json | null
+          payment_method: string
+          payment_status: string
+          transaction_date: string
+          transaction_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          course_id?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          idram_order_id?: string | null
+          idram_transaction_id?: string | null
+          metadata?: Json | null
+          payment_method: string
+          payment_status?: string
+          transaction_date?: string
+          transaction_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          course_id?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          idram_order_id?: string | null
+          idram_transaction_id?: string | null
+          metadata?: Json | null
+          payment_method?: string
+          payment_status?: string
+          transaction_date?: string
+          transaction_type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_transactions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       food_arrangements: {
         Row: {
@@ -815,6 +927,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      payment_settings: {
+        Row: {
+          configuration: Json
+          created_at: string
+          id: string
+          is_active: boolean
+          provider: string
+          test_mode: boolean
+          updated_at: string
+        }
+        Insert: {
+          configuration: Json
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          provider: string
+          test_mode?: boolean
+          updated_at?: string
+        }
+        Update: {
+          configuration?: Json
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          provider?: string
+          test_mode?: boolean
+          updated_at?: string
+        }
+        Relationships: []
       }
       portfolios: {
         Row: {

@@ -1,4 +1,3 @@
-
 export interface Module {
   id: string;
   title: string;
@@ -74,4 +73,52 @@ export interface User {
   role?: 'admin' | 'instructor' | 'student' | 'guest';
   organization?: string;
   avatar_url?: string;
+}
+
+export interface FinancialTransaction {
+  id: string;
+  user_id: string;
+  course_id?: string;
+  amount: number;
+  currency: string;
+  transaction_type: string;
+  payment_method: string;
+  payment_status: string;
+  idram_transaction_id?: string;
+  idram_order_id?: string;
+  transaction_date: string;
+  description?: string;
+  metadata?: any;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CoursePricing {
+  id: string;
+  course_id: string;
+  base_price: number;
+  currency: string;
+  discount_percentage: number;
+  final_price: number;
+  is_active: boolean;
+  valid_from: string;
+  valid_until?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PaymentSettings {
+  id: string;
+  provider: string;
+  is_active: boolean;
+  test_mode: boolean;
+  configuration: {
+    merchant_id: string;
+    secret_key: string;
+    callback_url: string;
+    success_url: string;
+    fail_url: string;
+  };
+  created_at: string;
+  updated_at: string;
 }
