@@ -15,9 +15,6 @@ import EditInstructorDialog from './EditInstructorDialog';
 const AdminInstructorsTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [selectedInstructor, setSelectedInstructor] = useState<UserProfile | null>(null);
-  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const { data: users, isLoading, error } = useAdminUsers();
   
   if (isLoading) {
@@ -49,21 +46,6 @@ const AdminInstructorsTab = () => {
 
   const handleAddSuccess = () => {
     setIsAddDialogOpen(false);
-  };
-
-  const handleViewInstructor = (instructor: UserProfile) => {
-    setSelectedInstructor(instructor);
-    setIsViewDialogOpen(true);
-  };
-
-  const handleEditInstructor = (instructor: UserProfile) => {
-    setSelectedInstructor(instructor);
-    setIsEditDialogOpen(true);
-  };
-
-  const handleEditSuccess = () => {
-    setIsEditDialogOpen(false);
-    setSelectedInstructor(null);
   };
 
   return (
@@ -131,22 +113,8 @@ const AdminInstructorsTab = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleViewInstructor(instructor)}
-                    title="Դիտել տվյալները"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleEditInstructor(instructor)}
-                    title="Խմբագրել"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </Button>
+                  <ViewInstructorDialog instructor={instructor} />
+                  <EditInstructorDialog instructor={instructor} />
                 </div>
               </div>
             </CardHeader>
@@ -204,21 +172,6 @@ const AdminInstructorsTab = () => {
           </CardContent>
         </Card>
       )}
-
-      {/* View Instructor Dialog */}
-      <ViewInstructorDialog
-        instructor={selectedInstructor}
-        open={isViewDialogOpen}
-        onOpenChange={setIsViewDialogOpen}
-      />
-
-      {/* Edit Instructor Dialog */}
-      <EditInstructorDialog
-        instructor={selectedInstructor}
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        onSuccess={handleEditSuccess}
-      />
     </div>
   );
 };
