@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play, Star, Users, Award, BookOpen, Loader2 } from 'lucide-react';
@@ -5,21 +6,21 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { useContactStats } from '@/hooks/useContactStats';
 import NetworkAnimation from './NetworkAnimation';
+import ScrollReveal from '@/components/ui/scroll-reveal';
 
 const Hero = () => {
-  const {
-    t
-  } = useLanguage();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { data: stats, isLoading: statsLoading } = useContactStats();
 
-  return <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-accent/5 pt-20">
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-accent/5 pt-20">
       {/* Network Animation Background */}
       <div className="absolute inset-0" style={{ zIndex: 1 }}>
         <NetworkAnimation />
       </div>
 
-      {/* Background decorations */}
+      {/* Enhanced Background decorations */}
       <div className="absolute inset-0" style={{ zIndex: 2 }}>
         <div className="absolute top-20 left-10 w-72 h-72 bg-edu-blue/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob dark:mix-blend-screen dark:opacity-30"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000 dark:mix-blend-screen dark:opacity-30"></div>
@@ -28,63 +29,94 @@ const Hero = () => {
 
       <div className="relative container mx-auto px-4 py-24" style={{ zIndex: 10 }}>
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-edu-blue/10 text-edu-blue mb-8 backdrop-blur-sm border border-edu-blue/20">
-            <Star className="w-5 h-5" />
-            <span className="font-medium font-armenian">Հայաստանի առաջին մոդուլային ուսումնական հարթակ</span>
-          </div>
-
-          {/* Main heading */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-            <span className="text-gradient font-armenian">Կրթություն</span>
-            <br />
-            <span className="text-foreground font-armenian">Առանց Սահմանների</span>
-          </h1>
-
-          {/* Description */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-armenian">
-            Սովորեք նոր հմտություններ մոդուլային մոտեցմամբ։ Յուրաքանչյուր մոդուլ ունի իր թեմաները, որոնք կօգնեն ձեզ աստիճանաբար տիրապետել նյութին։
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button size="lg" className="btn-modern text-white px-8 py-4 text-lg font-armenian" onClick={() => navigate('/courses')}>
-              Սկսել ուսումը
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-            <Button variant="outline" size="lg" className="px-8 py-4 text-lg font-armenian backdrop-blur-sm border-border bg-background/80 text-foreground hover:bg-accent" onClick={() => navigate('/about')}>
-              <Play className="mr-2 w-5 h-5" />
-              Մեր մասին
-            </Button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
-            <div className="glass-card rounded-2xl p-6 text-center bg-card/50 backdrop-blur-md border border-border">
-              <div className="text-3xl font-bold text-edu-blue mb-2">
-                {statsLoading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : `${stats?.studentsCount || 0}+`}
-              </div>
-              <div className="text-muted-foreground font-armenian">Ուսանողներ</div>
+          {/* Enhanced Badge */}
+          <ScrollReveal delay={100}>
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-edu-blue/10 text-edu-blue mb-8 backdrop-blur-sm border border-edu-blue/20 hover-interactive">
+              <Star className="w-5 h-5 animate-pulse-slow" />
+              <span className="font-medium font-armenian">Հայաստանի առաջին մոդուլային ուսումնական հարթակ</span>
             </div>
-            <div className="glass-card rounded-2xl p-6 text-center bg-card/50 backdrop-blur-md border border-border">
-              <div className="text-3xl font-bold text-edu-blue mb-2">
-                {statsLoading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : `${stats?.modulesCount || 0}`}
-              </div>
-              <div className="text-muted-foreground font-armenian">Մոդուլներ</div>
+          </ScrollReveal>
+
+          {/* Enhanced Main heading */}
+          <ScrollReveal delay={200}>
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
+              <span className="text-gradient font-armenian animate-fade-in-up">Կրթություն</span>
+              <br />
+              <span className="text-foreground font-armenian animate-fade-in-up" style={{ animationDelay: '0.2s' }}>Առանց Սահմանների</span>
+            </h1>
+          </ScrollReveal>
+
+          {/* Enhanced Description */}
+          <ScrollReveal delay={400}>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed font-armenian">
+              Սովորեք նոր հմտություններ մոդուլային մոտեցմամբ։ Յուրաքանչյուր մոդուլ ունի իր թեմաները, որոնք կօգնեն ձեզ աստիճանաբար տիրապետել նյութին։
+            </p>
+          </ScrollReveal>
+
+          {/* Enhanced CTA Buttons */}
+          <ScrollReveal delay={600}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+              <Button 
+                size="lg" 
+                className="btn-modern text-white px-8 py-4 text-lg font-armenian hover:shadow-glow" 
+                onClick={() => navigate('/courses')}
+              >
+                Սկսել ուսումը
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="btn-outline-modern px-8 py-4 text-lg font-armenian backdrop-blur-sm" 
+                onClick={() => navigate('/about')}
+              >
+                <Play className="mr-2 w-5 h-5" />
+                Մեր մասին
+              </Button>
             </div>
-            <div className="glass-card rounded-2xl p-6 text-center bg-card/50 backdrop-blur-md border border-border">
-              <div className="text-3xl font-bold text-edu-blue mb-2">
-                {statsLoading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : `${stats?.instructorsCount || 0}+`}
+          </ScrollReveal>
+
+          {/* Enhanced Stats */}
+          <ScrollReveal delay={800}>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
+              <div className="glass-card rounded-2xl p-6 text-center bg-card/50 backdrop-blur-md border border-border hover-interactive">
+                <div className="text-3xl font-bold text-edu-blue mb-2 font-armenian">
+                  {statsLoading ? (
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                  ) : (
+                    <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
+                  )}
+                </div>
+                <div className="text-muted-foreground font-armenian">Ուսանողներ</div>
               </div>
-              <div className="text-muted-foreground font-armenian">Մանկավարժներ</div>
+              <div className="glass-card rounded-2xl p-6 text-center bg-card/50 backdrop-blur-md border border-border hover-interactive">
+                <div className="text-3xl font-bold text-edu-blue mb-2 font-armenian">
+                  {statsLoading ? (
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                  ) : (
+                    <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
+                  )}
+                </div>
+                <div className="text-muted-foreground font-armenian">Մոդուլներ</div>
+              </div>
+              <div className="glass-card rounded-2xl p-6 text-center bg-card/50 backdrop-blur-md border border-border hover-interactive">
+                <div className="text-3xl font-bold text-edu-blue mb-2 font-armenian">
+                  {statsLoading ? (
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto" />
+                  ) : (
+                    <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
+                  )}
+                </div>
+                <div className="text-muted-foreground font-armenian">Մանկավարժներ</div>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
 
-      {/* Floating elements */}
-      <div className="absolute top-1/4 left-10 hidden lg:block" style={{ zIndex: 11 }}>
-        <div className="glass-card rounded-xl p-4 shadow-lg backdrop-blur-sm bg-card/80 border border-border">
+      {/* Enhanced Floating elements */}
+      <div className="absolute top-1/4 left-10 hidden lg:block animate-float" style={{ zIndex: 11 }}>
+        <div className="glass-card rounded-xl p-4 shadow-modern-lg backdrop-blur-sm bg-card/80 border border-border hover-interactive">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
               <Users className="w-5 h-5 text-white" />
@@ -97,8 +129,8 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className="absolute top-1/3 right-10 hidden lg:block" style={{ zIndex: 11 }}>
-        <div className="glass-card rounded-xl p-4 shadow-lg backdrop-blur-sm bg-card/80 border border-border">
+      <div className="absolute top-1/3 right-10 hidden lg:block animate-float" style={{ zIndex: 11, animationDelay: '1s' }}>
+        <div className="glass-card rounded-xl p-4 shadow-modern-lg backdrop-blur-sm bg-card/80 border border-border hover-interactive">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
               <Award className="w-5 h-5 text-white" />
@@ -110,7 +142,8 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 };
 
 export default Hero;
