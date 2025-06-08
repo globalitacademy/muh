@@ -1,32 +1,17 @@
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Loader2 } from 'lucide-react';
+import { Save, X, Calendar, Globe, Github, FileText, Image } from 'lucide-react';
 import { PortfolioImageUpload } from './PortfolioImageUpload';
 
-interface PortfolioFormData {
-  title: string;
-  description: string;
-  project_url: string;
-  github_url: string;
-  files_url: string;
-  start_date: string;
-  end_date: string;
-  is_team_project: boolean;
-  is_thesis_project: boolean;
-  instructor_review: string;
-  employer_review: string;
-  image_url: string;
-}
-
 interface PortfolioFormProps {
-  formData: PortfolioFormData;
-  setFormData: (data: PortfolioFormData) => void;
+  formData: any;
+  setFormData: (data: any) => void;
   onSubmit: () => void;
   onCancel: () => void;
   isSubmitting: boolean;
@@ -41,111 +26,174 @@ const PortfolioForm: React.FC<PortfolioFormProps> = ({
   isSubmitting,
   isEditing
 }) => {
+  console.log('PortfolioForm: Rendering with formData:', formData);
+
   const handleImageChange = (url: string | null) => {
-    setFormData({ ...formData, image_url: url || '' });
+    console.log('PortfolioForm: Image changed to:', url);
+    setFormData({ ...formData, image_url: url });
   };
 
   return (
-    <Card className="p-4 border-dashed">
-      <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            placeholder="Ծրագրի անունը *"
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          />
-          <div className="grid grid-cols-2 gap-2">
-            <Input
-              type="date"
-              placeholder="Սկսման ամսաթիվ"
-              value={formData.start_date}
-              onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
-            />
-            <Input
-              type="date"
-              placeholder="Ավարտման ամսաթիվ"
-              value={formData.end_date}
-              onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
-            />
-          </div>
-        </div>
-
-        <Textarea
-          placeholder="Ծրագրի նկարագրությունը"
-          value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          rows={3}
-        />
-
-        {/* Image Upload Section */}
+    <Card className="border-2 border-primary/20">
+      <CardHeader>
+        <CardTitle className="font-armenian">
+          {isEditing ? 'Խմբագրել ծրագիրը' : 'Նոր ծրագիր ավելացնել'}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Project Image */}
         <div>
-          <Label className="text-sm font-medium mb-2 block">Ծրագրի նկար</Label>
+          <Label htmlFor="image" className="flex items-center gap-2 mb-2">
+            <Image className="w-4 h-4" />
+            Ծրագրի նկար
+          </Label>
           <PortfolioImageUpload
             currentImageUrl={formData.image_url}
             onImageChange={handleImageChange}
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Basic Information */}
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <Label htmlFor="title">Ծրագրի անուն*</Label>
+            <Input
+              id="title"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="Ծրագրի անունը"
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="description">Նկարագրություն</Label>
+            <Textarea
+              id="description"
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Ծրագրի մանրամասն նկարագրություն..."
+              rows={4}
+            />
+          </div>
+        </div>
+
+        {/* Links */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="project_url" className="flex items-center gap-2">
+              <Globe className="w-4 h-4" />
+              Ծրագրի հղում
+            </Label>
+            <Input
+              id="project_url"
+              value={formData.project_url}
+              onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
+              placeholder="https://example.com"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="github_url" className="flex items-center gap-2">
+              <Github className="w-4 h-4" />
+              GitHub հղում
+            </Label>
+            <Input
+              id="github_url"
+              value={formData.github_url}
+              onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
+              placeholder="https://github.com/username/project"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="files_url" className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            Ֆայլերի հղում
+          </Label>
           <Input
-            placeholder="Ծրագրի URL"
-            value={formData.project_url}
-            onChange={(e) => setFormData({ ...formData, project_url: e.target.value })}
-          />
-          <Input
-            placeholder="GitHub URL"
-            value={formData.github_url}
-            onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
-          />
-          <Input
-            placeholder="Ֆայլերի URL"
+            id="files_url"
             value={formData.files_url}
             onChange={(e) => setFormData({ ...formData, files_url: e.target.value })}
+            placeholder="Google Drive, Dropbox, և այլն"
           />
         </div>
 
-        <div className="flex items-center gap-6">
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="team-project"
-              checked={formData.is_team_project}
-              onCheckedChange={(checked) => setFormData({ ...formData, is_team_project: checked })}
-            />
-            <Label htmlFor="team-project" className="text-sm font-armenian">
-              Թիմային ծրագիր
+        {/* Dates */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="start_date" className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              Սկսման ամսաթիվ
             </Label>
+            <Input
+              id="start_date"
+              type="date"
+              value={formData.start_date}
+              onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+            />
           </div>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="thesis-project"
-              checked={formData.is_thesis_project}
-              onCheckedChange={(checked) => setFormData({ ...formData, is_thesis_project: checked })}
-            />
-            <Label htmlFor="thesis-project" className="text-sm font-armenian">
-              Դիպլոմային աշխատանք
+
+          <div>
+            <Label htmlFor="end_date" className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              Ավարտի ամսաթիվ
             </Label>
+            <Input
+              id="end_date"
+              type="date"
+              value={formData.end_date}
+              onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+            />
           </div>
         </div>
 
-        <div className="flex gap-2">
-          <Button 
-            onClick={onSubmit}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <Loader2 className="w-4 h-4 animate-spin mr-2" />
-            ) : null}
-            {isEditing ? 'Թարմացնել' : 'Ավելացնել'}
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={onCancel}
-            disabled={isSubmitting}
-          >
+        {/* Project Type */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Թիմային ծրագիր</Label>
+              <p className="text-sm text-muted-foreground">
+                Այս ծրագիրը իրականացվել է թիմով
+              </p>
+            </div>
+            <Switch
+              checked={formData.is_team_project}
+              onCheckedChange={(checked) => 
+                setFormData({ ...formData, is_team_project: checked })
+              }
+            />
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Դիպլոմային ծրագիր</Label>
+              <p className="text-sm text-muted-foreground">
+                Այս ծրագիրը դիպլոմային աշխատանք է
+              </p>
+            </div>
+            <Switch
+              checked={formData.is_thesis_project}
+              onCheckedChange={(checked) => 
+                setFormData({ ...formData, is_thesis_project: checked })
+              }
+            />
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-2 pt-4 border-t">
+          <Button variant="outline" onClick={onCancel} disabled={isSubmitting}>
+            <X className="w-4 h-4 mr-2" />
             Չեղարկել
           </Button>
+          <Button onClick={onSubmit} disabled={isSubmitting || !formData.title.trim()}>
+            <Save className="w-4 h-4 mr-2" />
+            {isSubmitting ? 'Պահպանվում է...' : 'Պահպանել'}
+          </Button>
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 };

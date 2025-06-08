@@ -103,6 +103,7 @@ export const useImageUpload = (options: UseImageUploadOptions) => {
       return publicUrl;
     } catch (error) {
       console.error('useImageUpload: Upload failed with error:', error);
+      setUploadProgress(0);
       throw error;
     } finally {
       setUploading(false);

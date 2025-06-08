@@ -35,10 +35,14 @@ import MessagesTab from '@/components/profile/MessagesTab';
 import ExamsTab from '@/components/profile/ExamsTab';
 import ProfileSettingsTab from '@/components/profile/ProfileSettingsTab';
 import SettingsTab from '@/components/settings/SettingsTab';
+import { AvatarUpload } from '@/components/ui/avatar-upload';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 const StudentProfile = () => {
   const { data: profile, isLoading, error } = useUserProfile();
   const [activeTab, setActiveTab] = useState('overview');
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
 
   console.log('StudentProfile - Loading:', isLoading);
   console.log('StudentProfile - Profile data:', profile);
@@ -82,6 +86,22 @@ const StudentProfile = () => {
     }
   };
 
+  const handleAvatarChange = (url: string | null) => {
+    console.log('StudentProfile: Avatar changed to:', url);
+    // The ProfileSettingsTab will handle the actual profile update
+    setIsAvatarModalOpen(false);
+  };
+
+  const handleCoverPhotoClick = () => {
+    console.log('StudentProfile: Cover photo clicked');
+    setIsCoverModalOpen(true);
+  };
+
+  const handleAvatarClick = () => {
+    console.log('StudentProfile: Avatar camera clicked');
+    setIsAvatarModalOpen(true);
+  };
+
   return (
     <div className="space-y-6">
       {/* Enhanced Profile Header */}
@@ -93,6 +113,7 @@ const StudentProfile = () => {
             variant="secondary" 
             size="sm" 
             className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm hover:bg-white/30"
+            onClick={handleCoverPhotoClick}
           >
             <Camera className="w-4 h-4 mr-2" />
             Փոխել ծածկագիրը
@@ -118,6 +139,7 @@ const StudentProfile = () => {
                 <Button 
                   size="sm" 
                   className="absolute -bottom-2 -right-2 rounded-full p-2 h-8 w-8"
+                  onClick={handleAvatarClick}
                 >
                   <Camera className="w-3 h-3" />
                 </Button>
@@ -206,6 +228,37 @@ const StudentProfile = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Avatar Upload Modal */}
+      <Dialog open={isAvatarModalOpen} onOpenChange={setIsAvatarModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-armenian">Նկարի փոփոխություն</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <AvatarUpload
+              currentAvatarUrl={profile.avatar_url}
+              name={profile.name || 'Ուսանող'}
+              onAvatarChange={handleAvatarChange}
+              size="lg"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Cover Photo Upload Modal */}
+      <Dialog open={isCoverModalOpen} onOpenChange={setIsCoverModalOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="font-armenian">Ծածկագրի փոփոխություն</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <p className="text-center text-muted-foreground">
+              Ծածկագրի ֆունկցիան շուտով կավելացվի
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Enhanced Tabs Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
