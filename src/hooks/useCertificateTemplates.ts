@@ -31,7 +31,7 @@ export const useCertificateTemplates = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as CertificateTemplate[];
     },
   });
 };
@@ -61,7 +61,7 @@ export const useCreateCertificateTemplate = () => {
         .single();
 
       if (error) throw error;
-      return data;
+      return data as CertificateTemplate;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['certificate-templates'] });
