@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAdminSpecialties, useCreateSpecialty, useUpdateSpecialty, useDeleteSpecialty } from '@/hooks/useSpecialties';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +18,7 @@ const iconOptions = [
   { value: 'Network', label: 'Network', icon: Network },
   { value: 'Bot', label: 'Bot', icon: Bot },
   { value: 'Brain', label: 'Brain', icon: Brain },
-];
+].filter(option => option.value && option.value.trim() !== ''); // Filter out any empty values
 
 const colorOptions = [
   { value: 'from-blue-500 to-cyan-500', label: 'Կապույտ' },
@@ -26,7 +27,7 @@ const colorOptions = [
   { value: 'from-green-500 to-emerald-500', label: 'Կանաչ' },
   { value: 'from-indigo-500 to-blue-500', label: 'Ինդիգո' },
   { value: 'from-yellow-500 to-amber-500', label: 'Դեղին' },
-];
+].filter(option => option.value && option.value.trim() !== ''); // Filter out any empty values
 
 const AdminSpecialtiesTab = () => {
   const { data: specialties, isLoading } = useAdminSpecialties();
@@ -56,8 +57,8 @@ const AdminSpecialtiesTab = () => {
       description: '',
       description_en: '',
       description_ru: '',
-      icon: 'Code',
-      color: 'from-blue-500 to-cyan-500',
+      icon: 'Code', // Ensure this is never empty
+      color: 'from-blue-500 to-cyan-500', // Ensure this is never empty
       order_index: 0,
     });
     setIsCreateModalOpen(false);
@@ -245,7 +246,12 @@ const AdminSpecialtiesTab = () => {
                 <Label htmlFor="icon" className="font-armenian">Պատկերակ</Label>
                 <Select 
                   value={formData.icon} 
-                  onValueChange={(value) => setFormData({ ...formData, icon: value })}
+                  onValueChange={(value) => {
+                    console.log('Icon value selected:', value);
+                    if (value && value.trim() !== '') {
+                      setFormData({ ...formData, icon: value });
+                    }
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -253,6 +259,10 @@ const AdminSpecialtiesTab = () => {
                   <SelectContent>
                     {iconOptions.map((option) => {
                       const IconComponent = option.icon;
+                      if (!option.value || option.value.trim() === '') {
+                        console.error('Empty icon option value detected:', option);
+                        return null;
+                      }
                       return (
                         <SelectItem key={option.value} value={option.value}>
                           <div className="flex items-center gap-2">
@@ -270,20 +280,31 @@ const AdminSpecialtiesTab = () => {
                 <Label htmlFor="color" className="font-armenian">Գույն</Label>
                 <Select 
                   value={formData.color} 
-                  onValueChange={(value) => setFormData({ ...formData, color: value })}
+                  onValueChange={(value) => {
+                    console.log('Color value selected:', value);
+                    if (value && value.trim() !== '') {
+                      setFormData({ ...formData, color: value });
+                    }
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {colorOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center gap-2">
-                          <div className={`w-4 h-4 rounded bg-gradient-to-r ${option.value}`}></div>
-                          {option.label}
-                        </div>
-                      </SelectItem>
-                    ))}
+                    {colorOptions.map((option) => {
+                      if (!option.value || option.value.trim() === '') {
+                        console.error('Empty color option value detected:', option);
+                        return null;
+                      }
+                      return (
+                        <SelectItem key={option.value} value={option.value}>
+                          <div className="flex items-center gap-2">
+                            <div className={`w-4 h-4 rounded bg-gradient-to-r ${option.value}`}></div>
+                            {option.label}
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
                   </SelectContent>
                 </Select>
               </div>
