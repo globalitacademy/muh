@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,18 +17,28 @@ import {
   GraduationCap
 } from 'lucide-react';
 import { useCertificates } from '@/hooks/useCertificates';
+import { useCertificateTemplates } from '@/hooks/useCertificateTemplates';
 import NewCertificateDialog from './NewCertificateDialog';
 import CertificateTemplateDialog from './CertificateTemplateDialog';
 import CertificateSettingsDialog from './CertificateSettingsDialog';
+import CertificateTemplateCard from './CertificateTemplateCard';
 
 const AdminCertificatesTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [templateSearchTerm, setTemplateSearchTerm] = useState('');
   const { data: certificates, isLoading } = useCertificates();
+  const { data: templates, isLoading: templatesLoading } = useCertificateTemplates();
 
   // Filter certificates based on search
   const filteredCertificates = certificates?.filter(cert => 
     cert.modules?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     cert.user_id.toLowerCase().includes(searchTerm.toLowerCase())
+  ) || [];
+
+  // Filter templates based on search
+  const filteredTemplates = templates?.filter(template =>
+    template.name.toLowerCase().includes(templateSearchTerm.toLowerCase()) ||
+    template.description?.toLowerCase().includes(templateSearchTerm.toLowerCase())
   ) || [];
 
   // Calculate stats from real data
@@ -110,14 +119,12 @@ const AdminCertificatesTab = () => {
 
         <Card className="modern-card">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-armenian">Ակտիվություն</CardTitle>
+            <CardTitle className="text-sm font-medium font-armenian">Շաբլոններ</CardTitle>
             <Settings className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success-green">
-              {stats.totalIssued > 0 ? Math.round((stats.thisMonth / stats.totalIssued) * 100) : 0}%
-            </div>
-            <p className="text-xs text-muted-foreground font-armenian">Ամսական աճ</p>
+            <div className="text-2xl font-bold text-success-green">{templates?.length || 0}</div>
+            <p className="text-xs text-muted-foreground font-armenian">Ակտիվ շաբլոններ</p>
           </CardContent>
         </Card>
       </div>
@@ -211,24 +218,72 @@ const AdminCertificatesTab = () => {
         </TabsContent>
 
         <TabsContent value="templates" className="space-y-6">
-          <Card className="modern-card">
-            <CardHeader>
-              <CardTitle className="font-armenian">Վկայականների շաբլոններ</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center py-12">
-              <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-              <h3 className="text-xl font-semibold font-armenian mb-2">Շաբլոնների կառավարում</h3>
-              <p className="text-muted-foreground font-armenian mb-4">
-                Ստեղծեք և կառավարեք վկայականների շաբլոնները
+          {/* Templates Header */}
+          <div className="flex justify-between items-center">
+            <div>
+              <h4 className="text-lg font-semibold font-armenian">Վկայականների շաբլոններ</h4>
+              <p className="text-sm text-muted-foreground font-armenian">
+                Կառավարեք վկայականների դիզայնի շաբլոնները
               </p>
-              <CertificateTemplateDialog>
-                <Button className="font-armenian btn-modern">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Նոր շաբլոն
-                </Button>
-              </CertificateTemplateDialog>
-            </CardContent>
-          </Card>
+            </div>
+            <CertificateTemplateDialog>
+              <Button className="font-armenian btn-modern">
+                <Plus className="w-4 h-4 mr-2" />
+                Նոր շաբլոն
+              </Button>
+            </CertificateTemplateDialog>
+          </div>
+
+          {/* Templates Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Որոնել շաբլոն..."
+              value={templateSearchTerm}
+              onChange={(e) => setTemplateSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+
+          {/* Templates Grid */}
+          {templatesLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded-lg"></div>
+                </div>
+              ))}
+            </div>
+          ) : filteredTemplates.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTemplates.map((template) => (
+                <CertificateTemplateCard key={template.id} template={template} />
+              ))}
+            </div>
+          ) : (
+            <Card className="modern-card">
+              <CardContent className="text-center py-12">
+                <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <h3 className="text-xl font-semibold font-armenian mb-2">
+                  {templateSearchTerm ? 'Որոնման արդյունքներ չկան' : 'Շաբլոններ դեռ չկան'}
+                </h3>
+                <p className="text-muted-foreground font-armenian mb-4">
+                  {templateSearchTerm 
+                    ? 'Փորձեք այլ որոնման բառ' 
+                    : 'Ստեղծեք ձեր առաջին վկայականի շաբլոնը'
+                  }
+                </p>
+                {!templateSearchTerm && (
+                  <CertificateTemplateDialog>
+                    <Button className="font-armenian btn-modern">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Նոր շաբլոն
+                    </Button>
+                  </CertificateTemplateDialog>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">

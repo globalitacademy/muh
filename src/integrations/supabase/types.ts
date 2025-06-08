@@ -178,6 +178,39 @@ export type Database = {
           },
         ]
       }
+      certificate_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          design_config: Json | null
+          id: string
+          is_active: boolean
+          name: string
+          template_type: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          design_config?: Json | null
+          id?: string
+          is_active?: boolean
+          name: string
+          template_type: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          design_config?: Json | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          template_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       certificates: {
         Row: {
           certificate_url: string | null
@@ -186,6 +219,7 @@ export type Database = {
           issued_at: string | null
           module_id: string | null
           qr_code: string | null
+          template_id: string | null
           user_id: string | null
         }
         Insert: {
@@ -195,6 +229,7 @@ export type Database = {
           issued_at?: string | null
           module_id?: string | null
           qr_code?: string | null
+          template_id?: string | null
           user_id?: string | null
         }
         Update: {
@@ -204,6 +239,7 @@ export type Database = {
           issued_at?: string | null
           module_id?: string | null
           qr_code?: string | null
+          template_id?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -212,6 +248,13 @@ export type Database = {
             columns: ["module_id"]
             isOneToOne: false
             referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
             referencedColumns: ["id"]
           },
           {

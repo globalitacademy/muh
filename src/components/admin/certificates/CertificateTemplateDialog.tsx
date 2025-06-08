@@ -6,8 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, FileText } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useCreateCertificateTemplate } from '@/hooks/useCertificateTemplates';
 
 interface CertificateTemplateDialogProps {
   children: React.ReactNode;
@@ -18,17 +19,26 @@ const CertificateTemplateDialog = ({ children }: CertificateTemplateDialogProps)
   const [templateData, setTemplateData] = useState({
     name: '',
     description: '',
-    template_type: 'certificate',
+    template_type: 'certificate' as 'certificate' | 'diploma' | 'participation',
     design_config: ''
   });
   const { toast } = useToast();
+  const createTemplate = useCreateCertificateTemplate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!templateData.name.trim()) {
+      toast({
+        title: "Սխալ",
+        description: "Խնդրում ենք մուտքագրել շաբլոնի անվանումը",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     try {
-      // Here you would save the template to the database
-      console.log('Template data:', templateData);
+      await createTemplate.mutateAsync(templateData);
       
       toast({
         title: "Հաջողություն",
@@ -43,6 +53,7 @@ const CertificateTemplateDialog = ({ children }: CertificateTemplateDialogProps)
         design_config: ''
       });
     } catch (error) {
+      console.error('Error creating template:', error);
       toast({
         title: "Սխալ",
         description: "Չհաջողվեց ստեղծել շաբլոնը",
@@ -74,7 +85,7 @@ const CertificateTemplateDialog = ({ children }: CertificateTemplateDialogProps)
           
           <div className="space-y-2">
             <Label htmlFor="template_type" className="font-armenian">Տեսակ</Label>
-            <Select value={templateData.template_type} onValueChange={(value) => setTemplateData(prev => ({ ...prev, template_type: value }))}>
+            <Select value={templateData.template_type} onValueChange={(value: 'certificate' | 'diploma' | 'participation') => setTemplateData(prev => ({ ...prev, template_type: value }))}>
               <SelectTrigger>
                 <SelectValue placeholder="Ընտրեք տեսակը" />
               </SelectTrigger>
@@ -109,12 +120,22 @@ const CertificateTemplateDialog = ({ children }: CertificateTemplateDialogProps)
           </div>
 
           <div className="flex justify-end gap-3">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="font-armenian">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setOpen(false)} 
+              className="font-armenian"
+              disabled={createTemplate.isPending}
+            >
               Չեղարկել
             </Button>
-            <Button type="submit" className="font-armenian btn-modern">
+            <Button 
+              type="submit" 
+              className="font-armenian btn-modern"
+              disabled={createTemplate.isPending}
+            >
               <Plus className="w-4 h-4 mr-2" />
-              Ստեղծել
+              {createTemplate.isPending ? 'Ստեղծվում է...' : 'Ստեղծել'}
             </Button>
           </div>
         </form>
