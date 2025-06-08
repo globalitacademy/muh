@@ -120,6 +120,11 @@
     --hover-bg: 210 40% 94%;
     --hover-card: 210 40% 98%;
     --hover-muted: 210 40% 92%;
+    
+    /* Scrollbar colors */
+    --scrollbar-track: 210 40% 96%;
+    --scrollbar-thumb: 214.3 31.8% 91.4%;
+    --scrollbar-thumb-hover: 210 40% 84%;
   }
 
   .dark {
@@ -161,6 +166,11 @@
     --hover-bg: 217.2 32.6% 20%;
     --hover-card: 217.2 32.6% 22%;
     --hover-muted: 217.2 32.6% 18%;
+    
+    /* Scrollbar colors - Dark mode */
+    --scrollbar-track: 217.2 32.6% 17.5%;
+    --scrollbar-thumb: 217.2 32.6% 25%;
+    --scrollbar-thumb-hover: 217.2 32.6% 30%;
   }
 }
 
@@ -171,6 +181,37 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Noto Sans Armenian', system-ui, -apple-system, sans-serif;
+  }
+  
+  /* Global scrollbar styles for webkit browsers */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--scrollbar-track));
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--scrollbar-thumb));
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--scrollbar-thumb-hover));
+  }
+  
+  ::-webkit-scrollbar-corner {
+    background: hsl(var(--scrollbar-track));
+  }
+  
+  /* Firefox scrollbar support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--scrollbar-thumb)) hsl(var(--scrollbar-track));
   }
 }
 
@@ -242,4 +283,54 @@
 
 .text-gradient {
   @apply bg-gradient-to-r from-edu-blue to-edu-purple bg-clip-text text-transparent;
+}
+
+/* Custom scrollbar utility class */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--scrollbar-thumb)) hsl(var(--scrollbar-track));
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: hsl(var(--scrollbar-track));
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--scrollbar-thumb));
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--scrollbar-thumb-hover));
+}
+
+/* Thin scrollbar variant */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--scrollbar-thumb)) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: hsl(var(--scrollbar-thumb));
+  border-radius: 2px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--scrollbar-thumb-hover));
 }

@@ -64,7 +64,11 @@ export default {
 				// Hover colors
 				'hover-bg': 'hsl(var(--hover-bg))',
 				'hover-card': 'hsl(var(--hover-card))',
-				'hover-muted': 'hsl(var(--hover-muted))'
+				'hover-muted': 'hsl(var(--hover-muted))',
+				// Scrollbar colors
+				'scrollbar-track': 'hsl(var(--scrollbar-track))',
+				'scrollbar-thumb': 'hsl(var(--scrollbar-thumb))',
+				'scrollbar-thumb-hover': 'hsl(var(--scrollbar-thumb-hover))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
