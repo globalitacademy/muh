@@ -25,6 +25,7 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [forceRefreshKey, setForceRefreshKey] = useState(0);
   const { uploadImage, deleteImage, uploading, uploadProgress, validateFile } = useImageUpload({
     bucket: 'avatars',
     maxSizeMB: 5
@@ -69,8 +70,14 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       const url = await uploadImage(editedFile, 'avatar');
       if (url) {
         console.log('AvatarUpload: Upload successful, calling onAvatarChange with URL:', url);
+        
+        // Force refresh the avatar display
+        setForceRefreshKey(prev => prev + 1);
+        
         onAvatarChange(url);
-        // Don't show success toast here - let the parent component handle it
+        
+        // Success message will be handled by parent component
+        console.log('AvatarUpload: Avatar change completed successfully');
       }
     } catch (error) {
       const errorMessage = 'Սխալ նկարը վերբեռնելիս';
@@ -92,8 +99,13 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
       setError(null);
       await deleteImage(currentAvatarUrl);
       console.log('AvatarUpload: Avatar deleted successfully, calling onAvatarChange with null');
+      
+      // Force refresh the avatar display
+      setForceRefreshKey(prev => prev + 1);
+      
       onAvatarChange(null);
-      // Don't show success toast here - let the parent component handle it
+      
+      // Success message will be handled by parent component
     } catch (error) {
       const errorMessage = 'Սխալ նկարը ջնջելիս';
       console.error('AvatarUpload: Delete error:', error);
@@ -113,15 +125,32 @@ export const AvatarUpload: React.FC<AvatarUploadProps> = ({
     document.getElementById('avatar-input')?.click();
   };
 
+  // Strip existing query parameters and add fresh cache busting
+  const getCleanAvatarUrl = (url: string | null) => {
+    if (!url) return undefined;
+    
+    // Remove existing query parameters
+    const cleanUrl = url.split('?')[0];
+    
+    // Add fresh timestamp for cache busting
+    const timestamp = Date.now() + forceRefreshKey;
+    return `${cleanUrl}?v=${timestamp}`;
+  };
+
+  // Create unique key for forcing re-render
+  const avatarKey = `avatar-${forceRefreshKey}-${currentAvatarUrl ? 'has-url' : 'no-url'}`;
+
   return (
     <div className="flex items-start gap-4">
       <div className="relative">
-        <Avatar className={sizeClasses[size]}>
+        <Avatar className={sizeClasses[size]} key={avatarKey}>
           <AvatarImage 
-            src={currentAvatarUrl || undefined} 
-            onLoad={() => console.log('AvatarUpload: Avatar image loaded successfully')}
+            src={getCleanAvatarUrl(currentAvatarUrl)}
+            onLoad={() => {
+              console.log('AvatarUpload: Avatar image loaded successfully with URL:', getCleanAvatarUrl(currentAvatarUrl));
+            }}
             onError={(e) => {
-              console.error('AvatarUpload: Avatar image load error:', e);
+              console.error('AvatarUpload: Avatar image load error for URL:', getCleanAvatarUrl(currentAvatarUrl), e);
             }}
           />
           <AvatarFallback className="text-lg">

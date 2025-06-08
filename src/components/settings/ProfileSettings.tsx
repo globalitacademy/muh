@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +11,7 @@ import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 
 const ProfileSettings = () => {
-  const { data: profile } = useUserProfile();
+  const { data: profile, refetch: refetchProfile } = useUserProfile();
   const updateProfileMutation = useUpdateProfile();
   const queryClient = useQueryClient();
   
@@ -62,13 +61,30 @@ const ProfileSettings = () => {
     setFormData(prev => ({ ...prev, avatar_url: url }));
     
     try {
+      console.log('ProfileSettings: Starting database update for avatar');
+      
       // Update the profile in the database
       await updateProfileMutation.mutateAsync({ avatar_url: url });
       
-      // Invalidate all related queries to ensure fresh data everywhere
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+      console.log('ProfileSettings: Database update successful, invalidating cache');
       
-      console.log('ProfileSettings: Avatar updated successfully in database');
+      // Force complete cache refresh with multiple strategies
+      await Promise.all([
+        // Invalidate all user profile queries
+        queryClient.invalidateQueries({ queryKey: ['userProfile'] }),
+        // Refetch the current profile data
+        refetchProfile(),
+        // Remove cached data to force fresh fetch
+        queryClient.removeQueries({ queryKey: ['userProfile'] }),
+      ]);
+      
+      // Small delay to ensure cache refresh, then force another invalidation
+      setTimeout(() => {
+        console.log('ProfileSettings: Performing delayed cache refresh');
+        queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+      }, 500);
+      
+      console.log('ProfileSettings: Avatar updated successfully in database and cache refreshed');
       toast.success('Նկարը հաջողությամբ թարմացվեց');
     } catch (error) {
       console.error('ProfileSettings: Error updating avatar:', error);
@@ -76,6 +92,14 @@ const ProfileSettings = () => {
       setFormData(prev => ({ ...prev, avatar_url: profile?.avatar_url || null }));
       toast.error('Սխալ նկարը թարմացնելիս');
     }
+  };
+
+  // Add cache busting to avatar URL for display
+  const getAvatarUrl = (url: string | null) => {
+    if (!url) return null;
+    const timestamp = Date.now();
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}v=${timestamp}`;
   };
 
   return (
@@ -90,7 +114,7 @@ const ProfileSettings = () => {
         </CardHeader>
         <CardContent>
           <AvatarUpload
-            currentAvatarUrl={formData.avatar_url}
+            currentAvatarUrl={getAvatarUrl(formData.avatar_url)}
             name={formData.name}
             onAvatarChange={handleAvatarChange}
             size="lg"

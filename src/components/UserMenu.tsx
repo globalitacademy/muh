@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 const UserMenu = () => {
   const { user, signOut } = useAuth();
   const { data: isAdmin } = useAdminRole();
-  const { data: profile, isLoading: profileLoading } = useUserProfile();
+  const { data: profile, isLoading: profileLoading, refetch: refetchProfile } = useUserProfile();
   const navigate = useNavigate();
 
   if (!user) {
@@ -48,16 +48,40 @@ const UserMenu = () => {
   const displayName = profile?.name || user.user_metadata?.name || 'Օգտատեր';
   const initials = getInitials(profile?.name || user.user_metadata?.name, user.email || 'U');
 
+  // Add cache busting to avatar URL
+  const getAvatarUrl = (url: string | null) => {
+    if (!url) return undefined;
+    const timestamp = Date.now();
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}v=${timestamp}`;
+  };
+
+  // Force refresh avatar by using timestamp as key
+  const avatarKey = profile?.avatar_url ? `${profile.avatar_url}-${Date.now()}` : 'no-avatar';
+
+  console.log('UserMenu: Current profile data:', {
+    profileId: profile?.id,
+    avatarUrl: profile?.avatar_url,
+    displayName,
+    profileLoading
+  });
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-8 w-8" key={avatarKey}>
             <AvatarImage 
-              src={profile?.avatar_url || undefined}
+              src={getAvatarUrl(profile?.avatar_url)}
               alt={displayName}
-              onLoad={() => console.log('UserMenu: Avatar loaded successfully')}
-              onError={() => console.log('UserMenu: Avatar load failed')}
+              onLoad={() => {
+                console.log('UserMenu: Avatar loaded successfully with URL:', getAvatarUrl(profile?.avatar_url));
+              }}
+              onError={(e) => {
+                console.error('UserMenu: Avatar load error for URL:', getAvatarUrl(profile?.avatar_url), e);
+                // Force refetch profile data on avatar load error
+                refetchProfile();
+              }}
             />
             <AvatarFallback>
               {initials}
