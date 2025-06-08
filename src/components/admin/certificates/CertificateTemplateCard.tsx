@@ -50,6 +50,22 @@ const CertificateTemplateCard = ({ template }: CertificateTemplateCardProps) => 
     }
   };
 
+  const handleView = () => {
+    // Show template preview/details
+    toast({
+      title: "Նախադիտում",
+      description: `Բացվում է ${template.name} շաբլոնի նախադիտումը`,
+    });
+  };
+
+  const handleEdit = () => {
+    // Open edit dialog
+    toast({
+      title: "Խմբագրում",
+      description: `Բացվում է ${template.name} շաբլոնի խմբագրման ձևը`,
+    });
+  };
+
   const handleDelete = async () => {
     if (window.confirm('Վստա՞հ եք, որ ցանկանում եք ջնջել այս շաբլոնը:')) {
       try {
@@ -83,11 +99,23 @@ const CertificateTemplateCard = ({ template }: CertificateTemplateCardProps) => 
               </Badge>
             </div>
           </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {template.description && (
+          <p className="text-sm text-muted-foreground mb-3 font-armenian">
+            {template.description}
+          </p>
+        )}
+        <div className="flex items-center justify-between">
+          <div className="text-xs text-muted-foreground">
+            Ստեղծված՝ {new Date(template.created_at).toLocaleDateString('hy-AM')}
+          </div>
           <div className="flex gap-1">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleView}>
               <Eye className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={handleEdit}>
               <Edit className="w-4 h-4" />
             </Button>
             <Button 
@@ -99,16 +127,6 @@ const CertificateTemplateCard = ({ template }: CertificateTemplateCardProps) => 
               <Trash2 className="w-4 h-4" />
             </Button>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {template.description && (
-          <p className="text-sm text-muted-foreground mb-3 font-armenian">
-            {template.description}
-          </p>
-        )}
-        <div className="text-xs text-muted-foreground">
-          Ստեղծված՝ {new Date(template.created_at).toLocaleDateString('hy-AM')}
         </div>
       </CardContent>
     </Card>
