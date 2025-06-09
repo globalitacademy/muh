@@ -7,7 +7,7 @@ const Footer = () => {
   const { t } = useLanguage();
 
   return (
-    <footer className="relative bg-background border-t border-border overflow-hidden px-4 sm:px-6 lg:px-8 py-16 bg-gradient-to-br from-edu-blue/5 via-background to-purple-500/5">
+    <footer className="relative bg-background border-t border-border overflow-hidden py-16 bg-gradient-to-br from-edu-blue/5 via-background to-purple-500/5">
       <div className="grid md:grid-cols-4 gap-12 max-w-7xl mx-auto">
         {/* Logo and Description */}
         <div className="col-span-1 md:col-span-2">

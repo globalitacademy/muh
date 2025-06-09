@@ -17,7 +17,7 @@ const Hero = () => {
       {/* Simple background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-transparent to-purple-500/5 pointer-events-none"></div>
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+      <div className="relative max-w-7xl mx-auto h-full">
         {/* Main Hero Content */}
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh] py-12">
           {/* Left Content */}

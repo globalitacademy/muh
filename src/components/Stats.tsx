@@ -33,7 +33,7 @@ const Stats = () => {
 
   return (
     <section className="py-16 bg-gradient-to-br from-primary/10 via-primary/5 to-secondary/10">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-7xl mx-auto">
         {statsData.map((stat, index) => (
           <div key={index} className="text-center">
             <div className="flex justify-center mb-4">

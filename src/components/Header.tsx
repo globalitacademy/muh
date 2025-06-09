@@ -24,10 +24,10 @@ const Header = () => {
 
   return (
     <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-      <div className="flex items-center justify-between h-14 sm:h-16 max-w-7xl mx-auto px-4">
+      <div className="flex items-center justify-between h-14 sm:h-16 max-w-7xl mx-auto">
         {/* Logo - Mobile optimized */}
         <div 
-          className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px] -ml-2 pl-2" 
+          className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px]" 
           onClick={() => navigate('/')}
         >
           <div className="w-7 sm:w-8 h-7 sm:h-8 bg-gradient-to-r from-edu-blue to-purple-600 rounded-lg flex items-center justify-center">
@@ -44,7 +44,7 @@ const Header = () => {
             <button
               key={item.href}
               onClick={() => navigate(item.href)}
-              className="text-muted-foreground hover:text-foreground transition-colors font-armenian min-h-[44px] px-2"
+              className="text-muted-foreground hover:text-foreground transition-colors font-armenian min-h-[44px]"
             >
               {item.label}
             </button>
@@ -85,7 +85,7 @@ const Header = () => {
       {/* Mobile Navigation - Enhanced */}
       {isMenuOpen && (
         <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-sm">
-          <nav className="flex flex-col space-y-1 px-6 py-4">
+          <nav className="flex flex-col space-y-1">
             {menuItems.map((item) => (
               <button
                 key={item.href}
@@ -99,7 +99,7 @@ const Header = () => {
               </button>
             ))}
             
-            <div className="flex items-center justify-between pt-4 border-t border-border px-3">
+            <div className="flex items-center justify-between pt-4 border-t border-border">
               <select
                 value={currentLanguage}
                 onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}

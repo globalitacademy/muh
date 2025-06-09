@@ -48,7 +48,7 @@ const Features = () => {
 
   return (
     <section className="py-16 sm:py-20 lg:py-24 bg-background">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto">
         {/* Header section */}
         <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-4 sm:mb-6">
           <Star className="w-3 sm:w-4 h-3 sm:h-4" />
