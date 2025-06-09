@@ -1,11 +1,13 @@
+
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Mail, Phone, MapPin, Twitter, Linkedin, Facebook } from 'lucide-react';
+
 const Footer = () => {
-  const {
-    t
-  } = useLanguage();
-  return <footer className="relative bg-background border-t border-border overflow-hidden">
+  const { t } = useLanguage();
+
+  return (
+    <footer className="relative bg-background border-t border-border overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-background to-purple-500/5"></div>
       
@@ -104,24 +106,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Newsletter section */}
-        <div className="glass-card rounded-2xl p-8 mb-12">
-          <div className="text-center max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold mb-4 font-armenian text-foreground">
-              Բաժանորդագրվեք մեր նորություններին
-            </h3>
-            <p className="text-muted-foreground mb-6 font-armenian">
-              Ստացեք նոր դասընթացների և հատուկ առաջարկությունների մասին տեղեկություններ
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input type="email" placeholder="Ձեր էլ. փոստը" className="flex-1 px-4 py-3 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-edu-blue transition-colors" />
-              <button className="btn-modern text-white px-6 py-3 rounded-lg font-armenian font-semibold hover:scale-105 transition-transform">
-                Բաժանորդագրվել
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Bottom section */}
         <div className="border-t border-border pt-8 pb-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -139,6 +123,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;

@@ -5,6 +5,7 @@ import Hero from '@/components/Hero';
 import Features from '@/components/Features';
 import Stats from '@/components/Stats';
 import Courses from '@/components/Courses';
+import Newsletter from '@/components/Newsletter';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -17,6 +18,7 @@ const Index = () => {
         <Stats />
         <Courses />
       </main>
+      <Newsletter />
       <Footer />
     </>
   );
