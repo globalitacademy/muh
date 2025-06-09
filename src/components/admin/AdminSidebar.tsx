@@ -147,34 +147,44 @@ const AdminSidebar = ({
       className="border-r border-border/30 backdrop-blur-sm bg-card/50 transition-all duration-150 ease-out" 
       collapsible="icon"
     >
-      <SidebarHeader className="border-b border-border/30 p-6 bg-gradient-to-r from-edu-blue/8 to-edu-orange/8 relative overflow-hidden transition-all duration-300">
-        {/* Animated background pattern */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent_50%)]" />
+      <SidebarHeader className="border-b border-border/20 p-6 bg-card/80 backdrop-blur-md relative overflow-hidden">
+        {/* Clean geometric pattern background */}
+        <div className="absolute inset-0 opacity-[0.03]">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `
+              linear-gradient(45deg, hsl(var(--edu-blue)) 0.5px, transparent 0.5px),
+              linear-gradient(-45deg, hsl(var(--edu-orange)) 0.5px, transparent 0.5px)
+            `,
+            backgroundSize: '20px 20px'
+          }} />
         </div>
         
         <div className="flex items-center gap-4 relative z-10">
-          <div className="relative p-3 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl shadow-lg group-data-[collapsible=icon]:p-2 transition-all duration-200 hover:scale-105">
-            <Shield className="w-6 h-6 text-white group-data-[collapsible=icon]:w-4 group-data-[collapsible=icon]:h-4 transition-all duration-200" />
-            <div className="absolute inset-0 bg-white/20 rounded-xl animate-pulse opacity-60"></div>
+          <div className="relative">
+            <div className="p-3 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl shadow-sm group-data-[collapsible=icon]:p-2 transition-all duration-200 hover:shadow-md">
+              <Shield className="w-6 h-6 text-white group-data-[collapsible=icon]:w-4 group-data-[collapsible=icon]:h-4 transition-all duration-200" />
+            </div>
           </div>
+          
           <div className="flex-1 group-data-[collapsible=icon]:hidden transition-all duration-200">
-            <h2 className="font-bold text-xl font-armenian bg-gradient-to-r from-edu-blue to-edu-orange bg-clip-text text-transparent">
+            <h2 className="font-bold text-xl font-armenian text-foreground">
               Ադմին վահանակ
             </h2>
-            <p className="text-sm text-muted-foreground font-armenian mt-1 flex items-center gap-2">
-              Կառավարման համակարգ
-              <Badge variant="outline" className="text-xs px-2 py-0.5 border-edu-blue/30 text-edu-blue">
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-sm text-muted-foreground font-armenian">
+                Կառավարման համակարգ
+              </p>
+              <Badge variant="outline" className="text-xs px-2 py-0.5 border-edu-blue/30 text-edu-blue bg-edu-blue/5">
                 <Command className="w-3 h-3 mr-1" />
                 Ctrl+B
               </Badge>
-            </p>
+            </div>
           </div>
         </div>
         
         {/* Enhanced SidebarTrigger positioning */}
         <div className="absolute top-4 right-4">
-          <SidebarTrigger className="hover:bg-sidebar-accent/70 transition-all duration-150 hover:scale-110 rounded-lg p-2" />
+          <SidebarTrigger className="hover:bg-sidebar-accent/70 transition-all duration-150 hover:scale-105 rounded-lg p-2 border border-border/20" />
         </div>
       </SidebarHeader>
 
@@ -191,7 +201,7 @@ const AdminSidebar = ({
                     <SidebarMenuItem 
                       className="group/menu-item"
                       style={{
-                        animationDelay: `${index * 50}ms`,
+                        animationDelay: `${index * 40}ms`,
                         animation: 'slideInLeft 0.3s ease-out forwards'
                       }}
                     >
@@ -201,17 +211,16 @@ const AdminSidebar = ({
                         tooltip={item.label}
                         className={cn(
                           "font-armenian h-12 px-3 rounded-xl transition-all duration-200 group relative overflow-hidden",
-                          "hover:bg-gradient-to-r hover:from-sidebar-accent/70 hover:to-sidebar-accent/50 hover:shadow-sm hover:scale-[1.02]",
+                          "hover:bg-sidebar-accent/80 hover:shadow-sm hover:scale-[1.01]",
                           "focus-visible:ring-2 focus-visible:ring-edu-blue/50 focus-visible:outline-none",
                           activeSection === item.id && [
-                            "bg-gradient-to-r from-edu-blue/15 to-edu-orange/10",
-                            "border-l-4 border-edu-blue shadow-sm",
-                            "before:absolute before:inset-0 before:bg-gradient-to-r before:from-edu-blue/5 before:to-transparent before:opacity-50"
+                            "bg-edu-blue/10 border border-edu-blue/20 shadow-sm",
+                            "text-edu-blue font-medium"
                           ]
                         )}
                       >
                         <item.icon className={cn(
-                          "w-5 h-5 transition-all duration-200 group-hover:scale-110",
+                          "w-5 h-5 transition-all duration-200 group-hover:scale-105",
                           activeSection === item.id ? "text-edu-blue" : "text-muted-foreground group-hover:text-foreground"
                         )} />
                         <span className={cn(
@@ -229,8 +238,8 @@ const AdminSidebar = ({
                               "ml-auto text-xs px-2 py-0.5 transition-all duration-200",
                               "group-data-[collapsible=icon]:absolute group-data-[collapsible=icon]:top-1 group-data-[collapsible=icon]:right-1",
                               "group-data-[collapsible=icon]:w-2 group-data-[collapsible=icon]:h-2 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:rounded-full",
-                              item.badge === 'Նոր' && "bg-gradient-to-r from-green-500 to-green-600 text-white border-0",
-                              item.badge !== 'Նոր' && "bg-gradient-to-r from-edu-blue to-edu-purple text-white border-0"
+                              item.badge === 'Նոր' && "bg-green-500 text-white border-0",
+                              item.badge !== 'Նոր' && "bg-edu-blue text-white border-0"
                             )}
                           >
                             <span className="group-data-[collapsible=icon]:sr-only">
@@ -239,8 +248,8 @@ const AdminSidebar = ({
                           </Badge>
                         )}
 
-                        {/* Hover effect overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 ease-out" />
+                        {/* Subtle hover effect */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/2 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-out" />
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                     {shouldShowSeparator && renderSeparator(item.category, nextItem.category)}
@@ -252,18 +261,18 @@ const AdminSidebar = ({
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-border/30 p-4 bg-gradient-to-r from-muted/40 to-muted/20 backdrop-blur-sm">
+      <SidebarFooter className="border-t border-border/20 p-4 bg-muted/30 backdrop-blur-sm">
         <div className="text-xs text-muted-foreground font-armenian text-center py-2 group-data-[collapsible=icon]:hidden transition-all duration-200">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <div className="w-2 h-2 bg-gradient-to-r from-edu-blue to-edu-orange rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-edu-blue rounded-full opacity-60"></div>
             <span>Վարկան 2024 - Ուսումնական հարթակ</span>
           </div>
-          <div className="text-xs opacity-70">
+          <div className="text-xs opacity-60">
             Վերջին թարմացում: {new Date().toLocaleDateString('hy-AM')}
           </div>
         </div>
         <div className="group-data-[collapsible=icon]:block hidden">
-          <div className="w-2 h-2 bg-gradient-to-r from-edu-blue to-edu-orange rounded-full animate-pulse mx-auto"></div>
+          <div className="w-2 h-2 bg-edu-blue rounded-full opacity-60 mx-auto"></div>
         </div>
       </SidebarFooter>
     </Sidebar>
