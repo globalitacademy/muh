@@ -18,7 +18,11 @@ const AdminSidebar = ({
   return (
     <Sidebar 
       variant="inset" 
-      className="border-r border-border/30 backdrop-blur-sm bg-card/50 transition-all duration-150 ease-out" 
+      className={cn(
+        "border-r backdrop-blur-xl bg-gradient-to-br from-background/50 via-card/40 to-background/30",
+        "shadow-2xl transition-all duration-300 ease-out",
+        "border-border/20"
+      )} 
       collapsible="icon"
       style={{
         '--sidebar-width': '20rem',
@@ -26,10 +30,12 @@ const AdminSidebar = ({
         '--sidebar-width-icon': '4rem'
       } as React.CSSProperties}
     >
+      <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-transparent to-edu-purple/5 pointer-events-none" />
+      
       <AdminSidebarHeader isCollapsed={isCollapsed} />
 
       <SidebarContent className={cn(
-        "px-3 py-4 overflow-y-auto scrollbar-thin",
+        "px-3 py-4 overflow-y-auto scrollbar-thin relative",
         isCollapsed && "flex flex-col items-center"
       )}>
         <AdminSidebarMenu 
