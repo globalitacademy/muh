@@ -19,7 +19,7 @@ const AdminSidebarMenu = ({ activeSection, onSectionChange, isCollapsed }: Admin
 
   const renderSeparator = () => {
     return (
-      <div className="py-2">
+      <div className="py-1.5 sm:py-2">
         <Separator className="bg-gradient-to-r from-transparent via-border/30 to-transparent transition-colors duration-200" />
       </div>
     );
@@ -29,7 +29,7 @@ const AdminSidebarMenu = ({ activeSection, onSectionChange, isCollapsed }: Admin
     <SidebarGroup>
       <SidebarGroupContent>
         <SidebarMenu className={cn(
-          "space-y-2",
+          "space-y-1.5 sm:space-y-2",
           isCollapsed && "flex flex-col items-center w-full"
         )}>
           {menuItems.map((item, index) => {
@@ -53,19 +53,19 @@ const AdminSidebarMenu = ({ activeSection, onSectionChange, isCollapsed }: Admin
                     isActive={activeSection === item.id} 
                     tooltip={isCollapsed ? item.label : undefined} 
                     className={cn(
-                      "font-armenian h-12 rounded-xl transition-all duration-300 group relative overflow-hidden",
+                      "font-armenian h-10 sm:h-11 md:h-12 rounded-xl transition-all duration-300 group relative overflow-hidden",
                       "hover:bg-gradient-to-r hover:from-sidebar-accent/50 hover:via-sidebar-accent/80 hover:to-sidebar-accent/50",
                       "hover:shadow-lg hover:scale-[1.02] hover:backdrop-blur-sm",
                       "focus-visible:ring-2 focus-visible:ring-edu-blue/50 focus-visible:outline-none",
                       // Enhanced collapsed state styling
                       isCollapsed ? [
-                        "px-0 justify-center w-12 mx-auto backdrop-blur-sm",
+                        "px-0 justify-center w-10 sm:w-11 md:w-12 mx-auto backdrop-blur-sm",
                         activeSection === item.id && [
                           "bg-gradient-to-r from-edu-blue/20 via-edu-blue/30 to-edu-blue/20",
                           "border border-edu-blue/30 shadow-lg shadow-edu-blue/20"
                         ]
                       ] : [
-                        "px-4 justify-start text-left backdrop-blur-sm",
+                        "px-2 sm:px-3 md:px-4 justify-start text-left backdrop-blur-sm",
                         activeSection === item.id && [
                           "bg-gradient-to-r from-edu-blue/10 via-edu-blue/20 to-edu-blue/10",
                           "border border-edu-blue/30 shadow-md shadow-edu-blue/10",
@@ -77,10 +77,10 @@ const AdminSidebarMenu = ({ activeSection, onSectionChange, isCollapsed }: Admin
                     <item.icon className={cn(
                       "transition-all duration-300 group-hover:scale-110 flex-shrink-0",
                       isCollapsed ? [
-                        "w-5 h-5",
+                        "w-4 h-4 sm:w-5 sm:h-5",
                         activeSection === item.id ? "text-edu-blue drop-shadow-sm" : "text-muted-foreground group-hover:text-foreground"
                       ] : [
-                        "w-5 h-5 mr-3",
+                        "w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3",
                         activeSection === item.id ? "text-edu-blue drop-shadow-sm" : "text-muted-foreground group-hover:text-foreground"
                       ]
                     )} />
@@ -88,26 +88,26 @@ const AdminSidebarMenu = ({ activeSection, onSectionChange, isCollapsed }: Admin
                     <span className={cn(
                       "transition-all duration-300 flex-1 text-left leading-tight",
                       isCollapsed ? "sr-only" : [
-                        "text-sm font-medium",
+                        "text-xs sm:text-sm font-medium",
                         activeSection === item.id ? "text-edu-blue font-semibold drop-shadow-sm" : "text-foreground/80 group-hover:text-foreground"
                       ]
                     )}>
                       {item.label}
                     </span>
                     
-                    {/* Enhanced badge with modern styling */}
+                    {/* Enhanced badge with ultra responsive styling */}
                     {item.badge && (
                       <Badge 
                         variant={item.badge === 'Նոր' ? 'default' : 'secondary'} 
                         className={cn(
                           "text-xs transition-all duration-300 flex-shrink-0 shadow-sm",
                           isCollapsed ? [
-                            "absolute -top-1 -right-1 w-5 h-5 p-0 rounded-full flex items-center justify-center",
+                            "absolute -top-0.5 sm:-top-1 -right-0.5 sm:-right-1 w-4 h-4 sm:w-5 sm:h-5 p-0 rounded-full flex items-center justify-center",
                             "transform scale-75 backdrop-blur-sm",
                             item.badge === 'Նոր' && "bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-lg shadow-green-500/30",
                             item.badge !== 'Նոր' && "bg-gradient-to-r from-edu-blue to-edu-blue/80 text-white border-0 shadow-lg shadow-edu-blue/30"
                           ] : [
-                            "ml-auto px-2 py-0.5 min-w-fit backdrop-blur-sm",
+                            "ml-auto px-1.5 sm:px-2 py-0.5 min-w-fit backdrop-blur-sm",
                             item.badge === 'Նոր' && "bg-gradient-to-r from-green-500 to-green-600 text-white border-0 shadow-md shadow-green-500/20",
                             item.badge !== 'Նոր' && "bg-gradient-to-r from-edu-blue to-edu-blue/80 text-white border-0 shadow-md shadow-edu-blue/20"
                           ]

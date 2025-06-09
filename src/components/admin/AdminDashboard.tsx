@@ -68,13 +68,17 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-none px-0 relative">
-      {/* Enhanced background with subtle animations */}
+    <div className="w-full max-w-none mx-auto relative">
+      {/* Enhanced ultra responsive background with subtle animations */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-accent/5 to-transparent pointer-events-none animate-pulse-slow" />
       
       <div className="overflow-hidden relative z-10">
-        <div className="transition-all duration-500 ease-out">
-          {renderActiveSection()}
+        <div className="transition-all duration-500 ease-out p-0 sm:p-1 md:p-2">
+          <div className="bg-gradient-to-br from-background/80 via-card/60 to-background/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-border/30 shadow-2xl transition-all duration-300 hover:shadow-3xl min-h-[60vh] sm:min-h-[70vh] md:min-h-[80vh]">
+            <div className="p-3 sm:p-4 md:p-6 lg:p-8 h-full">
+              {renderActiveSection()}
+            </div>
+          </div>
         </div>
       </div>
     </div>
