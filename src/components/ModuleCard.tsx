@@ -25,7 +25,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-edu-blue/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         
-        <CardContent className="p-8 flex flex-col items-center text-center h-full relative z-10">
+        <CardContent className="p-6 flex flex-col items-center text-center h-full relative z-10">
           {/* Enhanced Module Icon */}
           <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-edu-blue/20 to-purple-600/20 border border-edu-blue/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-300 text-edu-blue">
             {getModuleIcon(module.category, module.title)}
