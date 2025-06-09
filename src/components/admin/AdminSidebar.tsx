@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from '@/components/ui/sidebar';
 import { BarChart3, Users, Settings, FileText, Activity, GraduationCap, Shield, DollarSign, Award, MessageSquare, FolderOpen, Archive, UserPlus, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -135,7 +134,7 @@ const AdminSidebar = ({
     );
   };
 
-  // Custom Microsoft-style toggle button
+  // Enhanced Microsoft-style toggle button with better visibility
   const CustomSidebarTrigger = () => {
     const { toggleSidebar } = useSidebar();
     
@@ -144,12 +143,22 @@ const AdminSidebar = ({
         variant="ghost"
         size="icon"
         onClick={toggleSidebar}
-        className="h-8 w-8 hover:bg-sidebar-accent/70 transition-all duration-200 hover:scale-105 rounded-lg border border-border/20 bg-card/50"
+        className={cn(
+          "h-9 w-9 transition-all duration-200 rounded-lg shadow-sm",
+          // Enhanced background and visibility
+          "bg-background/95 backdrop-blur-sm border-2 border-border/40",
+          // Strong hover effects
+          "hover:bg-sidebar-accent hover:border-edu-blue/30 hover:shadow-md hover:scale-105",
+          // Focus states for accessibility
+          "focus-visible:ring-2 focus-visible:ring-edu-blue focus-visible:ring-offset-2 focus-visible:outline-none",
+          // Active state
+          "active:scale-95 active:bg-sidebar-accent/80"
+        )}
       >
         {isCollapsed ? (
-          <ChevronRight className="h-4 w-4 transition-transform duration-200" />
+          <ChevronRight className="h-4 w-4 transition-transform duration-200 text-foreground/80 group-hover:text-edu-blue" />
         ) : (
-          <ChevronLeft className="h-4 w-4 transition-transform duration-200" />
+          <ChevronLeft className="h-4 w-4 transition-transform duration-200 text-foreground/80 group-hover:text-edu-blue" />
         )}
         <span className="sr-only">Toggle Sidebar</span>
       </Button>
@@ -162,37 +171,40 @@ const AdminSidebar = ({
         {/* Clean minimal background */}
         <div className="absolute inset-0 bg-gradient-to-br from-card/50 to-accent/5" />
         
-        <div className="flex items-center gap-4 relative z-10">
-          <div className="relative">
+        {/* Main header content container with improved layout */}
+        <div className="relative z-10 flex items-center justify-between">
+          <div className="flex items-center gap-4 flex-1">
+            <div className="relative">
+              <div className={cn(
+                "p-3 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl shadow-sm transition-all duration-200 hover:shadow-md",
+                isCollapsed && "p-2"
+              )}>
+                <Shield className={cn(
+                  "w-6 h-6 text-white transition-all duration-200",
+                  isCollapsed && "w-4 h-4"
+                )} />
+              </div>
+            </div>
+            
             <div className={cn(
-              "p-3 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl shadow-sm transition-all duration-200 hover:shadow-md",
-              isCollapsed && "p-2"
+              "flex-1 transition-all duration-200",
+              isCollapsed && "hidden"
             )}>
-              <Shield className={cn(
-                "w-6 h-6 text-white transition-all duration-200",
-                isCollapsed && "w-4 h-4"
-              )} />
+              <h2 className="font-bold text-xl font-armenian text-foreground">
+                Ադմին վահանակ
+              </h2>
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-sm text-muted-foreground font-armenian">
+                  Կառավարման համակարգ
+                </p>
+              </div>
             </div>
           </div>
           
-          <div className={cn(
-            "flex-1 transition-all duration-200",
-            isCollapsed && "hidden"
-          )}>
-            <h2 className="font-bold text-xl font-armenian text-foreground">
-              Ադմին վահանակ
-            </h2>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-sm text-muted-foreground font-armenian">
-                Կառավարման համակարգ
-              </p>
-            </div>
+          {/* Enhanced toggle button positioned on the same line as content */}
+          <div className="flex-shrink-0">
+            <CustomSidebarTrigger />
           </div>
-        </div>
-        
-        {/* Microsoft-style toggle button positioning - moved to bottom-right */}
-        <div className="absolute bottom-4 right-4">
-          <CustomSidebarTrigger />
         </div>
       </SidebarHeader>
 
