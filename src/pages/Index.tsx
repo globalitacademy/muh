@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
-import Features from '@/components/Features';
+import EnhancedFeatures from '@/components/EnhancedFeatures';
 import Stats from '@/components/Stats';
 import Courses from '@/components/Courses';
 import Newsletter from '@/components/Newsletter';
@@ -14,7 +14,7 @@ const Index = () => {
       <Header />
       <main className="w-full">
         <Hero />
-        <Features />
+        <EnhancedFeatures />
         <Stats />
         <Courses />
       </main>
