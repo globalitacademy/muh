@@ -196,10 +196,16 @@ const AdminSidebar = ({
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 py-4 overflow-y-auto scrollbar-thin">
+      <SidebarContent className={cn(
+        "px-3 py-4 overflow-y-auto scrollbar-thin",
+        isCollapsed && "flex flex-col items-center"
+      )}>
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
+            <SidebarMenu className={cn(
+              "space-y-1",
+              isCollapsed && "flex flex-col items-center w-full"
+            )}>
               {menuItems.map((item, index) => {
                 const nextItem = menuItems[index + 1];
                 const shouldShowSeparator = nextItem && item.category !== nextItem.category;
@@ -207,7 +213,10 @@ const AdminSidebar = ({
                 return (
                   <React.Fragment key={item.id}>
                     <SidebarMenuItem 
-                      className="group/menu-item relative" 
+                      className={cn(
+                        "group/menu-item relative",
+                        isCollapsed && "flex justify-center"
+                      )}
                       style={{
                         animationDelay: `${index * 40}ms`,
                         animation: 'slideInLeft 0.3s ease-out forwards'
@@ -301,8 +310,8 @@ const AdminSidebar = ({
             Վերջին թարմացում: {new Date().toLocaleDateString('hy-AM')}
           </div>
         </div>
-        <div className={cn("hidden", isCollapsed && "block")}>
-          <div className="w-2 h-2 bg-edu-blue rounded-full opacity-60 mx-auto"></div>
+        <div className={cn("hidden", isCollapsed && "block flex justify-center")}>
+          <div className="w-2 h-2 bg-edu-blue rounded-full opacity-60"></div>
         </div>
       </SidebarFooter>
     </Sidebar>
