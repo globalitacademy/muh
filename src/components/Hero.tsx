@@ -141,26 +141,77 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Stats Section */}
+        {/* Enhanced Stats Section */}
         <ScrollReveal delay={600}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-16 border-t border-border/20">
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
-                <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
+          <div className="pt-16 border-t border-border/10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Students Card */}
+              <div className="group relative">
+                <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-edu-blue/20 to-purple-600/20 rounded-xl flex items-center justify-center border border-edu-blue/20">
+                      <Users className="w-6 h-6 text-edu-blue" />
+                    </div>
+                    <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
+                    <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
+                  </div>
+                  <div className="text-muted-foreground font-armenian text-sm">Ուսանողներ</div>
+                  <div className="mt-2 text-xs text-green-600 font-medium">+12% այս ամիս</div>
+                </div>
               </div>
-              <div className="text-muted-foreground font-armenian">Ուսանողներ</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
-                <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
+
+              {/* Modules Card */}
+              <div className="group relative">
+                <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl flex items-center justify-center border border-purple-600/20">
+                      <BookOpen className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-purple-600 mb-2 font-armenian">
+                    <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
+                  </div>
+                  <div className="text-muted-foreground font-armenian text-sm">Մոդուլներ</div>
+                  <div className="mt-2 text-xs text-blue-600 font-medium">5 նոր մոդուլ</div>
+                </div>
               </div>
-              <div className="text-muted-foreground font-armenian">Մոդուլներ</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
-                <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
+
+              {/* Instructors Card */}
+              <div className="group relative">
+                <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500/20 to-red-600/20 rounded-xl flex items-center justify-center border border-orange-500/20">
+                      <Award className="w-6 h-6 text-orange-500" />
+                    </div>
+                    <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-orange-500 mb-2 font-armenian">
+                    <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
+                  </div>
+                  <div className="text-muted-foreground font-armenian text-sm">Մանկավարժներ</div>
+                  <div className="mt-2 text-xs text-orange-600 font-medium">Փորձագետներ</div>
+                </div>
               </div>
-              <div className="text-muted-foreground font-armenian">Մանկավարժներ</div>
+
+              {/* Completion Rate Card */}
+              <div className="group relative">
+                <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-xl flex items-center justify-center border border-green-500/20">
+                      <Star className="w-6 h-6 text-green-500" />
+                    </div>
+                    <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-green-500 mb-2 font-armenian">
+                    <span className="animate-scale-in" style={{ animationDelay: '0.3s' }}>95%</span>
+                  </div>
+                  <div className="text-muted-foreground font-armenian text-sm">Բավարարվածություն</div>
+                  <div className="mt-2 text-xs text-green-600 font-medium">Բարձր գնահատական</div>
+                </div>
+              </div>
             </div>
           </div>
         </ScrollReveal>
