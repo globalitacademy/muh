@@ -24,7 +24,7 @@ const Header = () => {
 
   return (
     <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-      <div className="flex items-center justify-between h-14 sm:h-16 px-4 max-w-7xl mx-auto">
+      <div className="flex items-center justify-between h-14 sm:h-16 max-w-7xl mx-auto px-4">
         {/* Logo - Mobile optimized */}
         <div 
           className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px] -ml-2 pl-2" 
