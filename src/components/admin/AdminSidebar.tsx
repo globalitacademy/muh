@@ -25,9 +25,9 @@ const AdminSidebar = ({
       )} 
       collapsible="icon"
       style={{
-        '--sidebar-width': 'clamp(18rem, 20vw, 22rem)',
-        '--sidebar-width-mobile': 'clamp(20rem, 85vw, 24rem)',
-        '--sidebar-width-icon': 'clamp(3.5rem, 4vw, 4.5rem)'
+        '--sidebar-width': '20rem',
+        '--sidebar-width-mobile': '22rem',
+        '--sidebar-width-icon': '4rem'
       } as React.CSSProperties}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-transparent to-edu-purple/5 pointer-events-none" />
@@ -35,7 +35,7 @@ const AdminSidebar = ({
       <AdminSidebarHeader isCollapsed={isCollapsed} />
 
       <SidebarContent className={cn(
-        "px-2 sm:px-3 py-3 sm:py-4 overflow-y-auto scrollbar-thin relative",
+        "px-3 py-4 overflow-y-auto scrollbar-thin relative",
         isCollapsed && "flex flex-col items-center"
       )}>
         <AdminSidebarMenu 
