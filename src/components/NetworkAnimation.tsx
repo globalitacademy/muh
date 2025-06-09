@@ -32,10 +32,9 @@ const NetworkAnimation = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    console.log('NetworkAnimation: Optimized animation initializing');
+    console.log('NetworkAnimation: Design-integrated animation initializing');
 
     const resizeCanvas = () => {
-      // Get parent element dimensions
       const parent = canvas.parentElement;
       if (!parent) return;
       
@@ -48,8 +47,8 @@ const NetworkAnimation = () => {
 
     const createNodes = () => {
       const isMobile = window.innerWidth < 768;
-      const baseNodeCount = isMobile ? 15 : 30;
-      const nodeCount = Math.max(baseNodeCount, Math.floor((canvas.width * canvas.height) / 25000));
+      const baseNodeCount = isMobile ? 12 : 25;
+      const nodeCount = Math.max(baseNodeCount, Math.floor((canvas.width * canvas.height) / 30000));
       nodesRef.current = [];
 
       const padding = 80;
@@ -60,19 +59,19 @@ const NetworkAnimation = () => {
         nodesRef.current.push({
           x: padding + Math.random() * maxX,
           y: padding + Math.random() * maxY,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          size: 1.5 + Math.random() * 1.5,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25,
+          size: 1.2 + Math.random() * 1.8,
           pulse: Math.random() * Math.PI * 2,
           pulseDirection: 1
         });
       }
-      console.log(`NetworkAnimation: Created ${nodeCount} optimized nodes`);
+      console.log(`NetworkAnimation: Created ${nodeCount} design-integrated nodes`);
     };
 
     const updateConnections = () => {
       connectionsRef.current = [];
-      const maxDistance = window.innerWidth < 768 ? 100 : 150;
+      const maxDistance = window.innerWidth < 768 ? 120 : 180;
 
       for (let i = 0; i < nodesRef.current.length; i++) {
         for (let j = i + 1; j < nodesRef.current.length; j++) {
@@ -83,7 +82,7 @@ const NetworkAnimation = () => {
           );
 
           if (distance < maxDistance) {
-            const opacity = (1 - distance / maxDistance) * 0.25;
+            const opacity = (1 - distance / maxDistance) * 0.15;
             const strength = (1 - distance / maxDistance);
             connectionsRef.current.push({
               from: nodeA,
@@ -97,7 +96,7 @@ const NetworkAnimation = () => {
     };
 
     const updateNodes = () => {
-      timeRef.current += 0.02;
+      timeRef.current += 0.015;
 
       nodesRef.current.forEach((node) => {
         node.x += node.vx;
@@ -116,7 +115,7 @@ const NetworkAnimation = () => {
           node.y = Math.max(padding, Math.min(maxY, node.y));
         }
 
-        node.pulse += 0.02;
+        node.pulse += 0.015;
         if (node.pulse > Math.PI * 2) {
           node.pulse = 0;
         }
@@ -126,41 +125,57 @@ const NetworkAnimation = () => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw connections
+      // Draw connections with edu-blue to purple gradient
       connectionsRef.current.forEach((connection) => {
         const gradient = ctx.createLinearGradient(
           connection.from.x, connection.from.y, 
           connection.to.x, connection.to.y
         );
+        // Using edu-blue (#3b82f6) to purple (#8b5cf6) gradient
         gradient.addColorStop(0, `hsla(221, 83%, 53%, ${connection.opacity})`);
-        gradient.addColorStop(0.5, `hsla(262, 83%, 58%, ${connection.opacity * 0.8})`);
+        gradient.addColorStop(0.5, `hsla(262, 83%, 58%, ${connection.opacity * 0.7})`);
         gradient.addColorStop(1, `hsla(221, 83%, 53%, ${connection.opacity})`);
         
         ctx.beginPath();
         ctx.moveTo(connection.from.x, connection.from.y);
         ctx.lineTo(connection.to.x, connection.to.y);
         ctx.strokeStyle = gradient;
-        ctx.lineWidth = 0.8 + connection.strength * 0.2;
+        ctx.lineWidth = 0.6 + connection.strength * 0.3;
         ctx.stroke();
       });
 
-      // Draw nodes
+      // Draw nodes with brand colors
       nodesRef.current.forEach((node) => {
-        const pulseSize = node.size + Math.sin(node.pulse) * 0.5;
-        const pulseOpacity = 0.7 + Math.sin(node.pulse) * 0.2;
+        const pulseSize = node.size + Math.sin(node.pulse) * 0.4;
+        const pulseOpacity = 0.6 + Math.sin(node.pulse) * 0.3;
 
-        // Main node
+        // Main node with edu-blue gradient
         const nodeGradient = ctx.createRadialGradient(
           node.x - pulseSize * 0.3, node.y - pulseSize * 0.3, 0,
           node.x, node.y, pulseSize
         );
-        nodeGradient.addColorStop(0, `hsla(221, 83%, 63%, ${pulseOpacity})`);
-        nodeGradient.addColorStop(1, `hsla(221, 83%, 43%, ${pulseOpacity})`);
+        nodeGradient.addColorStop(0, `hsla(221, 83%, 68%, ${pulseOpacity})`);
+        nodeGradient.addColorStop(1, `hsla(221, 83%, 48%, ${pulseOpacity * 0.8})`);
 
         ctx.beginPath();
         ctx.arc(node.x, node.y, pulseSize, 0, Math.PI * 2);
         ctx.fillStyle = nodeGradient;
         ctx.fill();
+
+        // Inner glow effect
+        if (Math.sin(node.pulse) > 0.7) {
+          const glowGradient = ctx.createRadialGradient(
+            node.x, node.y, 0,
+            node.x, node.y, pulseSize * 1.5
+          );
+          glowGradient.addColorStop(0, `hsla(262, 83%, 58%, ${pulseOpacity * 0.3})`);
+          glowGradient.addColorStop(1, `hsla(262, 83%, 58%, 0)`);
+
+          ctx.beginPath();
+          ctx.arc(node.x, node.y, pulseSize * 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = glowGradient;
+          ctx.fill();
+        }
       });
     };
 
@@ -201,7 +216,7 @@ const NetworkAnimation = () => {
       className="absolute inset-0 pointer-events-none w-full h-full"
       style={{ 
         zIndex: 1, 
-        opacity: 0.6,
+        opacity: 0.4,
         mixBlendMode: 'normal'
       }}
     />
