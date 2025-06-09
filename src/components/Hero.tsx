@@ -51,19 +51,19 @@ const Hero = () => {
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button 
                   size="lg" 
-                  className="btn-modern text-white px-8 py-4 text-lg font-armenian hover:shadow-glow min-h-[56px]" 
+                  className="btn-modern text-white px-8 py-4 text-lg font-armenian hover:shadow-glow min-h-[56px] inline-flex items-center gap-2" 
                   onClick={() => navigate('/courses')}
                 >
                   <span>Սկսել ուսումը</span>
-                  <ArrowRight className="ml-2 w-5 h-5" />
+                  <ArrowRight className="w-5 h-5" />
                 </Button>
                 <Button 
                   variant="outline" 
                   size="lg" 
-                  className="btn-outline-modern px-8 py-4 text-lg font-armenian backdrop-blur-sm min-h-[56px]" 
+                  className="btn-outline-modern px-8 py-4 text-lg font-armenian backdrop-blur-sm min-h-[56px] inline-flex items-center gap-2" 
                   onClick={() => navigate('/about')}
                 >
-                  <Play className="mr-2 w-5 h-5" />
+                  <Play className="w-5 h-5" />
                   <span>Մեր մասին</span>
                 </Button>
               </div>
@@ -83,7 +83,7 @@ const Hero = () => {
                         <BookOpen className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-semibold font-armenian text-foreground">Ինտերակտիվ ուսուցում</h3>
+                        <h3 className="font-semibold font-armenian text-foreground leading-tight">Ինտերակտիվ ուսուցում</h3>
                         <p className="text-sm text-muted-foreground font-armenian">Գործնական հմտություններ</p>
                       </div>
                     </div>

@@ -191,7 +191,7 @@
   
   body {
     @apply bg-background text-foreground;
-    font-family: 'Noto Sans Armenian', system-ui, -apple-system, sans-serif;
+    font-family: 'Noto Sans Armenian', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     overflow-x: hidden !important;
     width: 100vw;
     max-width: 100vw;
@@ -199,6 +199,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* Armenian font optimization */
+    font-feature-settings: 'liga' on, 'clig' on;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   
   /* ROOT CONTAINER OVERFLOW PROTECTION */
@@ -215,6 +220,31 @@
   * {
     max-width: 100vw;
     box-sizing: border-box;
+  }
+  
+  /* ARMENIAN TEXT OPTIMIZATION */
+  .font-armenian {
+    font-family: 'Noto Sans Armenian', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: 'liga' on, 'clig' on;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+  
+  /* HEADING OPTIMIZATION FOR ARMENIAN */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Noto Sans Armenian', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: 'liga' on, 'clig' on;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
   }
   
   /* FULL-WIDTH CONTAINER UTILITIES */
@@ -285,7 +315,7 @@
 }
 
 .font-armenian {
-  font-family: 'Noto Sans Armenian', system-ui, -apple-system, sans-serif;
+  font-family: 'Noto Sans Armenian', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* Educational color utilities */

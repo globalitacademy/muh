@@ -128,7 +128,7 @@ const EnhancedFeatures = () => {
         </ScrollReveal>
         
         <ScrollReveal delay={200}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 font-armenian text-gradient text-center">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 font-armenian text-gradient text-center leading-tight">
             Մեր առավելություններն
           </h2>
         </ScrollReveal>
@@ -174,7 +174,7 @@ const EnhancedFeatures = () => {
                   </div>
                   
                   {/* Title */}
-                  <h3 className="text-lg sm:text-xl font-semibold font-armenian text-center group-hover:text-gradient transition-all duration-300 mb-3">
+                  <h3 className="text-lg sm:text-xl font-semibold font-armenian text-center group-hover:text-gradient transition-all duration-300 mb-3 leading-tight">
                     {feature.title}
                   </h3>
                   
@@ -224,16 +224,16 @@ const EnhancedFeatures = () => {
                   <span className="font-medium font-armenian text-sm">Միացիր մեզ</span>
                 </div>
                 
-                <h3 className="text-2xl sm:text-3xl font-bold mb-4 font-armenian text-gradient">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-4 font-armenian text-gradient leading-tight">
                   Պատրա՞ստ եք սկսել ձեր ճանապարհորդությունը
                 </h3>
                 <p className="text-muted-foreground mb-8 font-armenian text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
                   Միացիր մեր ինովացիոն համայնքին և բացահայտիր անսահման հնարավորություններ ձեր մասնագիտական զարգացման համար
                 </p>
                 
-                <button className="btn-modern text-white px-8 sm:px-10 py-4 rounded-2xl font-armenian font-semibold text-lg hover:shadow-glow transition-all duration-300 hover:scale-105 group-hover:shadow-xl">
+                <button className="btn-modern text-white px-8 sm:px-10 py-4 rounded-2xl font-armenian font-semibold text-lg hover:shadow-glow transition-all duration-300 hover:scale-105 group-hover:shadow-xl inline-flex items-center gap-2">
                   <span>Սկսել հիմա</span>
-                  <Sparkles className="ml-2 w-5 h-5 group-hover:animate-spin" />
+                  <Sparkles className="w-5 h-5 group-hover:animate-spin" />
                 </button>
               </div>
             </div>
