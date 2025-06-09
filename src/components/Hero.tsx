@@ -1,11 +1,10 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Play, Star, Users, Award } from 'lucide-react';
+import { ArrowRight, Play, Star, Users, BookOpen, Award, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 import { useContactStats } from '@/hooks/useContactStats';
-import NetworkAnimation from './NetworkAnimation';
 import ScrollReveal from '@/components/ui/scroll-reveal';
 
 const Hero = () => {
@@ -14,117 +13,151 @@ const Hero = () => {
   const { data: stats, isLoading: statsLoading } = useContactStats();
 
   return (
-    <section className="relative w-full min-h-screen overflow-hidden bg-gradient-to-br from-background via-background to-accent/5 pt-16 sm:pt-20">
-      {/* Network Animation Background */}
-      <NetworkAnimation />
+    <section className="relative min-h-screen bg-gradient-to-br from-background via-background to-accent/5 pt-20 pb-16">
+      {/* Simple background gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-transparent to-purple-500/5 pointer-events-none"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        {/* Main Hero Content */}
+        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh] py-12">
+          {/* Left Content */}
+          <div className="space-y-8">
+            <ScrollReveal delay={100}>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue border border-edu-blue/20 backdrop-blur-sm">
+                <Sparkles className="w-4 h-4 animate-pulse-slow" />
+                <span className="font-medium font-armenian text-sm">Հայաստանի առաջին մոդուլային ուսումնական հարթակ</span>
+              </div>
+            </ScrollReveal>
 
-      {/* Unified Background decorations */}
-      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 2 }}>
-        <div className="absolute top-10 sm:top-20 left-2 sm:left-10 w-32 sm:w-48 md:w-72 h-32 sm:h-48 md:h-72 bg-edu-blue/15 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob dark:mix-blend-screen dark:opacity-20"></div>
-        <div className="absolute top-20 sm:top-40 right-2 sm:right-10 w-32 sm:w-48 md:w-72 h-32 sm:h-48 md:h-72 bg-purple-500/15 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-2000 dark:mix-blend-screen dark:opacity-20"></div>
-        <div className="absolute -bottom-4 sm:-bottom-8 left-5 sm:left-20 w-32 sm:w-48 md:w-72 h-32 sm:h-48 md:h-72 bg-pink-500/15 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-4000 dark:mix-blend-screen dark:opacity-20"></div>
-      </div>
+            <ScrollReveal delay={200}>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
+                <span className="text-gradient font-armenian block mb-2">Կրթություն Առանց Սահմանների</span>
+              </h1>
+            </ScrollReveal>
 
-      <div className="relative px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 min-h-screen flex items-center w-full max-w-7xl mx-auto text-center" style={{ zIndex: 10 }}>
-        {/* Enhanced Badge */}
-        <ScrollReveal delay={100}>
-          <div className="inline-flex items-center gap-2 px-3 sm:px-6 py-2 sm:py-3 rounded-full bg-edu-blue/10 text-edu-blue mb-6 sm:mb-8 backdrop-blur-sm border border-edu-blue/20 hover-interactive">
-            <Star className="w-3 sm:w-4 md:w-5 h-3 sm:h-4 md:h-5 animate-pulse-slow flex-shrink-0" />
-            <span className="font-medium font-armenian text-xs sm:text-sm md:text-base leading-tight">Հայաստանի առաջին մոդուլային ուսումնական հարթակ</span>
+            <ScrollReveal delay={300}>
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed font-armenian max-w-2xl">
+                Սովորեք նոր հմտություններ մոդուլային մոտեցմամբ։ Յուրաքանչյուր մոդուլ ունի իր թեմաները, որոնք կօգնեն ձեզ աստիճանաբար տիրապետել նյութին։
+              </p>
+            </ScrollReveal>
+
+            <ScrollReveal delay={400}>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Button 
+                  size="lg" 
+                  className="btn-modern text-white px-8 py-4 text-lg font-armenian hover:shadow-glow min-h-[56px]" 
+                  onClick={() => navigate('/courses')}
+                >
+                  <span>Սկսել ուսումը</span>
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="btn-outline-modern px-8 py-4 text-lg font-armenian backdrop-blur-sm min-h-[56px]" 
+                  onClick={() => navigate('/about')}
+                >
+                  <Play className="mr-2 w-5 h-5" />
+                  <span>Մեր մասին</span>
+                </Button>
+              </div>
+            </ScrollReveal>
           </div>
-        </ScrollReveal>
 
-        {/* Main heading */}
-        <ScrollReveal delay={200}>
-          <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 leading-tight w-full">
-            <span className="text-gradient font-armenian animate-fade-in-up block">Կրթություն</span>
-            <br />
-            <span className="text-foreground font-armenian animate-fade-in-up block" style={{ animationDelay: '0.2s' }}>Առանց Սահմանների</span>
-          </h1>
-        </ScrollReveal>
+          {/* Right Visual */}
+          <div className="relative">
+            <ScrollReveal delay={500}>
+              <div className="relative">
+                {/* Hero Visual Card */}
+                <div className="glass-card rounded-3xl p-8 bg-card/40 backdrop-blur-xl border border-border/20 shadow-2xl">
+                  <div className="space-y-6">
+                    {/* Header */}
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-r from-edu-blue to-purple-600 rounded-xl flex items-center justify-center">
+                        <BookOpen className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold font-armenian text-foreground">Ինտերակտիվ ուսուցում</h3>
+                        <p className="text-sm text-muted-foreground font-armenian">Գործնական հմտություններ</p>
+                      </div>
+                    </div>
 
-        {/* Description */}
-        <ScrollReveal delay={400}>
-          <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-8 sm:mb-12 leading-relaxed font-armenian w-full">
-            Սովորեք նոր հմտություններ մոդուլային մոտեցմամբ։ Յուրաքանչյուր մոդուլ ունի իր թեմաները, որոնք կօգնեն ձեզ աստիճանաբար տիրապետել նյութին։
-          </p>
-        </ScrollReveal>
+                    {/* Progress bars */}
+                    <div className="space-y-4">
+                      <div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span className="font-armenian text-foreground">Ծրագրավորում</span>
+                          <span className="text-edu-blue font-medium">85%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-gradient-to-r from-edu-blue to-purple-600 h-3 rounded-full" style={{ width: '85%' }}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span className="font-armenian text-foreground">Դիզայն</span>
+                          <span className="text-green-500 font-medium">92%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full" style={{ width: '92%' }}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span className="font-armenian text-foreground">Ցանցեր</span>
+                          <span className="text-orange-500 font-medium">78%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-gradient-to-r from-orange-500 to-red-600 h-3 rounded-full" style={{ width: '78%' }}></div>
+                        </div>
+                      </div>
+                    </div>
 
-        {/* CTA Buttons */}
+                    {/* Achievement badges */}
+                    <div className="flex gap-2 pt-4">
+                      <div className="flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-600 rounded-full text-xs font-medium">
+                        <Award className="w-3 h-3" />
+                        <span className="font-armenian">Վկայագիր</span>
+                      </div>
+                      <div className="flex items-center gap-1 px-3 py-1 bg-blue-500/10 text-blue-600 rounded-full text-xs font-medium">
+                        <Users className="w-3 h-3" />
+                        <span className="font-armenian">Խումբ</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating elements */}
+                <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full animate-bounce opacity-80"></div>
+                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse opacity-60"></div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+
+        {/* Stats Section */}
         <ScrollReveal delay={600}>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-12 sm:mb-16 w-full sm:w-auto mx-auto">
-            <Button 
-              size="lg" 
-              className="btn-modern text-white px-4 sm:px-6 md:px-8 py-3 sm:py-4 text-sm sm:text-base md:text-lg font-armenian hover:shadow-glow w-full sm:w-auto min-h-[44px]" 
-              onClick={() => navigate('/courses')}
-            >
-              <span className="truncate">Սկսել ուսումը</span>
-              <ArrowRight className="ml-2 w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="btn-outline-modern px-4 sm:px-6 md:px-8 py-3 sm:py-4 text-sm sm:text-base md:text-lg font-armenian backdrop-blur-sm w-full sm:w-auto min-h-[44px]" 
-              onClick={() => navigate('/about')}
-            >
-              <Play className="mr-2 w-4 sm:w-5 h-4 sm:h-5 flex-shrink-0" />
-              <span className="truncate">Մեր մասին</span>
-            </Button>
-          </div>
-        </ScrollReveal>
-
-        {/* Stats */}
-        <ScrollReveal delay={800}>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 w-full">
-            <div className="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center bg-card/50 backdrop-blur-md border border-border hover-interactive">
-              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-edu-blue mb-2 font-armenian">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-16 border-t border-border/20">
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
                 <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
               </div>
-              <div className="text-muted-foreground font-armenian text-xs sm:text-sm md:text-base">Ուսանողներ</div>
+              <div className="text-muted-foreground font-armenian">Ուսանողներ</div>
             </div>
-            <div className="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center bg-card/50 backdrop-blur-md border border-border hover-interactive">
-              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-edu-blue mb-2 font-armenian">
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
                 <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
               </div>
-              <div className="text-muted-foreground font-armenian text-xs sm:text-sm md:text-base">Մոդուլներ</div>
+              <div className="text-muted-foreground font-armenian">Մոդուլներ</div>
             </div>
-            <div className="glass-card rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-6 text-center bg-card/50 backdrop-blur-md border border-border hover-interactive sm:col-span-1 col-span-1">
-              <div className="text-xl sm:text-2xl md:text-3xl font-bold text-edu-blue mb-2 font-armenian">
+            <div className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
                 <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
               </div>
-              <div className="text-muted-foreground font-armenian text-xs sm:text-sm md:text-base">Մանկավարժներ</div>
+              <div className="text-muted-foreground font-armenian">Մանկավարժներ</div>
             </div>
           </div>
         </ScrollReveal>
-
-        {/* Floating elements */}
-        <div className="absolute top-1/4 left-2 lg:left-10 hidden lg:block animate-float" style={{ zIndex: 11 }}>
-          <div className="glass-card rounded-xl p-4 shadow-modern-lg backdrop-blur-sm bg-card/80 border border-border hover-interactive max-w-xs">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Users className="w-5 h-5 text-white" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="font-semibold font-armenian text-card-foreground text-sm truncate">Իրական մասնագետներ</div>
-                <div className="text-xs text-muted-foreground font-armenian truncate">Փորձագետ ուսուցիչներ</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="absolute top-1/3 right-2 lg:right-10 hidden lg:block animate-float" style={{ zIndex: 11, animationDelay: '1s' }}>
-          <div className="glass-card rounded-xl p-4 shadow-modern-lg backdrop-blur-sm bg-card/80 border border-border hover-interactive max-w-xs">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Award className="w-5 h-5 text-white" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="font-semibold font-armenian text-card-foreground text-sm truncate">Վկայագիր</div>
-                <div className="text-xs text-muted-foreground font-armenian truncate">Ավարտի հավաստագիր</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
