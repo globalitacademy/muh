@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 
 interface Node {
@@ -19,7 +20,6 @@ interface Connection {
 
 const NetworkAnimation = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
   const nodesRef = useRef<Node[]>([]);
   const connectionsRef = useRef<Connection[]>([]);
@@ -27,36 +27,32 @@ const NetworkAnimation = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
+    if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    console.log('NetworkAnimation: Enhanced animation initializing with overflow protection');
+    console.log('NetworkAnimation: Optimized animation initializing');
 
     const resizeCanvas = () => {
-      // Use container dimensions instead of window dimensions to prevent overflow
-      const containerRect = container.getBoundingClientRect();
-      canvas.width = Math.min(containerRect.width, window.innerWidth);
-      canvas.height = Math.min(containerRect.height, window.innerHeight);
+      // Get parent element dimensions
+      const parent = canvas.parentElement;
+      if (!parent) return;
       
-      // Ensure canvas doesn't exceed viewport
-      canvas.style.width = '100%';
-      canvas.style.height = '100%';
+      const rect = parent.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
       
-      console.log(`NetworkAnimation: Canvas resized to ${canvas.width}x${canvas.height} (container constrained)`);
+      console.log(`NetworkAnimation: Canvas resized to ${canvas.width}x${canvas.height}`);
     };
 
     const createNodes = () => {
-      // Reduce node count on mobile for better performance
       const isMobile = window.innerWidth < 768;
-      const baseNodeCount = isMobile ? 20 : 35;
-      const nodeCount = Math.max(baseNodeCount, Math.floor((canvas.width * canvas.height) / 20000));
+      const baseNodeCount = isMobile ? 15 : 30;
+      const nodeCount = Math.max(baseNodeCount, Math.floor((canvas.width * canvas.height) / 25000));
       nodesRef.current = [];
 
-      // Add padding to keep nodes within visible area
-      const padding = 100;
+      const padding = 80;
       const maxX = Math.max(canvas.width - padding, 200);
       const maxY = Math.max(canvas.height - padding, 200);
 
@@ -64,19 +60,19 @@ const NetworkAnimation = () => {
         nodesRef.current.push({
           x: padding + Math.random() * maxX,
           y: padding + Math.random() * maxY,
-          vx: (Math.random() - 0.5) * 0.4, // Reduced speed for mobile
-          vy: (Math.random() - 0.5) * 0.4,
-          size: 2 + Math.random() * 2, // Smaller nodes on mobile
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          size: 1.5 + Math.random() * 1.5,
           pulse: Math.random() * Math.PI * 2,
           pulseDirection: 1
         });
       }
-      console.log(`NetworkAnimation: Created ${nodeCount} constrained nodes`);
+      console.log(`NetworkAnimation: Created ${nodeCount} optimized nodes`);
     };
 
     const updateConnections = () => {
       connectionsRef.current = [];
-      const maxDistance = window.innerWidth < 768 ? 120 : 180; // Shorter connections on mobile
+      const maxDistance = window.innerWidth < 768 ? 100 : 150;
 
       for (let i = 0; i < nodesRef.current.length; i++) {
         for (let j = i + 1; j < nodesRef.current.length; j++) {
@@ -87,7 +83,7 @@ const NetworkAnimation = () => {
           );
 
           if (distance < maxDistance) {
-            const opacity = (1 - distance / maxDistance) * 0.3; // Reduced opacity
+            const opacity = (1 - distance / maxDistance) * 0.25;
             const strength = (1 - distance / maxDistance);
             connectionsRef.current.push({
               from: nodeA,
@@ -104,12 +100,10 @@ const NetworkAnimation = () => {
       timeRef.current += 0.02;
 
       nodesRef.current.forEach((node) => {
-        // Update position
         node.x += node.vx;
         node.y += node.vy;
 
-        // Enhanced boundary constraints with proper padding
-        const padding = 80;
+        const padding = 60;
         const maxX = canvas.width - padding;
         const maxY = canvas.height - padding;
 
@@ -122,8 +116,7 @@ const NetworkAnimation = () => {
           node.y = Math.max(padding, Math.min(maxY, node.y));
         }
 
-        // Update pulse animation
-        node.pulse += 0.02; // Slower pulse for mobile
+        node.pulse += 0.02;
         if (node.pulse > Math.PI * 2) {
           node.pulse = 0;
         }
@@ -131,61 +124,32 @@ const NetworkAnimation = () => {
     };
 
     const draw = () => {
-      // Clear canvas properly
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Enhanced gradient for connections
-      const createGradient = (from: Node, to: Node, opacity: number) => {
-        const gradient = ctx.createLinearGradient(from.x, from.y, to.x, to.y);
-        gradient.addColorStop(0, `hsla(221, 83%, 53%, ${opacity})`);
-        gradient.addColorStop(0.5, `hsla(262, 83%, 58%, ${opacity * 0.8})`);
-        gradient.addColorStop(1, `hsla(221, 83%, 53%, ${opacity})`);
-        return gradient;
-      };
-
-      // Draw enhanced connections with gradients
+      // Draw connections
       connectionsRef.current.forEach((connection) => {
-        const gradient = createGradient(connection.from, connection.to, connection.opacity);
+        const gradient = ctx.createLinearGradient(
+          connection.from.x, connection.from.y, 
+          connection.to.x, connection.to.y
+        );
+        gradient.addColorStop(0, `hsla(221, 83%, 53%, ${connection.opacity})`);
+        gradient.addColorStop(0.5, `hsla(262, 83%, 58%, ${connection.opacity * 0.8})`);
+        gradient.addColorStop(1, `hsla(221, 83%, 53%, ${connection.opacity})`);
         
         ctx.beginPath();
         ctx.moveTo(connection.from.x, connection.from.y);
         ctx.lineTo(connection.to.x, connection.to.y);
         ctx.strokeStyle = gradient;
-        ctx.lineWidth = 1 + connection.strength * 0.3; // Thinner lines on mobile
+        ctx.lineWidth = 0.8 + connection.strength * 0.2;
         ctx.stroke();
-
-        // Reduced glow effect for mobile performance
-        if (connection.strength > 0.8 && window.innerWidth >= 768) {
-          ctx.beginPath();
-          ctx.moveTo(connection.from.x, connection.from.y);
-          ctx.lineTo(connection.to.x, connection.to.y);
-          ctx.strokeStyle = `hsla(221, 83%, 53%, ${connection.opacity * 0.2})`;
-          ctx.lineWidth = 2;
-          ctx.stroke();
-        }
       });
 
-      // Draw enhanced nodes with pulse effect
+      // Draw nodes
       nodesRef.current.forEach((node) => {
-        const pulseSize = node.size + Math.sin(node.pulse) * 0.6;
+        const pulseSize = node.size + Math.sin(node.pulse) * 0.5;
         const pulseOpacity = 0.7 + Math.sin(node.pulse) * 0.2;
 
-        // Simplified glow for mobile
-        if (window.innerWidth >= 768) {
-          const glowGradient = ctx.createRadialGradient(
-            node.x, node.y, 0,
-            node.x, node.y, pulseSize * 1.5
-          );
-          glowGradient.addColorStop(0, `hsla(221, 83%, 53%, ${pulseOpacity * 0.3})`);
-          glowGradient.addColorStop(1, 'hsla(221, 83%, 53%, 0)');
-
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, pulseSize * 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = glowGradient;
-          ctx.fill();
-        }
-
-        // Main node with gradient
+        // Main node
         const nodeGradient = ctx.createRadialGradient(
           node.x - pulseSize * 0.3, node.y - pulseSize * 0.3, 0,
           node.x, node.y, pulseSize
@@ -197,12 +161,6 @@ const NetworkAnimation = () => {
         ctx.arc(node.x, node.y, pulseSize, 0, Math.PI * 2);
         ctx.fillStyle = nodeGradient;
         ctx.fill();
-
-        // Inner highlight
-        ctx.beginPath();
-        ctx.arc(node.x - pulseSize * 0.2, node.y - pulseSize * 0.2, pulseSize * 0.3, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(221, 83%, 80%, ${pulseOpacity * 0.6})`;
-        ctx.fill();
       });
     };
 
@@ -213,7 +171,6 @@ const NetworkAnimation = () => {
       animationRef.current = requestAnimationFrame(animate);
     };
 
-    // Throttled resize handler for better performance
     let resizeTimeout: NodeJS.Timeout;
     const handleResize = () => {
       clearTimeout(resizeTimeout);
@@ -235,28 +192,19 @@ const NetworkAnimation = () => {
       }
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimeout);
-      console.log('NetworkAnimation: Enhanced cleanup completed with overflow protection');
     };
   }, []);
 
   return (
-    <div 
-      ref={containerRef}
-      className="absolute inset-0 overflow-hidden animation-container"
-      style={{ zIndex: 1 }}
-    >
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 pointer-events-none w-full h-full"
-        style={{ 
-          zIndex: 1, 
-          opacity: 0.6,
-          mixBlendMode: 'normal',
-          maxWidth: '100%',
-          maxHeight: '100%'
-        }}
-      />
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 pointer-events-none w-full h-full"
+      style={{ 
+        zIndex: 1, 
+        opacity: 0.6,
+        mixBlendMode: 'normal'
+      }}
+    />
   );
 };
 

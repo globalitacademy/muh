@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@100;200;300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss/base";
 @import "tailwindcss/components";
@@ -179,10 +178,12 @@
     @apply border-border;
   }
   
-  /* GLOBAL OVERFLOW PREVENTION - Critical for mobile */
+  /* CRITICAL OVERFLOW PREVENTION */
   html {
     overflow-x: hidden;
     scroll-behavior: smooth;
+    width: 100%;
+    max-width: 100vw;
   }
   
   body {
@@ -192,6 +193,8 @@
     width: 100%;
     max-width: 100vw;
     position: relative;
+    margin: 0;
+    padding: 0;
   }
   
   /* Container overflow protection */
