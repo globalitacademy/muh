@@ -15,7 +15,6 @@ const EnhancedFeatures = () => {
       title: t('features.quality.title'),
       description: t('features.quality.desc'),
       color: 'from-blue-500 to-purple-600',
-      size: 'large',
       priority: 1
     },
     {
@@ -23,7 +22,6 @@ const EnhancedFeatures = () => {
       title: t('features.flexible.title'),
       description: t('features.flexible.desc'),
       color: 'from-green-500 to-teal-600',
-      size: 'medium',
       priority: 2
     },
     {
@@ -31,7 +29,6 @@ const EnhancedFeatures = () => {
       title: t('features.support.title'),
       description: t('features.support.desc'),
       color: 'from-orange-500 to-red-600',
-      size: 'medium',
       priority: 3
     },
     {
@@ -39,7 +36,6 @@ const EnhancedFeatures = () => {
       title: 'Փորձագիտական գնահատում',
       description: 'Ստացիր հետադարձ կապ մասնագետներից և բարելավի՛ր քո հմտությունները',
       color: 'from-yellow-500 to-orange-600',
-      size: 'small',
       priority: 4
     },
     {
@@ -47,7 +43,6 @@ const EnhancedFeatures = () => {
       title: 'Ինտերակտիվ ուսուցում',
       description: 'Գործնական առաջադրանքներ և իրական նախագծեր ուսումնառության համար',
       color: 'from-purple-500 to-pink-600',
-      size: 'small',
       priority: 5
     },
     {
@@ -55,7 +50,6 @@ const EnhancedFeatures = () => {
       title: 'Վկայագրեր',
       description: 'Ստացիր ճանաչված վկայագրեր դասընթացների ավարտին',
       color: 'from-indigo-500 to-blue-600',
-      size: 'medium',
       priority: 6
     }
   ];
@@ -106,32 +100,6 @@ const EnhancedFeatures = () => {
     };
   }, []);
 
-  const getCardClasses = (size: string) => {
-    switch (size) {
-      case 'large':
-        return 'col-span-1 sm:col-span-2 row-span-2';
-      case 'medium':
-        return 'col-span-1 row-span-1';
-      case 'small':
-        return 'col-span-1 row-span-1';
-      default:
-        return 'col-span-1 row-span-1';
-    }
-  };
-
-  const getContentClasses = (size: string) => {
-    switch (size) {
-      case 'large':
-        return 'p-8 sm:p-10';
-      case 'medium':
-        return 'p-6 sm:p-8';
-      case 'small':
-        return 'p-5 sm:p-6';
-      default:
-        return 'p-6';
-    }
-  };
-
   return (
     <section className="py-16 sm:py-20 lg:py-24 bg-background w-full relative overflow-hidden">
       {/* Background Network Lines */}
@@ -151,20 +119,22 @@ const EnhancedFeatures = () => {
       <div className="content-container relative z-10">
         {/* Header section */}
         <ScrollReveal delay={100}>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-6 backdrop-blur-sm border border-edu-blue/20">
-            <Sparkles className="w-4 h-4 animate-pulse-slow" />
-            <span className="font-medium font-armenian text-sm sm:text-base">Ինչու՞ ընտրել մեզ</span>
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-6 backdrop-blur-sm border border-edu-blue/20">
+              <Sparkles className="w-4 h-4 animate-pulse-slow" />
+              <span className="font-medium font-armenian text-sm sm:text-base">Ինչու՞ ընտրել մեզ</span>
+            </div>
           </div>
         </ScrollReveal>
         
         <ScrollReveal delay={200}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 font-armenian text-gradient">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 font-armenian text-gradient text-center">
             Մեր առավելություններն
           </h2>
         </ScrollReveal>
         
         <ScrollReveal delay={300}>
-          <p className="text-lg sm:text-xl text-muted-foreground font-armenian leading-relaxed mb-16 max-w-3xl">
+          <p className="text-lg sm:text-xl text-muted-foreground font-armenian leading-relaxed mb-16 max-w-3xl mx-auto text-center">
             Մենք առաջարկում ենք ամենաարդիական և արդյունավետ ուսումնական հարթակը՝ հնարավորություններով, որոնք կփոխեն ձեր ուսումնառության փորձը
           </p>
         </ScrollReveal>
@@ -172,19 +142,18 @@ const EnhancedFeatures = () => {
         {/* Enhanced Features Grid */}
         <div 
           ref={containerRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 auto-rows-fr w-full"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full"
         >
           {features.map((feature, index) => (
             <ScrollReveal key={index} delay={400 + index * 100}>
               <Card 
-                className={`
+                className="
                   feature-card group relative overflow-hidden border-0 shadow-xl
-                  ${getCardClasses(feature.size)}
                   transition-all duration-500 ease-out
                   hover:shadow-2xl hover:shadow-edu-blue/25
                   glass-card backdrop-blur-xl bg-card/60
-                  cursor-pointer
-                `}
+                  cursor-pointer h-full
+                "
                 style={{
                   transformStyle: 'preserve-3d',
                   transition: 'transform 0.3s ease-out, box-shadow 0.3s ease-out'
@@ -198,34 +167,19 @@ const EnhancedFeatures = () => {
                 {/* Network connection indicator */}
                 <div className="absolute top-4 right-4 w-2 h-2 bg-gradient-to-r from-edu-blue to-purple-600 rounded-full animate-pulse opacity-60 group-hover:opacity-100 transition-opacity" />
                 
-                <CardContent className={getContentClasses(feature.size)}>
+                <CardContent className="p-6 sm:p-8 h-full flex flex-col">
                   {/* Icon with enhanced styling */}
-                  <div className={`
-                    ${feature.size === 'large' ? 'w-16 h-16 mb-6' : 'w-12 h-12 mb-4'} 
-                    mx-auto bg-gradient-to-r ${feature.color} text-white rounded-2xl 
-                    flex items-center justify-center 
-                    group-hover:scale-110 group-hover:rotate-6 
-                    transition-transform duration-500 ease-out
-                    shadow-lg group-hover:shadow-xl
-                  `}>
+                  <div className="w-12 h-12 mx-auto bg-gradient-to-r from-edu-blue to-purple-600 text-white rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 ease-out shadow-lg group-hover:shadow-xl mb-4">
                     {feature.icon}
                   </div>
                   
                   {/* Title */}
-                  <h3 className={`
-                    ${feature.size === 'large' ? 'text-xl sm:text-2xl mb-4' : 'text-lg sm:text-xl mb-3'} 
-                    font-semibold font-armenian text-center 
-                    group-hover:text-gradient transition-all duration-300
-                  `}>
+                  <h3 className="text-lg sm:text-xl font-semibold font-armenian text-center group-hover:text-gradient transition-all duration-300 mb-3">
                     {feature.title}
                   </h3>
                   
                   {/* Description */}
-                  <p className={`
-                    text-muted-foreground font-armenian text-center leading-relaxed
-                    ${feature.size === 'large' ? 'text-base sm:text-lg' : 'text-sm sm:text-base'}
-                    group-hover:text-foreground/80 transition-colors duration-300
-                  `}>
+                  <p className="text-muted-foreground font-armenian text-center leading-relaxed text-sm sm:text-base group-hover:text-foreground/80 transition-colors duration-300 flex-1">
                     {feature.description}
                   </p>
 
