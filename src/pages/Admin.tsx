@@ -16,7 +16,7 @@ const AdminContent = () => {
   const { data: isAdmin, isLoading: adminLoading } = useAdminRole();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('overview');
-  const { toggleSidebar, isMobile } = useSidebar();
+  const { toggleSidebar, isMobile, state } = useSidebar();
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -64,13 +64,21 @@ const AdminContent = () => {
     return null;
   }
 
+  const isCollapsed = state === 'collapsed';
+
   return (
     <div className="min-h-screen flex w-full bg-background page-container relative">
       <AdminSidebar 
         activeSection={activeSection}
         onSectionChange={setActiveSection}
       />
-      <SidebarInset className="flex-1 min-w-0 transition-all duration-150 ease-out">
+      <SidebarInset className={`
+        flex-1 min-w-0 transition-all duration-150 ease-out relative
+        ${!isMobile ? (isCollapsed 
+          ? 'ml-16' // Account for collapsed sidebar width (4rem)
+          : 'ml-80'  // Account for expanded sidebar width (20rem)
+        ) : 'ml-0'}
+      `}>
         {/* Mobile Header with Sidebar Toggle */}
         {isMobile && (
           <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-sm border-b border-border/30 p-4 md:hidden">
@@ -92,18 +100,21 @@ const AdminContent = () => {
         )}
         
         <Header />
-        <main className="flex-1 p-3 sm:p-4 lg:p-6 overflow-auto transition-all duration-200">
-          <div className="animate-fade-in">
+        <main className={`
+          flex-1 p-3 sm:p-4 lg:p-6 overflow-auto transition-all duration-150
+          ${!isMobile ? 'min-h-[calc(100vh-8rem)]' : 'min-h-[calc(100vh-12rem)]'}
+        `}>
+          <div className="animate-fade-in max-w-full">
             <AdminDashboard />
           </div>
         </main>
         <Footer />
       </SidebarInset>
       
-      {/* Overlay for mobile when sidebar is open */}
-      {isMobile && (
+      {/* Mobile Overlay - improved positioning and z-index */}
+      {isMobile && state === 'expanded' && (
         <div 
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 md:hidden transition-opacity duration-200"
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden transition-opacity duration-150"
           onClick={toggleSidebar}
         />
       )}
@@ -113,7 +124,14 @@ const AdminContent = () => {
 
 const Admin = () => {
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider 
+      defaultOpen={true}
+      style={{
+        '--sidebar-width': '20rem',
+        '--sidebar-width-mobile': '22rem',
+        '--sidebar-width-icon': '4rem'
+      } as React.CSSProperties}
+    >
       <AdminContent />
     </SidebarProvider>
   );
