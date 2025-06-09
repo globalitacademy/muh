@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from '@/components/ui/sidebar';
 import { BarChart3, Users, Settings, FileText, Activity, GraduationCap, Shield, DollarSign, Award, MessageSquare, FolderOpen, Archive, UserPlus, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -136,7 +137,16 @@ const AdminSidebar = ({
 
   return (
     <>
-      <Sidebar variant="inset" className="border-r border-border/30 backdrop-blur-sm bg-card/50 transition-all duration-150 ease-out" collapsible="icon">
+      <Sidebar 
+        variant="inset" 
+        className="border-r border-border/30 backdrop-blur-sm bg-card/50 transition-all duration-150 ease-out" 
+        collapsible="icon"
+        style={{
+          '--sidebar-width': '20rem',
+          '--sidebar-width-mobile': '22rem',
+          '--sidebar-width-icon': '4rem'
+        } as React.CSSProperties}
+      >
         <SidebarHeader className="border-b border-border/20 p-6 bg-card/80 backdrop-blur-md relative overflow-hidden">
           {/* Clean minimal background */}
           <div className="absolute inset-0 bg-gradient-to-br from-card/50 to-accent/5" />
@@ -202,7 +212,7 @@ const AdminSidebar = ({
                         <SidebarMenuButton 
                           onClick={() => handleSectionClick(item.id)} 
                           isActive={activeSection === item.id} 
-                          tooltip={item.label} 
+                          tooltip={isCollapsed ? item.label : undefined} 
                           className={cn(
                             "font-armenian h-12 rounded-xl transition-all duration-200 group relative overflow-hidden",
                             "hover:bg-sidebar-accent/80 hover:shadow-sm hover:scale-[1.01]",
@@ -212,50 +222,54 @@ const AdminSidebar = ({
                               "px-0 justify-center w-12 mx-auto",
                               activeSection === item.id && "bg-edu-blue/10 border border-edu-blue/20 shadow-sm"
                             ] : [
-                              "px-3",
+                              "px-4 justify-start text-left",
                               activeSection === item.id && ["bg-edu-blue/10 border border-edu-blue/20 shadow-sm", "text-edu-blue font-medium"]
                             ]
                           )}
                         >
                           <item.icon className={cn(
-                            "transition-all duration-200 group-hover:scale-105",
+                            "transition-all duration-200 group-hover:scale-105 flex-shrink-0",
                             isCollapsed ? [
                               "w-5 h-5",
                               activeSection === item.id ? "text-edu-blue" : "text-muted-foreground group-hover:text-foreground"
                             ] : [
-                              "w-5 h-5",
+                              "w-5 h-5 mr-3",
                               activeSection === item.id ? "text-edu-blue" : "text-muted-foreground group-hover:text-foreground"
                             ]
                           )} />
                           
                           <span className={cn(
-                            "transition-all duration-200 flex-1",
+                            "transition-all duration-200 flex-1 text-left leading-tight",
                             isCollapsed ? "sr-only" : [
-                              activeSection === item.id ? "text-edu-blue font-medium" : "text-foreground/80 group-hover:text-foreground"
+                              "text-sm font-medium",
+                              activeSection === item.id ? "text-edu-blue font-semibold" : "text-foreground/80 group-hover:text-foreground"
                             ]
                           )}>
                             {item.label}
                           </span>
                           
-                          {/* Microsoft-style badge positioning */}
+                          {/* Improved badge positioning and sizing */}
                           {item.badge && (
                             <Badge 
                               variant={item.badge === 'Նոր' ? 'default' : 'secondary'} 
                               className={cn(
-                                "text-xs transition-all duration-200",
+                                "text-xs transition-all duration-200 flex-shrink-0",
                                 isCollapsed ? [
                                   "absolute -top-1 -right-1 w-5 h-5 p-0 rounded-full flex items-center justify-center",
                                   "transform scale-75",
                                   item.badge === 'Նոր' && "bg-green-500 text-white border-0",
                                   item.badge !== 'Նոր' && "bg-edu-blue text-white border-0"
                                 ] : [
-                                  "ml-auto px-2 py-0.5",
+                                  "ml-auto px-2 py-0.5 min-w-fit",
                                   item.badge === 'Նոր' && "bg-green-500 text-white border-0",
                                   item.badge !== 'Նոր' && "bg-edu-blue text-white border-0"
                                 ]
                               )}
                             >
-                              <span className={cn(isCollapsed && item.badge !== 'Նոր' ? "text-xs" : "")}>
+                              <span className={cn(
+                                "whitespace-nowrap font-medium",
+                                isCollapsed && item.badge !== 'Նոր' ? "text-xs" : "text-xs"
+                              )}>
                                 {isCollapsed && item.badge !== 'Նոր' ? item.badge.slice(0, 1) : item.badge}
                               </span>
                             </Badge>
@@ -281,10 +295,13 @@ const AdminSidebar = ({
           )}>
             <div className="flex items-center justify-center gap-2 mb-2">
               <div className="w-2 h-2 bg-edu-blue rounded-full opacity-60"></div>
-              <span>Վարկան 2024 - Ուսումնական հարթակ</span>
+              <span className="text-xs leading-tight">Վարկան 2024</span>
             </div>
-            <div className="text-xs opacity-60">
-              Վերջին թարմացում: {new Date().toLocaleDateString('hy-AM')}
+            <div className="text-xs opacity-60 leading-tight">
+              Ուսումնական հարթակ
+            </div>
+            <div className="text-xs opacity-50 mt-1 leading-tight">
+              {new Date().toLocaleDateString('hy-AM')}
             </div>
           </div>
           <div className={cn("hidden", isCollapsed && "block flex justify-center")}>
