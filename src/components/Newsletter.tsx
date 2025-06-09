@@ -3,8 +3,8 @@ import React from 'react';
 
 const Newsletter = () => {
   return (
-    <section className="py-16 bg-background">
-      <div className="w-full max-w-7xl mx-auto text-center">
+    <section className="py-16 bg-background w-full">
+      <div className="content-container text-center">
         <h3 className="text-2xl font-bold mb-4 font-armenian text-foreground">
           Բաժանորդագրվեք մեր նորություններին
         </h3>

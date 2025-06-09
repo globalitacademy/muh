@@ -23,101 +23,103 @@ const Header = () => {
   ];
 
   return (
-    <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-      <div className="flex items-center justify-between h-14 sm:h-16 max-w-7xl mx-auto">
-        {/* Logo - Mobile optimized */}
-        <div 
-          className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px]" 
-          onClick={() => navigate('/')}
-        >
-          <div className="w-7 sm:w-8 h-7 sm:h-8 bg-gradient-to-r from-edu-blue to-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-xs sm:text-sm">L</span>
+    <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 w-full">
+      <div className="content-container">
+        <div className="flex items-center justify-between h-14 sm:h-16">
+          {/* Logo - Mobile optimized */}
+          <div 
+            className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px]" 
+            onClick={() => navigate('/')}
+          >
+            <div className="w-7 sm:w-8 h-7 sm:h-8 bg-gradient-to-r from-edu-blue to-purple-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xs sm:text-sm">L</span>
+            </div>
+            <span className="text-lg sm:text-xl font-bold text-foreground font-armenian">
+              LearnHub
+            </span>
           </div>
-          <span className="text-lg sm:text-xl font-bold text-foreground font-armenian">
-            LearnHub
-          </span>
-        </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
-          {menuItems.map((item) => (
-            <button
-              key={item.href}
-              onClick={() => navigate(item.href)}
-              className="text-muted-foreground hover:text-foreground transition-colors font-armenian min-h-[44px]"
-            >
-              {item.label}
-            </button>
-          ))}
-        </nav>
-
-        {/* Desktop Actions */}
-        <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
-          {/* Language Selector */}
-          <select
-            value={currentLanguage}
-            onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
-            className="bg-background border border-border rounded px-2 py-1 text-sm focus:outline-none focus:border-primary text-foreground min-h-[36px]"
-          >
-            <option value="hy">Հայ</option>
-            <option value="en">EN</option>
-            <option value="ru">РУ</option>
-          </select>
-
-          <ThemeToggle />
-          <UserMenu />
-        </div>
-
-        {/* Mobile menu button */}
-        <div className="md:hidden">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-            className="min-h-[44px] min-w-[44px]"
-          >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
-        </div>
-      </div>
-
-      {/* Mobile Navigation - Enhanced */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-sm">
-          <nav className="flex flex-col space-y-1">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
             {menuItems.map((item) => (
               <button
                 key={item.href}
-                onClick={() => {
-                  navigate(item.href);
-                  setIsMenuOpen(false);
-                }}
-                className="text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-left font-armenian p-3 rounded-lg min-h-[48px] w-full"
+                onClick={() => navigate(item.href)}
+                className="text-muted-foreground hover:text-foreground transition-colors font-armenian min-h-[44px]"
               >
                 {item.label}
               </button>
             ))}
-            
-            <div className="flex items-center justify-between pt-4 border-t border-border">
-              <select
-                value={currentLanguage}
-                onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
-                className="bg-background border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary text-foreground min-h-[44px] flex-1 mr-2"
-              >
-                <option value="hy">Հայ</option>
-                <option value="en">EN</option>
-                <option value="ru">РУ</option>
-              </select>
-              
-              <div className="flex items-center space-x-2">
-                <ThemeToggle />
-                <UserMenu />
-              </div>
-            </div>
           </nav>
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+            {/* Language Selector */}
+            <select
+              value={currentLanguage}
+              onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
+              className="bg-background border border-border rounded px-2 py-1 text-sm focus:outline-none focus:border-primary text-foreground min-h-[36px]"
+            >
+              <option value="hy">Հայ</option>
+              <option value="en">EN</option>
+              <option value="ru">РУ</option>
+            </select>
+
+            <ThemeToggle />
+            <UserMenu />
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+              className="min-h-[44px] min-w-[44px]"
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+          </div>
         </div>
-      )}
+
+        {/* Mobile Navigation - Enhanced */}
+        {isMenuOpen && (
+          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-sm">
+            <nav className="flex flex-col space-y-1">
+              {menuItems.map((item) => (
+                <button
+                  key={item.href}
+                  onClick={() => {
+                    navigate(item.href);
+                    setIsMenuOpen(false);
+                  }}
+                  className="text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-left font-armenian p-3 rounded-lg min-h-[48px] w-full"
+                >
+                  {item.label}
+                </button>
+              ))}
+              
+              <div className="flex items-center justify-between pt-4 border-t border-border">
+                <select
+                  value={currentLanguage}
+                  onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
+                  className="bg-background border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary text-foreground min-h-[44px] flex-1 mr-2"
+                >
+                  <option value="hy">Հայ</option>
+                  <option value="en">EN</option>
+                  <option value="ru">РУ</option>
+                </select>
+                
+                <div className="flex items-center space-x-2">
+                  <ThemeToggle />
+                  <UserMenu />
+                </div>
+              </div>
+            </nav>
+          </div>
+        )}
+      </div>
     </header>
   );
 };

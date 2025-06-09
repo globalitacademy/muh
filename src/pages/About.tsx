@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent } from '@/components/ui/card';
@@ -77,7 +76,7 @@ const About = () => {
     {
       icon: <Users className="w-8 h-8" />,
       title: language === 'hy' ? 'Մեր թիմը' : language === 'ru' ? 'Наша команда' : 'Our Team',
-      description: language === 'hy' ? 'Փորձառու մասնագետներ և դասախոսներ, որոնք նվիրված են ուսանողների հաջողությանը' : language === 'ru' ? 'Опытные специалисты и преподаватели, посвятившие себя успеху студентов' : 'Experienced professionals and instructors dedicated to student success',
+      description: language === 'hy' ? 'Փորձառու մասնագետներ և դասախոսներ, որոնք նվիրված են ուսանողների հաջողությանը' : language === 'ru' ? 'Опытные специалисты и преподаватели, посвятившиеся успеху студентов' : 'Experienced professionals and instructors dedicated to student success',
       color: 'from-green-500 to-teal-600'
     },
     {
@@ -114,14 +113,14 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full">
       <Header />
       
       <main>
         {/* Hero Section */}
-        <section className="relative py-24 overflow-hidden">
+        <section className="relative py-24 overflow-hidden w-full">
           <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-background to-purple-500/5"></div>
-          <div className="container mx-auto px-4 relative">
+          <div className="content-container relative">
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-6">
                 <Star className="w-4 h-4" />
@@ -157,8 +156,8 @@ const About = () => {
         </section>
 
         {/* Values Section */}
-        <section className="py-20 bg-muted/20">
-          <div className="container mx-auto px-4">
+        <section className="py-20 bg-muted/20 w-full">
+          <div className="content-container">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 font-armenian text-gradient">
                 {language === 'hy' ? 'Մեր արժեքները' : language === 'ru' ? 'Наши ценности' : 'Our Values'}
@@ -196,8 +195,8 @@ const About = () => {
         </section>
 
         {/* Story Section */}
-        <section className="py-20">
-          <div className="container mx-auto px-4">
+        <section className="py-20 w-full">
+          <div className="content-container">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 font-armenian text-gradient">
                 {language === 'hy' ? 'Մեր պատմությունը' : language === 'ru' ? 'Наша история' : 'Our Story'}
@@ -236,8 +235,8 @@ const About = () => {
         </section>
 
         {/* Team Section */}
-        <section className="py-20 bg-muted/20">
-          <div className="container mx-auto px-4">
+        <section className="py-20 bg-muted/20 w-full">
+          <div className="content-container">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 font-armenian text-gradient">
                 {language === 'hy' ? 'Մեր դասախոսներ' : language === 'ru' ? 'Наши преподаватели' : 'Our Instructors'}
@@ -302,8 +301,8 @@ const About = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20">
-          <div className="container mx-auto px-4 text-center">
+        <section className="py-20 w-full">
+          <div className="content-container text-center">
             <div className="glass-card rounded-2xl p-12 max-w-4xl mx-auto">
               <h3 className="text-3xl md:text-4xl font-bold mb-6 font-armenian text-gradient">
                 {language === 'hy' ? 'Պատրա՞ստ եք սկսելու' : 'Ready to start?'}

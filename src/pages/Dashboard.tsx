@@ -46,10 +46,10 @@ const Dashboard = () => {
   if (!profile) {
     console.log('Dashboard - No profile found, showing fallback');
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background w-full">
         <Header />
-        <main className="py-8">
-          <div className="container mx-auto px-4">
+        <main className="py-8 w-full">
+          <div className="content-container">
             <div className="text-center">
               <h1 className="text-2xl font-bold mb-4">Profile not found</h1>
               <p>Your profile could not be loaded. Please contact support.</p>
@@ -78,11 +78,11 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full">
       <Header />
       
-      <main className="py-8">
-        <div className="container mx-auto px-4">
+      <main className="py-8 w-full">
+        <div className="content-container">
           {renderProfileByRole()}
         </div>
       </main>

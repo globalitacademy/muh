@@ -13,11 +13,11 @@ const Hero = () => {
   const { data: stats, isLoading: statsLoading } = useContactStats();
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-br from-background via-background to-accent/5 pt-20 pb-16">
+    <section className="relative min-h-screen bg-gradient-to-br from-background via-background to-accent/5 pt-20 pb-16 w-full">
       {/* Simple background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-transparent to-purple-500/5 pointer-events-none"></div>
       
-      <div className="relative max-w-7xl mx-auto h-full">
+      <div className="relative content-container h-full">
         {/* Main Hero Content */}
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh] py-12">
           {/* Left Content */}

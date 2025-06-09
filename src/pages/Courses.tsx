@@ -7,10 +7,10 @@ import { Star } from 'lucide-react';
 
 const Courses = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full">
       <Header />
-      <main className="py-24">
-        <div className="container mx-auto">
+      <main className="py-24 w-full">
+        <div className="content-container">
           <div className="text-center mb-20">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-6">
               <Star className="w-4 h-4" />

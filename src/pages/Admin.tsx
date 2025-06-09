@@ -48,7 +48,7 @@ const Admin = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background page-container">
         <AdminSidebar 
           activeSection={activeSection}
           onSectionChange={setActiveSection}
