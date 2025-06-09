@@ -11,7 +11,7 @@ const Footer = () => {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-background to-purple-500/5"></div>
       
-      <div className="container mx-auto px-4 relative">
+      <div className="px-4 max-w-7xl mx-auto relative">
         <div className="py-16">
           <div className="grid md:grid-cols-4 gap-12">
             {/* Logo and Description */}
