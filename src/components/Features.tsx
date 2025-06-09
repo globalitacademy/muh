@@ -47,18 +47,17 @@ const Features = () => {
   ];
 
   return (
-    <section className="py-16 sm:py-20 lg:py-24 bg-background">
-      <div className="px-4 max-w-7xl mx-auto">
-        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-4 sm:mb-6">
-            <Star className="w-3 sm:w-4 h-3 sm:h-4" />
-            <span className="font-medium font-armenian text-lg sm:text-xl lg:text-2xl">Ինչու՞ ընտրել մեզ</span>
-          </div>
-          
-          <p className="text-lg sm:text-xl lg:text-xl text-muted-foreground font-armenian leading-relaxed px-2 max-w-4xl mx-auto">
-            Մենք առաջարկում ենք ամենաարդիական և արդյունավետ ուսումնական հարթակը
-          </p>
+    <section className="py-16 sm:py-20 lg:py-24 bg-background px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto">
+        {/* Header section */}
+        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-4 sm:mb-6">
+          <Star className="w-3 sm:w-4 h-3 sm:h-4" />
+          <span className="font-medium font-armenian text-lg sm:text-xl lg:text-2xl">Ինչու՞ ընտրել մեզ</span>
         </div>
+        
+        <p className="text-lg sm:text-xl lg:text-xl text-muted-foreground font-armenian leading-relaxed mb-12 sm:mb-16 lg:mb-20 w-full">
+          Մենք առաջարկում ենք ամենաարդիական և արդյունավետ ուսումնական հարթակը
+        </p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 w-full">
           {features.map((feature, index) => (
@@ -81,9 +80,9 @@ const Features = () => {
           ))}
         </div>
 
-        {/* Call to action - Simplified */}
-        <div className="text-center mt-12 sm:mt-16">
-          <div className="glass-card rounded-2xl p-6 sm:p-8 bg-card/80 backdrop-blur-sm border border-border/30 max-w-2xl mx-auto">
+        {/* Call to action */}
+        <div className="text-center mt-12 sm:mt-16 w-full">
+          <div className="glass-card rounded-2xl p-6 sm:p-8 bg-card/80 backdrop-blur-sm border border-border/30 w-full">
             <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 font-armenian">Պատրա՞ստ եք սկսել</h3>
             <p className="text-muted-foreground mb-4 sm:mb-6 font-armenian text-sm sm:text-base">
               Միացիր մեր համայնքին և սկսիր քո ուսումնական ճանապարհորդությունը
