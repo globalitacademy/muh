@@ -190,8 +190,8 @@ const AdminSidebar = ({
           </div>
         </div>
         
-        {/* Microsoft-style toggle button positioning */}
-        <div className="absolute top-4 right-4">
+        {/* Microsoft-style toggle button positioning - moved to bottom-right */}
+        <div className="absolute bottom-4 right-4">
           <CustomSidebarTrigger />
         </div>
       </SidebarHeader>
