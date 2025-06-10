@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2 } from 'lucide-react';
 import { Module } from '@/types/database';
 import { useCreateModule, useUpdateModule } from '@/hooks/useAdminModules';
+import EnhancedRichTextEditor from '@/components/ui/enhanced-rich-text-editor';
 
 interface ModuleFormDialogProps {
   isOpen: boolean;
@@ -157,31 +157,31 @@ const ModuleFormDialog = ({ isOpen, onClose, specialtyId, editingModule }: Modul
 
           <div>
             <Label htmlFor="description" className="font-armenian">Նկարագրություն (հայերեն)</Label>
-            <Textarea
-              id="description"
+            <EnhancedRichTextEditor
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={3}
+              onChange={(value) => setFormData({ ...formData, description: value })}
+              placeholder="Մուտքագրեք մոդուլի նկարագրությունը..."
+              height={200}
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="description_en" className="font-armenian">Նկարագրություն (անգլերեն)</Label>
-              <Textarea
-                id="description_en"
+              <EnhancedRichTextEditor
                 value={formData.description_en}
-                onChange={(e) => setFormData({ ...formData, description_en: e.target.value })}
-                rows={3}
+                onChange={(value) => setFormData({ ...formData, description_en: value })}
+                placeholder="Enter module description in English..."
+                height={150}
               />
             </div>
             <div>
               <Label htmlFor="description_ru" className="font-armenian">Նկարագրություն (ռուսերեն)</Label>
-              <Textarea
-                id="description_ru"
+              <EnhancedRichTextEditor
                 value={formData.description_ru}
-                onChange={(e) => setFormData({ ...formData, description_ru: e.target.value })}
-                rows={3}
+                onChange={(value) => setFormData({ ...formData, description_ru: value })}
+                placeholder="Введите описание модуля на русском..."
+                height={150}
               />
             </div>
           </div>

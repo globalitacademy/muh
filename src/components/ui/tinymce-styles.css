@@ -1,0 +1,113 @@
+
+/* TinyMCE Custom Styles for Dark/Light Theme */
+.tinymce-editor-wrapper {
+  @apply rounded-md border border-input bg-background;
+}
+
+.tinymce-editor-wrapper .tox.tox-tinymce {
+  border: none !important;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.tinymce-editor-wrapper .tox .tox-toolbar-overlord {
+  background: hsl(var(--background)) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+}
+
+.tinymce-editor-wrapper .tox .tox-toolbar__primary {
+  background: hsl(var(--background)) !important;
+}
+
+.tinymce-editor-wrapper .tox .tox-tbtn {
+  color: hsl(var(--foreground)) !important;
+  border-radius: 4px;
+}
+
+.tinymce-editor-wrapper .tox .tox-tbtn:hover {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+.tinymce-editor-wrapper .tox .tox-tbtn--enabled {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+.tinymce-editor-wrapper .tox .tox-edit-area {
+  border: none !important;
+}
+
+.tinymce-editor-wrapper .tox .tox-edit-area__iframe {
+  background: hsl(var(--background)) !important;
+}
+
+.tinymce-editor-wrapper .tox .tox-statusbar {
+  background: hsl(var(--muted)) !important;
+  border-top: 1px solid hsl(var(--border)) !important;
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.tinymce-editor-wrapper .tox .tox-menubar {
+  background: hsl(var(--background)) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
+}
+
+.tinymce-editor-wrapper .tox .tox-menu {
+  background: hsl(var(--popover)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 6px;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.tinymce-editor-wrapper .tox .tox-collection__item {
+  color: hsl(var(--popover-foreground)) !important;
+}
+
+.tinymce-editor-wrapper .tox .tox-collection__item--active {
+  background: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+/* Dark theme specific overrides */
+[data-theme="dark"] .tinymce-editor-wrapper .tox-tinymce {
+  background: hsl(var(--background)) !important;
+}
+
+[data-theme="dark"] .tinymce-editor-wrapper .tox .tox-editor-header {
+  background: hsl(var(--background)) !important;
+}
+
+/* Light theme specific overrides */
+[data-theme="light"] .tinymce-editor-wrapper .tox-tinymce {
+  background: hsl(var(--background)) !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .tinymce-editor-wrapper .tox .tox-toolbar__primary {
+    flex-wrap: wrap;
+  }
+  
+  .tinymce-editor-wrapper .tox .tox-toolbar__group {
+    flex-wrap: wrap;
+  }
+}
+
+/* Armenian font support */
+.tinymce-editor-wrapper .tox .tox-edit-area__iframe body {
+  font-family: "Noto Sans Armenian", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif !important;
+}
+
+/* Code block styling */
+.tinymce-editor-wrapper .tox .tox-edit-area__iframe pre.language-markup,
+.tinymce-editor-wrapper .tox .tox-edit-area__iframe pre.language-javascript,
+.tinymce-editor-wrapper .tox .tox-edit-area__iframe pre.language-css {
+  background: hsl(var(--muted)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 6px;
+  padding: 12px;
+  font-family: "JetBrains Mono", "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
+  font-size: 13px;
+  line-height: 1.5;
+}
