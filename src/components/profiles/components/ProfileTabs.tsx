@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, BookOpen, Award, Briefcase, Settings, Target, MessageSquare, FileText, ChevronDown } from 'lucide-react';
@@ -73,24 +72,24 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
         <DropdownMenuTrigger asChild>
           <Button 
             variant="outline" 
-            className="w-full justify-between h-12 font-armenian bg-gradient-to-r from-card/80 to-background/60 backdrop-blur-xl border border-border/20 shadow-lg hover:shadow-xl transition-all duration-300"
+            className="w-full justify-between h-14 font-armenian bg-gradient-to-r from-card/90 to-background/70 backdrop-blur-xl border border-border/30 shadow-lg hover:shadow-xl transition-all duration-300 focus-ring"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               {activeTabItem && <activeTabItem.icon className="w-5 h-5 text-edu-blue" />}
-              <span className="text-base">{activeTabItem?.label || 'Ընտրել բաժին'}</span>
+              <span className="text-base font-medium">{activeTabItem?.label || 'Ընտրել բաժին'}</span>
             </div>
             <ChevronDown className="w-5 h-5 text-muted-foreground" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-full min-w-[300px] bg-background/95 backdrop-blur-xl border border-border/20 shadow-2xl">
+        <DropdownMenuContent className="w-full min-w-[320px] bg-background/95 backdrop-blur-xl border border-border/30 shadow-2xl">
           {tabItems.map((item) => (
             <DropdownMenuItem
               key={item.value}
               onClick={() => onTabChange(item.value)}
-              className={`flex items-center gap-3 p-3 font-armenian cursor-pointer transition-all duration-200 ${
+              className={`flex items-center gap-4 p-4 font-armenian cursor-pointer transition-all duration-300 focus-ring ${
                 activeTab === item.value 
-                  ? 'bg-edu-blue/10 text-edu-blue border-l-2 border-edu-blue' 
-                  : 'hover:bg-accent/50'
+                  ? 'bg-gradient-to-r from-edu-blue/15 to-edu-purple/10 text-edu-blue border-l-4 border-edu-blue font-semibold' 
+                  : 'hover:bg-accent/60 hover:text-accent-foreground'
               }`}
             >
               <item.icon className={`w-5 h-5 ${activeTab === item.value ? 'text-edu-blue' : 'text-muted-foreground'}`} />
@@ -104,21 +103,21 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
   // Tablet Scrollable Tabs Component
   const TabletScrollableTabs = () => (
-    <div className="w-full mb-6 relative">
-      {/* Scroll indicators */}
-      <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none opacity-50" />
-      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none opacity-50" />
+    <div className="w-full mb-8 relative">
+      {/* Enhanced scroll indicators */}
+      <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-background via-background/80 to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-background via-background/80 to-transparent z-10 pointer-events-none" />
       
-      <TabsList className="w-full h-14 bg-gradient-to-r from-card/60 via-background/40 to-card/60 backdrop-blur-xl border border-border/20 shadow-lg overflow-x-auto scrollbar-hide">
-        <div className="flex min-w-max gap-1 px-2">
+      <TabsList className="w-full h-16 bg-gradient-to-r from-card/80 via-background/60 to-card/80 backdrop-blur-xl border border-border/30 shadow-xl overflow-x-auto scrollbar-hide">
+        <div className="flex min-w-max gap-3 px-4 py-2">
           {tabItems.map((item) => (
             <TabsTrigger
               key={item.value}
               value={item.value}
-              className="font-armenian data-[state=active]:bg-gradient-to-r data-[state=active]:from-edu-blue data-[state=active]:to-edu-purple data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all duration-300 whitespace-nowrap min-w-fit px-4 py-2"
+              className="font-armenian data-[state=active]:bg-gradient-to-r data-[state=active]:from-edu-blue data-[state=active]:to-edu-purple data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 rounded-xl transition-all duration-300 whitespace-nowrap min-w-fit px-5 py-3 hover:bg-accent/40 hover:scale-102 focus-ring border border-transparent data-[state=active]:border-white/20"
             >
-              <item.icon className="w-4 h-4 mr-2" />
-              <span className="text-sm">{item.label}</span>
+              <item.icon className="w-4 h-4 mr-3" />
+              <span className="text-sm font-medium">{item.label}</span>
             </TabsTrigger>
           ))}
         </div>
@@ -128,36 +127,37 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
   // Desktop Full Grid Component
   const DesktopTabsGrid = () => (
-    <div className="mb-8 relative">
-      {/* Glass morphism background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-card/40 via-background/30 to-card/40 backdrop-blur-xl rounded-2xl border border-border/20 shadow-2xl -m-2" />
-      <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-transparent to-edu-purple/5 rounded-2xl opacity-60 -m-2" />
+    <div className="mb-10 relative">
+      {/* Enhanced glass morphism background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-card/60 via-background/40 to-card/60 backdrop-blur-xl rounded-3xl border border-border/30 shadow-2xl -m-3" />
+      <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/10 via-transparent to-edu-purple/10 rounded-3xl opacity-80 -m-3" />
       
-      <TabsList className="relative z-10 grid w-full grid-cols-4 lg:grid-cols-8 bg-transparent p-2 h-auto gap-2">
+      <TabsList className="relative z-10 grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-8 bg-transparent p-4 h-auto gap-4">
         {tabItems.map((item, index) => (
           <TabsTrigger
             key={item.value}
             value={item.value}
-            className="font-armenian data-[state=active]:bg-gradient-to-r data-[state=active]:from-edu-blue data-[state=active]:to-edu-purple data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 rounded-xl transition-all duration-500 hover:scale-102 hover:shadow-lg group p-4 h-auto min-h-[80px] flex flex-col items-center justify-center border border-border/10 bg-background/60 backdrop-blur-sm"
-            style={{ animationDelay: `${index * 50}ms` }}
+            className="font-armenian data-[state=active]:bg-gradient-to-r data-[state=active]:from-edu-blue data-[state=active]:to-edu-purple data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 rounded-2xl transition-all duration-500 hover:scale-102 hover:shadow-lg group p-5 h-auto min-h-[100px] flex flex-col items-center justify-center border border-border/20 bg-background/70 backdrop-blur-sm hover:bg-accent/30 focus-ring data-[state=active]:border-white/30"
+            style={{ animationDelay: `${index * 75}ms` }}
           >
-            <item.icon className="w-5 h-5 mb-2 group-hover:scale-110 transition-transform duration-300" />
-            <span className="text-xs lg:text-sm text-center leading-tight">{item.label}</span>
+            <item.icon className="w-6 h-6 mb-3 group-hover:scale-110 transition-transform duration-300" />
+            <span className="text-xs lg:text-sm text-center leading-tight font-medium">{item.label}</span>
             
-            {/* Hover glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/0 to-edu-purple/0 group-hover:from-edu-blue/10 group-hover:to-edu-purple/10 rounded-xl transition-all duration-300" />
+            {/* Enhanced hover glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/0 to-edu-purple/0 group-hover:from-edu-blue/15 group-hover:to-edu-purple/15 rounded-2xl transition-all duration-300" />
           </TabsTrigger>
         ))}
       </TabsList>
       
-      {/* Floating decorative elements */}
-      <div className="absolute -top-2 -left-2 w-4 h-4 bg-gradient-to-r from-edu-blue to-edu-purple rounded-full opacity-40 animate-pulse" />
-      <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-gradient-to-r from-edu-orange to-edu-yellow rounded-full opacity-30 animate-bounce" />
+      {/* Enhanced floating decorative elements */}
+      <div className="absolute -top-3 -left-3 w-6 h-6 bg-gradient-to-r from-edu-blue to-edu-purple rounded-full opacity-50 animate-pulse" />
+      <div className="absolute -bottom-3 -right-3 w-4 h-4 bg-gradient-to-r from-edu-orange to-edu-yellow rounded-full opacity-40 animate-bounce" />
+      <div className="absolute top-1/2 -right-4 w-3 h-3 bg-gradient-to-r from-edu-light-blue to-edu-purple rounded-full opacity-60 animate-pulse animation-delay-2000" />
     </div>
   );
 
   return (
-    <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-6">
+    <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-8">
       {/* Responsive Tab Navigation */}
       {isMobile ? (
         <MobileTabsDropdown />
@@ -169,10 +169,10 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
       {/* Enhanced Tab Content with smooth transitions */}
       <div className="min-h-[500px] relative">
-        {/* Content background with glass effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-card/30 via-background/20 to-card/30 backdrop-blur-sm rounded-2xl border border-border/10 shadow-lg opacity-60" />
+        {/* Content background with enhanced glass effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-card/40 via-background/30 to-card/40 backdrop-blur-sm rounded-3xl border border-border/20 shadow-xl opacity-70" />
         
-        <div className="relative z-10 p-6 lg:p-8">
+        <div className="relative z-10 p-8 lg:p-10">
           <TabsContent value="overview" className="m-0 animate-fade-in">
             <EnhancedPersonalInfoTab profile={profile} />
           </TabsContent>
