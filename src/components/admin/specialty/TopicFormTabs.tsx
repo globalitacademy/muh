@@ -36,12 +36,32 @@ const TopicFormTabs = ({
   onContentSectionsChange 
 }: TopicFormTabsProps) => {
   return (
-    <Tabs defaultValue="basic" className="space-y-4">
-      <TabsList className="grid w-full grid-cols-4">
-        <TabsTrigger value="basic" className="font-armenian">Հիմնական</TabsTrigger>
-        <TabsTrigger value="content" className="font-armenian">Բովանդակություն</TabsTrigger>
-        <TabsTrigger value="exercises" className="font-armenian">Վարժություններ</TabsTrigger>
-        <TabsTrigger value="quiz" className="font-armenian">Վիկտորինա</TabsTrigger>
+    <Tabs defaultValue="basic" className="space-y-6">
+      <TabsList className="grid w-full grid-cols-4 bg-muted/50 p-1 rounded-xl">
+        <TabsTrigger 
+          value="basic" 
+          className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all"
+        >
+          Հիմնական
+        </TabsTrigger>
+        <TabsTrigger 
+          value="content" 
+          className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all"
+        >
+          Բովանդակություն
+        </TabsTrigger>
+        <TabsTrigger 
+          value="exercises" 
+          className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all"
+        >
+          Վարժություններ
+        </TabsTrigger>
+        <TabsTrigger 
+          value="quiz" 
+          className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all"
+        >
+          Վիկտորինա
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="basic" className="space-y-4">
@@ -52,10 +72,12 @@ const TopicFormTabs = ({
       </TabsContent>
 
       <TabsContent value="content" className="space-y-4">
-        <TopicContentSections
-          sections={contentSections}
-          onChange={onContentSectionsChange}
-        />
+        <div className="bg-card rounded-lg border p-6">
+          <TopicContentSections
+            sections={contentSections}
+            onChange={onContentSectionsChange}
+          />
+        </div>
       </TabsContent>
 
       <TabsContent value="exercises" className="space-y-4">

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Trash2, Plus, GripVertical, Edit3 } from 'lucide-react';
-import RichTextEditor from '@/components/ui/rich-text-editor';
+import EnhancedRichTextEditor from '@/components/ui/enhanced-rich-text-editor';
 import {
   DragDropContext,
   Droppable,
@@ -155,11 +155,11 @@ const TopicContentSections = ({ sections, onChange }: TopicContentSectionsProps)
                         {expandedSection === section.id && (
                           <CardContent>
                             <Label className="font-armenian mb-2 block">Բովանդակություն</Label>
-                            <RichTextEditor
+                            <EnhancedRichTextEditor
                               value={section.content}
                               onChange={(content) => updateSection(section.id, { content })}
                               placeholder="Մուտքագրեք բաժնի բովանդակությունը..."
-                              className="min-h-[300px]"
+                              height={450}
                             />
                           </CardContent>
                         )}
