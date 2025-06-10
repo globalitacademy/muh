@@ -2,10 +2,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Loader2 } from 'lucide-react';
+import { Form } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
@@ -13,7 +10,7 @@ import { UserProfile } from '@/hooks/useAdminUsers';
 import { instructorSchema, InstructorFormData } from './shared/instructorSchema';
 import InstructorFormFields from './shared/InstructorFormFields';
 import InstructorFormHeader from './shared/InstructorFormHeader';
-import EnhancedRichTextEditor from '@/components/ui/enhanced-rich-text-editor';
+import InstructorFormActions from './shared/InstructorFormActions';
 
 interface EditInstructorFormProps {
   instructor: UserProfile;
@@ -91,110 +88,18 @@ const EditInstructorForm: React.FC<EditInstructorFormProps> = ({ instructor, onS
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-armenian">Անուն Ազգանուն</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Մուտքագրեք անունը և ազգանունը" {...field} disabled={isLoading} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-armenian">Հեռախոս</FormLabel>
-                  <FormControl>
-                    <Input placeholder="+374 XX XXX XXX" {...field} disabled={isLoading} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="organization"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-armenian">Կազմակերպություն</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Մուտքագրեք կազմակերպությունը" {...field} disabled={isLoading} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="department"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-armenian">Ամբիոն/Բաժին</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Մուտքագրեք ամբիոնը կամ բաժինը" {...field} disabled={isLoading} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormField
+          <InstructorFormFields
             control={form.control}
-            name="group_number"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-armenian">Խմբի համար</FormLabel>
-                <FormControl>
-                  <Input placeholder="Մուտքագրեք խմբի համարը" {...field} disabled={isLoading} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            isLoading={isLoading}
+            showEmail={false}
           />
 
-          <FormField
-            control={form.control}
-            name="bio"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-armenian">Կենսագրություն</FormLabel>
-                <FormControl>
-                  <EnhancedRichTextEditor
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="Մուտքագրեք դասախոսի կենսագրությունը..."
-                    height={200}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <InstructorFormActions
+            isLoading={isLoading}
+            onCancel={onCancel}
+            submitText="Թարմացնել տվյալները"
+            loadingText="Թարմացվում է..."
           />
-
-          <div className="flex gap-2 pt-4">
-            <Button type="submit" disabled={isLoading} className="font-armenian">
-              {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-              Թարմացնել տվյալները
-            </Button>
-            {onCancel && (
-              <Button type="button" variant="outline" onClick={onCancel} className="font-armenian">
-                Չեղարկել
-              </Button>
-            )}
-          </div>
         </form>
       </Form>
     </div>
