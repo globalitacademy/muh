@@ -140,7 +140,7 @@ const TopicFormDialog = ({ isOpen, onClose, moduleId, editingTopic }: TopicFormD
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-armenian">
             {editingTopic ? 'Խմբագրել թեման' : 'Նոր թեմա ստեղծել'}
@@ -155,7 +155,7 @@ const TopicFormDialog = ({ isOpen, onClose, moduleId, editingTopic }: TopicFormD
             onContentSectionsChange={setContentSections}
           />
 
-          <div className="flex gap-2 pt-6 border-t mt-6">
+          <div className="flex gap-2 pt-4">
             <Button 
               type="submit" 
               disabled={createTopic.isPending || updateTopic.isPending}
