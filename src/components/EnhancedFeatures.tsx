@@ -171,10 +171,6 @@ const EnhancedFeatures = () => {
             </ScrollReveal>)}
         </div>
 
-        {/* Enhanced Call to Action */}
-        <ScrollReveal delay={800}>
-          
-        </ScrollReveal>
       </div>
     </section>;
 };
