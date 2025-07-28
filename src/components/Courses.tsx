@@ -22,7 +22,7 @@ const Courses = () => {
           {/* Enhanced Header with Glass Effect */}
           <div className="relative mb-20">
             <div className="absolute inset-0 bg-gradient-to-r from-card/80 via-background/60 to-card/80 backdrop-blur-xl rounded-3xl border border-border/20 shadow-2xl" />
-            <div className="relative z-10 p-8 md:p-12 text-center">
+            <div className="relative z-10 p-8 md:p-12 text-center hover-scale animate-fade-in">
               <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-edu-blue/20 to-edu-purple/20 text-edu-blue mb-6 border border-edu-blue/30 shadow-lg backdrop-blur-sm">
                 <Star className="w-5 h-5 animate-pulse" />
                 <span className="text-sm font-medium font-armenian">Մասնագիտական ուղղություններ</span>
