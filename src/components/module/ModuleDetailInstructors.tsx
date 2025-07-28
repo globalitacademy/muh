@@ -34,7 +34,9 @@ const ModuleDetailInstructors = ({ moduleId }: ModuleDetailInstructorsProps) => 
     queryKey: ['moduleInstructors', moduleId],
     queryFn: async (): Promise<ModuleInstructor[]> => {
       console.log('Fetching instructors for module:', moduleId);
-      const { data, error } = await supabase
+      
+      // First, get assigned instructors from module_instructors table
+      const { data: assignedInstructors, error } = await supabase
         .from('module_instructors')
         .select(`
           id,
@@ -62,7 +64,39 @@ const ModuleDetailInstructors = ({ moduleId }: ModuleDetailInstructorsProps) => 
         throw error;
       }
 
-      return data || [];
+      // If no assigned instructors, show the module's default instructor
+      if (!assignedInstructors || assignedInstructors.length === 0) {
+        const { data: moduleData, error: moduleError } = await supabase
+          .from('modules')
+          .select('instructor')
+          .eq('id', moduleId)
+          .single();
+
+        if (moduleError || !moduleData?.instructor) {
+          return [];
+        }
+
+        // Create a virtual instructor entry for the module's default instructor
+        return [{
+          id: 'default',
+          instructor_id: 'default',
+          group_number: null,
+          is_primary: true,
+          instructor: {
+            id: 'default',
+            name: moduleData.instructor,
+            bio: null,
+            avatar_url: null,
+            organization: null,
+            department: null,
+            phone: null,
+            linkedin_url: null,
+            personal_website: null,
+          }
+        }];
+      }
+
+      return assignedInstructors || [];
     },
   });
 
