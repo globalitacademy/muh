@@ -25,35 +25,35 @@ const ModuleDetailTabs = ({ module, topics, hasFullAccess, onTopicClick }: Modul
   return (
     <Tabs defaultValue="overview" className="space-y-6">
       {isMobile ? (
-        <div className="w-full overflow-x-auto pb-2">
-          <TabsList className="inline-flex w-max min-w-full bg-muted/50 p-1 rounded-xl gap-1">
+        <div className="w-full space-y-2">
+          <TabsList className="flex flex-col w-full bg-muted/50 p-1 rounded-xl gap-1 h-auto">
             <TabsTrigger 
               value="overview" 
-              className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all flex-shrink-0 min-w-[120px] justify-center text-xs"
+              className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all w-full justify-start text-sm py-3"
             >
-              <BookOpen className="w-3 h-3 mr-1" />
+              <BookOpen className="w-4 h-4 mr-2" />
               Նկարագիր
             </TabsTrigger>
             <TabsTrigger 
               value="curriculum" 
-              className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all flex-shrink-0 min-w-[140px] justify-center text-xs"
+              className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all w-full justify-start text-sm py-3"
             >
-              <GraduationCap className="w-3 h-3 mr-1" />
-              Ծրագիր
+              <GraduationCap className="w-4 h-4 mr-2" />
+              Դասընթացի ծրագիր
             </TabsTrigger>
             <TabsTrigger 
               value="instructors" 
-              className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all flex-shrink-0 min-w-[130px] justify-center text-xs"
+              className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all w-full justify-start text-sm py-3"
             >
-              <User className="w-3 h-3 mr-1" />
+              <User className="w-4 h-4 mr-2" />
               Մասնագետներ
             </TabsTrigger>
             {isAdmin && (
               <TabsTrigger 
                 value="manage-instructors" 
-                className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all flex-shrink-0 min-w-[120px] justify-center text-xs"
+                className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all w-full justify-start text-sm py-3"
               >
-                <Settings className="w-3 h-3 mr-1" />
+                <Settings className="w-4 h-4 mr-2" />
                 Կառավարում
               </TabsTrigger>
             )}
