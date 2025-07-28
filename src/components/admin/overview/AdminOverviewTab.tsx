@@ -47,64 +47,64 @@ const AdminOverviewTab = () => {
         </p>
       </div>
 
-      {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="modern-card course-card-hover">
-          <div className="gradient-card p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <BookOpen className="h-6 w-6 text-white" />
+      {/* Main Stats Grid - Alternative Design */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <Card className="border-0 shadow-lg bg-card/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-primary/10 rounded-2xl">
+                <BookOpen className="h-6 w-6 text-primary" />
               </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-white">{stats.totalModules}</div>
-                <div className="text-white/80 font-armenian text-sm">Ընդամենը մոդուլներ</div>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="modern-card course-card-hover">
-          <div className="bg-gradient-to-br from-edu-orange to-warning-yellow p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <Users className="h-6 w-6 text-white" />
-              </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-white">{stats.totalUsers}</div>
-                <div className="text-white/80 font-armenian text-sm">Ընդամենը օգտատերեր</div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground font-armenian">Ընդամենը մոդուլներ</p>
+                <p className="text-2xl font-bold text-foreground">{stats.totalModules}</p>
               </div>
             </div>
-          </div>
+          </CardContent>
         </Card>
 
-        <Card className="modern-card course-card-hover">
-          <div className="bg-gradient-to-br from-success-green to-edu-blue p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <BarChart3 className="h-6 w-6 text-white" />
+        <Card className="border-0 shadow-lg bg-card/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-secondary/20 rounded-2xl">
+                <Users className="h-6 w-6 text-secondary-foreground" />
               </div>
-              <div className="text-right">
-                <div className="text-3xl font-bold text-white">{stats.activeCourses}</div>
-                <div className="text-white/80 font-armenian text-sm">Ակտիվ դասընթացներ</div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground font-armenian">Ընդամենը օգտատերեր</p>
+                <p className="text-2xl font-bold text-foreground">{stats.totalUsers}</p>
               </div>
             </div>
-          </div>
+          </CardContent>
         </Card>
 
-        <Card className="modern-card course-card-hover">
-          <div className="bg-gradient-to-br from-edu-dark-blue to-edu-light-blue p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-3 bg-white/20 rounded-xl">
-                <Activity className="h-6 w-6 text-white" />
+        <Card className="border-0 shadow-lg bg-card/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-accent/20 rounded-2xl">
+                <BarChart3 className="h-6 w-6 text-accent-foreground" />
               </div>
-              <div className="text-right">
-                <div className={`text-2xl font-bold ${stats.systemStatus === 'active' ? 'text-green-400' : 'text-red-400'}`}>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground font-armenian">Ակտիվ դասընթացներ</p>
+                <p className="text-2xl font-bold text-foreground">{stats.activeCourses}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 shadow-lg bg-card/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+          <CardContent className="p-6">
+            <div className="flex items-center space-x-4">
+              <div className={`p-3 rounded-2xl ${stats.systemStatus === 'active' ? 'bg-green-100 dark:bg-green-900/20' : 'bg-red-100 dark:bg-red-900/20'}`}>
+                <Activity className={`h-6 w-6 ${stats.systemStatus === 'active' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`} />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground font-armenian">Համակարգի կարգավիճակ</p>
+                <p className={`text-2xl font-bold ${stats.systemStatus === 'active' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                   {stats.systemStatus === 'active' ? 'Ակտիվ' : 'Սխալ'}
-                </div>
-                <div className="text-white/80 font-armenian text-sm">Համակարգի կարգավիճակ</div>
+                </p>
               </div>
             </div>
-          </div>
+          </CardContent>
         </Card>
       </div>
 
