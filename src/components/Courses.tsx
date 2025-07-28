@@ -28,7 +28,7 @@ const Courses = () => {
                 <span className="text-sm font-medium font-armenian">Մասնագիտական ուղղություններ</span>
               </div>
               
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-tight">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 font-armenian text-foreground leading-[1.2] py-2">
                 Ընտրեք ձեր մասնագիտությունը
               </h2>
               
