@@ -105,7 +105,7 @@ const Footer = () => {
         <div className="border-t border-border pt-8 pb-8 mt-16">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground font-armenian text-center md:text-left">
-              © 2024 {t('hero.title')}. {t('footer.rights')}
+              © 2025 {t('hero.title')}. {t('footer.rights')}
             </p>
             <div className="flex space-x-6">
               <a href="#" className="text-muted-foreground hover:text-edu-blue transition-colors font-armenian">
