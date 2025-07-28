@@ -16,7 +16,7 @@ const Specialties = () => {
               <Star className="w-4 h-4" />
               <span className="text-sm font-medium font-armenian">Մասնագիտական ուղղություններ</span>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 font-armenian text-gradient">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-[1.2] py-2">
               Բոլոր մասնագիտությունները
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-armenian leading-relaxed">
