@@ -38,6 +38,33 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_logs: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_user_id: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_user_id?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_user_id?: string | null
+        }
+        Relationships: []
+      }
       announcements: {
         Row: {
           audience: string
@@ -242,6 +269,54 @@ export type Database = {
         }
         Relationships: []
       }
+      instructor_groups: {
+        Row: {
+          created_at: string
+          group_number: string
+          id: string
+          instructor_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_number: string
+          id?: string
+          instructor_id: string
+        }
+        Update: {
+          created_at?: string
+          group_number?: string
+          id?: string
+          instructor_id?: string
+        }
+        Relationships: []
+      }
+      module_instructors: {
+        Row: {
+          created_at: string
+          group_number: string | null
+          id: string
+          instructor_id: string
+          is_primary: boolean | null
+          module_id: string
+        }
+        Insert: {
+          created_at?: string
+          group_number?: string | null
+          id?: string
+          instructor_id: string
+          is_primary?: boolean | null
+          module_id: string
+        }
+        Update: {
+          created_at?: string
+          group_number?: string | null
+          id?: string
+          instructor_id?: string
+          is_primary?: boolean | null
+          module_id?: string
+        }
+        Relationships: []
+      }
       modules: {
         Row: {
           category: string
@@ -360,43 +435,67 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
+          avatar_url: string | null
+          bio: string | null
           created_at: string | null
+          date_of_birth: string | null
+          department: string | null
           email_verified: boolean | null
           first_name: string | null
+          group_number: string | null
           id: string
+          language_preference: string | null
           last_name: string | null
           name: string
           organization: string | null
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
+          status: string | null
           two_factor_enabled: boolean | null
           updated_at: string | null
           verified: boolean | null
         }
         Insert: {
+          address?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
+          date_of_birth?: string | null
+          department?: string | null
           email_verified?: boolean | null
           first_name?: string | null
+          group_number?: string | null
           id: string
+          language_preference?: string | null
           last_name?: string | null
           name: string
           organization?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          status?: string | null
           two_factor_enabled?: boolean | null
           updated_at?: string | null
           verified?: boolean | null
         }
         Update: {
+          address?: string | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string | null
+          date_of_birth?: string | null
+          department?: string | null
           email_verified?: boolean | null
           first_name?: string | null
+          group_number?: string | null
           id?: string
+          language_preference?: string | null
           last_name?: string | null
           name?: string
           organization?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          status?: string | null
           two_factor_enabled?: boolean | null
           updated_at?: string | null
           verified?: boolean | null
@@ -844,6 +943,13 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: string
       }
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["user_role"]
+        }
+        Returns: boolean
+      }
       is_admin_or_instructor: {
         Args: { user_uuid: string }
         Returns: boolean
@@ -866,7 +972,13 @@ export type Database = {
         | "programming"
       test_language: "hy" | "ru" | "en"
       test_status: "draft" | "published" | "archived"
-      user_role: "instructor" | "organization" | "admin" | "student" | "guest"
+      user_role:
+        | "instructor"
+        | "organization"
+        | "admin"
+        | "student"
+        | "guest"
+        | "employer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1012,7 +1124,14 @@ export const Constants = {
       ],
       test_language: ["hy", "ru", "en"],
       test_status: ["draft", "published", "archived"],
-      user_role: ["instructor", "organization", "admin", "student", "guest"],
+      user_role: [
+        "instructor",
+        "organization",
+        "admin",
+        "student",
+        "guest",
+        "employer",
+      ],
     },
   },
 } as const
