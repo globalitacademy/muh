@@ -32,9 +32,7 @@ const ModuleDetailHeader = ({
         </Badge>
       </div>
 
-      <p className="text-lg text-muted-foreground font-armenian mb-6">
-        {module.description}
-      </p>
+      
     </div>;
 };
 export default ModuleDetailHeader;
