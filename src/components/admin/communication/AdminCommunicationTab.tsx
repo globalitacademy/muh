@@ -6,10 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
-import { useEnhancedMessages, useSearchMessages } from '@/hooks/useEnhancedMessages';
-import { useAnnouncements, usePublishAnnouncement, useDeleteAnnouncement } from '@/hooks/useAnnouncements';
+import { useEnhancedMessages, useSearchMessages, useAnnouncements, usePublishAnnouncement, useDeleteAnnouncement } from '@/hooks/useEnhancedMessages';
 import { useCommunicationStats } from '@/hooks/useCommunicationStats';
-import { useNotifications } from '@/hooks/useNotifications';
+// useNotifications removed since notifications table doesn't exist
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import MessageDetailDialog from './MessageDetailDialog';
@@ -42,10 +41,10 @@ const AdminCommunicationTab = () => {
 
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { data: messages, isLoading: messagesLoading } = useEnhancedMessages(user?.id);
-  const { data: searchResults } = useSearchMessages(searchTerm, user?.id);
+  const { data: messages, isLoading: messagesLoading } = useEnhancedMessages();
+  const { data: searchResults } = useSearchMessages();
   const { data: announcements } = useAnnouncements();
-  const { data: notifications } = useNotifications();
+  const notifications = []; // Placeholder since notifications table doesn't exist
   const { data: stats } = useCommunicationStats();
   const publishAnnouncementMutation = usePublishAnnouncement();
   const deleteAnnouncementMutation = useDeleteAnnouncement();
@@ -156,7 +155,7 @@ const AdminCommunicationTab = () => {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalMessages || 0}</div>
+            <div className="text-2xl font-bold">{stats?.totalAnnouncements || 0}</div>
             <p className="text-xs text-muted-foreground font-armenian">Բոլոր հաղորդագրությունները</p>
           </CardContent>
         </Card>
@@ -167,7 +166,7 @@ const AdminCommunicationTab = () => {
             <Mail className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-warning-yellow">{stats?.unreadMessages || 0}</div>
+            <div className="text-2xl font-bold text-warning-yellow">{stats?.draftAnnouncements || 0}</div>
             <p className="text-xs text-muted-foreground font-armenian">Նոր հաղորդագրություններ</p>
           </CardContent>
         </Card>
@@ -178,7 +177,7 @@ const AdminCommunicationTab = () => {
             <Bell className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-edu-blue">{stats?.sentNotifications || 0}</div>
+            <div className="text-2xl font-bold text-edu-blue">{stats?.publishedAnnouncements || 0}</div>
             <p className="text-xs text-muted-foreground font-armenian">Այս ամիս</p>
           </CardContent>
         </Card>

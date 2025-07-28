@@ -6,10 +6,11 @@ interface Certificate {
   id: string;
   user_id: string;
   module_id?: string;
-  certificate_url?: string;
-  qr_code?: string;
+  template_id?: string;
+  certificate_data?: any;
   issued_at: string;
-  is_diploma: boolean;
+  created_at: string;
+  updated_at: string;
   modules?: {
     title: string;
   };

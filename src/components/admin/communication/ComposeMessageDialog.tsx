@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { useSendMessage } from '@/hooks/useEnhancedMessages';
+import { useSendMessage } from '@/hooks/useMessages';
 import { useAdminUsers } from '@/hooks/useAdminUsers';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Send, X, Paperclip } from 'lucide-react';
@@ -47,7 +47,7 @@ const ComposeMessageDialog = ({ open, onOpenChange, replyTo }: ComposeMessageDia
         recipient_id: recipientId,
         subject: subject.trim() || undefined,
         content: content.trim(),
-        attachments: attachments.length > 0 ? attachments : undefined,
+        
       });
 
       toast({

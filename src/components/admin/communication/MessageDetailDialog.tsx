@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { useMarkMessageAsRead, useMessageAttachments } from '@/hooks/useEnhancedMessages';
+import { useMarkMessageAsRead, useMessageAttachments } from '@/hooks/useMessages';
 import { User, Clock, Paperclip, Eye, Reply } from 'lucide-react';
 
 interface Message {

@@ -26,19 +26,13 @@ const CertificatesTab = () => {
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      {certificate.is_diploma ? (
-                        <GraduationCap className="w-5 h-5 text-yellow-600" />
-                      ) : (
-                        <Award className="w-5 h-5 text-blue-600" />
-                      )}
+                      <Award className="w-5 h-5 text-blue-600" />
                       <h4 className="font-semibold">
                         {certificate.modules?.title || 'Ընդհանուր վկայական'}
                       </h4>
-                      {certificate.is_diploma && (
-                        <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                          Դիպլոմ
-                        </Badge>
-                      )}
+                      <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                        Վկայական
+                      </Badge>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       Տրվել է: {new Date(certificate.issued_at).toLocaleDateString('hy-AM')}
@@ -46,20 +40,14 @@ const CertificatesTab = () => {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    {certificate.certificate_url && (
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={certificate.certificate_url} target="_blank" rel="noopener noreferrer">
-                          <Download className="w-3 h-3 mr-1" />
-                          Ներբեռնել
-                        </a>
-                      </Button>
-                    )}
-                    {certificate.qr_code && (
-                      <Button variant="outline" size="sm">
-                        <QrCode className="w-3 h-3 mr-1" />
-                        QR ծածկագիր
-                      </Button>
-                    )}
+                    <Button variant="outline" size="sm">
+                      <Download className="w-3 h-3 mr-1" />
+                      Ներբեռնել
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <QrCode className="w-3 h-3 mr-1" />
+                      QR ծածկագիր
+                    </Button>
                   </div>
                 </div>
               </div>

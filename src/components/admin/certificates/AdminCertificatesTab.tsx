@@ -51,7 +51,7 @@ const AdminCertificatesTab = () => {
              issuedDate.getFullYear() === currentDate.getFullYear();
     }).length || 0,
     pendingApproval: 0, // This would need a status field in the certificates table
-    diplomas: certificates?.filter(cert => cert.is_diploma).length || 0
+    diplomas: 0 // No diplomas field in current schema
   };
 
   if (isLoading) {
@@ -161,11 +161,7 @@ const AdminCertificatesTab = () => {
                     <div key={cert.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-edu-blue to-edu-orange flex items-center justify-center">
-                          {cert.is_diploma ? (
-                            <GraduationCap className="w-6 h-6 text-white" />
-                          ) : (
-                            <Award className="w-6 h-6 text-white" />
-                          )}
+                          <Award className="w-6 h-6 text-white" />
                         </div>
                         <div>
                           <p className="font-semibold">{cert.user_id}</p>
@@ -178,25 +174,19 @@ const AdminCertificatesTab = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge className={cert.is_diploma ? 'bg-edu-orange' : 'bg-edu-blue'}>
-                          {cert.is_diploma ? 'Դիպլոմ' : 'Ավարտական'}
+                        <Badge className="bg-edu-blue">
+                          Ավարտական
                         </Badge>
                         <div className="flex gap-1">
                           <Button variant="outline" size="sm">
                             <Eye className="w-4 h-4" />
                           </Button>
-                          {cert.certificate_url && (
-                            <Button variant="outline" size="sm" asChild>
-                              <a href={cert.certificate_url} target="_blank" rel="noopener noreferrer">
-                                <Download className="w-4 h-4" />
-                              </a>
-                            </Button>
-                          )}
-                          {cert.qr_code && (
-                            <Button variant="outline" size="sm">
-                              <QrCode className="w-4 h-4" />
-                            </Button>
-                          )}
+                          <Button variant="outline" size="sm">
+                            <Download className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <QrCode className="w-4 h-4" />
+                          </Button>
                         </div>
                       </div>
                     </div>
