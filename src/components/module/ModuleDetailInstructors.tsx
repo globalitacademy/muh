@@ -141,16 +141,16 @@ const ModuleDetailInstructors = ({ moduleId }: ModuleDetailInstructorsProps) => 
         
         return (
           <Card key={moduleInstructor.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-6">
-                <Avatar className="w-20 h-20 border-2 border-background shadow-lg">
+            <CardContent className="p-4 md:p-6">
+              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                <Avatar className="w-16 h-16 md:w-20 md:h-20 border-2 border-background shadow-lg mx-auto sm:mx-0">
                   <AvatarImage src={instructor.avatar_url || ''} />
-                  <AvatarFallback className="bg-gradient-to-br from-edu-blue to-edu-orange text-white text-lg">
-                    <GraduationCap className="w-8 h-8" />
+                  <AvatarFallback className="bg-gradient-to-br from-edu-blue to-edu-orange text-white text-base md:text-lg">
+                    <GraduationCap className="w-6 h-6 md:w-8 md:h-8" />
                   </AvatarFallback>
                 </Avatar>
 
-                <div className="flex-1 space-y-4">
+                <div className="flex-1 space-y-3 md:space-y-4 w-full sm:w-auto">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-semibold font-armenian">
