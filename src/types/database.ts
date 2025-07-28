@@ -91,6 +91,8 @@ export interface FinancialTransaction {
   metadata?: any;
   created_at: string;
   updated_at: string;
+  user_name?: string; // Add missing fields for compatibility
+  course_title?: string;
 }
 
 export interface CoursePricing {
@@ -105,6 +107,7 @@ export interface CoursePricing {
   valid_until?: string;
   created_at: string;
   updated_at: string;
+  course_title?: string; // Add missing field for compatibility
 }
 
 export interface PaymentSettings {

@@ -60,7 +60,7 @@ export const useCreateCourse = () => {
       const requiredData = {
         title: courseData.title || 'Untitled Course',
         category: courseData.category || 'General',
-        difficulty_level: courseData.difficulty_level || 'beginner',
+        difficulty_level: (courseData.difficulty_level || 'beginner') as 'easy' | 'medium' | 'hard' | 'beginner' | 'intermediate' | 'advanced',
         instructor: user.email,
         is_active: true,
         ...courseData,
@@ -68,7 +68,7 @@ export const useCreateCourse = () => {
 
       const { data, error } = await supabase
         .from('modules')
-        .insert(requiredData)
+        .insert([requiredData])
         .select()
         .single();
 

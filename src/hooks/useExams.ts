@@ -77,9 +77,12 @@ export const useRegisterForExam = () => {
   
   return useMutation({
     mutationFn: async (examId: string) => {
+      const user = (await supabase.auth.getUser()).data.user;
+      if (!user) throw new Error('User not authenticated');
+
       const { data, error } = await supabase
         .from('exam_registrations')
-        .insert([{ exam_id: examId }])
+        .insert([{ exam_id: examId, user_id: user.id }])
         .select()
         .single();
 

@@ -152,6 +152,7 @@ export const useCreateCourseAction = () => {
         .from('modules')
         .insert({
           ...courseData,
+          difficulty_level: courseData.difficulty_level as 'easy' | 'medium' | 'hard' | 'beginner' | 'intermediate' | 'advanced',
           instructor: user.email,
           is_active: true,
           total_lessons: 0,
