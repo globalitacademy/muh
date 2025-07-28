@@ -38,6 +38,186 @@ export type Database = {
         }
         Relationships: []
       }
+      announcements: {
+        Row: {
+          audience: string
+          content: string
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          priority: string
+          published_at: string | null
+          scheduled_at: string | null
+          status: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          audience?: string
+          content: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          priority?: string
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          audience?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          priority?: string
+          published_at?: string | null
+          scheduled_at?: string | null
+          status?: string
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      enrollments: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          enrolled_at: string
+          id: string
+          module_id: string
+          progress_percentage: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          enrolled_at?: string
+          id?: string
+          module_id: string
+          progress_percentage?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          enrolled_at?: string
+          id?: string
+          module_id?: string
+          progress_percentage?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exam_registrations: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          exam_id: string
+          id: string
+          registered_at: string
+          score: number | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          exam_id: string
+          id?: string
+          registered_at?: string
+          score?: number | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          exam_id?: string
+          id?: string
+          registered_at?: string
+          score?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_registrations_exam_id_fkey"
+            columns: ["exam_id"]
+            isOneToOne: false
+            referencedRelation: "exams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exams: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_minutes: number
+          exam_date: string | null
+          id: string
+          is_active: boolean
+          max_score: number
+          module_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          exam_date?: string | null
+          id?: string
+          is_active?: boolean
+          max_score?: number
+          module_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          exam_date?: string | null
+          id?: string
+          is_active?: boolean
+          max_score?: number
+          module_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exams_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       failed_login_attempts: {
         Row: {
           attempted_at: string | null
@@ -61,6 +241,95 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      modules: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          description_en: string | null
+          description_ru: string | null
+          difficulty_level: Database["public"]["Enums"]["difficulty_level"]
+          duration_weeks: number
+          id: string
+          image_url: string | null
+          instructor: string
+          instructor_en: string | null
+          instructor_ru: string | null
+          is_active: boolean
+          order_index: number | null
+          price: number
+          rating: number | null
+          specialty_id: string | null
+          status: Database["public"]["Enums"]["module_status"]
+          students_count: number
+          title: string
+          title_en: string | null
+          title_ru: string | null
+          total_lessons: number
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          difficulty_level?: Database["public"]["Enums"]["difficulty_level"]
+          duration_weeks?: number
+          id?: string
+          image_url?: string | null
+          instructor: string
+          instructor_en?: string | null
+          instructor_ru?: string | null
+          is_active?: boolean
+          order_index?: number | null
+          price?: number
+          rating?: number | null
+          specialty_id?: string | null
+          status?: Database["public"]["Enums"]["module_status"]
+          students_count?: number
+          title: string
+          title_en?: string | null
+          title_ru?: string | null
+          total_lessons?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          difficulty_level?: Database["public"]["Enums"]["difficulty_level"]
+          duration_weeks?: number
+          id?: string
+          image_url?: string | null
+          instructor?: string
+          instructor_en?: string | null
+          instructor_ru?: string | null
+          is_active?: boolean
+          order_index?: number | null
+          price?: number
+          rating?: number | null
+          specialty_id?: string | null
+          status?: Database["public"]["Enums"]["module_status"]
+          students_count?: number
+          title?: string
+          title_en?: string | null
+          title_ru?: string | null
+          total_lessons?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "modules_specialty_id_fkey"
+            columns: ["specialty_id"]
+            isOneToOne: false
+            referencedRelation: "specialties"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       password_reset_tokens: {
         Row: {
@@ -193,6 +462,51 @@ export type Database = {
           },
         ]
       }
+      specialties: {
+        Row: {
+          created_at: string
+          description: string | null
+          description_en: string | null
+          description_ru: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          order_index: number | null
+          title: string
+          title_en: string | null
+          title_ru: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          order_index?: number | null
+          title: string
+          title_en?: string | null
+          title_ru?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          order_index?: number | null
+          title?: string
+          title_en?: string | null
+          title_ru?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       test_attempts: {
         Row: {
           answers: Json | null
@@ -293,6 +607,77 @@ export type Database = {
           },
         ]
       }
+      topics: {
+        Row: {
+          content: string | null
+          created_at: string
+          description: string | null
+          description_en: string | null
+          description_ru: string | null
+          duration_minutes: number
+          exercises: Json | null
+          id: string
+          is_free: boolean
+          module_id: string
+          order_index: number
+          quiz_questions: Json | null
+          resources: Json | null
+          title: string
+          title_en: string | null
+          title_ru: string | null
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          duration_minutes?: number
+          exercises?: Json | null
+          id?: string
+          is_free?: boolean
+          module_id: string
+          order_index?: number
+          quiz_questions?: Json | null
+          resources?: Json | null
+          title: string
+          title_en?: string | null
+          title_ru?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          duration_minutes?: number
+          exercises?: Json | null
+          id?: string
+          is_free?: boolean
+          module_id?: string
+          order_index?: number
+          quiz_questions?: Json | null
+          resources?: Json | null
+          title?: string
+          title_en?: string | null
+          title_ru?: string | null
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       two_factor_settings: {
         Row: {
           backup_codes: string[] | null
@@ -323,6 +708,81 @@ export type Database = {
           updated_at?: string | null
           user_id?: string | null
           verified_at?: string | null
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          completed: boolean
+          completion_date: string | null
+          created_at: string
+          id: string
+          module_id: string
+          progress_percentage: number
+          topic_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completion_date?: string | null
+          created_at?: string
+          id?: string
+          module_id: string
+          progress_percentage?: number
+          topic_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completion_date?: string | null
+          created_at?: string
+          id?: string
+          module_id?: string
+          progress_percentage?: number
+          topic_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_progress_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -379,6 +839,14 @@ export type Database = {
       cleanup_old_failed_attempts: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      get_user_role: {
+        Args: { user_uuid: string }
+        Returns: string
+      }
+      is_admin_or_instructor: {
+        Args: { user_uuid: string }
+        Returns: boolean
       }
     }
     Enums: {
