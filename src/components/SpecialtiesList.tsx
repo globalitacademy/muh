@@ -45,12 +45,11 @@ const SpecialtiesList = () => {
   });
 
   const handleSpecialtyClick = (specialtyId: string) => {
-    // For now, navigate to courses page for programming specialty
-    const programmingSpecialty = specialties?.find(s => s.name === 'Ծրագրավորում');
-    if (programmingSpecialty && specialtyId === programmingSpecialty.id) {
-      navigate('/courses');
+    const moduleCount = moduleCounts?.[specialtyId] || 0;
+    if (moduleCount > 0) {
+      // Navigate to courses page with specialty filter
+      navigate(`/courses?specialty=${specialtyId}`);
     } else {
-      // For other specialties, show coming soon message
       console.log(`Coming soon: ${specialtyId} specialty`);
     }
   };
