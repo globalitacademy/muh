@@ -19,28 +19,41 @@ const Courses = () => {
       
       <div className="content-container relative z-10">
         <ScrollReveal direction="up" delay={0}>
-          {/* Enhanced Header with Glass Effect */}
-          <div className="relative mb-20">
-            <div className="absolute inset-0 bg-gradient-to-r from-card/80 via-background/60 to-card/80 backdrop-blur-xl rounded-3xl border border-border/20 shadow-2xl" />
-            <div className="relative z-10 p-8 md:p-12 text-center hover-scale animate-fade-in">
-              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-edu-blue/20 to-edu-purple/20 text-edu-blue mb-6 border border-edu-blue/30 shadow-lg backdrop-blur-sm">
-                <Star className="w-5 h-5 animate-pulse" />
-                <span className="text-sm font-medium font-armenian">Մասնագիտական ուղղություններ</span>
+          {/* Modern Glass Morphism Header */}
+          <div className="relative mb-20 group">
+            {/* Main glass container */}
+            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-background/80 via-card/90 to-background/70 backdrop-blur-2xl border border-white/10 shadow-2xl hover:shadow-3xl transition-all duration-700 hover:scale-[1.02]">
+              {/* Animated gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/10 via-edu-purple/5 to-edu-orange/10 animate-gradient-xy" />
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-edu-light-blue/20 via-transparent to-transparent" />
+              
+              {/* Content container with modern spacing */}
+              <div className="relative z-10 px-8 py-12 md:px-16 md:py-16 text-center">
+                {/* Premium badge with neon glow */}
+                <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-edu-blue/20 via-edu-purple/15 to-edu-blue/20 text-edu-blue mb-8 border border-edu-blue/30 shadow-lg backdrop-blur-xl relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-edu-blue/10 to-edu-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <Star className="w-5 h-5 animate-pulse relative z-10" />
+                  <span className="text-sm font-semibold font-armenian tracking-wide relative z-10">Մասնագիտական ուղղություններ</span>
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-edu-blue/20 to-edu-purple/20 blur-xl opacity-50" />
+                </div>
+                
+                {/* Modern typography with enhanced gradient */}
+                <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-[1.1] py-2 tracking-tight">
+                  Ընտրեք ձեր մասնագիտությունը
+                </h2>
+                
+                {/* Enhanced description with better typography */}
+                <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground/90 font-armenian leading-relaxed max-w-5xl mx-auto font-light">
+                  Յուրաքանչյուր մասնագիտություն պարունակում է մոդուլային դասեր ըստ պետական հաստատված մասնագիտական չափորոշիչների, որոնք կօգնեն ձեզ կառուցել ամուր գիտելիքների հիմք
+                </p>
               </div>
               
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-6 font-armenian text-foreground leading-[1.2] py-2">
-                Ընտրեք ձեր մասնագիտությունը
-              </h2>
-              
-              <p className="text-xl md:text-2xl text-muted-foreground font-armenian leading-relaxed max-w-4xl mx-auto">
-                Յուրաքանչյուր մասնագիտություն պարունակում է մոդուլային դասեր ըստ պետական հաստատված մասնագիտական չափորոշիչների, որոնք կօգնեն ձեզ կառուցել ամուր գիտելիքների հիմք
-              </p>
+              {/* Modern floating elements */}
+              <div className="absolute -top-6 -left-6 w-12 h-12 bg-gradient-to-br from-edu-blue to-edu-purple rounded-2xl opacity-60 animate-float" />
+              <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-gradient-to-br from-edu-orange to-edu-yellow rounded-xl opacity-50 animate-float animation-delay-1000" />
+              <div className="absolute top-1/3 -right-8 w-6 h-6 bg-gradient-to-br from-edu-light-blue to-edu-purple rounded-lg opacity-40 animate-float animation-delay-2000" />
+              <div className="absolute bottom-1/3 -left-4 w-4 h-4 bg-gradient-to-br from-edu-purple to-edu-blue rounded-full opacity-30 animate-float animation-delay-3000" />
             </div>
-            
-            {/* Floating particles */}
-            <div className="absolute -top-4 -left-4 w-8 h-8 bg-gradient-to-r from-edu-blue to-edu-purple rounded-full opacity-60 animate-bounce" />
-            <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-gradient-to-r from-edu-orange to-edu-yellow rounded-full opacity-40 animate-bounce animation-delay-1000" />
-            <div className="absolute top-1/2 -right-8 w-4 h-4 bg-gradient-to-r from-edu-light-blue to-edu-purple rounded-full opacity-50 animate-pulse" />
           </div>
         </ScrollReveal>
         
