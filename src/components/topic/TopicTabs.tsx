@@ -94,13 +94,21 @@ const TopicTabs = ({
 
       {availableTabs.includes('exercises') && (
         <TabsContent value="exercises" className="space-y-6">
-          <TopicExercises topicId={topicId} onComplete={() => handleComplete('exercises')} />
+          <TopicExercises 
+            topicId={topicId} 
+            moduleId={topic.module_id}
+            onComplete={() => handleComplete('exercises')} 
+          />
         </TabsContent>
       )}
 
       {availableTabs.includes('quiz') && (
         <TabsContent value="quiz" className="space-y-6">
-          <TopicQuiz topicId={topicId} onComplete={onCompleteLesson} />
+          <TopicQuiz 
+            topicId={topicId} 
+            moduleId={topic.module_id}
+            onComplete={onCompleteLesson} 
+          />
         </TabsContent>
       )}
     </Tabs>

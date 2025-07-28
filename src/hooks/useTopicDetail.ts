@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnrollments } from '@/hooks/useEnrollments';
+import { useUserProgress, useUpdateProgress } from '@/hooks/useUserProgress';
 
 // Helper functions to check content availability
 const hasVideoContent = (topic: any): boolean => {
@@ -38,6 +39,8 @@ export const useTopicDetail = () => {
   const { topicId } = useParams<{ topicId: string }>();
   const { user } = useAuth();
   const { data: enrollments } = useEnrollments();
+  const { data: userProgress } = useUserProgress();
+  const updateProgress = useUpdateProgress();
   const [activeTab, setActiveTab] = useState('content'); // Start with theoretical content
   const [progress, setProgress] = useState(0);
 
@@ -75,6 +78,16 @@ export const useTopicDetail = () => {
     },
     enabled: !!topicId
   });
+
+  // Load existing progress from database
+  useEffect(() => {
+    if (userProgress && topicId && user) {
+      const existingProgress = userProgress.find(p => p.topic_id === topicId);
+      if (existingProgress) {
+        setProgress(existingProgress.progress_percentage);
+      }
+    }
+  }, [userProgress, topicId, user]);
 
   // Check if user has access to this topic
   const hasAccess = useMemo(() => {
@@ -128,7 +141,7 @@ export const useTopicDetail = () => {
   };
 
   const handleTabChange = (value: string) => {
-    if (!hasAccess) return;
+    if (!hasAccess || !user || !topicId || !topic) return;
     
     setActiveTab(value);
     // Update progress based on completed sections and available tabs
@@ -137,13 +150,31 @@ export const useTopicDetail = () => {
     const newProgress = (tabIndex + 1) * progressIncrement;
     
     if (newProgress > progress) {
-      setProgress(Math.min(newProgress, 100));
+      const finalProgress = Math.min(newProgress, 100);
+      setProgress(finalProgress);
+      
+      // Save progress to database
+      updateProgress.mutate({
+        topicId: topicId,
+        moduleId: topic.module_id,
+        progressPercentage: finalProgress,
+        completed: finalProgress === 100
+      });
     }
   };
 
   const handleCompleteLesson = () => {
-    if (!hasAccess) return;
+    if (!hasAccess || !user || !topicId || !topic) return;
+    
     setProgress(100);
+    
+    // Save completed lesson to database
+    updateProgress.mutate({
+      topicId: topicId,
+      moduleId: topic.module_id,
+      progressPercentage: 100,
+      completed: true
+    });
   };
 
   return {

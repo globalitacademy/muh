@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { useQuiz } from '@/hooks/useQuiz';
+import { useUpdateProgress } from '@/hooks/useUserProgress';
+import { useAuth } from '@/hooks/useAuth';
 import QuizQuestion from '@/components/quiz/QuizQuestion';
 import QuizResults from '@/components/quiz/QuizResults';
 import QuizEmpty from '@/components/quiz/QuizEmpty';
@@ -9,10 +11,13 @@ import QuizError from '@/components/quiz/QuizError';
 
 interface TopicQuizProps {
   topicId: string;
+  moduleId?: string;
   onComplete: () => void;
 }
 
-const TopicQuiz = ({ topicId, onComplete }: TopicQuizProps) => {
+const TopicQuiz = ({ topicId, moduleId, onComplete }: TopicQuizProps) => {
+  const { user } = useAuth();
+  const updateProgress = useUpdateProgress();
   const {
     topic,
     questions,
@@ -26,6 +31,16 @@ const TopicQuiz = ({ topicId, onComplete }: TopicQuizProps) => {
   } = useQuiz(topicId);
 
   const handleComplete = () => {
+    // Save progress when quiz is completed
+    if (user && moduleId) {
+      const passedQuiz = quizState.score >= (questions.length * 0.7); // 70% passing grade
+      updateProgress.mutate({
+        topicId: topicId,
+        moduleId: moduleId,
+        progressPercentage: 100,
+        completed: passedQuiz
+      });
+    }
     onComplete();
   };
 

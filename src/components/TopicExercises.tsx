@@ -1,6 +1,8 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTopicExercises } from '@/hooks/useTopicExercises';
+import { useUpdateProgress } from '@/hooks/useUserProgress';
+import { useAuth } from '@/hooks/useAuth';
 import ExercisesHeader from '@/components/exercises/ExercisesHeader';
 import ExerciseCard from '@/components/exercises/ExerciseCard';
 import ExercisesCompletion from '@/components/exercises/ExercisesCompletion';
@@ -10,10 +12,13 @@ import ExercisesEmpty from '@/components/exercises/ExercisesEmpty';
 
 interface TopicExercisesProps {
   topicId: string;
+  moduleId?: string;
   onComplete: () => void;
 }
 
-const TopicExercises = ({ topicId, onComplete }: TopicExercisesProps) => {
+const TopicExercises = ({ topicId, moduleId, onComplete }: TopicExercisesProps) => {
+  const { user } = useAuth();
+  const updateProgress = useUpdateProgress();
   const {
     exercises,
     answers,
@@ -23,6 +28,19 @@ const TopicExercises = ({ topicId, onComplete }: TopicExercisesProps) => {
     handleAnswerChange,
     handleSubmitExercise
   } = useTopicExercises(topicId);
+
+  // Track completion and save progress
+  useEffect(() => {
+    if (exercises.length > 0 && completedExercises.length === exercises.length && user && moduleId) {
+      // All exercises completed, save progress
+      updateProgress.mutate({
+        topicId: topicId,
+        moduleId: moduleId,
+        progressPercentage: 100,
+        completed: true
+      });
+    }
+  }, [exercises.length, completedExercises.length, user, topicId, moduleId, updateProgress]);
 
   if (isLoading) {
     return <ExercisesLoading />;
