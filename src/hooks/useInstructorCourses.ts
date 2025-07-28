@@ -56,19 +56,27 @@ export const useCreateCourse = () => {
     mutationFn: async (courseData: Partial<InstructorCourse>) => {
       if (!user) throw new Error('User not authenticated');
 
-      // Ensure required fields are provided
+      // Ensure required fields are provided with proper types
+      const difficulty = courseData.difficulty_level || 'beginner';
+      const validDifficulties = ['easy', 'medium', 'hard', 'beginner', 'intermediate', 'advanced'];
+      const difficultyLevel = validDifficulties.includes(difficulty) ? difficulty : 'beginner';
+      
       const requiredData = {
         title: courseData.title || 'Untitled Course',
         category: courseData.category || 'General',
-        difficulty_level: (courseData.difficulty_level || 'beginner') as 'easy' | 'medium' | 'hard' | 'beginner' | 'intermediate' | 'advanced',
-        instructor: user.email,
+        difficulty_level: difficultyLevel as 'easy' | 'medium' | 'hard' | 'beginner' | 'intermediate' | 'advanced',
+        instructor: user.email || '',
         is_active: true,
-        ...courseData,
+        students_count: courseData.students_count || 0,
+        total_lessons: courseData.total_lessons || 0,
+        price: courseData.price || 0,
+        duration_weeks: courseData.duration_weeks || 1,
+        description: courseData.description || '',
       };
 
       const { data, error } = await supabase
         .from('modules')
-        .insert([requiredData])
+        .insert(requiredData)
         .select()
         .single();
 

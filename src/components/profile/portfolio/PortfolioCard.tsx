@@ -17,25 +17,25 @@ import {
   Trash2
 } from 'lucide-react';
 
-interface Portfolio {
+interface PortfolioCardItem {
   id: string;
   title: string;
-  description: string | null;
-  project_url: string | null;
-  github_url: string | null;
-  files_url: string | null;
-  start_date: string | null;
-  end_date: string | null;
-  is_team_project: boolean | null;
-  is_thesis_project: boolean | null;
-  instructor_review: string | null;
-  employer_review: string | null;
-  image_url: string | null;
+  description?: string | null;
+  project_url?: string | null;
+  github_url?: string | null;
+  files_url?: string | string[] | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  is_team_project?: boolean | null;
+  is_thesis_project?: boolean | null;
+  instructor_review?: string | null;
+  employer_review?: string | null;
+  image_url?: string | null;
 }
 
 interface PortfolioCardProps {
-  portfolio: Portfolio;
-  onEdit: (portfolio: Portfolio) => void;
+  portfolio: PortfolioCardItem;
+  onEdit: (portfolio: PortfolioCardItem) => void;
   onDelete: (id: string) => void;
 }
 
@@ -132,7 +132,7 @@ const PortfolioCard: React.FC<PortfolioCardProps> = ({
           )}
           {portfolio.files_url && (
             <Button variant="outline" size="sm" asChild>
-              <a href={portfolio.files_url} target="_blank" rel="noopener noreferrer">
+              <a href={Array.isArray(portfolio.files_url) ? portfolio.files_url[0] : portfolio.files_url} target="_blank" rel="noopener noreferrer">
                 <FileText className="w-4 h-4 mr-2" />
                 Ֆայլեր
               </a>

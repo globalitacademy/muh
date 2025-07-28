@@ -59,7 +59,7 @@ const EnhancedPortfolioTab = () => {
 
     try {
       if (editingId) {
-        await updatePortfolioMutation.mutateAsync({ id: editingId, ...formData });
+        await updatePortfolioMutation.mutateAsync({ id: editingId, updates: formData });
         toast.success('Պորտֆոլիոն հաջողությամբ թարմացվեց');
       } else {
         await addPortfolioMutation.mutateAsync(formData);

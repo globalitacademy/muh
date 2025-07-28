@@ -25,7 +25,15 @@ export const useModuleInstructors = (moduleId: string) => {
         .order('group_number', { ascending: true });
 
       if (error) throw error;
-      return data || [];
+      return (data || []).map(item => ({
+        id: item.id,
+        module_id: item.module_id,
+        instructor_id: item.instructor_id,
+        group_number: item.group_number,
+        is_primary: item.is_primary,
+        created_at: item.created_at,
+        updated_at: item.created_at // Use created_at as fallback since updated_at doesn't exist in schema
+      }));
     },
   });
 };
