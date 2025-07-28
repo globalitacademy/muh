@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
-import { Loader2, User, Mail, Lock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Loader2, User, Mail, Lock, CheckCircle } from 'lucide-react';
 
 const SignUpForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,24 +16,35 @@ const SignUpForm = () => {
   const [name, setName] = useState('');
   const [role, setRole] = useState('student');
   const [groupNumber, setGroupNumber] = useState('');
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { signUp } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signUp(email, password, { 
+      const result = await signUp(email, password, { 
         name, 
         role, 
         groupNumber: role === 'student' ? groupNumber : undefined 
       });
+      
+      if (!result.error) {
+        setShowSuccessDialog(true);
+        // Auto redirect after 3 seconds
+        setTimeout(() => {
+          navigate('/');
+        }, 3000);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSignUp} className="space-y-4">
+    <>
+      <form onSubmit={handleSignUp} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="signup-name" className="font-armenian">Անուն</Label>
         <div className="relative">
@@ -107,6 +120,23 @@ const SignUpForm = () => {
         Ստեղծել հաշիվ
       </Button>
     </form>
+
+    <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader className="text-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+            <CheckCircle className="h-6 w-6 text-green-600" />
+          </div>
+          <DialogTitle className="font-armenian text-lg">Գրանցումը հաջողված է!</DialogTitle>
+          <DialogDescription className="font-armenian text-center">
+            Հաստատման հղումը ուղարկվել է ձեր էլ.փոստի հասցեին: 
+            <br />
+            3 վայրկյանից ավտոմատ վերադառնում ենք գլխավոր էջ:
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 };
 
