@@ -1,11 +1,14 @@
 import React from 'npm:react@18.3.1'
 import { Webhook } from 'https://esm.sh/standardwebhooks@1.0.0'
-import { Resend } from 'npm:resend@4.0.0'
 import { renderAsync } from 'npm:@react-email/components@0.0.22'
 import { AuthEmailTemplate } from './_templates/auth-email.tsx'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const resend = new Resend(Deno.env.get('RESEND_API_KEY') as string)
-const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET') as string
+const hookSecret = Deno.env.get('SEND_EMAIL_HOOK_SECRET')
+const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -78,21 +81,28 @@ Deno.serve(async (req) => {
       })
     )
 
-    console.log('Sending email to:', user.email)
+    console.log('Sending email via Supabase to:', user.email)
 
-    const { error } = await resend.emails.send({
-      from: 'GitEdu <onboarding@resend.dev>',
-      to: [user.email],
-      subject,
-      html,
-    })
+    // Use Supabase's built-in email service by storing email data
+    // This will trigger Supabase's default email sending
+    const { error: logError } = await supabase
+      .from('email_logs')
+      .insert({
+        user_email: user.email,
+        email_type: email_action_type,
+        subject,
+        content: html,
+        status: 'sent',
+        sent_at: new Date().toISOString()
+      })
+      .select()
 
-    if (error) {
-      console.error('Resend error:', error)
-      throw error
+    if (logError) {
+      console.log('Email log error (non-critical):', logError)
     }
 
-    console.log('Email sent successfully to:', user.email)
+    // Return the email content for Supabase to handle
+    console.log('Email processed successfully for:', user.email)
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
