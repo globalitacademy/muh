@@ -198,6 +198,45 @@ export type Database = {
           },
         ]
       }
+      email_logs: {
+        Row: {
+          content: string | null
+          created_at: string
+          email_type: string
+          error_message: string | null
+          id: string
+          sent_at: string | null
+          status: string
+          subject: string | null
+          updated_at: string
+          user_email: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          email_type: string
+          error_message?: string | null
+          id?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          user_email: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          email_type?: string
+          error_message?: string | null
+          id?: string
+          sent_at?: string | null
+          status?: string
+          subject?: string | null
+          updated_at?: string
+          user_email?: string
+        }
+        Relationships: []
+      }
       enrollments: {
         Row: {
           completed_at: string | null

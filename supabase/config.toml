@@ -10,3 +10,13 @@ port = 54324
 
 [functions.send-auth-email]
 verify_jwt = false
+
+[functions.idram-payment]
+verify_jwt = false
+
+[functions.idram-callback]
+verify_jwt = false
+
+[auth.hook.send_email]
+enabled = true
+uri = "https://uiiholvhyjxlutzuebpb.supabase.co/functions/v1/send-auth-email"
