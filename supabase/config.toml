@@ -1,1 +1,12 @@
 project_id = "uiiholvhyjxlutzuebpb"
+
+[api]
+enabled = true
+port = 54321
+
+[auth]
+enabled = true
+port = 54324
+
+[functions.send-auth-email]
+verify_jwt = false
