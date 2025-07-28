@@ -93,7 +93,7 @@ const ModuleDetailOverview = ({
           <CardTitle className="font-armenian">Դասընթացի մասին</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-muted-foreground font-armenian leading-relaxed">
+          <p className="text-muted-foreground font-armenian leading-relaxed text-left" dir="ltr">
             {module.description || 'Դասընթացի նկարագրությունը կարելի է ավելացնել ադմինի կողմից։'}
           </p>
           
