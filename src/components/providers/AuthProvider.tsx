@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -52,34 +52,63 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
-        toast.error(error.message);
+        // Handle specific error cases
+        if (error.message.includes('User already registered')) {
+          toast.error('Այս էլ.փոստի հասցեով օգտատեր արդեն գրանցված է: Փորձեք մուտք գործել:');
+        } else if (error.message.includes('invalid email')) {
+          toast.error('Խնդրում ենք մուտքագրել վավեր էլ.փոստի հասցե:');
+        } else if (error.message.includes('Password should be')) {
+          toast.error('Գաղտնաբառը պետք է լինի առնվազն 6 նիշ:');
+        } else {
+          toast.error(`Գրանցման սխալ: ${error.message}`);
+        }
         return { error };
       }
 
-      toast.success('Ստուգեք ձեր էլ.փոստը հաստատման համար');
+      // Check if user was created successfully
+      if (data.user && !data.user.email_confirmed_at) {
+        toast.success('Գրանցումը հաջողված է: Ստուգեք ձեր էլ.փոստը հաստատման համար:');
+      } else if (data.user) {
+        toast.success('Գրանցումը հաջողված է: Կարող եք մուտք գործել:');
+      }
+      
       return { error: null };
     } catch (error: any) {
-      toast.error('Սխալ է տեղի ունեցել');
+      console.error('Signup error:', error);
+      toast.error('Սխալ է տեղի ունեցել: Խնդրում ենք նորից փորձել:');
       return { error };
     }
   };
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) {
-        toast.error(error.message);
+        // Handle specific error cases
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error('Սխալ էլ.փոստ կամ գաղտնաբառ: Խնդրում ենք ստուգել և նորից փորձել:');
+        } else if (error.message.includes('Email not confirmed')) {
+          toast.error('Խնդրում ենք նախ հաստատել ձեր էլ.փոստը:');
+        } else if (error.message.includes('Too many requests')) {
+          toast.error('Չափազանց շատ փորձություններ: Խնդրում ենք սպասել և նորից փորձել:');
+        } else {
+          toast.error(`Մուտքի սխալ: ${error.message}`);
+        }
         return { error };
       }
 
-      toast.success('Հաջողությամբ մուտք գործեցիք');
+      if (data.user) {
+        toast.success('Հաջողությամբ մուտք գործեցիք');
+      }
+      
       return { error: null };
     } catch (error: any) {
-      toast.error('Սխալ է տեղի ունեցել');
+      console.error('Signin error:', error);
+      toast.error('Սխալ է տեղի ունեցել: Խնդրում ենք նորից փորձել:');
       return { error };
     }
   };
