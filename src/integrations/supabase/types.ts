@@ -546,17 +546,22 @@ export type Database = {
           address: string | null
           avatar_url: string | null
           bio: string | null
+          birth_date: string | null
+          cover_photo_url: string | null
           created_at: string | null
-          date_of_birth: string | null
           department: string | null
           email_verified: boolean | null
+          field_of_study: string | null
           first_name: string | null
           group_number: string | null
           id: string
+          is_visible_to_employers: boolean | null
           language_preference: string | null
           last_name: string | null
+          linkedin_url: string | null
           name: string
           organization: string | null
+          personal_website: string | null
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
           status: string | null
@@ -568,17 +573,22 @@ export type Database = {
           address?: string | null
           avatar_url?: string | null
           bio?: string | null
+          birth_date?: string | null
+          cover_photo_url?: string | null
           created_at?: string | null
-          date_of_birth?: string | null
           department?: string | null
           email_verified?: boolean | null
+          field_of_study?: string | null
           first_name?: string | null
           group_number?: string | null
           id: string
+          is_visible_to_employers?: boolean | null
           language_preference?: string | null
           last_name?: string | null
+          linkedin_url?: string | null
           name: string
           organization?: string | null
+          personal_website?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           status?: string | null
@@ -590,17 +600,22 @@ export type Database = {
           address?: string | null
           avatar_url?: string | null
           bio?: string | null
+          birth_date?: string | null
+          cover_photo_url?: string | null
           created_at?: string | null
-          date_of_birth?: string | null
           department?: string | null
           email_verified?: boolean | null
+          field_of_study?: string | null
           first_name?: string | null
           group_number?: string | null
           id?: string
+          is_visible_to_employers?: boolean | null
           language_preference?: string | null
           last_name?: string | null
+          linkedin_url?: string | null
           name?: string
           organization?: string | null
+          personal_website?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           status?: string | null
