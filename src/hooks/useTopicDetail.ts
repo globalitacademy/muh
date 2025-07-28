@@ -5,6 +5,35 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnrollments } from '@/hooks/useEnrollments';
 
+// Helper functions to check content availability
+const hasVideoContent = (topic: any): boolean => {
+  return !!(topic?.video_url && topic.video_url.trim() !== '');
+};
+
+const hasExercises = (topic: any): boolean => {
+  if (!topic?.exercises) return false;
+  try {
+    const exercises = typeof topic.exercises === 'string' 
+      ? JSON.parse(topic.exercises) 
+      : topic.exercises;
+    return Array.isArray(exercises) && exercises.length > 0;
+  } catch {
+    return false;
+  }
+};
+
+const hasQuiz = (topic: any): boolean => {
+  if (!topic?.quiz_questions) return false;
+  try {
+    const questions = typeof topic.quiz_questions === 'string' 
+      ? JSON.parse(topic.quiz_questions) 
+      : topic.quiz_questions;
+    return Array.isArray(questions) && questions.length > 0;
+  } catch {
+    return false;
+  }
+};
+
 export const useTopicDetail = () => {
   const { topicId } = useParams<{ topicId: string }>();
   const { user } = useAuth();
@@ -68,17 +97,47 @@ export const useTopicDetail = () => {
     return false;
   }, [topic, user, enrollments]);
 
+  // Calculate available tabs based on content
+  const availableTabs = useMemo(() => {
+    if (!topic) return ['content'];
+    
+    const tabs = ['content']; // Always include content tab
+    
+    if (hasVideoContent(topic)) {
+      tabs.push('video');
+    }
+    
+    if (hasExercises(topic)) {
+      tabs.push('exercises');
+    }
+    
+    if (hasQuiz(topic)) {
+      tabs.push('quiz');
+    }
+    
+    return tabs;
+  }, [topic]);
+
+  // Function to get next available tab
+  const getNextTab = (currentTab: string): string | null => {
+    const currentIndex = availableTabs.indexOf(currentTab);
+    if (currentIndex === -1 || currentIndex === availableTabs.length - 1) {
+      return null; // No next tab
+    }
+    return availableTabs[currentIndex + 1];
+  };
+
   const handleTabChange = (value: string) => {
     if (!hasAccess) return;
     
     setActiveTab(value);
-    // Update progress based on completed sections
-    if (value === 'video' && progress < 25) {
-      setProgress(25);
-    } else if (value === 'exercises' && progress < 50) {
-      setProgress(50);
-    } else if (value === 'quiz' && progress < 75) {
-      setProgress(75);
+    // Update progress based on completed sections and available tabs
+    const tabIndex = availableTabs.indexOf(value);
+    const progressIncrement = 100 / availableTabs.length;
+    const newProgress = (tabIndex + 1) * progressIncrement;
+    
+    if (newProgress > progress) {
+      setProgress(Math.min(newProgress, 100));
     }
   };
 
@@ -95,6 +154,8 @@ export const useTopicDetail = () => {
     hasAccess,
     activeTab,
     progress,
+    availableTabs,
+    getNextTab,
     handleTabChange,
     handleCompleteLesson
   };

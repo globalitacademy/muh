@@ -30,6 +30,8 @@ const TopicDetail = () => {
     hasAccess,
     activeTab,
     progress,
+    availableTabs,
+    getNextTab,
     handleTabChange,
     handleCompleteLesson
   } = useTopicDetail();
@@ -109,7 +111,10 @@ const TopicDetail = () => {
         {/* Main Content */}
         <TopicTabs
           topicId={topicId!}
+          topic={topic}
           activeTab={activeTab}
+          availableTabs={availableTabs}
+          getNextTab={getNextTab}
           onTabChange={handleTabChange}
           onCompleteLesson={handleCompleteLessonAndNavigate}
         />
