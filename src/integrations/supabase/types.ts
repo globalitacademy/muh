@@ -383,7 +383,14 @@ export type Database = {
     }
     Enums: {
       attempt_status: "in-progress" | "completed" | "abandoned"
-      difficulty_level: "easy" | "medium" | "hard"
+      difficulty_level:
+        | "easy"
+        | "medium"
+        | "hard"
+        | "beginner"
+        | "intermediate"
+        | "advanced"
+      module_status: "draft" | "active" | "archived"
       question_type:
         | "multiple-choice"
         | "true-false"
@@ -391,7 +398,7 @@ export type Database = {
         | "programming"
       test_language: "hy" | "ru" | "en"
       test_status: "draft" | "published" | "archived"
-      user_role: "instructor" | "organization"
+      user_role: "instructor" | "organization" | "admin" | "student" | "guest"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -520,7 +527,15 @@ export const Constants = {
   public: {
     Enums: {
       attempt_status: ["in-progress", "completed", "abandoned"],
-      difficulty_level: ["easy", "medium", "hard"],
+      difficulty_level: [
+        "easy",
+        "medium",
+        "hard",
+        "beginner",
+        "intermediate",
+        "advanced",
+      ],
+      module_status: ["draft", "active", "archived"],
       question_type: [
         "multiple-choice",
         "true-false",
@@ -529,7 +544,7 @@ export const Constants = {
       ],
       test_language: ["hy", "ru", "en"],
       test_status: ["draft", "published", "archived"],
-      user_role: ["instructor", "organization"],
+      user_role: ["instructor", "organization", "admin", "student", "guest"],
     },
   },
 } as const
