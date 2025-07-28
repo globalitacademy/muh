@@ -686,45 +686,51 @@ export type Database = {
       }
       specialties: {
         Row: {
+          color: string | null
           created_at: string
           description: string | null
           description_en: string | null
           description_ru: string | null
+          icon: string | null
           id: string
           image_url: string | null
           is_active: boolean
+          name: string
+          name_en: string | null
+          name_ru: string | null
           order_index: number | null
-          title: string
-          title_en: string | null
-          title_ru: string | null
           updated_at: string
         }
         Insert: {
+          color?: string | null
           created_at?: string
           description?: string | null
           description_en?: string | null
           description_ru?: string | null
+          icon?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          name: string
+          name_en?: string | null
+          name_ru?: string | null
           order_index?: number | null
-          title: string
-          title_en?: string | null
-          title_ru?: string | null
           updated_at?: string
         }
         Update: {
+          color?: string | null
           created_at?: string
           description?: string | null
           description_en?: string | null
           description_ru?: string | null
+          icon?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          name?: string
+          name_en?: string | null
+          name_ru?: string | null
           order_index?: number | null
-          title?: string
-          title_en?: string | null
-          title_ru?: string | null
           updated_at?: string
         }
         Relationships: []
