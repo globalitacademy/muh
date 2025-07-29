@@ -4,9 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { Lightbulb, Clock, Users, Star, BookOpen, Trophy, Sparkles } from 'lucide-react';
 import ScrollReveal from '@/components/ui/scroll-reveal';
 const EnhancedFeatures = () => {
-  const {
-    t
-  } = useLanguage();
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const features = [{
     icon: <Lightbulb className="w-7 h-7" />,
@@ -98,18 +96,18 @@ const EnhancedFeatures = () => {
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-6 backdrop-blur-sm border border-edu-blue/20">
               <Sparkles className="w-4 h-4 animate-pulse-slow" />
-              <span className="font-medium font-armenian text-sm sm:text-base">Ինչու՞ ընտրել մեզ</span>
+              <span className="font-medium font-armenian text-sm sm:text-base">{t('features.badge')}</span>
             </div>
           </div>
         </ScrollReveal>
         
         <ScrollReveal delay={200}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent text-center leading-[1.2] py-2">Մեր առավելությունները</h2>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent text-center leading-[1.2] py-2">{t('features.advantages')}</h2>
         </ScrollReveal>
         
         <ScrollReveal delay={300}>
           <p className="text-lg sm:text-xl text-muted-foreground font-armenian leading-relaxed mb-16 max-w-3xl mx-auto text-center">
-            Մենք առաջարկում ենք ամենաարդիական և արդյունավետ ուսումնական հարթակը՝ հնարավորություններով, որոնք կփոխեն ձեր ուսումնառության փորձը
+            {t('features.description')}
           </p>
         </ScrollReveal>
         

@@ -103,7 +103,10 @@ const translations = {
     'hero.stats.monthly-growth': 'այս ամիս',
     'hero.stats.new-modules': 'նոր մոդուլ',
     
-    // Footer
+    // Enhanced Features
+    'features.badge': 'Ինչու՞ ընտրել մեզ',
+    'features.advantages': 'Մեր առավելությունները',
+    'features.description': 'Մենք առաջարկում ենք ամենաարդիական և արդյունավետ ուսումնական հարթակը՝ հնարավորություններով, որոնք կփոխեն ձեր ուսումնառության փորձը',
     'footer.description': 'Ապագայի կրթական հարթակ՝ նորարարական մոտեցումներով և անսահման հնարավորություններով:',
     'footer.quick-links': 'Արագ հղումներ',
     'footer.contact-info': 'Կապի տվյալներ',
