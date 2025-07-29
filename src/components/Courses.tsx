@@ -7,7 +7,8 @@ import NetworkAnimation from './NetworkAnimation';
 import ScrollReveal from '@/components/ui/scroll-reveal';
 
 const Courses = () => {
-  const { t } = useLanguage();
+  const context = useLanguage();
+  const { t } = context || { t: (key: string) => key };
   
   return (
     <section className="relative py-24 bg-gradient-to-br from-background via-background/95 to-accent/10 w-full overflow-hidden">
