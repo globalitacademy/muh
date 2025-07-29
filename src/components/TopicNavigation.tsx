@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronLeft, ChevronRight, List } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Topic {
   id: string;
@@ -28,6 +29,7 @@ const TopicNavigation = ({
   hasAccess 
 }: TopicNavigationProps) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handlePreviousTopic = () => {
     if (previousTopic && hasAccess) {
@@ -56,7 +58,7 @@ const TopicNavigation = ({
             className="font-armenian"
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
-            {previousTopic ? `Նախորդ՝ ${previousTopic.title}` : 'Նախորդ դաս'}
+            {previousTopic ? `${t('topic.previous')}՝ ${previousTopic.title}` : t('topic.previous-lesson')}
           </Button>
 
           <Button
@@ -65,7 +67,7 @@ const TopicNavigation = ({
             className="font-armenian"
           >
             <List className="w-4 h-4 mr-2" />
-            Բոլոր դասերը
+            {t('topic.all-lessons')}
           </Button>
 
           <Button
@@ -74,7 +76,7 @@ const TopicNavigation = ({
             disabled={!nextTopic || !hasAccess}
             className="font-armenian"
           >
-            {nextTopic ? `Հաջորդ՝ ${nextTopic.title}` : 'Հաջորդ դաս'}
+            {nextTopic ? `${t('topic.next')}՝ ${nextTopic.title}` : t('topic.next-lesson')}
             <ChevronRight className="w-4 h-4 ml-2" />
           </Button>
         </div>

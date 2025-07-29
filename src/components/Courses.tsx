@@ -1,11 +1,14 @@
 
 import React from 'react';
 import { Star } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 import SpecialtiesList from './SpecialtiesList';
 import NetworkAnimation from './NetworkAnimation';
 import ScrollReveal from '@/components/ui/scroll-reveal';
 
 const Courses = () => {
+  const { t } = useLanguage();
+  
   return (
     <section className="relative py-24 bg-gradient-to-br from-background via-background/95 to-accent/10 w-full overflow-hidden">
       {/* Network Animation Background */}
@@ -33,18 +36,18 @@ const Courses = () => {
                 <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-edu-blue/20 via-edu-purple/15 to-edu-blue/20 text-edu-blue mb-8 border border-edu-blue/30 shadow-lg backdrop-blur-xl relative overflow-hidden group">
                   <div className="absolute inset-0 bg-gradient-to-r from-edu-blue/10 to-edu-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <Star className="w-5 h-5 animate-pulse relative z-10" />
-                  <span className="text-sm font-semibold font-armenian tracking-wide relative z-10">Մասնագիտական ուղղություններ</span>
+                  <span className="text-sm font-semibold font-armenian tracking-wide relative z-10">{t('courses.professional-directions')}</span>
                   <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-edu-blue/20 to-edu-purple/20 blur-xl opacity-50" />
                 </div>
                 
                 {/* Modern typography with enhanced gradient */}
                 <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-8 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-[1.1] py-2 tracking-tight">
-                  Ընտրեք ձեր մասնագիտությունը
+                  {t('courses.choose-specialty')}
                 </h2>
                 
                 {/* Enhanced description with better typography */}
                 <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground/90 font-armenian leading-relaxed max-w-5xl mx-auto font-light">
-                  Յուրաքանչյուր մասնագիտություն պարունակում է մոդուլային դասեր ըստ պետական հաստատված մասնագիտական չափորոշիչների, որոնք կօգնեն ձեզ կառուցել ամուր գիտելիքների հիմք
+                  {t('courses.modular-desc')}
                 </p>
               </div>
               

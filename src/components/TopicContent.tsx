@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, CheckCircle, ChevronRight, ChevronDown } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
@@ -20,6 +21,7 @@ interface ContentSection {
 }
 
 const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
+  const { t } = useLanguage();
   const [completedSections, setCompletedSections] = useState<string[]>([]);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
@@ -59,7 +61,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
       if (typeof content === 'string' && content.trim()) {
         return [{
           id: 'section-1',
-          title: 'Տեսական նյութ',
+          title: t('topic.theoretical-material'),
           content: content,
           order: 0
         }];
@@ -100,7 +102,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
       <div className="space-y-6">
         <Card>
           <CardContent className="p-8 text-center">
-            <div className="animate-pulse font-armenian">Բեռնվում է բովանդակությունը...</div>
+            <div className="animate-pulse font-armenian">{t('topic.loading-content')}</div>
           </CardContent>
         </Card>
       </div>

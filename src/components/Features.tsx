@@ -28,20 +28,20 @@ const Features = () => {
     },
     {
       icon: <Star className="w-6 sm:w-8 h-6 sm:h-8" />,
-      title: 'Փորձագիտական գնահատում',
-      description: 'Ստացիր հետադարձ կապ մասնագետներից և բարելավի՛ր քո հմտությունները',
+      title: t('features.expert-evaluation'),
+      description: t('features.expert-desc'),
       color: 'from-yellow-500 to-orange-600'
     },
     {
       icon: <BookOpen className="w-6 sm:w-8 h-6 sm:h-8" />,
-      title: 'Ինտերակտիվ ուսուցում',
-      description: 'Գործնական առաջադրանքներ և իրական նախագծեր ուսումնառության համար',
+      title: t('features.interactive-learning'),
+      description: t('features.interactive-desc'),
       color: 'from-purple-500 to-pink-600'
     },
     {
       icon: <Trophy className="w-6 sm:w-8 h-6 sm:h-8" />,
-      title: 'Վկայագրեր',
-      description: 'Ստացիր ճանաչված վկայագրեր դասընթացների ավարտին',
+      title: t('features.certificates'),
+      description: t('features.certificates-desc'),
       color: 'from-indigo-500 to-blue-600'
     }
   ];
@@ -52,11 +52,11 @@ const Features = () => {
         {/* Header section */}
         <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-4 sm:mb-6">
           <Star className="w-3 sm:w-4 h-3 sm:h-4" />
-          <span className="font-medium font-armenian text-lg sm:text-xl lg:text-2xl">Ինչու՞ ընտրել մեզ</span>
+          <span className="font-medium font-armenian text-lg sm:text-xl lg:text-2xl">{t('features.why-choose')}</span>
         </div>
         
         <p className="text-lg sm:text-xl lg:text-xl text-muted-foreground font-armenian leading-relaxed mb-12 sm:mb-16 lg:mb-20 w-full">
-          Մենք առաջարկում ենք ամենաարդիական և արդյունավետ ուսումնական հարթակը
+          {t('features.main-desc')}
         </p>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 w-full">
@@ -83,12 +83,12 @@ const Features = () => {
         {/* Call to action */}
         <div className="text-center mt-12 sm:mt-16 w-full">
           <div className="glass-card rounded-2xl p-6 sm:p-8 bg-card/80 backdrop-blur-sm border border-border/30 w-full">
-            <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 font-armenian">Պատրա՞ստ եք սկսել</h3>
+            <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 font-armenian">{t('features.ready-to-start')}</h3>
             <p className="text-muted-foreground mb-4 sm:mb-6 font-armenian text-sm sm:text-base">
-              Միացիր մեր համայնքին և սկսիր քո ուսումնական ճանապարհորդությունը
+              {t('features.ready-desc')}
             </p>
             <button className="btn-modern text-white px-6 sm:px-8 py-3 rounded-xl font-armenian font-semibold w-full sm:w-auto min-h-[48px]">
-              Սկսել հիմա
+              {t('features.start-now')}
             </button>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Code, Shield, Palette, Network, Bot, Brain } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useSpecialties } from '@/hooks/useSpecialties';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -19,6 +20,7 @@ const iconMap = {
 
 const SpecialtiesList = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { data: specialties, isLoading } = useSpecialties();
 
   // Get module counts for each specialty
@@ -65,7 +67,7 @@ const SpecialtiesList = () => {
   if (!specialties || specialties.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="text-muted-foreground font-armenian">Մասնագիտություններ չեն գտնվել</div>
+        <div className="text-muted-foreground font-armenian">{t('specialties.no-specialties')}</div>
       </div>
     );
   }
@@ -95,7 +97,7 @@ const SpecialtiesList = () => {
                 
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground h-6">
                   <span className="font-armenian">
-                    {moduleCount} մոդուլ
+                    {moduleCount} {t('specialties.modules')}
                   </span>
                 </div>
               </div>
@@ -105,7 +107,7 @@ const SpecialtiesList = () => {
                 className="w-full btn-modern text-white font-armenian group-hover:scale-105 transition-transform mt-auto"
                 disabled={!isProgramming && moduleCount === 0}
               >
-                {isProgramming || moduleCount > 0 ? 'Սկսել ուսումը' : 'Շուտով'}
+                {isProgramming || moduleCount > 0 ? t('specialties.start-learning') : t('specialties.coming-soon')}
                 {(isProgramming || moduleCount > 0) && <ArrowRight className="w-4 h-4 ml-2" />}
               </Button>
             </CardContent>
