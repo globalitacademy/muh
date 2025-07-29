@@ -4,8 +4,10 @@ import { useModules } from '@/hooks/useModules';
 import ModuleCard from './ModuleCard';
 import { Loader2, BookOpen } from 'lucide-react';
 import ScrollReveal from '@/components/ui/scroll-reveal';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ModulesList = () => {
+  const { t } = useLanguage();
   const { data: modules, isLoading, error } = useModules();
 
   if (isLoading) {
@@ -23,7 +25,7 @@ const ModulesList = () => {
     return (
       <div className="text-center py-12">
         <div className="relative inline-block p-8 bg-gradient-to-br from-destructive/10 to-destructive/5 backdrop-blur-sm rounded-2xl border border-destructive/20">
-          <div className="text-destructive font-armenian text-lg">Սխալ է տեղի ունեցել տվյալները բեռնելիս</div>
+          <div className="text-destructive font-armenian text-lg">{t('courses.error-loading')}</div>
         </div>
       </div>
     );
@@ -34,8 +36,8 @@ const ModulesList = () => {
       <div className="text-center py-12">
         <div className="relative inline-block p-12 bg-gradient-to-br from-muted/20 to-muted/10 backdrop-blur-sm rounded-3xl border border-border/20 shadow-lg">
           <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-6 opacity-50" />
-          <div className="text-muted-foreground font-armenian text-xl mb-2">Դասընթացներ չեն գտնվել</div>
-          <p className="text-sm text-muted-foreground/80">Ստեղծեք ձեր առաջին դասընթացը</p>
+          <div className="text-muted-foreground font-armenian text-xl mb-2">{t('courses.no-courses')}</div>
+          <p className="text-sm text-muted-foreground/80">{t('courses.create-first')}</p>
         </div>
       </div>
     );

@@ -69,6 +69,15 @@ const translations = {
     'features.certificates.title': 'Վկայագրեր',
     'features.certificates.desc': 'Ստացիր ճանաչված վկայագրեր դասընթացների ավարտին',
     
+    // Courses page
+    'courses.learning-modules': 'Ուսումնական մոդուլներ',
+    'courses.all-courses': 'Բոլոր դասընթացները',
+    'courses.modules-description': 'Յուրաքանչյուր մոդուլ պարունակում է թեմատիկ դասեր, որոնք կօգնեն ձեզ կառուցել ամուր գիտելիքների հիմք',
+    'courses.error-loading': 'Սխալ է տեղի ունեցել տվյալները բեռնելիս',
+    'courses.no-courses': 'Դասընթացներ չեն գտնվել',
+    'courses.create-first': 'Ստեղծեք ձեր առաջին դասընթացը',
+    'courses.start-learning': 'Սկսել ուսուցումը',
+    
     // User Menu
     'user.login': 'Մուտք',
     'user.profile': 'Իմ պրոֆիլը',
@@ -283,6 +292,15 @@ const translations = {
     'features.certificates.title': 'Сертификаты',
     'features.certificates.desc': 'Получайте признанные сертификаты по завершении курсов',
     
+    // Courses page
+    'courses.learning-modules': 'Учебные модули',
+    'courses.all-courses': 'Все курсы',
+    'courses.modules-description': 'Каждый модуль содержит тематические уроки, которые помогут вам построить прочную основу знаний',
+    'courses.error-loading': 'Произошла ошибка при загрузке данных',
+    'courses.no-courses': 'Курсы не найдены',
+    'courses.create-first': 'Создайте свой первый курс',
+    'courses.start-learning': 'Начать обучение',
+    
     // User Menu
     'user.login': 'Вход',
     'user.profile': 'Мой профиль',
@@ -495,6 +513,15 @@ const translations = {
     'features.interactive-learning.desc': 'Practical assignments and real projects for learning',
     'features.certificates.title': 'Certificates',
     'features.certificates.desc': 'Get recognized certificates upon course completion',
+    
+    // Courses page
+    'courses.learning-modules': 'Learning Modules',
+    'courses.all-courses': 'All Courses',
+    'courses.modules-description': 'Each module contains thematic lessons that will help you build a solid foundation of knowledge',
+    'courses.error-loading': 'An error occurred while loading data',
+    'courses.no-courses': 'No courses found',
+    'courses.create-first': 'Create your first course',
+    'courses.start-learning': 'Start Learning',
     
     // User Menu
     'user.login': 'Login',

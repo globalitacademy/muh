@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Module } from '@/types/database';
 import { useNavigate } from 'react-router-dom';
 import { getModuleIcon } from '@/utils/moduleUtils';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ModuleCardProps {
   module: Module;
@@ -13,6 +14,18 @@ interface ModuleCardProps {
 
 const ModuleCard = ({ module }: ModuleCardProps) => {
   const navigate = useNavigate();
+  const { t, language } = useLanguage();
+  
+  // Helper function to get localized text
+  const getLocalizedText = (item: any, field: string) => {
+    if (language === 'en' && item[`${field}_en`]) {
+      return item[`${field}_en`];
+    }
+    if (language === 'ru' && item[`${field}_ru`]) {
+      return item[`${field}_ru`];
+    }
+    return item[field]; // Default to Armenian
+  };
 
   const handleStartLearning = () => {
     navigate(`/module/${module.id}`);
@@ -58,7 +71,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
 
         {/* Enhanced Module Title with better typography */}
         <h3 className="text-foreground text-xl font-bold mb-8 font-armenian leading-tight flex-grow flex items-center group-hover:text-edu-blue transition-colors duration-300 text-center">
-          {module.title}
+          {getLocalizedText(module, 'title')}
         </h3>
 
         {/* Enhanced Start Learning Button with modern styling */}
@@ -69,7 +82,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
           {/* Button shimmer effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 ease-out" />
           
-          <span className="relative z-10">Սկսել ուսուցումը</span>
+          <span className="relative z-10">{t('courses.start-learning')}</span>
           
           {/* Button glow */}
           <div className="absolute inset-0 bg-gradient-to-r from-edu-blue to-edu-purple opacity-0 group-hover/btn:opacity-20 rounded-xl transition-opacity duration-300" />

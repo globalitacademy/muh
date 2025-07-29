@@ -6,8 +6,10 @@ import ModulesList from '@/components/ModulesList';
 import NetworkAnimation from '@/components/NetworkAnimation';
 import ScrollReveal from '@/components/ui/scroll-reveal';
 import { Star } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Courses = () => {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-accent/10 w-full relative overflow-hidden">
       {/* Network Animation Background */}
@@ -31,15 +33,15 @@ const Courses = () => {
               <div className="relative z-10 p-8">
                 <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-edu-blue/20 to-edu-purple/20 text-edu-blue mb-6 border border-edu-blue/30 shadow-lg backdrop-blur-sm">
                   <Star className="w-5 h-5 animate-pulse" />
-                  <span className="text-sm font-medium font-armenian">Ուսումնական մոդուլներ</span>
+                  <span className="text-sm font-medium font-armenian">{t('courses.learning-modules')}</span>
                 </div>
                 
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-tight">
-                  Բոլոր դասընթացները
+                  {t('courses.all-courses')}
                 </h1>
                 
                 <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto font-armenian leading-relaxed">
-                  Յուրաքանչյուր մոդուլ պարունակում է թեմատիկ դասեր, որոնք կօգնեն ձեզ կառուցել ամուր գիտելիքների հիմք
+                  {t('courses.modules-description')}
                 </p>
               </div>
               
