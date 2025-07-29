@@ -26,20 +26,20 @@ const EnhancedFeatures = () => {
     priority: 3
   }, {
     icon: <Star className="w-6 h-6" />,
-    title: 'Փորձագիտական գնահատում',
-    description: 'Ստացիր հետադարձ կապ մասնագետներից և բարելավի՛ր քո հմտությունները',
+    title: t('features.expert-evaluation.title'),
+    description: t('features.expert-evaluation.desc'),
     color: 'from-yellow-500 to-orange-600',
     priority: 4
   }, {
     icon: <BookOpen className="w-6 h-6" />,
-    title: 'Ինտերակտիվ ուսուցում',
-    description: 'Գործնական առաջադրանքներ և իրական նախագծեր ուսումնառության համար',
+    title: t('features.interactive-learning.title'),
+    description: t('features.interactive-learning.desc'),
     color: 'from-purple-500 to-pink-600',
     priority: 5
   }, {
     icon: <Trophy className="w-6 h-6" />,
-    title: 'Վկայագրեր',
-    description: 'Ստացիր ճանաչված վկայագրեր դասընթացների ավարտին',
+    title: t('features.certificates.title'),
+    description: t('features.certificates.desc'),
     color: 'from-indigo-500 to-blue-600',
     priority: 6
   }];

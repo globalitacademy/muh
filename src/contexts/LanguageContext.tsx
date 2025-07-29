@@ -61,6 +61,14 @@ const translations = {
     'newsletter.placeholder': 'Ձեր էլ. փոստը',
     'newsletter.subscribe': 'Բաժանորդագրվել',
     
+    // Enhanced Features
+    'features.expert-evaluation.title': 'Փորձագիտական գնահատում',
+    'features.expert-evaluation.desc': 'Ստացիր հետադարձ կապ մասնագետներից և բարելավի՛ր քո հմտությունները',
+    'features.interactive-learning.title': 'Ինտերակտիվ ուսուցում',
+    'features.interactive-learning.desc': 'Գործնական առաջադրանքներ և իրական նախագծեր ուսումնառության համար',
+    'features.certificates.title': 'Վկայագրեր',
+    'features.certificates.desc': 'Ստացիր ճանաչված վկայագրեր դասընթացների ավարտին',
+    
     // User Menu
     'user.login': 'Մուտք',
     'user.profile': 'Իմ պրոֆիլը',
@@ -267,6 +275,14 @@ const translations = {
     'newsletter.placeholder': 'Ваш email',
     'newsletter.subscribe': 'Подписаться',
     
+    // Enhanced Features
+    'features.expert-evaluation.title': 'Экспертная оценка',
+    'features.expert-evaluation.desc': 'Получайте обратную связь от специалистов и улучшайте свои навыки',
+    'features.interactive-learning.title': 'Интерактивное обучение',
+    'features.interactive-learning.desc': 'Практические задания и реальные проекты для обучения',
+    'features.certificates.title': 'Сертификаты',
+    'features.certificates.desc': 'Получайте признанные сертификаты по завершении курсов',
+    
     // User Menu
     'user.login': 'Вход',
     'user.profile': 'Мой профиль',
@@ -471,6 +487,14 @@ const translations = {
     'newsletter.description': 'Get information about new courses and special offers',
     'newsletter.placeholder': 'Your email',
     'newsletter.subscribe': 'Subscribe',
+    
+    // Enhanced Features
+    'features.expert-evaluation.title': 'Expert Evaluation',
+    'features.expert-evaluation.desc': 'Get feedback from specialists and improve your skills',
+    'features.interactive-learning.title': 'Interactive Learning',
+    'features.interactive-learning.desc': 'Practical assignments and real projects for learning',
+    'features.certificates.title': 'Certificates',
+    'features.certificates.desc': 'Get recognized certificates upon course completion',
     
     // User Menu
     'user.login': 'Login',
