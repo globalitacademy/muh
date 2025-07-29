@@ -69,26 +69,26 @@ const About = () => {
   const values = [
     {
       icon: <Target className="w-8 h-8" />,
-      title: language === 'hy' ? 'Մեր առաքելությունը' : language === 'ru' ? 'Наша миссия' : 'Our Mission',
-      description: language === 'hy' ? 'Ապահովել բարձրորակ կրթություն բոլորի համար՝ անկախ տեղակայման և ֆինանսական հնարավորություններից' : language === 'ru' ? 'Обеспечить качественное образование для всех, независимо от местоположения и финансовых возможностей' : 'Provide quality education for everyone, regardless of location and financial capabilities',
+      title: t('about.mission'),
+      description: t('about.mission-desc'),
       color: 'from-blue-500 to-purple-600'
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: language === 'hy' ? 'Մեր թիմը' : language === 'ru' ? 'Наша команда' : 'Our Team',
-      description: language === 'hy' ? 'Փորձառու մասնագետներ և դասախոսներ, որոնք նվիրված են ուսանողների հաջողությանը' : language === 'ru' ? 'Опытные специалисты и преподаватели, посвятившиеся успеху студентов' : 'Experienced professionals and instructors dedicated to student success',
+      title: t('about.team'),
+      description: t('about.team-desc'),
       color: 'from-green-500 to-teal-600'
     },
     {
       icon: <Award className="w-8 h-8" />,
-      title: language === 'hy' ? 'Որակի ստանդարտներ' : language === 'ru' ? 'Стандарты качества' : 'Quality Standards',
-      description: language === 'hy' ? 'Ժամանակակից մեթոդներ և միջազգային ստանդարտներ կրթական գործընթացում' : language === 'ru' ? 'Современные методы и международные стандарты в образовательном процессе' : 'Modern methods and international standards in the educational process',
+      title: t('about.quality'),
+      description: t('about.quality-desc'),
       color: 'from-orange-500 to-red-600'
     },
     {
       icon: <Globe className="w-8 h-8" />,
-      title: language === 'hy' ? 'Գլոբալ հասանելիություն' : language === 'ru' ? 'Глобальная доступность' : 'Global Accessibility',
-      description: language === 'hy' ? 'Բազմալեզու համակարգ և հասանելի հարթակ ցանկացած երկրից' : language === 'ru' ? 'Многоязычная система и доступная платформа из любой страны' : 'Multilingual system and accessible platform from any country',
+      title: t('about.global'),
+      description: t('about.global-desc'),
       color: 'from-purple-500 to-pink-600'
     }
   ];
@@ -96,19 +96,19 @@ const About = () => {
   const achievements = [
     { 
       number: isLoading ? '...' : `${stats?.studentsCount || 0}`, 
-      label: language === 'hy' ? 'Ուսանողներ' : 'Students' 
+      label: t('hero.stats.students')
     },
     { 
       number: isLoading ? '...' : `${stats?.instructorsCount || 0}`, 
-      label: language === 'hy' ? 'Դասախոսներ' : 'Instructors' 
+      label: t('hero.stats.instructors')
     },
     { 
       number: isLoading ? '...' : `${stats?.modulesCount || 0}`, 
-      label: language === 'hy' ? 'Դասընթացներ' : 'Courses' 
+      label: t('hero.stats.modules')
     },
     { 
       number: isLoading ? '...' : (stats?.averageRating ? stats.averageRating.toFixed(1) : '0.0'), 
-      label: language === 'hy' ? 'Միջին գնահատական' : 'Average Rating' 
+      label: t('hero.stats.satisfaction')
     }
   ];
 
@@ -124,18 +124,13 @@ const About = () => {
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue mb-6">
                 <Star className="w-4 h-4" />
-                <span className="text-sm font-medium font-armenian">Մեր պատմությունը</span>
+                <span className="text-sm font-medium font-armenian">{t('about.our-story')}</span>
               </div>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 font-armenian">
                 <span className="text-gradient">{t('nav.about')}</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-4xl mx-auto font-armenian leading-relaxed">
-                {language === 'hy' 
-                  ? 'Մենք նվիրված ենք ապագայի կրթության ստեղծմանը՝ միավորելով ժամանակակից տեխնոլոգիաները և մարդկային փորձառությունը'
-                  : language === 'ru'
-                  ? 'Мы посвящены созданию образования будущего, объединяя современные технологии и человеческий опыт'
-                  : 'We are dedicated to creating the education of the future by combining modern technology and human experience'
-                }
+                {t('about.description')}
               </p>
             </div>
 
@@ -160,13 +155,10 @@ const About = () => {
           <div className="content-container">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 font-armenian text-gradient">
-                {language === 'hy' ? 'Մեր արժեքները' : language === 'ru' ? 'Наши ценности' : 'Our Values'}
+                {t('about.values')}
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-armenian">
-                {language === 'hy' 
-                  ? 'Այն սկզբունքները, որոնք ղեկավարում են մեր աշխատանքը'
-                  : 'The principles that guide our work'
-                }
+                {t('about.values-desc')}
               </p>
             </div>
             <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
@@ -199,33 +191,20 @@ const About = () => {
           <div className="content-container">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 font-armenian text-gradient">
-                {language === 'hy' ? 'Մեր պատմությունը' : language === 'ru' ? 'Наша история' : 'Our Story'}
+                {t('about.our-story')}
               </h2>
               <div className="glass-card rounded-2xl p-8 md:p-12">
                 <div className="space-y-6">
                   <p className="text-lg leading-relaxed font-armenian">
-                    {language === 'hy' 
-                      ? '"Կրթություն առանց սահմանների" հարթակը ծնվել է 2023 թվականին՝ մի խումբ փորձառու մասնագետների կողմից, ովքեր հավատում էին, որ որակյալ կրթությունը պետք է լինի հասանելի բոլորի համար։'
-                      : language === 'ru'
-                      ? 'Платформа "Образование без границ" была создана в 2023 году группой опытных специалистов, которые верили, что качественное образование должно быть доступно каждому.'
-                      : 'The "Education Without Limits" platform was born in 2023 by a group of experienced professionals who believed that quality education should be accessible to everyone.'
-                    }
+                    {t('about.platform-created')}
                   </p>
                   <p className="text-lg leading-relaxed font-armenian">
-                    {language === 'hy' 
-                      ? 'Մեր նպատակն է ստեղծել այնպիսի կրթական միջավայր, որտեղ ուսանողները կարող են զարգանալ և հասնել իրենց նպատակներին՝ անկախ իրենց գտնվելու վայրից կամ ֆինանսական հնարավորություններից։'
-                      : language === 'ru'
-                      ? 'Наша цель - создать образовательную среду, где студенты могут развиваться и достигать своих целей, независимо от местоположения или финансовых возможностей.'
-                      : 'Our goal is to create an educational environment where students can grow and achieve their goals, regardless of their location or financial capabilities.'
-                    }
+                    {t('about.goal')}
                   </p>
                   <div className="flex items-center gap-3 text-edu-blue">
                     <CheckCircle className="w-5 h-5" />
                     <span className="font-armenian font-medium">
-                      {language === 'hy' 
-                        ? 'Գերազանց դասընթացներ ու մասնագիտական աջակցություն'
-                        : 'Excellent courses and professional support'
-                      }
+                      {t('about.excellent-courses')}
                     </span>
                   </div>
                 </div>
@@ -239,13 +218,10 @@ const About = () => {
           <div className="content-container">
             <div className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 font-armenian text-gradient">
-                {language === 'hy' ? 'Մեր դասախոսներ' : language === 'ru' ? 'Наши преподаватели' : 'Our Instructors'}
+                {t('about.our-instructors')}
               </h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto font-armenian">
-                {language === 'hy' 
-                  ? 'Փորձառու մասնագետներ, որոնք նվիրված են ձեր հաջողությանը'
-                  : 'Experienced professionals dedicated to your success'
-                }
+                {t('about.instructors-desc')}
               </p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
@@ -268,7 +244,7 @@ const About = () => {
                         {instructor.avatar_url ? (
                           <img 
                             src={instructor.avatar_url} 
-                            alt={instructor.name || 'Դասախոս'}
+                            alt={instructor.name || t('about.instructor')}
                             className="w-full h-full object-cover"
                           />
                         ) : (
@@ -276,15 +252,13 @@ const About = () => {
                         )}
                       </div>
                       <h3 className="text-xl font-semibold mb-2 font-armenian group-hover:text-edu-blue transition-colors">
-                        {instructor.name || 'Դասախոս'}
+                        {instructor.name || t('about.instructor')}
                       </h3>
                       <p className="text-edu-blue font-medium mb-3 font-armenian">
-                        {language === 'hy' ? 'Դասախոս' : language === 'ru' ? 'Преподаватель' : 'Instructor'}
+                        {t('about.instructor')}
                       </p>
                       <p className="text-muted-foreground text-sm font-armenian leading-relaxed flex-grow">
-                        {instructor.department || instructor.field_of_study || 
-                          (language === 'hy' ? 'Փորձառու մասնագետ' : 'Experienced professional')
-                        }
+                        {instructor.department || instructor.field_of_study || t('about.experienced-professional')}
                       </p>
                     </CardContent>
                   </Card>
@@ -292,7 +266,7 @@ const About = () => {
               ) : (
                 <div className="col-span-full text-center py-12">
                   <p className="text-muted-foreground font-armenian">
-                    {language === 'hy' ? 'Դասախոսներ չեն գտնվել' : 'No instructors found'}
+                    {t('about.no-instructors')}
                   </p>
                 </div>
               )}
@@ -305,16 +279,13 @@ const About = () => {
           <div className="content-container text-center">
             <div className="glass-card rounded-2xl p-12 max-w-4xl mx-auto">
               <h3 className="text-3xl md:text-4xl font-bold mb-6 font-armenian text-gradient">
-                {language === 'hy' ? 'Պատրա՞ստ եք սկսելու' : 'Ready to start?'}
+                {t('about.ready-start')}
               </h3>
               <p className="text-xl text-muted-foreground mb-8 font-armenian">
-                {language === 'hy' 
-                  ? 'Միացիր մեր համայնքին և սկսիր քո ուսումնական ճանապարհորդությունը'
-                  : 'Join our community and start your learning journey'
-                }
+                {t('about.join-community')}
               </p>
               <button className="btn-modern text-white px-8 py-4 rounded-xl font-armenian font-semibold text-lg hover:scale-105 transition-transform">
-                {language === 'hy' ? 'Սկսել հիմա' : 'Start Now'}
+                {t('features.start-now')}
               </button>
             </div>
           </div>

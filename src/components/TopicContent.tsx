@@ -115,7 +115,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
         <Card>
           <CardContent className="p-8 text-center">
             <p className="text-muted-foreground font-armenian">
-              Սխալ է տեղի ունեցել բովանդակությունը բեռնելիս
+              {t('topic.error-loading')}
             </p>
           </CardContent>
         </Card>
@@ -129,7 +129,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
         <Card>
           <CardContent className="p-8 text-center">
             <p className="text-muted-foreground font-armenian">
-              Տեսական նյութը շուտով կլինի հասանելի
+              {t('topic.content-coming-soon')}
             </p>
           </CardContent>
         </Card>
@@ -145,10 +145,10 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
           <CardTitle className="flex items-center justify-between font-armenian">
             <span className="flex items-center gap-2">
               <FileText className="w-5 h-5 text-edu-blue" />
-              Տեսական նյութի առաջընթաց
+              {t('topic.progress')}
             </span>
             <span className="text-sm text-muted-foreground">
-              {completedSections.length}/{contentSections.length} բաժին ավարտված
+              {completedSections.length}/{contentSections.length} {t('topic.sections-completed')}
             </span>
           </CardTitle>
         </CardHeader>
@@ -160,7 +160,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
             />
           </div>
           <p className="text-sm text-muted-foreground font-armenian">
-            {Math.round(progressPercentage)}% ավարտված
+            {Math.round(progressPercentage)}% {t('topic.completed')}
           </p>
         </CardContent>
       </Card>
@@ -190,7 +190,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
                     <div className="flex items-center gap-2">
                       {isCompleted && (
                         <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-armenian">
-                          Ավարտված
+                          {t('topic.completed')}
                         </span>
                       )}
                       {isExpanded ? (
@@ -212,7 +212,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
                     />
                   ) : (
                     <p className="text-muted-foreground font-armenian mb-4">
-                      Այս բաժնի բովանդակությունը շուտով կլինի հասանելի
+                      {t('topic.section-coming-soon')}
                     </p>
                   )}
                   
@@ -225,10 +225,10 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
                     {isCompleted ? (
                       <>
                         <CheckCircle className="w-4 h-4 mr-2" />
-                        Ավարտված
+                        {t('topic.completed')}
                       </>
                     ) : (
-                      'Նշել որպես ավարտված'
+                      t('topic.mark-completed')
                     )}
                   </Button>
                 </CardContent>
@@ -244,13 +244,13 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
           <CardContent className="p-6 text-center">
             <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-green-800 font-armenian mb-2">
-              Շնորհավորություններ!
+              {t('topic.congratulations')}
             </h3>
             <p className="text-green-700 font-armenian mb-4">
-              Դուք հաջողությամբ ավարտեցիք բոլոր տեսական բաժինները:
+              {t('topic.all-sections-done')}
             </p>
             <Button onClick={onComplete} className="font-armenian">
-              Անցնել հաջորդ քայլին
+              {t('topic.next-step')}
             </Button>
           </CardContent>
         </Card>
@@ -262,7 +262,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-armenian">
               <FileText className="w-5 h-5 text-edu-blue" />
-              Լրացուցիչ ռեսուրսներ
+              {t('topic.additional-resources')}
             </CardTitle>
           </CardHeader>
           <CardContent>

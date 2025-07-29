@@ -13,7 +13,7 @@ import { useContactStats } from '@/hooks/useContactStats';
 import GoogleMap from '@/components/ui/google-map';
 
 const Contact = () => {
-  const { language } = useLanguage();
+  const { t } = useLanguage();
   const { data: stats, isLoading: statsLoading } = useContactStats();
   const [formData, setFormData] = useState({
     name: '',
@@ -25,7 +25,7 @@ const Contact = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    alert(language === 'hy' ? 'Հաղորդագրությունը ուղարկվեց!' : language === 'ru' ? 'Сообщение отправлено!' : 'Message sent!');
+    alert(t('contact.message-sent'));
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
@@ -39,26 +39,26 @@ const Contact = () => {
   const contactInfo = [
     {
       icon: <MapPin className="w-5 sm:w-6 h-5 sm:h-6" />,
-      title: language === 'hy' ? 'Հասցե' : language === 'ru' ? 'Адрес' : 'Address',
-      info: language === 'hy' ? 'Երևան, Մամիկոնյանց 52' : language === 'ru' ? 'Ереван, Мамиконянц 52' : 'Yerevan, Mamikonyanc 52',
+      title: t('contact.address'),
+      info: t('contact.address-value'),
       color: 'from-edu-blue to-purple-500'
     },
     {
       icon: <Phone className="w-5 sm:w-6 h-5 sm:h-6" />,
-      title: language === 'hy' ? 'Հեռախոս' : language === 'ru' ? 'Телефон' : 'Phone',
+      title: t('contact.phone'),
       info: '+374 10 123 456',
       color: 'from-green-500 to-emerald-500'
     },
     {
       icon: <Mail className="w-5 sm:w-6 h-5 sm:h-6" />,
-      title: language === 'hy' ? 'Էլ․ փոստ' : language === 'ru' ? 'Эл. почта' : 'Email',
+      title: t('contact.email'),
       info: 'info@limitlesslearning.am',
       color: 'from-orange-500 to-red-500'
     },
     {
       icon: <Clock className="w-5 sm:w-6 h-5 sm:h-6" />,
-      title: language === 'hy' ? 'Աշխատանքային ժամեր' : language === 'ru' ? 'Рабочие часы' : 'Working Hours',
-      info: language === 'hy' ? 'Երկուշաբթի - Ուրբաթ: 9:00 - 18:00' : language === 'ru' ? 'Понедельник - Пятница: 9:00 - 18:00' : 'Monday - Friday: 9:00 - 18:00',
+      title: t('contact.hours'),
+      info: t('contact.hours-value'),
       color: 'from-purple-500 to-pink-500'
     }
   ];
@@ -67,17 +67,17 @@ const Contact = () => {
     {
       icon: <Users className="w-6 sm:w-8 h-6 sm:h-8" />,
       number: statsLoading ? '...' : `${stats?.studentsCount || 0}+`,
-      label: language === 'hy' ? 'Ուսանողներ' : language === 'ru' ? 'Студенты' : 'Students'
+      label: t('contact.students')
     },
     {
       icon: <BookOpen className="w-6 sm:w-8 h-6 sm:h-8" />,
       number: statsLoading ? '...' : `${stats?.modulesCount || 0}`,
-      label: language === 'hy' ? 'Դասընթացներ' : language === 'ru' ? 'Курсы' : 'Courses'
+      label: t('contact.courses')
     },
     {
       icon: <MessageCircle className="w-6 sm:w-8 h-6 sm:h-8" />,
       number: statsLoading ? '...' : `${stats?.instructorsCount || 0}+`,
-      label: language === 'hy' ? 'Մանկավարժներ' : language === 'ru' ? 'Преподаватели' : 'Instructors'
+      label: t('contact.instructors')
     }
   ];
 
