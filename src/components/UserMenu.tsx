@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminRole } from '@/hooks/useAdminRole';
 import { useUserProfile } from '@/hooks/useUserProfile';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { User, LogOut, BookOpen, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,6 +21,7 @@ const UserMenu = () => {
   const { user, signOut } = useAuth();
   const { data: isAdmin } = useAdminRole();
   const { data: profile, isLoading: profileLoading, refetch: refetchProfile } = useUserProfile();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   if (!user) {
@@ -29,7 +31,7 @@ const UserMenu = () => {
         variant="outline" 
         className="font-armenian"
       >
-        Մուտք
+        {t('user.login')}
       </Button>
     );
   }
@@ -45,7 +47,7 @@ const UserMenu = () => {
     return email.charAt(0).toUpperCase();
   };
 
-  const displayName = profile?.name || user.user_metadata?.name || 'Օգտատեր';
+  const displayName = profile?.name || user.user_metadata?.name || t('user.guest');
   const initials = getInitials(profile?.name || user.user_metadata?.name, user.email || 'U');
 
   // Add cache busting to avatar URL
@@ -103,22 +105,22 @@ const UserMenu = () => {
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate('/dashboard')} className="font-armenian">
           <User className="mr-2 h-4 w-4" />
-          <span>Իմ պրոֆիլը</span>
+          <span>{t('user.profile')}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate('/my-courses')} className="font-armenian">
           <BookOpen className="mr-2 h-4 w-4" />
-          <span>Իմ դասընթացները</span>
+          <span>{t('user.courses')}</span>
         </DropdownMenuItem>
         {isAdmin && (
           <DropdownMenuItem onClick={() => navigate('/admin')} className="font-armenian">
             <Settings className="mr-2 h-4 w-4" />
-            <span>Ադմին վահանակ</span>
+            <span>{t('user.admin')}</span>
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut} className="font-armenian">
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Դուրս գալ</span>
+          <span>{t('user.logout')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

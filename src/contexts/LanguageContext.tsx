@@ -17,6 +17,7 @@ const translations = {
     // Navigation
     'nav.home': 'Գլխավոր',
     'nav.courses': 'Դասընթացներ',
+    'nav.specialties': 'Մասնագիտություններ',
     'nav.about': 'Մեր մասին',
     'nav.contact': 'Կապ',
     'nav.login': 'Մուտք',
@@ -27,6 +28,8 @@ const translations = {
     'hero.subtitle': 'Բացահայտեք ձեր ներուժը մեր ժամանակակից կրթական հարթակի միջոցով',
     'hero.cta': 'Սկսել ուսումը',
     'hero.learn-more': 'Իմանալ ավելին',
+    'hero.badge': 'Հայաստանի առաջին մոդուլային ուսումնական հարթակ',
+    'hero.description': 'Սովորեք նոր հմտություններ մոդուլային մոտեցմամբ։ Յուրաքանչյուր մոդուլ ունի իր թեմաները, որոնք կօգնեն ձեզ աստիճանաբար տիրապետել նյութին։',
     
     // Features
     'features.title': 'Ինչու՞ ընտրել մեզ',
@@ -52,6 +55,54 @@ const translations = {
     'stats.instructors': 'Դասախոսներ',
     'stats.completion': 'Ավարտման դրույքաչափ',
     
+    // Newsletter
+    'newsletter.title': 'Բաժանորդագրվեք մեր նորություններին',
+    'newsletter.description': 'Ստացեք նոր դասընթացների և հատուկ առաջարկությունների մասին տեղեկություններ',
+    'newsletter.placeholder': 'Ձեր էլ. փոստը',
+    'newsletter.subscribe': 'Բաժանորդագրվել',
+    
+    // User Menu
+    'user.login': 'Մուտք',
+    'user.profile': 'Իմ պրոֆիլը',
+    'user.courses': 'Իմ դասընթացները',
+    'user.admin': 'Ադմին վահանակ',
+    'user.logout': 'Դուրս գալ',
+    'user.guest': 'Օգտատեր',
+    
+    // Common
+    'common.loading': 'Բեռնում...',
+    'common.error': 'Սխալ',
+    'common.success': 'Հաջողություն',
+    'common.save': 'Պահպանել',
+    'common.cancel': 'Չեղարկել',
+    'common.edit': 'Խմբագրել',
+    'common.delete': 'Ջնջել',
+    'common.view': 'Դիտել',
+    'common.add': 'Ավելացնել',
+    'common.search': 'Փնտրել',
+    'common.filter': 'Զտարկ',
+    'common.sort': 'Դասակարգել',
+    'common.clear': 'Մաքրել',
+    'common.submit': 'Ուղարկել',
+    'common.close': 'Փակել',
+    
+    // Hero stats
+    'hero.stats.students': 'Ուսանողներ',
+    'hero.stats.modules': 'Մոդուլներ',
+    'hero.stats.instructors': 'Մանկավարժներ',
+    'hero.stats.satisfaction': 'Բավարարվածություն',
+    'hero.stats.certificate': 'Վկայագիր',
+    'hero.stats.group': 'Խումբ',
+    'hero.stats.interactive': 'Ինտերակտիվ ուսուցում',
+    'hero.stats.practical': 'Գործնական հմտություններ',
+    'hero.stats.programming': 'Ծրագրավորում',
+    'hero.stats.design': 'Դիզայն',
+    'hero.stats.networking': 'Ցանցեր',
+    'hero.stats.experts': 'Փորձագետներ',
+    'hero.stats.high-rating': 'Բարձր գնահատական',
+    'hero.stats.monthly-growth': 'այս ամիս',
+    'hero.stats.new-modules': 'նոր մոդուլ',
+    
     // Footer
     'footer.description': 'Ապագայի կրթական հարթակ՝ նորարարական մոտեցումներով և անսահման հնարավորություններով:',
     'footer.quick-links': 'Արագ հղումներ',
@@ -63,6 +114,7 @@ const translations = {
     // Navigation
     'nav.home': 'Главная',
     'nav.courses': 'Курсы',
+    'nav.specialties': 'Специальности',
     'nav.about': 'О нас',
     'nav.contact': 'Контакты',
     'nav.login': 'Вход',
@@ -73,6 +125,8 @@ const translations = {
     'hero.subtitle': 'Раскройте свой потенциал с помощью нашей современной образовательной платформы',
     'hero.cta': 'Начать обучение',
     'hero.learn-more': 'Узнать больше',
+    'hero.badge': 'Первая модульная образовательная платформа Армении',
+    'hero.description': 'Изучайте новые навыки с модульным подходом. Каждый модуль имеет свои темы, которые помогут вам постепенно освоить материал.',
     
     // Features
     'features.title': 'Почему выбирают нас',
@@ -98,6 +152,54 @@ const translations = {
     'stats.instructors': 'Преподавателей',
     'stats.completion': 'Процент завершения',
     
+    // Newsletter
+    'newsletter.title': 'Подпишитесь на наши новости',
+    'newsletter.description': 'Получайте информацию о новых курсах и специальных предложениях',
+    'newsletter.placeholder': 'Ваш email',
+    'newsletter.subscribe': 'Подписаться',
+    
+    // User Menu
+    'user.login': 'Вход',
+    'user.profile': 'Мой профиль',
+    'user.courses': 'Мои курсы',
+    'user.admin': 'Админ панель',
+    'user.logout': 'Выход',
+    'user.guest': 'Пользователь',
+    
+    // Common
+    'common.loading': 'Загрузка...',
+    'common.error': 'Ошибка',
+    'common.success': 'Успех',
+    'common.save': 'Сохранить',
+    'common.cancel': 'Отмена',
+    'common.edit': 'Изменить',
+    'common.delete': 'Удалить',
+    'common.view': 'Просмотр',
+    'common.add': 'Добавить',
+    'common.search': 'Поиск',
+    'common.filter': 'Фильтр',
+    'common.sort': 'Сортировка',
+    'common.clear': 'Очистить',
+    'common.submit': 'Отправить',
+    'common.close': 'Закрыть',
+    
+    // Hero stats
+    'hero.stats.students': 'Студенты',
+    'hero.stats.modules': 'Модули',
+    'hero.stats.instructors': 'Преподаватели',
+    'hero.stats.satisfaction': 'Удовлетворенность',
+    'hero.stats.certificate': 'Сертификат',
+    'hero.stats.group': 'Группа',
+    'hero.stats.interactive': 'Интерактивное обучение',
+    'hero.stats.practical': 'Практические навыки',
+    'hero.stats.programming': 'Программирование',
+    'hero.stats.design': 'Дизайн',
+    'hero.stats.networking': 'Сети',
+    'hero.stats.experts': 'Эксперты',
+    'hero.stats.high-rating': 'Высокий рейтинг',
+    'hero.stats.monthly-growth': 'в этом месяце',
+    'hero.stats.new-modules': 'новых модуля',
+    
     // Footer
     'footer.description': 'Образовательная платформа будущего с инновационными подходами и безграничными возможностями.',
     'footer.quick-links': 'Быстрые ссылки',
@@ -109,6 +211,7 @@ const translations = {
     // Navigation
     'nav.home': 'Home',
     'nav.courses': 'Courses',
+    'nav.specialties': 'Specialties',
     'nav.about': 'About',
     'nav.contact': 'Contact',
     'nav.login': 'Login',
@@ -119,6 +222,8 @@ const translations = {
     'hero.subtitle': 'Unlock your potential with our modern educational platform',
     'hero.cta': 'Start Learning',
     'hero.learn-more': 'Learn More',
+    'hero.badge': "Armenia's first modular learning platform",
+    'hero.description': 'Learn new skills with a modular approach. Each module has its topics that will help you gradually master the material.',
     
     // Features
     'features.title': 'Why Choose Us',
@@ -144,6 +249,54 @@ const translations = {
     'stats.instructors': 'Instructors',
     'stats.completion': 'Completion Rate',
     
+    // Newsletter
+    'newsletter.title': 'Subscribe to our newsletter',
+    'newsletter.description': 'Get information about new courses and special offers',
+    'newsletter.placeholder': 'Your email',
+    'newsletter.subscribe': 'Subscribe',
+    
+    // User Menu
+    'user.login': 'Login',
+    'user.profile': 'My Profile',
+    'user.courses': 'My Courses',
+    'user.admin': 'Admin Panel',
+    'user.logout': 'Logout',
+    'user.guest': 'User',
+    
+    // Common
+    'common.loading': 'Loading...',
+    'common.error': 'Error',
+    'common.success': 'Success',
+    'common.save': 'Save',
+    'common.cancel': 'Cancel',
+    'common.edit': 'Edit',
+    'common.delete': 'Delete',
+    'common.view': 'View',
+    'common.add': 'Add',
+    'common.search': 'Search',
+    'common.filter': 'Filter',
+    'common.sort': 'Sort',
+    'common.clear': 'Clear',
+    'common.submit': 'Submit',
+    'common.close': 'Close',
+    
+    // Hero stats
+    'hero.stats.students': 'Students',
+    'hero.stats.modules': 'Modules',
+    'hero.stats.instructors': 'Instructors',
+    'hero.stats.satisfaction': 'Satisfaction',
+    'hero.stats.certificate': 'Certificate',
+    'hero.stats.group': 'Group',
+    'hero.stats.interactive': 'Interactive Learning',
+    'hero.stats.practical': 'Practical Skills',
+    'hero.stats.programming': 'Programming',
+    'hero.stats.design': 'Design',
+    'hero.stats.networking': 'Networking',
+    'hero.stats.experts': 'Experts',
+    'hero.stats.high-rating': 'High Rating',
+    'hero.stats.monthly-growth': 'this month',
+    'hero.stats.new-modules': 'new modules',
+    
     // Footer
     'footer.description': 'The educational platform of the future with innovative approaches and limitless possibilities.',
     'footer.quick-links': 'Quick Links',
@@ -154,7 +307,27 @@ const translations = {
 };
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('hy');
+  // Initialize language from localStorage or default to Armenian
+  const [language, setLanguageState] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('preferred-language');
+      if (savedLanguage && ['hy', 'ru', 'en'].includes(savedLanguage)) {
+        return savedLanguage as Language;
+      }
+      // Try to detect browser language
+      const browserLang = navigator.language.toLowerCase();
+      if (browserLang.startsWith('ru')) return 'ru';
+      if (browserLang.startsWith('en')) return 'en';
+    }
+    return 'hy'; // Default to Armenian
+  });
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('preferred-language', lang);
+    }
+  };
 
   const t = (key: string): string => {
     return translations[language][key as keyof typeof translations[typeof language]] || key;

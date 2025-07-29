@@ -31,19 +31,19 @@ const Hero = () => {
             <ScrollReveal delay={100}>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-edu-blue/10 text-edu-blue border border-edu-blue/20 backdrop-blur-sm">
                 <Sparkles className="w-4 h-4 animate-pulse-slow" />
-                <span className="font-medium font-armenian text-sm">Հայաստանի առաջին մոդուլային ուսումնական հարթակ</span>
+                <span className="font-medium font-armenian text-sm">{t('hero.badge')}</span>
               </div>
             </ScrollReveal>
 
             <ScrollReveal delay={200}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
-                <span className="text-gradient font-armenian block mb-2">Կրթություն Առանց Սահմանների</span>
+                <span className="text-gradient font-armenian block mb-2">{t('hero.title')}</span>
               </h1>
             </ScrollReveal>
 
             <ScrollReveal delay={300}>
               <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed font-armenian max-w-2xl">
-                Սովորեք նոր հմտություններ մոդուլային մոտեցմամբ։ Յուրաքանչյուր մոդուլ ունի իր թեմաները, որոնք կօգնեն ձեզ աստիճանաբար տիրապետել նյութին։
+                {t('hero.description')}
               </p>
             </ScrollReveal>
 
@@ -54,7 +54,7 @@ const Hero = () => {
                   className="btn-modern text-white px-8 py-4 text-lg font-armenian hover:shadow-glow min-h-[56px] inline-flex items-center gap-2" 
                   onClick={() => navigate('/courses')}
                 >
-                  <span>Սկսել ուսումը</span>
+                  <span>{t('hero.cta')}</span>
                   <ArrowRight className="w-5 h-5" />
                 </Button>
                 <Button 
@@ -64,7 +64,7 @@ const Hero = () => {
                   onClick={() => navigate('/about')}
                 >
                   <Play className="w-5 h-5" />
-                  <span>Մեր մասին</span>
+                  <span>{t('hero.learn-more')}</span>
                 </Button>
               </div>
             </ScrollReveal>
@@ -83,8 +83,8 @@ const Hero = () => {
                         <BookOpen className="w-6 h-6 text-white" />
                       </div>
                       <div>
-                        <h3 className="font-semibold font-armenian text-foreground leading-tight">Ինտերակտիվ ուսուցում</h3>
-                        <p className="text-sm text-muted-foreground font-armenian">Գործնական հմտություններ</p>
+                        <h3 className="font-semibold font-armenian text-foreground leading-tight">{t('hero.stats.interactive')}</h3>
+                        <p className="text-sm text-muted-foreground font-armenian">{t('hero.stats.practical')}</p>
                       </div>
                     </div>
 
@@ -92,7 +92,7 @@ const Hero = () => {
                     <div className="space-y-4">
                       <div>
                         <div className="flex justify-between text-sm mb-2">
-                          <span className="font-armenian text-foreground">Ծրագրավորում</span>
+                          <span className="font-armenian text-foreground">{t('hero.stats.programming')}</span>
                           <span className="text-edu-blue font-medium">85%</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-3">
@@ -101,7 +101,7 @@ const Hero = () => {
                       </div>
                       <div>
                         <div className="flex justify-between text-sm mb-2">
-                          <span className="font-armenian text-foreground">Դիզայն</span>
+                          <span className="font-armenian text-foreground">{t('hero.stats.design')}</span>
                           <span className="text-green-500 font-medium">92%</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-3">
@@ -110,7 +110,7 @@ const Hero = () => {
                       </div>
                       <div>
                         <div className="flex justify-between text-sm mb-2">
-                          <span className="font-armenian text-foreground">Ցանցեր</span>
+                          <span className="font-armenian text-foreground">{t('hero.stats.networking')}</span>
                           <span className="text-orange-500 font-medium">78%</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-3">
@@ -123,11 +123,11 @@ const Hero = () => {
                     <div className="flex gap-2 pt-4">
                       <div className="flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-600 rounded-full text-xs font-medium">
                         <Award className="w-3 h-3" />
-                        <span className="font-armenian">Վկայագիր</span>
+                        <span className="font-armenian">{t('hero.stats.certificate')}</span>
                       </div>
                       <div className="flex items-center gap-1 px-3 py-1 bg-blue-500/10 text-blue-600 rounded-full text-xs font-medium">
                         <Users className="w-3 h-3" />
-                        <span className="font-armenian">Խումբ</span>
+                        <span className="font-armenian">{t('hero.stats.group')}</span>
                       </div>
                     </div>
                   </div>
@@ -157,8 +157,8 @@ const Hero = () => {
                   <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
                     <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
                   </div>
-                  <div className="text-muted-foreground font-armenian text-sm">Ուսանողներ</div>
-                  <div className="mt-2 text-xs text-green-600 font-medium">+12% այս ամիս</div>
+                  <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.students')}</div>
+                  <div className="mt-2 text-xs text-green-600 font-medium">+12% {t('hero.stats.monthly-growth')}</div>
                 </div>
               </div>
 
@@ -174,8 +174,8 @@ const Hero = () => {
                   <div className="text-3xl md:text-4xl font-bold text-purple-600 mb-2 font-armenian">
                     <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
                   </div>
-                  <div className="text-muted-foreground font-armenian text-sm">Մոդուլներ</div>
-                  <div className="mt-2 text-xs text-blue-600 font-medium">5 նոր մոդուլ</div>
+                  <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.modules')}</div>
+                  <div className="mt-2 text-xs text-blue-600 font-medium">5 {t('hero.stats.new-modules')}</div>
                 </div>
               </div>
 
@@ -191,8 +191,8 @@ const Hero = () => {
                   <div className="text-3xl md:text-4xl font-bold text-orange-500 mb-2 font-armenian">
                     <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
                   </div>
-                  <div className="text-muted-foreground font-armenian text-sm">Մանկավարժներ</div>
-                  <div className="mt-2 text-xs text-orange-600 font-medium">Փորձագետներ</div>
+                  <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.instructors')}</div>
+                  <div className="mt-2 text-xs text-orange-600 font-medium">{t('hero.stats.experts')}</div>
                 </div>
               </div>
 
@@ -208,8 +208,8 @@ const Hero = () => {
                   <div className="text-3xl md:text-4xl font-bold text-green-500 mb-2 font-armenian">
                     <span className="animate-scale-in" style={{ animationDelay: '0.3s' }}>95%</span>
                   </div>
-                  <div className="text-muted-foreground font-armenian text-sm">Բավարարվածություն</div>
-                  <div className="mt-2 text-xs text-green-600 font-medium">Բարձր գնահատական</div>
+                  <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.satisfaction')}</div>
+                  <div className="mt-2 text-xs text-green-600 font-medium">{t('hero.stats.high-rating')}</div>
                 </div>
               </div>
             </div>
