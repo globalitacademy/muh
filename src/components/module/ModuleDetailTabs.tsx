@@ -10,6 +10,7 @@ import ModuleDetailInstructors from './ModuleDetailInstructors';
 import ModuleInstructorsManagement from '../admin/modules/ModuleInstructorsManagement';
 import { Module } from '@/types/database';
 import { Topic } from '@/types/database';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ModuleDetailTabsProps {
   module: Module;
@@ -19,6 +20,7 @@ interface ModuleDetailTabsProps {
 }
 
 const ModuleDetailTabs = ({ module, topics, hasFullAccess, onTopicClick }: ModuleDetailTabsProps) => {
+  const { t } = useLanguage();
   const { data: isAdmin } = useAdminRole();
   const isMobile = useIsMobile();
 
@@ -32,21 +34,21 @@ const ModuleDetailTabs = ({ module, topics, hasFullAccess, onTopicClick }: Modul
               className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all w-full justify-start text-sm py-3"
             >
               <BookOpen className="w-4 h-4 mr-2" />
-              Նկարագիր
+              {t('module.tabs.overview')}
             </TabsTrigger>
             <TabsTrigger 
               value="curriculum" 
               className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all w-full justify-start text-sm py-3"
             >
               <GraduationCap className="w-4 h-4 mr-2" />
-              Դասընթացի ծրագիր
+              {t('module.tabs.curriculum')}
             </TabsTrigger>
             <TabsTrigger 
               value="instructors" 
               className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all w-full justify-start text-sm py-3"
             >
               <User className="w-4 h-4 mr-2" />
-              Մասնագետներ
+              {t('module.tabs.instructors')}
             </TabsTrigger>
             {isAdmin && (
               <TabsTrigger 
@@ -54,7 +56,7 @@ const ModuleDetailTabs = ({ module, topics, hasFullAccess, onTopicClick }: Modul
                 className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all w-full justify-start text-sm py-3"
               >
                 <Settings className="w-4 h-4 mr-2" />
-                Կառավարում
+                {t('module.tabs.management')}
               </TabsTrigger>
             )}
           </TabsList>
@@ -63,20 +65,20 @@ const ModuleDetailTabs = ({ module, topics, hasFullAccess, onTopicClick }: Modul
         <TabsList className={`grid w-full ${isAdmin ? 'grid-cols-4' : 'grid-cols-3'} bg-muted/50 p-1 rounded-xl`}>
           <TabsTrigger value="overview" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
             <BookOpen className="w-4 h-4 mr-2" />
-            Նկարագիր
+            {t('module.tabs.overview')}
           </TabsTrigger>
           <TabsTrigger value="curriculum" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
             <GraduationCap className="w-4 h-4 mr-2" />
-            Դասընթացի ծրագիր
+            {t('module.tabs.curriculum')}
           </TabsTrigger>
           <TabsTrigger value="instructors" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
             <User className="w-4 h-4 mr-2" />
-            Մասնագետներ
+            {t('module.tabs.instructors')}
           </TabsTrigger>
           {isAdmin && (
             <TabsTrigger value="manage-instructors" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all">
               <Settings className="w-4 h-4 mr-2" />
-              Կառավարում
+              {t('module.tabs.management')}
             </TabsTrigger>
           )}
         </TabsList>

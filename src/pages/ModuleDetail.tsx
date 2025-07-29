@@ -13,8 +13,10 @@ import Footer from '@/components/Footer';
 import ModuleDetailHeader from '@/components/module/ModuleDetailHeader';
 import ModuleDetailTabs from '@/components/module/ModuleDetailTabs';
 import ModuleDetailSidebar from '@/components/module/ModuleDetailSidebar';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ModuleDetail = () => {
+  const { t } = useLanguage();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -76,9 +78,9 @@ const ModuleDetail = () => {
         <Header />
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
-            <h2 className="text-2xl font-bold font-armenian text-foreground">Դասընթացը չի գտնվել</h2>
+            <h2 className="text-2xl font-bold font-armenian text-foreground">{t('module.not-found')}</h2>
             <Button onClick={() => navigate('/')} className="mt-4 font-armenian">
-              Վերադառնալ գլխավոր էջ
+              {t('module.back-home')}
             </Button>
           </div>
         </div>
@@ -98,7 +100,7 @@ const ModuleDetail = () => {
           className="mb-6 text-muted-foreground hover:text-foreground hover:bg-hover-bg"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Վերադառնալ գլխավոր էջ
+          {t('module.back-home')}
         </Button>
 
         <div className="grid lg:grid-cols-3 gap-8">

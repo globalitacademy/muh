@@ -78,6 +78,34 @@ const translations = {
     'courses.create-first': 'Ստեղծեք ձեր առաջին դասընթացը',
     'courses.start-learning': 'Սկսել ուսուցումը',
     
+    // Module Detail page
+    'module.not-found': 'Դասընթացը չի գտնվել',
+    'module.back-home': 'Վերադառնալ գլխավոր էջ',
+    'module.price': 'Արժեք',
+    'module.for-entire-course': 'Ամբողջ դասընթացի համար',
+    'module.your-progress': 'Ձեր առաջընթացը',
+    'module.completed': 'ավարտված',
+    'module.start-learning': 'Սկսել ուսուցումը',
+    'module.enrolling': 'Գրանցվում է...',
+    'module.enroll-now': 'Գրանցվել հիմա',
+    'module.register-for-course': 'Գրանցվել դասընթացի համար',
+    'module.certificate': 'Վկայագիր',
+    'module.yes': 'Այո',
+    'module.access': 'Մուտք',
+    'module.lifetime': 'Մշտապես',
+    'module.language': 'Լեզու',
+    'module.armenian': 'Հայերեն',
+    'module.temp-access': 'Ժամանակավոր մուտք',
+    'module.temp-access-desc': 'Օգտագործեք գործընկերոջ կոդը՝ բոլոր դասերը 60 րոպեով անվճար դիտելու համար',
+    'module.code-valid': 'Կոդը վավեր է միայն 60 րոպե',
+    'module.remaining-time': 'մնացած ժամանակ',
+    
+    // Module tabs
+    'module.tabs.overview': 'Նկարագիր',
+    'module.tabs.curriculum': 'Դասընթացի ծրագիր',
+    'module.tabs.instructors': 'Մասնագետներ',
+    'module.tabs.management': 'Կառավարում',
+    
     // User Menu
     'user.login': 'Մուտք',
     'user.profile': 'Իմ պրոֆիլը',
@@ -301,6 +329,34 @@ const translations = {
     'courses.create-first': 'Создайте свой первый курс',
     'courses.start-learning': 'Начать обучение',
     
+    // Module Detail page
+    'module.not-found': 'Курс не найден',
+    'module.back-home': 'Вернуться на главную',
+    'module.price': 'Цена',
+    'module.for-entire-course': 'За весь курс',
+    'module.your-progress': 'Ваш прогресс',
+    'module.completed': 'завершено',
+    'module.start-learning': 'Начать обучение',
+    'module.enrolling': 'Регистрируется...',
+    'module.enroll-now': 'Записаться сейчас',
+    'module.register-for-course': 'Записаться на курс',
+    'module.certificate': 'Сертификат',
+    'module.yes': 'Да',
+    'module.access': 'Доступ',
+    'module.lifetime': 'Навсегда',
+    'module.language': 'Язык',
+    'module.armenian': 'Армянский',
+    'module.temp-access': 'Временный доступ',
+    'module.temp-access-desc': 'Используйте код партнера для бесплатного просмотра всех уроков в течение 60 минут',
+    'module.code-valid': 'Код действителен только 60 минут',
+    'module.remaining-time': 'оставшееся время',
+    
+    // Module tabs
+    'module.tabs.overview': 'Обзор',
+    'module.tabs.curriculum': 'Программа курса',
+    'module.tabs.instructors': 'Специалисты',
+    'module.tabs.management': 'Управление',
+    
     // User Menu
     'user.login': 'Вход',
     'user.profile': 'Мой профиль',
@@ -522,6 +578,34 @@ const translations = {
     'courses.no-courses': 'No courses found',
     'courses.create-first': 'Create your first course',
     'courses.start-learning': 'Start Learning',
+    
+    // Module Detail page
+    'module.not-found': 'Course not found',
+    'module.back-home': 'Back to Home',
+    'module.price': 'Price',
+    'module.for-entire-course': 'For the entire course',
+    'module.your-progress': 'Your Progress',
+    'module.completed': 'completed',
+    'module.start-learning': 'Start Learning',
+    'module.enrolling': 'Enrolling...',
+    'module.enroll-now': 'Enroll Now',
+    'module.register-for-course': 'Register for Course',
+    'module.certificate': 'Certificate',
+    'module.yes': 'Yes',
+    'module.access': 'Access',
+    'module.lifetime': 'Lifetime',
+    'module.language': 'Language',
+    'module.armenian': 'Armenian',
+    'module.temp-access': 'Temporary Access',
+    'module.temp-access-desc': 'Use partner code to view all lessons for free for 60 minutes',
+    'module.code-valid': 'Code is valid for only 60 minutes',
+    'module.remaining-time': 'remaining time',
+    
+    // Module tabs
+    'module.tabs.overview': 'Overview',
+    'module.tabs.curriculum': 'Curriculum',
+    'module.tabs.instructors': 'Instructors',
+    'module.tabs.management': 'Management',
     
     // User Menu
     'user.login': 'Login',

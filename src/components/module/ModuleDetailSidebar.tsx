@@ -5,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { Module } from '@/types/database';
 import { User } from '@supabase/supabase-js';
 import CompanyCodeInput from '@/components/CompanyCodeInput';
+import { useLanguage } from '@/contexts/LanguageContext';
 interface ModuleDetailSidebarProps {
   module: Module;
   user: User | null;
@@ -28,6 +29,7 @@ const ModuleDetailSidebar = ({
   onNavigateToAuth,
   onCompanyCodeVerified
 }: ModuleDetailSidebarProps) => {
+  const { t } = useLanguage();
   const [tempAccess, setTempAccess] = useState(false);
   const [accessTimer, setAccessTimer] = useState<NodeJS.Timeout | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(0);
@@ -85,7 +87,7 @@ const ModuleDetailSidebar = ({
   return <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="text-center font-armenian">Արժեք</CardTitle>
+          <CardTitle className="text-center font-armenian">{t('module.price')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center">
@@ -93,50 +95,50 @@ const ModuleDetailSidebar = ({
               {module.price.toLocaleString()} ֏
             </div>
             <div className="text-sm text-muted-foreground font-armenian">
-              Ամբողջ դասընթացի համար
+              {t('module.for-entire-course')}
             </div>
           </div>
 
           {user ? <div className="space-y-4">
               {effectiveAccess ? <>
                   <div className="text-center">
-                    <div className="text-sm font-armenian mb-2">Ձեր առաջընթացը</div>
+                    <div className="text-sm font-armenian mb-2">{t('module.your-progress')}</div>
                     <Progress value={0} className="mb-2" />
-                    <div className="text-xs text-muted-foreground">0% ավարտված</div>
+                    <div className="text-xs text-muted-foreground">0% {t('module.completed')}</div>
                   </div>
                   <Button className="w-full btn-modern font-armenian" onClick={onStartLearning}>
-                    Սկսել ուսուցումը
+                    {t('module.start-learning')}
                   </Button>
                   {tempAccess && timeRemaining > 0 && <div className="text-center p-3 bg-warning-yellow/10 rounded-lg border border-warning-yellow/30">
                       <div className="text-sm font-medium text-warning-yellow font-armenian mb-1">
-                        Ժամանակավոր մուտք
+                        {t('module.temp-access')}
                       </div>
                       <div className="text-lg font-bold text-warning-yellow font-mono">
                         {formatTimeRemaining(timeRemaining)}
                       </div>
                       <div className="text-xs text-warning-yellow/80 font-armenian">
-                        մնացած ժամանակ
+                        {t('module.remaining-time')}
                       </div>
                     </div>}
                 </> : <Button onClick={onEnroll} disabled={enrollModule.isPending} className="w-full btn-modern font-armenian">
-                  {enrollModule.isPending ? 'Գրանցվում է...' : 'Գրանցվել հիմա'}
+                  {enrollModule.isPending ? t('module.enrolling') : t('module.enroll-now')}
                 </Button>}
             </div> : <Button onClick={onNavigateToAuth} className="w-full btn-modern font-armenian">
-              Գրանցվել դասընթացի համար
+              {t('module.register-for-course')}
             </Button>}
 
           <div className="border-t pt-4 space-y-2 text-sm">
             <div className="flex justify-between font-armenian">
-              <span>Վկայագիր:</span>
-              <span>Այո</span>
+              <span>{t('module.certificate')}:</span>
+              <span>{t('module.yes')}</span>
             </div>
             <div className="flex justify-between font-armenian">
-              <span>Մուտք:</span>
-              <span>Մշտապես</span>
+              <span>{t('module.access')}:</span>
+              <span>{t('module.lifetime')}</span>
             </div>
             <div className="flex justify-between font-armenian">
-              <span>Լեզու:</span>
-              <span>Հայերեն</span>
+              <span>{t('module.language')}:</span>
+              <span>{t('module.armenian')}</span>
             </div>
           </div>
         </CardContent>
@@ -149,20 +151,20 @@ const ModuleDetailSidebar = ({
             <div className="w-8 h-8 rounded-full bg-edu-blue/10 text-edu-blue flex items-center justify-center text-sm">
               🎁
             </div>
-            Ժամանակավոր մուտք
+            {t('module.temp-access')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center">
             <p className="text-sm text-muted-foreground font-armenian mb-4">
-              Օգտագործեք գործընկերոջ կոդը՝ բոլոր դասերը 60 րոպեով անվճար դիտելու համար
+              {t('module.temp-access-desc')}
             </p>
           </div>
           
           <CompanyCodeInput onCodeVerified={handleTempCodeVerified} />
           
           <div className="text-xs text-center text-muted-foreground font-armenian border-t pt-3">
-            Կոդը վավեր է միայն 60 րոպե
+            {t('module.code-valid')}
           </div>
         </CardContent>
       </Card>
