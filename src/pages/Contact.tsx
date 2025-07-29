@@ -98,16 +98,11 @@ const Contact = () => {
             <div className="max-w-4xl mx-auto">
               <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 font-armenian">
                 <span className="text-gradient bg-gradient-to-r from-edu-blue via-purple-500 to-edu-orange bg-clip-text text-transparent">
-                  {language === 'hy' ? 'Կապ մեր հետ' : language === 'ru' ? 'Свяжитесь с нами' : 'Contact Us'}
+                  {t('contact.title')}
                 </span>
               </h1>
               <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 font-armenian leading-relaxed px-2">
-                {language === 'hy' 
-                  ? 'Մենք այստեղ ենք օգնելու ձեզ: Ուղարկեք ձեր հարցերը, և մենք շուտով կպատասխանենք'
-                  : language === 'ru'
-                  ? 'Мы здесь, чтобы помочь вам. Отправьте нам свои вопросы, и мы ответим в ближайшее время'
-                  : 'We are here to help you. Send us your questions and we will respond soon'
-                }
+                {t('contact.description')}
               </p>
               
               {/* Stats - Mobile grid */}
@@ -134,15 +129,10 @@ const Contact = () => {
               <div className="space-y-6 sm:space-y-8">
                 <div className="text-center lg:text-left">
                   <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 font-armenian text-foreground">
-                    {language === 'hy' ? 'Կապի տվյալներ' : language === 'ru' ? 'Контактная информация' : 'Contact Information'}
+                    {t('contact.info-title')}
                   </h2>
                   <p className="text-base sm:text-lg text-muted-foreground font-armenian leading-relaxed">
-                    {language === 'hy' 
-                      ? 'Մենք միշտ պատրաստ ենք օգնել ձեզ: Ընտրեք ձեզ համար հարմար կապի միջոցը:'
-                      : language === 'ru'
-                      ? 'Мы всегда готовы помочь вам. Выберите удобный для вас способ связи:'
-                      : 'We are always ready to help you. Choose the most convenient way to contact us:'
-                    }
+                    {t('contact.info-desc')}
                   </p>
                 </div>
                 
@@ -178,7 +168,7 @@ const Contact = () => {
                       <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-edu-blue to-purple-500 rounded-xl flex items-center justify-center text-white">
                         <Send className="w-4 sm:w-5 h-4 sm:h-5" />
                       </div>
-                      {language === 'hy' ? 'Ուղարկել հաղորդագրություն' : language === 'ru' ? 'Отправить сообщение' : 'Send Message'}
+                      {t('contact.send-message')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 sm:p-6 lg:p-8">
@@ -186,7 +176,7 @@ const Contact = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         <div className="space-y-2">
                           <Label htmlFor="name" className="font-armenian text-foreground font-medium text-sm sm:text-base">
-                            {language === 'hy' ? 'Անուն' : language === 'ru' ? 'Имя' : 'Name'}
+                            {t('contact.name')}
                           </Label>
                           <Input
                             id="name"
@@ -196,12 +186,12 @@ const Contact = () => {
                             onChange={handleChange}
                             required
                             className="h-11 sm:h-12 rounded-xl border-border/50 focus:border-edu-blue transition-colors text-sm sm:text-base"
-                            placeholder={language === 'hy' ? 'Ձեր անունը' : language === 'ru' ? 'Ваше имя' : 'Your name'}
+                            placeholder={t('contact.name-placeholder')}
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="email" className="font-armenian text-foreground font-medium text-sm sm:text-base">
-                            {language === 'hy' ? 'Էլ․ փոստ' : language === 'ru' ? 'Эл. почта' : 'Email'}
+                            {t('contact.email')}
                           </Label>
                           <Input
                             id="email"
@@ -211,14 +201,14 @@ const Contact = () => {
                             onChange={handleChange}
                             required
                             className="h-11 sm:h-12 rounded-xl border-border/50 focus:border-edu-blue transition-colors text-sm sm:text-base"
-                            placeholder={language === 'hy' ? 'your@email.com' : language === 'ru' ? 'your@email.com' : 'your@email.com'}
+                            placeholder={t('contact.email-placeholder')}
                           />
                         </div>
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="subject" className="font-armenian text-foreground font-medium text-sm sm:text-base">
-                          {language === 'hy' ? 'Թեմա' : language === 'ru' ? 'Тема' : 'Subject'}
+                          {t('contact.subject')}
                         </Label>
                         <Input
                           id="subject"
@@ -228,13 +218,13 @@ const Contact = () => {
                           onChange={handleChange}
                           required
                           className="h-11 sm:h-12 rounded-xl border-border/50 focus:border-edu-blue transition-colors text-sm sm:text-base"
-                          placeholder={language === 'hy' ? 'Հաղորդագրության թեմա' : language === 'ru' ? 'Тема сообщения' : 'Message subject'}
+                          placeholder={t('contact.subject-placeholder')}
                         />
                       </div>
                       
                       <div className="space-y-2">
                         <Label htmlFor="message" className="font-armenian text-foreground font-medium text-sm sm:text-base">
-                          {language === 'hy' ? 'Հաղորդագրություն' : language === 'ru' ? 'Сообщение' : 'Message'}
+                          {t('contact.message')}
                         </Label>
                         <Textarea
                           id="message"
@@ -244,7 +234,7 @@ const Contact = () => {
                           required
                           rows={4}
                           className="rounded-xl border-border/50 focus:border-edu-blue transition-colors resize-none text-sm sm:text-base"
-                          placeholder={language === 'hy' ? 'Ձեր հաղորդագրությունը...' : language === 'ru' ? 'Ваше сообщение...' : 'Your message...'}
+                          placeholder={t('contact.message-placeholder')}
                         />
                       </div>
                       
@@ -253,7 +243,7 @@ const Contact = () => {
                         className="w-full h-12 sm:h-12 bg-gradient-to-r from-edu-blue to-purple-500 hover:from-edu-dark-blue hover:to-purple-600 font-armenian font-semibold text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg"
                       >
                         <Send className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
-                        {language === 'hy' ? 'Ուղարկել' : language === 'ru' ? 'Отправить' : 'Send Message'}
+                        {t('contact.send')}
                       </Button>
                     </form>
                   </CardContent>
@@ -268,35 +258,30 @@ const Contact = () => {
           <div className="container mx-auto max-w-4xl">
             <div className="text-center mb-8 sm:mb-12">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 font-armenian text-foreground">
-                {language === 'hy' ? 'Հաճախ տրվող հարցեր' : language === 'ru' ? 'Часто задаваемые вопросы' : 'Frequently Asked Questions'}
+                {t('contact.faq')}
               </h2>
               <p className="text-base sm:text-lg text-muted-foreground font-armenian">
-                {language === 'hy' 
-                  ? 'Գտեք պատասխանները ամենահաճախակի հարցերի վրա'
-                  : language === 'ru'
-                  ? 'Найдите ответы на самые популярные вопросы'
-                  : 'Find answers to the most common questions'
-                }
+                {t('contact.faq-desc')}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {[
                 {
-                  q: language === 'hy' ? 'Ինչպես գրանցվել?' : language === 'ru' ? 'Как зарегистрироваться?' : 'How to register?',
-                  a: language === 'hy' ? 'Սեղմեք "Գրանցում" կոճակը և լրացրեք անհրաժեշտ դաշտերը' : language === 'ru' ? 'Нажмите кнопку "Регистрация" и заполните необходимые поля' : 'Click the "Sign Up" button and fill in the required fields'
+                  q: t('contact.how-register'),
+                  a: t('contact.how-register-answer')
                 },
                 {
-                  q: language === 'hy' ? 'Ինչպես ընտրել դասընթաց?' : language === 'ru' ? 'Как выбрать курс?' : 'How to choose a course?',
-                  a: language === 'hy' ? 'Անցեք "Դասընթացներ" բաժին և ընտրեք ձեզ հետաքրքրող ուղղությունը' : language === 'ru' ? 'Перейдите в раздел "Курсы" и выберите интересующее направление' : 'Go to the "Courses" section and choose your area of interest'
+                  q: t('contact.how-choose-course'),
+                  a: t('contact.how-choose-course-answer')
                 },
                 {
-                  q: language === 'hy' ? 'Կա՞ արդյոք անվճար դասընթացներ:' : language === 'ru' ? 'Есть ли бесплатные курсы?' : 'Are there free courses?',
-                  a: language === 'hy' ? 'Այո, մենք առաջարկում ենք մի շարք անվճար ներածական դասընթացներ' : language === 'ru' ? 'Да, мы предлагаем ряд бесплатных вводных курсов' : 'Yes, we offer a range of free introductory courses'
+                  q: t('contact.free-courses'),
+                  a: t('contact.free-courses-answer')
                 },
                 {
-                  q: language === 'hy' ? 'Ինչպես ստանալ վկայական?' : language === 'ru' ? 'Как получить сертификат?' : 'How to get a certificate?',
-                  a: language === 'hy' ? 'Ավարտելուց հետո դասընթացը և անցնելուց բոլոր առաջադրանքները, դուք կկարողանաք ներբեռնել վկայականը' : language === 'ru' ? 'После завершения курса и прохождения всех заданий, вы сможете скачать сертификат' : 'After completing the course and passing all assignments, you will be able to download the certificate'
+                  q: t('contact.get-certificate'),
+                  a: t('contact.get-certificate-answer')
                 }
               ].map((faq, index) => (
                 <div key={index} className="glass-card p-4 sm:p-6 rounded-2xl hover:scale-105 transition-transform duration-300">
