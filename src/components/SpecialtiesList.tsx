@@ -20,7 +20,18 @@ const iconMap = {
 
 const SpecialtiesList = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
+  // Helper function to get localized text
+  const getLocalizedText = (item: any, field: string) => {
+    if (language === 'en' && item[`${field}_en`]) {
+      return item[`${field}_en`];
+    }
+    if (language === 'ru' && item[`${field}_ru`]) {
+      return item[`${field}_ru`];
+    }
+    return item[field]; // Default to Armenian
+  };
   const { data: specialties, isLoading } = useSpecialties();
 
   // Get module counts for each specialty
@@ -77,7 +88,7 @@ const SpecialtiesList = () => {
       {specialties.map((specialty) => {
         const IconComponent = iconMap[specialty.icon as keyof typeof iconMap] || Code;
         const moduleCount = moduleCounts?.[specialty.id] || 0;
-        const isProgramming = specialty.name === 'Ծրագրավորում';
+        const isProgramming = specialty.name === 'Ծրագրավորում' || specialty.name_en === 'Programming' || specialty.name_ru === 'Программирование';
         
         return (
           <Card key={specialty.id} className="group hover:shadow-lg transition-all duration-300 border-border bg-card h-full flex flex-col">
@@ -86,13 +97,13 @@ const SpecialtiesList = () => {
                 <IconComponent className="w-8 h-8 text-white" />
               </div>
               <CardTitle className="text-xl font-armenian text-card-foreground h-12 flex items-center justify-center">
-                {specialty.name}
+                {getLocalizedText(specialty, 'name')}
               </CardTitle>
             </CardHeader>
             <CardContent className="text-center space-y-4 flex-grow flex flex-col justify-between p-6 pt-0">
               <div className="space-y-4">
                 <p className="text-muted-foreground font-armenian leading-relaxed h-12 flex items-center justify-center">
-                  {specialty.description}
+                  {getLocalizedText(specialty, 'description')}
                 </p>
                 
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground h-6">
