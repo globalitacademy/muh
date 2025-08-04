@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -7,11 +6,11 @@ import NetworkAnimation from '@/components/NetworkAnimation';
 import ScrollReveal from '@/components/ui/scroll-reveal';
 import { Star } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
-
 const Courses = () => {
-  const { t } = useLanguage();
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-accent/10 w-full relative overflow-hidden">
+  const {
+    t
+  } = useLanguage();
+  return <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-accent/10 w-full relative overflow-hidden">
       {/* Network Animation Background */}
       <div className="absolute inset-0 opacity-40">
         <NetworkAnimation />
@@ -36,9 +35,7 @@ const Courses = () => {
                   <span className="text-sm font-medium font-armenian">{t('courses.learning-modules')}</span>
                 </div>
                 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-tight">
-                  Մոդուլներ
-                </h1>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-tight">Բոլոր Մոդուլներ</h1>
                 
                 <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto font-armenian leading-relaxed">
                   {t('courses.modules-description')}
@@ -71,8 +68,6 @@ const Courses = () => {
       
       {/* Bottom gradient fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
-    </div>
-  );
+    </div>;
 };
-
 export default Courses;
