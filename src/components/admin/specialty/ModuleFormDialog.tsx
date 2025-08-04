@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2 } from 'lucide-react';
 import { Module } from '@/types/database';
 import { useCreateModule, useUpdateModule } from '@/hooks/useAdminModules';
+import { moduleIconOptions } from './ModuleConstants';
 
 interface ModuleFormDialogProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ interface ModuleFormData {
   instructor_ru: string;
   total_lessons: number;
   order_index: number;
+  icon: string;
 }
 
 const ModuleFormDialog = ({ isOpen, onClose, specialtyId, editingModule }: ModuleFormDialogProps) => {
@@ -55,6 +57,7 @@ const ModuleFormDialog = ({ isOpen, onClose, specialtyId, editingModule }: Modul
     instructor_ru: '',
     total_lessons: 0,
     order_index: 0,
+    icon: 'Code',
   });
 
   useEffect(() => {
@@ -75,6 +78,7 @@ const ModuleFormDialog = ({ isOpen, onClose, specialtyId, editingModule }: Modul
         instructor_ru: editingModule.instructor_ru || '',
         total_lessons: editingModule.total_lessons || 0,
         order_index: editingModule.order_index || 0,
+        icon: (editingModule as any).icon || 'Code',
       });
     } else {
       setFormData({
@@ -93,6 +97,7 @@ const ModuleFormDialog = ({ isOpen, onClose, specialtyId, editingModule }: Modul
         instructor_ru: '',
         total_lessons: 0,
         order_index: 0,
+        icon: 'Code',
       });
     }
   }, [editingModule, isOpen]);
@@ -266,7 +271,7 @@ const ModuleFormDialog = ({ isOpen, onClose, specialtyId, editingModule }: Modul
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="total_lessons" className="font-armenian">Ընդհանուր դասերի քանակ</Label>
               <Input
@@ -288,6 +293,27 @@ const ModuleFormDialog = ({ isOpen, onClose, specialtyId, editingModule }: Modul
                 required
                 min="0"
               />
+            </div>
+            <div>
+              <Label htmlFor="icon" className="font-armenian">Պատկերակ</Label>
+              <Select 
+                value={formData.icon} 
+                onValueChange={(value) => setFormData({ ...formData, icon: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Ընտրել պատկերակ" />
+                </SelectTrigger>
+                <SelectContent>
+                  {moduleIconOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      <div className="flex items-center gap-2">
+                        <option.icon className="w-4 h-4" />
+                        <span>{option.label}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
