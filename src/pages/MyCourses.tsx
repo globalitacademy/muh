@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { useEnrollments } from '@/hooks/useEnrollments';
 import { useModules } from '@/hooks/useModules';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRole } from '@/hooks/useUserRole';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { BookOpen, Clock, Award, ArrowRight } from 'lucide-react';
 import { Loader2 } from 'lucide-react';
@@ -14,6 +15,7 @@ import Footer from '@/components/Footer';
 
 const MyCourses = () => {
   const { user, loading } = useAuth();
+  const { data: userRole } = useUserRole();
   const { data: enrollments, isLoading: enrollmentsLoading } = useEnrollments();
   const { data: modules } = useModules();
   const navigate = useNavigate();
@@ -28,6 +30,40 @@ const MyCourses = () => {
 
   if (!user) {
     return <Navigate to="/auth" replace />;
+  }
+
+  // Admin-ները չեն կարող գրանցվել դասընթացներին
+  if (userRole === 'admin' || userRole === 'instructor') {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold font-armenian mb-2 text-foreground">Իմ դասընթացները</h1>
+            <p className="text-muted-foreground font-armenian">
+              Շարունակեք ձեր ուսումնական ճանապարհորդությունը
+            </p>
+          </div>
+          <Card className="text-center py-12 bg-card border-border">
+            <CardContent className="space-y-4">
+              <BookOpen className="h-12 w-12 text-muted-foreground mx-auto" />
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold font-armenian text-card-foreground">
+                  {userRole === 'admin' ? 'Ադմիններն ու մանկավարժները' : 'Մանկավարժները'} չեն կարող գրանցվել դասընթացներին
+                </h3>
+                <p className="text-muted-foreground font-armenian">
+                  Օգտագործեք ադմինիստրատիվ վահանակը դասընթացները կառավարելու համար
+                </p>
+              </div>
+              <Button onClick={() => navigate('/admin')} className="font-armenian">
+                Անցնել ադմինիստրատիվ վահանակ
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   const enrolledModules = enrollments?.map(enrollment => {

@@ -2,6 +2,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { useUserRole } from './useUserRole';
 import { toast } from 'sonner';
 
 interface Enrollment {
@@ -51,10 +52,16 @@ export const useEnrollments = () => {
 export const useEnrollModule = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { data: userRole } = useUserRole();
 
   return useMutation({
     mutationFn: async (moduleId: string) => {
       if (!user) throw new Error('User not authenticated');
+      
+      // Արգելել admin/instructor-ների գրանցումը
+      if (userRole === 'admin' || userRole === 'instructor') {
+        throw new Error('Ադմիններն ու մանկավարժները չեն կարող գրանցվել դասընթացներին');
+      }
 
       const { data, error } = await supabase
         .from('enrollments')
@@ -75,7 +82,11 @@ export const useEnrollModule = () => {
     },
     onError: (error: any) => {
       console.error('Error enrolling:', error);
-      toast.error('Սխալ է տեղի ունեցել գրանցման ժամանակ');
+      if (error.message === 'Ադմիններն ու մանկավարժները չեն կարող գրանցվել դասընթացներին') {
+        toast.error(error.message);
+      } else {
+        toast.error('Սխալ է տեղի ունեցել գրանցման ժամանակ');
+      }
     },
   });
 };
