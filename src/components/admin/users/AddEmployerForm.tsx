@@ -47,6 +47,8 @@ const AddEmployerForm: React.FC<AddEmployerFormProps> = ({ onSuccess }) => {
         department: data.department || null,
         role: 'employer',
         group_number: null, // Employers don't have group numbers
+        status: 'pending',
+        application_type: 'manual',
       });
       form.reset();
       onSuccess?.();

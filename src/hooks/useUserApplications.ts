@@ -9,6 +9,8 @@ interface UserApplication {
   email: string;
   phone?: string;
   organization?: string;
+  department?: string;
+  group_number?: string;
   role: string;
   status: string;
   application_type: string;

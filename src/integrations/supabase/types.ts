@@ -988,7 +988,9 @@ export type Database = {
         Row: {
           application_type: string
           created_at: string
+          department: string | null
           email: string
+          group_number: string | null
           id: string
           name: string
           organization: string | null
@@ -1005,7 +1007,9 @@ export type Database = {
         Insert: {
           application_type?: string
           created_at?: string
+          department?: string | null
           email: string
+          group_number?: string | null
           id?: string
           name: string
           organization?: string | null
@@ -1022,7 +1026,9 @@ export type Database = {
         Update: {
           application_type?: string
           created_at?: string
+          department?: string | null
           email?: string
+          group_number?: string | null
           id?: string
           name?: string
           organization?: string | null

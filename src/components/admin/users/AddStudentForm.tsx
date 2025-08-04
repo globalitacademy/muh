@@ -50,6 +50,8 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess }) => {
         department: data.department || null,
         group_number: data.group_number || null,
         role: 'student',
+        status: 'pending',
+        application_type: 'manual',
       });
       form.reset();
       onSuccess?.();
