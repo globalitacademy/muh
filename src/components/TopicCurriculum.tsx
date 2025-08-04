@@ -16,9 +16,11 @@ interface TopicCurriculumProps {
 const TopicCurriculum = ({ topics, hasFullAccess, onTopicClick }: TopicCurriculumProps) => {
   const { user } = useAuth();
 
-  console.log('TopicCurriculum props:', { 
+  console.log('TopicCurriculum DEBUG:', { 
     topicsCount: topics.length, 
     hasFullAccess,
+    userLoggedIn: !!user,
+    userId: user?.id,
     topics: topics.map(t => ({ id: t.id, title: t.title, is_free: t.is_free }))
   });
 
@@ -31,6 +33,7 @@ const TopicCurriculum = ({ topics, hasFullAccess, onTopicClick }: TopicCurriculu
   });
 
   const handleTopicClick = (topicId: string, canAccess: boolean) => {
+    console.log('Topic click attempt:', { topicId, canAccess, hasFullAccess });
     if (canAccess) {
       onTopicClick(topicId);
     }
