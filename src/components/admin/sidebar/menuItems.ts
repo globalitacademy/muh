@@ -43,7 +43,7 @@ export const menuItems: MenuItem[] = [
     label: 'Գրանցման դիմումներ',
     icon: UserPlus,
     category: 'users',
-    badge: '3'
+    badge: null
   }, {
     id: 'users',
     label: 'Օգտատերեր',
