@@ -1,47 +1,81 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { FileText, Download, Calendar, Filter, Users, BookOpen, BarChart3 } from 'lucide-react';
+import { FileText, Download, Calendar, Filter, Users, BookOpen, BarChart3, GraduationCap, Award, UserCheck } from 'lucide-react';
+import { useReportsData } from '@/hooks/useReportsData';
+import { format } from 'date-fns';
 
 const AdminReportsTab = () => {
+  const { data: reportsData, isLoading, error } = useReportsData();
+
   const reports = [
     {
       id: 1,
       name: 'Օգտատերերի հաշվետվություն',
-      description: 'Բոլոր օգտատերերի մանրամասն ցանկ',
+      description: 'Բոլոր օգտատերերի մանրամասն ցանկ և վիճակագրություն',
       type: 'users',
       icon: Users,
-      lastGenerated: '2024-01-15',
-      size: '2.3 MB'
+      lastGenerated: format(new Date(), 'yyyy-MM-dd'),
+      size: `${((reportsData?.totalUsers || 0) * 0.15).toFixed(1)} KB`,
+      count: reportsData?.totalUsers || 0
     },
     {
       id: 2,
       name: 'Դասընթացների վիճակագրություն',
-      description: 'Դասընթացների ռեգիստրացիա և ավարտ',
+      description: 'Բոլոր մոդուլների և գրանցումների վերլուծություն',
       type: 'courses',
       icon: BookOpen,
-      lastGenerated: '2024-01-14',
-      size: '1.8 MB'
+      lastGenerated: format(new Date(), 'yyyy-MM-dd'),
+      size: `${((reportsData?.totalModules || 0) * 0.25).toFixed(1)} KB`,
+      count: reportsData?.totalModules || 0
     },
     {
       id: 3,
-      name: 'Ակտիվության հաշվետվություն',
-      description: 'Օգտատերերի ակտիվության վերլուծություն',
-      type: 'activity',
-      icon: BarChart3,
-      lastGenerated: '2024-01-13',
-      size: '3.1 MB'
+      name: 'Գրանցումների հաշվետվություն',
+      description: 'Ուսանողների գրանցումների և առաջընթացի վերլուծություն',
+      type: 'enrollments',
+      icon: UserCheck,
+      lastGenerated: format(new Date(), 'yyyy-MM-dd'),
+      size: `${((reportsData?.totalEnrollments || 0) * 0.18).toFixed(1)} KB`,
+      count: reportsData?.totalEnrollments || 0
+    },
+    {
+      id: 4,
+      name: 'Վկայականների հաշվետվություն',
+      description: 'Տրված վկայականների և ավարտական վիճակագրություն',
+      type: 'certificates',
+      icon: Award,
+      lastGenerated: format(new Date(), 'yyyy-MM-dd'),
+      size: `${((reportsData?.recentCertificates || 0) * 0.12).toFixed(1)} KB`,
+      count: reportsData?.recentCertificates || 0
     }
   ];
 
   const handleGenerateReport = (reportId: number) => {
-    console.log(`Generating report ${reportId}`);
+    const report = reports.find(r => r.id === reportId);
+    console.log(`Generating ${report?.type} report with ${report?.count} records`);
   };
 
   const handleDownloadReport = (reportId: number) => {
-    console.log(`Downloading report ${reportId}`);
+    const report = reports.find(r => r.id === reportId);
+    console.log(`Downloading ${report?.type} report`);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-edu-blue"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-500 font-armenian">Սխալ տվյալների բեռնման ժամանակ</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 md:space-y-6 p-2 md:p-0">
@@ -71,16 +105,16 @@ const AdminReportsTab = () => {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <Card className="modern-card course-card-hover animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <CardContent className="p-4 md:p-6">
             <div className="flex items-center gap-3 md:gap-4">
               <div className="p-2 md:p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
-                <FileText className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                <Users className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
               <div>
-                <div className="text-xl md:text-2xl font-bold">24</div>
-                <div className="text-xs md:text-sm font-armenian text-muted-foreground">Ընդամենը հաշվետվություններ</div>
+                <div className="text-xl md:text-2xl font-bold">{reportsData?.totalUsers || 0}</div>
+                <div className="text-xs md:text-sm font-armenian text-muted-foreground">Ընդամենը օգտատերեր</div>
               </div>
             </div>
           </CardContent>
@@ -90,25 +124,39 @@ const AdminReportsTab = () => {
           <CardContent className="p-4 md:p-6">
             <div className="flex items-center gap-3 md:gap-4">
               <div className="p-2 md:p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl">
-                <Download className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                <BookOpen className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
               <div>
-                <div className="text-xl md:text-2xl font-bold">156</div>
-                <div className="text-xs md:text-sm font-armenian text-muted-foreground">Ընդամենը ներբեռնումներ</div>
+                <div className="text-xl md:text-2xl font-bold">{reportsData?.totalModules || 0}</div>
+                <div className="text-xs md:text-sm font-armenian text-muted-foreground">Ընդամենը մոդուլներ</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="modern-card course-card-hover animate-fade-in-up sm:col-span-2 lg:col-span-1" style={{ animationDelay: '0.3s' }}>
+        <Card className="modern-card course-card-hover animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           <CardContent className="p-4 md:p-6">
             <div className="flex items-center gap-3 md:gap-4">
               <div className="p-2 md:p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl">
-                <Calendar className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                <UserCheck className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
               <div>
-                <div className="text-xl md:text-2xl font-bold">3</div>
-                <div className="text-xs md:text-sm font-armenian text-muted-foreground">Այս ամիս</div>
+                <div className="text-xl md:text-2xl font-bold">{reportsData?.totalEnrollments || 0}</div>
+                <div className="text-xs md:text-sm font-armenian text-muted-foreground">Ընդամենը գրանցումներ</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="modern-card course-card-hover animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <CardContent className="p-4 md:p-6">
+            <div className="flex items-center gap-3 md:gap-4">
+              <div className="p-2 md:p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl">
+                <Award className="w-5 h-5 md:w-6 md:h-6 text-white" />
+              </div>
+              <div>
+                <div className="text-xl md:text-2xl font-bold">{reportsData?.monthlyActivity || 0}</div>
+                <div className="text-xs md:text-sm font-armenian text-muted-foreground">Այս ամիս ակտիվություն</div>
               </div>
             </div>
           </CardContent>
@@ -118,7 +166,7 @@ const AdminReportsTab = () => {
       {/* Reports List */}
       <div className="space-y-4">
         {reports.map((report, index) => (
-          <Card key={report.id} className="modern-card course-card-hover animate-fade-in-up" style={{ animationDelay: `${0.1 * (index + 4)}s` }}>
+          <Card key={report.id} className="modern-card course-card-hover animate-fade-in-up" style={{ animationDelay: `${0.1 * (index + 5)}s` }}>
             <CardContent className="p-4 md:p-6">
               <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
                 <div className="flex flex-col sm:flex-row items-start gap-4 md:gap-6 flex-1">
@@ -128,7 +176,7 @@ const AdminReportsTab = () => {
                   <div className="flex-1 min-w-0">
                     <h3 className="text-lg md:text-xl font-semibold font-armenian mb-2">{report.name}</h3>
                     <p className="text-sm md:text-base text-muted-foreground mb-4">{report.description}</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 text-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 text-sm">
                       <div>
                         <span className="font-medium font-armenian text-muted-foreground">Վերջին գեներացիա:</span>
                         <p className="font-semibold break-words">{report.lastGenerated}</p>
@@ -136,6 +184,10 @@ const AdminReportsTab = () => {
                       <div>
                         <span className="font-medium font-armenian text-muted-foreground">Ֆայլի չափ:</span>
                         <p className="font-semibold">{report.size}</p>
+                      </div>
+                      <div>
+                        <span className="font-medium font-armenian text-muted-foreground">Տվյալների քանակ:</span>
+                        <p className="font-semibold">{report.count}</p>
                       </div>
                       <div>
                         <span className="font-medium font-armenian text-muted-foreground">Տիպ:</span>
@@ -170,7 +222,7 @@ const AdminReportsTab = () => {
       </div>
 
       {/* Custom Report Builder */}
-      <Card className="modern-card animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+      <Card className="modern-card animate-fade-in-up" style={{ animationDelay: '0.9s' }}>
         <CardHeader>
           <CardTitle className="font-armenian flex items-center gap-2 text-lg md:text-xl">
             <BarChart3 className="w-5 h-5" />
