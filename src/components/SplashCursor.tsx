@@ -56,7 +56,13 @@ function SplashCursor({
 
     let pointers = [new pointerPrototype()];
 
-    const { gl, ext } = getWebGLContext(canvas);
+    const webglResult = getWebGLContext(canvas);
+    if (!webglResult) {
+      console.warn('WebGL is not supported in this browser');
+      return;
+    }
+    
+    const { gl, ext } = webglResult;
     if (!ext.supportLinearFiltering) {
       config.DYE_RESOLUTION = 256;
       config.SHADING = false;
@@ -76,6 +82,13 @@ function SplashCursor({
         gl =
           canvas.getContext('webgl', params) ||
           canvas.getContext('experimental-webgl', params);
+      
+      // Check if WebGL is supported
+      if (!gl) {
+        console.warn('WebGL is not supported in this browser');
+        return null;
+      }
+      
       let halfFloat;
       let supportLinearFiltering;
       if (isWebGL2) {
