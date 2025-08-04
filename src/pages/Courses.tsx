@@ -35,7 +35,7 @@ const Courses = () => {
                   <span className="text-sm font-medium font-armenian">{t('courses.learning-modules')}</span>
                 </div>
                 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-tight">Բոլոր Մոդուլներ</h1>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-tight">Բոլոր Մոդուլները</h1>
                 
                 <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto font-armenian leading-relaxed">
                   {t('courses.modules-description')}
