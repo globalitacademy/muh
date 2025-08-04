@@ -20,9 +20,13 @@ interface Enrollment {
 }
 
 export const useEnrollments = () => {
+  const { user } = useAuth();
+  
   return useQuery({
-    queryKey: ['enrollments'],
+    queryKey: ['enrollments', user?.id],
     queryFn: async (): Promise<Enrollment[]> => {
+      if (!user) return [];
+      
       const { data, error } = await supabase
         .from('enrollments')
         .select(`
@@ -34,11 +38,13 @@ export const useEnrollments = () => {
             instructor
           )
         `)
+        .eq('user_id', user.id)
         .order('enrolled_at', { ascending: false });
 
       if (error) throw error;
       return data || [];
     },
+    enabled: !!user,
   });
 };
 
