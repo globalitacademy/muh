@@ -984,6 +984,60 @@ export type Database = {
         }
         Relationships: []
       }
+      user_applications: {
+        Row: {
+          application_type: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          organization: string | null
+          phone: string | null
+          rejection_reason: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          role: string
+          status: string
+          submitted_at: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          application_type?: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          organization?: string | null
+          phone?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          application_type?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          organization?: string | null
+          phone?: string | null
+          rejection_reason?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          role?: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_progress: {
         Row: {
           completed: boolean
