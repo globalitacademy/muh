@@ -50,12 +50,6 @@ export const menuItems: MenuItem[] = [
     icon: Users,
     category: 'users',
     badge: null
-  }, {
-    id: 'permissions',
-    label: 'Թույլտվություններ',
-    icon: Shield,
-    category: 'users',
-    badge: null
   },
   // Գործառնական
   {

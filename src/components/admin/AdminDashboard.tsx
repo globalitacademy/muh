@@ -46,8 +46,6 @@ const AdminDashboard = () => {
         return <AdminApplicationsTab />;
       case 'users':
         return <AdminUsersTab />;
-      case 'permissions':
-        return <AdminUsersTab />;
       case 'finance':
         return <AdminFinanceTab />;
       case 'certificates':
