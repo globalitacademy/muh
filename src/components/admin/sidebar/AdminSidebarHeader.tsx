@@ -13,7 +13,7 @@ const AdminSidebarHeader = ({ isCollapsed }: AdminSidebarHeaderProps) => {
     <SidebarHeader className="border-b border-border/20 p-6 bg-gradient-to-r from-card/80 via-background/60 to-card/80 backdrop-blur-md relative overflow-hidden">
       {/* Enhanced background with animated gradients */}
       <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/10 via-transparent to-edu-orange/10 animate-blob" />
-      <div className="absolute inset-0 bg-gradient-to-tl from-edu-purple/5 via-transparent to-edu-light-blue/5 animate-blob animation-delay-2000" />
+      <div className="absolute inset-0 bg-gradient-to-tl from-edu-purple/5 via-transparent to-edu-light-blue/5" />
       
       {/* Main header content container */}
       <div className="relative z-10 flex items-center">
