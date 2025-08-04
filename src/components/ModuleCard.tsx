@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Module } from '@/types/database';
 import { useNavigate } from 'react-router-dom';
-import { getModuleIcon } from '@/utils/moduleUtils';
+import { getModuleIconFromDb } from '@/utils/moduleUtils';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ModuleCardProps {
@@ -48,7 +48,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
         {/* Enhanced Module Icon with floating effect */}
         <div className="relative mb-8 group-hover:scale-110 transition-all duration-500">
           <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-edu-blue/20 via-edu-blue/30 to-purple-600/20 border border-edu-blue/40 flex items-center justify-center text-edu-blue shadow-xl group-hover:shadow-2xl group-hover:shadow-edu-blue/30 transition-all duration-500">
-            {getModuleIcon(module.category, module.title)}
+            {getModuleIconFromDb((module as any).icon)}
             
             {/* Inner glow */}
             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-edu-blue/0 to-edu-blue/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

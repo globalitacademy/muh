@@ -20,8 +20,66 @@ import {
   Network,
   FileText,
   Image,
-  Zap
+  Zap,
+  Monitor,
+  Lock,
+  Cpu,
+  FileCode,
+  Workflow,
+  Bot
 } from 'lucide-react';
+
+// Icon mapping for dynamic icon display
+const iconMap = {
+  'Code': Code,
+  'BookOpen': BookOpen,
+  'Database': Database,
+  'Globe': Globe,
+  'Layers': Layers,
+  'Monitor': Monitor,
+  'Smartphone': Smartphone,
+  'Server': Server,
+  'Lock': Lock,
+  'Cloud': Cloud,
+  'Cpu': Cpu,
+  'FileCode': FileCode,
+  'Workflow': Workflow,
+  'Shield': Shield,
+  'Palette': Palette,
+  'Network': Network,
+  'Bot': Bot,
+  'Brain': Brain,
+  'Zap': Zap,
+  'Settings': Settings,
+  'LayoutDashboard': LayoutDashboard,
+  'FileText': FileText,
+  'Image': Image,
+  'TestTube': TestTube,
+  'GitBranch': GitBranch,
+  'Link': Link
+};
+
+// Get icon from database icon field
+export const getModuleIconFromDb = (iconName?: string) => {
+  const iconProps = {
+    width: 32,
+    height: 32,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const
+  };
+
+  if (iconName && iconMap[iconName as keyof typeof iconMap]) {
+    const IconComponent = iconMap[iconName as keyof typeof iconMap];
+    return React.createElement(IconComponent, iconProps);
+  }
+
+  // Default to Code icon if not found
+  return React.createElement(Code, iconProps);
+};
 
 export const getModuleIcon = (category?: string, title?: string) => {
   const iconProps = {
