@@ -1,5 +1,6 @@
-
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -11,34 +12,71 @@ import { Shield, User, Settings, Plus, Edit, Eye, Clock, AlertTriangle } from 'l
 const AdminPermissionsTab = () => {
   const [selectedRole, setSelectedRole] = useState('admin');
 
-  // Mock roles and permissions data
+  // Fetch role statistics from database
+  const { data: roleStats } = useQuery({
+    queryKey: ['roleStats'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .order('role');
+      
+      if (error) throw error;
+      
+      const stats = data?.reduce((acc, profile) => {
+        acc[profile.role] = (acc[profile.role] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>) || {};
+      
+      return stats;
+    },
+  });
+
+  // Fetch audit logs from database
+  const { data: auditLogs } = useQuery({
+    queryKey: ['auditLogs'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('admin_audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10);
+      
+      if (error) {
+        console.error('Error fetching audit logs:', error);
+        return [];
+      }
+      return data || [];
+    },
+  });
+
   const roles = [
     {
       id: 'admin',
       name: 'Ադմինիստրատոր',
       description: 'Լիարժեք մուտք բոլոր գործառույթներին',
-      userCount: 3,
+      userCount: roleStats?.admin || 0,
       color: 'from-red-500 to-red-600'
     },
     {
       id: 'instructor',
       name: 'Դասախոս',
       description: 'Դասընթացների և ուսանողների կառավարում',
-      userCount: 12,
+      userCount: roleStats?.instructor || 0,
       color: 'from-blue-500 to-blue-600'
     },
     {
       id: 'student',
       name: 'Ուսանող',
       description: 'Դասընթացների նյութերի դիտում',
-      userCount: 347,
+      userCount: roleStats?.student || 0,
       color: 'from-green-500 to-green-600'
     },
     {
       id: 'employer',
       name: 'Գործատու',
       description: 'Աշխատանքի հայտարարությունների կառավարում',
-      userCount: 8,
+      userCount: roleStats?.employer || 0,
       color: 'from-purple-500 to-purple-600'
     }
   ];
@@ -76,33 +114,6 @@ const AdminPermissionsTab = () => {
         { id: 'jobs_create', name: 'Հայտարարությունների ստեղծում', admin: true, instructor: false, student: false, employer: true },
         { id: 'jobs_edit', name: 'Հայտարարությունների խմբագրում', admin: true, instructor: false, student: false, employer: true }
       ]
-    }
-  ];
-
-  const auditLogs = [
-    {
-      id: '1',
-      user: 'Արամ Ավետիսյան',
-      action: 'Ուսանողի ջնջում',
-      target: 'mari.karapetyan@example.com',
-      timestamp: '2024-01-16 14:30:25',
-      status: 'success'
-    },
-    {
-      id: '2',
-      user: 'Մարիամ Գրիգորյան',
-      action: 'Դասընթացի ստեղծում',
-      target: 'React Advanced',
-      timestamp: '2024-01-16 13:15:10',
-      status: 'success'
-    },
-    {
-      id: '3',
-      user: 'Ադմին',
-      action: 'Դերի փոփոխություն',
-      target: 'davit.hakobyan@example.com',
-      timestamp: '2024-01-16 12:45:33',
-      status: 'failed'
     }
   ];
 
@@ -180,19 +191,25 @@ const AdminPermissionsTab = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {auditLogs.slice(0, 5).map((log) => (
-                <div key={log.id} className="p-3 bg-muted/20 rounded-lg">
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="font-semibold text-sm">{log.user}</span>
-                    <Badge variant={log.status === 'success' ? 'default' : 'destructive'} className="text-xs">
-                      {log.status === 'success' ? 'Հաջողված' : 'Ձախողված'}
-                    </Badge>
+              {auditLogs && auditLogs.length > 0 ? (
+                auditLogs.slice(0, 5).map((log) => (
+                  <div key={log.id} className="p-3 bg-muted/20 rounded-lg">
+                    <div className="flex justify-between items-start mb-1">
+                      <span className="font-semibold text-sm">Ադմին</span>
+                      <Badge variant="default" className="text-xs">
+                        Հաջողված
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground font-armenian">{log.action}</p>
+                    <p className="text-xs text-muted-foreground">{log.target_user_id || 'Անհայտ'}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{new Date(log.created_at).toLocaleString('hy-AM')}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground font-armenian">{log.action}</p>
-                  <p className="text-xs text-muted-foreground">{log.target}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{log.timestamp}</p>
+                ))
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-sm text-muted-foreground font-armenian">Տվյալներ չկան</p>
                 </div>
-              ))}
+              )}
             </CardContent>
           </Card>
         </div>
