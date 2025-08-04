@@ -20,16 +20,15 @@ const AdminSidebarHeader = ({ isCollapsed }: AdminSidebarHeaderProps) => {
         <div className="flex items-center gap-4 flex-1">
           <div className="relative group">
             <div className={cn(
-              "p-3 bg-gradient-to-br from-edu-blue via-edu-blue to-edu-orange rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl group-hover:scale-105",
-              "before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] before:transition-transform before:duration-1000 hover:before:translate-x-[100%] before:rounded-xl",
+              "p-3 bg-gradient-to-br from-edu-blue via-edu-blue to-edu-orange rounded-xl shadow-lg",
               isCollapsed && "p-2"
             )}>
               <Shield className={cn(
-                "w-6 h-6 text-white transition-all duration-200 relative z-10",
+                "w-6 h-6 text-white relative z-10",
                 isCollapsed && "w-4 h-4"
               )} />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl blur-md opacity-30 group-hover:opacity-50 transition-opacity duration-300 -z-10" />
+            <div className="absolute inset-0 bg-gradient-to-br from-edu-blue to-edu-orange rounded-xl blur-md opacity-30 -z-10" />
           </div>
           
           <div className={cn(
