@@ -28,6 +28,15 @@ const ModuleDetail = () => {
 
   const isEnrolled = enrollments?.some(e => e.module_id === id);
   const hasFullAccess = isEnrolled || hasValidCompanyCode;
+  
+  console.log('ModuleDetail Access Debug:', {
+    userId: user?.id,
+    moduleId: id,
+    enrollments: enrollments?.map(e => ({ id: e.id, module_id: e.module_id })),
+    isEnrolled,
+    hasValidCompanyCode,
+    hasFullAccess
+  });
 
   const handleEnroll = async () => {
     if (!user) {
