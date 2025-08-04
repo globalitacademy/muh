@@ -13,7 +13,7 @@ import AdminSettingsTab from './AdminSettingsTab';
 import AdminFinanceTab from './finance/AdminFinanceTab';
 import AdminCertificatesTab from './certificates/AdminCertificatesTab';
 import AdminCommunicationTab from './communication/AdminCommunicationTab';
-import AdminResourcesTab from './resources/AdminResourcesTab';
+
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('overview');
@@ -52,8 +52,6 @@ const AdminDashboard = () => {
         return <AdminCertificatesTab />;
       case 'communication':
         return <AdminCommunicationTab />;
-      case 'resources':
-        return <AdminResourcesTab />;
       case 'logs':
         return <AdminLogsTab />;
       case 'archive':
