@@ -473,6 +473,7 @@ export type Database = {
           description_ru: string | null
           difficulty_level: Database["public"]["Enums"]["difficulty_level"]
           duration_weeks: number
+          icon: string | null
           id: string
           image_url: string | null
           instructor: string
@@ -499,6 +500,7 @@ export type Database = {
           description_ru?: string | null
           difficulty_level?: Database["public"]["Enums"]["difficulty_level"]
           duration_weeks?: number
+          icon?: string | null
           id?: string
           image_url?: string | null
           instructor: string
@@ -525,6 +527,7 @@ export type Database = {
           description_ru?: string | null
           difficulty_level?: Database["public"]["Enums"]["difficulty_level"]
           duration_weeks?: number
+          icon?: string | null
           id?: string
           image_url?: string | null
           instructor?: string
