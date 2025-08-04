@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, Edit, Trash2, BookOpen, Users, Star, Clock } from 'lucide-react';
 import { Module } from '@/types/database';
-import { useDeleteModule } from '@/hooks/useAdminModules';
+import { useDeleteModule, useUpdateModule } from '@/hooks/useAdminModules';
 import { cn } from '@/lib/utils';
 import SpecialtyTopicsList from './SpecialtyTopicsList';
 
@@ -19,11 +20,19 @@ interface SpecialtyModuleCardProps {
 const SpecialtyModuleCard = ({ module, onEdit, onAddTopic }: SpecialtyModuleCardProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const deleteModule = useDeleteModule();
+  const updateModule = useUpdateModule();
 
   const handleDelete = async () => {
     if (confirm('Վստա՞հ եք, որ ուզում եք ջնջել այս մոդուլը:')) {
       await deleteModule.mutateAsync(module.id);
     }
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    await updateModule.mutateAsync({
+      id: module.id,
+      updates: { status: newStatus as 'draft' | 'active' | 'archived' | 'coming_soon' }
+    });
   };
 
   const getDifficultyColor = (level: string) => {
@@ -49,6 +58,36 @@ const SpecialtyModuleCard = ({ module, onEdit, onAddTopic }: SpecialtyModuleCard
         return 'Բարձրակարգ';
       default:
         return level;
+    }
+  };
+
+  const getModuleStatusText = (status: string) => {
+    switch (status) {
+      case 'draft':
+        return 'Սևագիր';
+      case 'active':
+        return 'Ակտիվ';
+      case 'archived':
+        return 'Արխիվ';
+      case 'coming_soon':
+        return 'Շուտով';
+      default:
+        return 'Սևագիր';
+    }
+  };
+
+  const getModuleStatusColor = (status: string) => {
+    switch (status) {
+      case 'draft':
+        return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300';
+      case 'active':
+        return 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300';
+      case 'archived':
+        return 'bg-gray-100 text-gray-700 dark:bg-gray-900/20 dark:text-gray-300';
+      case 'coming_soon':
+        return 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300';
+      default:
+        return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300';
     }
   };
 
@@ -144,17 +183,41 @@ const SpecialtyModuleCard = ({ module, onEdit, onAddTopic }: SpecialtyModuleCard
               </div>
               <div className="p-4 bg-gradient-to-br from-card to-muted/20 rounded-lg border border-border/30">
                 <div className="text-xs font-medium font-armenian text-muted-foreground mb-1">Կարգավիճակ</div>
-                <Badge 
-                  variant={module.is_active ? 'default' : 'secondary'} 
-                  className={cn(
-                    "text-xs",
-                    module.is_active 
-                      ? "bg-gradient-to-r from-success-green/20 to-success-green/10 text-success-green border-success-green/30" 
-                      : "bg-gradient-to-r from-muted/50 to-muted/30 text-muted-foreground border-muted/50"
-                  )}
-                >
-                  {module.is_active ? 'Ակտիվ' : 'Ոչ ակտիվ'}
-                </Badge>
+                <Select value={module.status} onValueChange={handleStatusChange}>
+                  <SelectTrigger className="w-full h-8 text-xs font-armenian">
+                    <SelectValue>
+                      <span className={`px-2 py-1 rounded-full text-xs ${getModuleStatusColor(module.status)}`}>
+                        {getModuleStatusText(module.status)}
+                      </span>
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft" className="font-armenian">
+                      <span className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                        Սևագիր
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="active" className="font-armenian">
+                      <span className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                        Ակտիվ
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="coming_soon" className="font-armenian">
+                      <span className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                        Շուտով
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="archived" className="font-armenian">
+                      <span className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-gray-500"></div>
+                        Արխիվ
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             

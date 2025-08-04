@@ -18,8 +18,9 @@ export interface Module {
   students_count: number;
   rating?: number;
   is_active: boolean;
+  status: 'draft' | 'active' | 'archived' | 'coming_soon';
   order_index?: number;
-  specialty_id?: string; // Added missing property
+  specialty_id?: string;
   created_at: string;
   updated_at: string;
 }

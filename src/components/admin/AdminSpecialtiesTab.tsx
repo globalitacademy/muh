@@ -31,6 +31,7 @@ const AdminSpecialtiesTab = () => {
     icon: 'Code',
     color: 'from-blue-500 to-cyan-500',
     order_index: 0,
+    status: 'active',
   });
 
   const resetForm = () => {
@@ -44,6 +45,7 @@ const AdminSpecialtiesTab = () => {
       icon: 'Code',
       color: 'from-blue-500 to-cyan-500',
       order_index: 0,
+      status: 'active',
     });
     setIsCreateModalOpen(false);
     setEditingSpecialty(null);
@@ -76,6 +78,7 @@ const AdminSpecialtiesTab = () => {
       icon: specialty.icon || 'Code',
       color: specialty.color || 'from-blue-500 to-cyan-500',
       order_index: specialty.order_index || 0,
+      status: specialty.status || 'active',
     });
     setIsCreateModalOpen(true);
   };

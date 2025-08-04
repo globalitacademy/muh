@@ -157,6 +157,38 @@ const SpecialtyFormDialog = ({
             </div>
           </div>
 
+          <div>
+            <Label htmlFor="status" className="font-armenian">Կարգավիճակ</Label>
+            <Select 
+              value={formData.status || 'active'} 
+              onValueChange={(value) => setFormData({ ...formData, status: value as 'active' | 'inactive' | 'coming_soon' })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active" className="font-armenian">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    Ակտիվ
+                  </div>
+                </SelectItem>
+                <SelectItem value="inactive" className="font-armenian">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    Ոչ ակտիվ
+                  </div>
+                </SelectItem>
+                <SelectItem value="coming_soon" className="font-armenian">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-gray-500"></div>
+                    Շուտով
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="flex gap-2 pt-4">
             <Button 
               type="submit" 

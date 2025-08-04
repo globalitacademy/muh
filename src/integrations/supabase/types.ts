@@ -738,6 +738,7 @@ export type Database = {
           name_en: string | null
           name_ru: string | null
           order_index: number | null
+          status: string | null
           updated_at: string
         }
         Insert: {
@@ -754,6 +755,7 @@ export type Database = {
           name_en?: string | null
           name_ru?: string | null
           order_index?: number | null
+          status?: string | null
           updated_at?: string
         }
         Update: {
@@ -770,6 +772,7 @@ export type Database = {
           name_en?: string | null
           name_ru?: string | null
           order_index?: number | null
+          status?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -1132,7 +1135,7 @@ export type Database = {
         | "beginner"
         | "intermediate"
         | "advanced"
-      module_status: "draft" | "active" | "archived"
+      module_status: "draft" | "active" | "archived" | "coming_soon"
       question_type:
         | "multiple-choice"
         | "true-false"
@@ -1283,7 +1286,7 @@ export const Constants = {
         "intermediate",
         "advanced",
       ],
-      module_status: ["draft", "active", "archived"],
+      module_status: ["draft", "active", "archived", "coming_soon"],
       question_type: [
         "multiple-choice",
         "true-false",

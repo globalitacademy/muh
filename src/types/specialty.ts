@@ -11,6 +11,7 @@ export interface Specialty {
   color: string;
   order_index: number;
   is_active: boolean;
+  status: 'active' | 'inactive' | 'coming_soon';
   created_at: string;
   updated_at: string;
 }
@@ -25,6 +26,7 @@ export interface CreateSpecialtyData {
   icon: string;
   color: string;
   order_index: number;
+  status?: 'active' | 'inactive' | 'coming_soon';
 }
 
 export interface UpdateSpecialtyData extends Partial<CreateSpecialtyData> {}

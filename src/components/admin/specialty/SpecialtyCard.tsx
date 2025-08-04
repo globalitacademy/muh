@@ -2,11 +2,13 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, Edit, Trash2, BookOpen } from 'lucide-react';
 import { Specialty } from '@/types/specialty';
 import { Module } from '@/types/database';
 import { useSpecialtyModules } from '@/hooks/useSpecialtyModules';
+import { useUpdateSpecialty } from '@/hooks/useSpecialties';
 import { iconOptions } from './SpecialtyConstants';
 import SpecialtyModuleCard from './SpecialtyModuleCard';
 
@@ -20,6 +22,32 @@ interface SpecialtyCardProps {
   onEditModule: (module: Module) => void;
 }
 
+const getStatusText = (status: string) => {
+  switch (status) {
+    case 'active':
+      return 'Ակտիվ';
+    case 'inactive':
+      return 'Ոչ ակտիվ';
+    case 'coming_soon':
+      return 'Շուտով';
+    default:
+      return 'Ակտիվ';
+  }
+};
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'active':
+      return 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300';
+    case 'inactive':
+      return 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-300';
+    case 'coming_soon':
+      return 'bg-gray-100 text-gray-700 dark:bg-gray-900/20 dark:text-gray-300';
+    default:
+      return 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300';
+  }
+};
+
 const SpecialtyCard = ({
   specialty,
   isExpanded,
@@ -29,6 +57,14 @@ const SpecialtyCard = ({
   onAddModule,
   onEditModule
 }: SpecialtyCardProps) => {
+  const updateSpecialty = useUpdateSpecialty();
+
+  const handleStatusChange = async (newStatus: string) => {
+    await updateSpecialty.mutateAsync({
+      id: specialty.id,
+      updates: { status: newStatus as 'active' | 'inactive' | 'coming_soon' }
+    });
+  };
   const getIconComponent = (iconName: string) => {
     const iconOption = iconOptions.find(opt => opt.value === iconName);
     return iconOption ? iconOption.icon : iconOptions[0].icon;
@@ -104,9 +140,35 @@ const SpecialtyCard = ({
                 <div className="text-xs text-muted-foreground font-armenian">
                   Հերթ՝ {specialty.order_index}
                 </div>
-                <span className={`text-xs px-2 py-1 rounded-full ${specialty.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-300' : 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-300'} font-armenian`}>
-                  {specialty.is_active ? 'Ակտիվ' : 'Ոչ ակտիվ'}
-                </span>
+                <Select value={specialty.status} onValueChange={handleStatusChange}>
+                  <SelectTrigger className="w-32 h-8 text-xs font-armenian">
+                    <SelectValue>
+                      <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(specialty.status)}`}>
+                        {getStatusText(specialty.status)}
+                      </span>
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active" className="font-armenian">
+                      <span className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                        Ակտիվ
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="inactive" className="font-armenian">
+                      <span className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                        Ոչ ակտիվ
+                      </span>
+                    </SelectItem>
+                    <SelectItem value="coming_soon" className="font-armenian">
+                      <span className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-gray-500"></div>
+                        Շուտով
+                      </span>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
                 <Button 
                   variant="outline" 
                   size="sm"
