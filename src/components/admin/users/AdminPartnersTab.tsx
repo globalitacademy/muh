@@ -10,6 +10,49 @@ import { Search, Building2, Plus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import UserActionsMenu from './shared/UserActionsMenu';
 
+interface PartnerInstitution {
+  id: string;
+  institution_name: string;
+  institution_type: string;
+  description: string | null;
+  logo_url: string | null;
+  website_url: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  address: string | null;
+  is_verified: boolean;
+  is_active: boolean;
+}
+
+interface PartnerProfile {
+  id: string;
+  name: string;
+  first_name: string | null;
+  last_name: string | null;
+  organization: string | null;
+  role: string;
+  phone: string | null;
+  address: string | null;
+  department: string | null;
+  group_number: string | null;
+  avatar_url: string | null;
+  cover_photo_url: string | null;
+  bio: string | null;
+  status: string;
+  verified: boolean;
+  email_verified: boolean;
+  two_factor_enabled: boolean;
+  birth_date: string | null;
+  field_of_study: string | null;
+  personal_website: string | null;
+  linkedin_url: string | null;
+  language_preference: string;
+  is_visible_to_employers: boolean;
+  created_at: string;
+  updated_at: string;
+  partner_institutions: PartnerInstitution[];
+}
+
 const AdminPartnersTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -43,13 +86,26 @@ const AdminPartnersTab = () => {
           language_preference,
           is_visible_to_employers,
           created_at,
-          updated_at
+          updated_at,
+          partner_institutions (
+            id,
+            institution_name,
+            institution_type,
+            description,
+            logo_url,
+            website_url,
+            contact_email,
+            contact_phone,
+            address,
+            is_verified,
+            is_active
+          )
         `)
         .eq('role', 'partner')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as any;
     },
   });
 
@@ -59,7 +115,10 @@ const AdminPartnersTab = () => {
     partner.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     partner.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     partner.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    partner.field_of_study?.toLowerCase().includes(searchTerm.toLowerCase())
+    partner.field_of_study?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    partner.partner_institutions?.[0]?.institution_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    partner.partner_institutions?.[0]?.contact_email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    partner.partner_institutions?.[0]?.website_url?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
   if (isLoading) {
@@ -143,18 +202,24 @@ const AdminPartnersTab = () => {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 md:gap-6">
-          {filteredPartners.map((partner) => (
+      <div className="grid gap-4 md:gap-6">
+        {filteredPartners.map((partner) => {
+          const institution = partner.partner_institutions?.[0];
+          
+          return (
             <Card key={partner.id} className="hover:shadow-lg transition-all duration-200 border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start space-x-6 flex-1">
                     {/* Organization Logo */}
                     <div className="flex-shrink-0">
-                      <Avatar className="w-20 h-20 border-4 border-background shadow-lg">
-                        <AvatarImage src={partner.avatar_url} className="object-cover" />
+                      <Avatar className="w-24 h-24 border-4 border-background shadow-lg">
+                        <AvatarImage 
+                          src={institution?.logo_url || partner.avatar_url} 
+                          className="object-cover" 
+                        />
                         <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-xl font-bold">
-                          {partner.organization?.charAt(0) || partner.name?.charAt(0) || 'Գ'}
+                          {institution?.institution_name?.charAt(0) || partner.organization?.charAt(0) || partner.name?.charAt(0) || 'Գ'}
                         </AvatarFallback>
                       </Avatar>
                     </div>
@@ -165,7 +230,7 @@ const AdminPartnersTab = () => {
                       <div className="space-y-2">
                         <div className="flex items-center gap-3 flex-wrap">
                           <h3 className="font-bold text-xl text-foreground font-armenian">
-                            {partner.organization || 'Կազմակերպություն նշված չէ'}
+                            {institution?.institution_name || partner.organization || 'Կազմակերպություն նշված չէ'}
                           </h3>
                           <div className="flex gap-2">
                             <Badge 
@@ -174,7 +239,7 @@ const AdminPartnersTab = () => {
                             >
                               {partner.status === 'active' ? 'Ակտիվ' : 'Ապաակտիվ'}
                             </Badge>
-                            {partner.verified && (
+                            {(partner.verified || institution?.is_verified) && (
                               <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
                                 Հաստատված
                               </Badge>
@@ -182,6 +247,11 @@ const AdminPartnersTab = () => {
                             {partner.email_verified && (
                               <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
                                 Էլ.փոստ հաստատված
+                              </Badge>
+                            )}
+                            {institution?.institution_type && (
+                              <Badge variant="outline" className="text-xs">
+                                {institution.institution_type === 'educational' ? 'Կրթական' : institution.institution_type}
                               </Badge>
                             )}
                           </div>
@@ -198,19 +268,70 @@ const AdminPartnersTab = () => {
                         )}
                       </div>
                       
+                      {/* Institution Description */}
+                      {institution?.description && (
+                        <div className="space-y-2">
+                          <span className="font-medium text-muted-foreground font-armenian text-sm">Նկարագրություն:</span>
+                          <p className="text-foreground font-armenian text-sm leading-relaxed">{institution.description}</p>
+                        </div>
+                      )}
+                      
                       {/* Contact Information Grid */}
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                        {partner.phone && (
-                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
-                            <span className="font-medium text-muted-foreground font-armenian text-sm">Հեռախոս:</span>
-                            <span className="font-medium text-foreground">{partner.phone}</span>
+                        {/* Institution Contact Email */}
+                        {institution?.contact_email && (
+                          <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                            <span className="font-medium text-blue-700 font-armenian text-sm">Էլ. փոստ:</span>
+                            <a 
+                              href={`mailto:${institution.contact_email}`}
+                              className="font-medium text-blue-600 hover:text-blue-800 underline"
+                            >
+                              {institution.contact_email}
+                            </a>
                           </div>
                         )}
                         
-                        {partner.address && (
+                        {/* Institution Contact Phone */}
+                        {institution?.contact_phone && (
+                          <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-md">
+                            <span className="font-medium text-green-700 font-armenian text-sm">Հեռախոս:</span>
+                            <a 
+                              href={`tel:${institution.contact_phone}`}
+                              className="font-medium text-green-600 hover:text-green-800"
+                            >
+                              {institution.contact_phone}
+                            </a>
+                          </div>
+                        )}
+                        
+                        {/* Institution Website */}
+                        {institution?.website_url && (
+                          <div className="flex items-center gap-2 p-3 bg-purple-50 border border-purple-200 rounded-md">
+                            <span className="font-medium text-purple-700 font-armenian text-sm">Վեբկայք:</span>
+                            <a 
+                              href={institution.website_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="font-medium text-purple-600 hover:text-purple-800 underline truncate"
+                            >
+                              {institution.website_url.replace(/^https?:\/\//, '')}
+                            </a>
+                          </div>
+                        )}
+                        
+                        {/* Institution Address */}
+                        {institution?.address && (
+                          <div className="flex items-center gap-2 p-3 bg-orange-50 border border-orange-200 rounded-md">
+                            <span className="font-medium text-orange-700 font-armenian text-sm">Հասցե:</span>
+                            <span className="font-medium text-orange-600 font-armenian truncate">{institution.address}</span>
+                          </div>
+                        )}
+                        
+                        {/* Partner Personal Phone */}
+                        {partner.phone && (
                           <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
-                            <span className="font-medium text-muted-foreground font-armenian text-sm">Հասցե:</span>
-                            <span className="font-medium text-foreground font-armenian truncate">{partner.address}</span>
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Անձնական հեռախոս:</span>
+                            <span className="font-medium text-foreground">{partner.phone}</span>
                           </div>
                         )}
                         
@@ -220,20 +341,13 @@ const AdminPartnersTab = () => {
                             <span className="font-medium text-foreground font-armenian">{partner.department}</span>
                           </div>
                         )}
-                        
-                        {partner.group_number && (
-                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
-                            <span className="font-medium text-muted-foreground font-armenian text-sm">Խումբ:</span>
-                            <span className="font-medium text-foreground">{partner.group_number}</span>
-                          </div>
-                        )}
                       </div>
                       
-                      {/* Description */}
+                      {/* Personal Information */}
                       {partner.bio && (
                         <div className="border-t pt-3">
                           <div className="space-y-2">
-                            <span className="font-medium text-muted-foreground font-armenian text-sm">Նկարագրություն:</span>
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Անձնական ինֆո:</span>
                             <p className="text-foreground font-armenian text-sm leading-relaxed">{partner.bio}</p>
                           </div>
                         </div>
@@ -250,14 +364,14 @@ const AdminPartnersTab = () => {
                         
                         {partner.personal_website && (
                           <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
-                            <span className="font-medium text-muted-foreground font-armenian text-sm">Վեբկայք:</span>
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Անձնական կայք:</span>
                             <a 
                               href={partner.personal_website} 
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="font-medium text-blue-600 hover:text-blue-800 underline truncate"
                             >
-                              {partner.personal_website}
+                              {partner.personal_website.replace(/^https?:\/\//, '')}
                             </a>
                           </div>
                         )}
@@ -276,15 +390,6 @@ const AdminPartnersTab = () => {
                           </div>
                         )}
                         
-                        {partner.birth_date && (
-                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
-                            <span className="font-medium text-muted-foreground font-armenian text-sm">Ծննդյան օր:</span>
-                            <span className="font-medium text-foreground">
-                              {new Date(partner.birth_date).toLocaleDateString('hy-AM')}
-                            </span>
-                          </div>
-                        )}
-                        
                         {partner.language_preference && (
                           <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
                             <span className="font-medium text-muted-foreground font-armenian text-sm">Լեզու:</span>
@@ -295,6 +400,14 @@ const AdminPartnersTab = () => {
                             </span>
                           </div>
                         )}
+                        
+                        {/* Registration Date */}
+                        <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                          <span className="font-medium text-muted-foreground font-armenian text-sm">Գրանցման ամսաթիվ:</span>
+                          <span className="font-medium text-foreground">
+                            {new Date(partner.created_at).toLocaleDateString('hy-AM')}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -309,8 +422,9 @@ const AdminPartnersTab = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
-        </div>
+          );
+        })}
+      </div>
       )}
     </div>
   );
