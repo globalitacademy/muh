@@ -85,6 +85,7 @@ const SignUpForm = () => {
             <SelectItem value="student">Ուսանող</SelectItem>
             <SelectItem value="instructor">Դասախոս</SelectItem>
             <SelectItem value="employer">Գործատու</SelectItem>
+            <SelectItem value="partner">Գործընկեր</SelectItem>
           </SelectContent>
         </Select>
       </div>
