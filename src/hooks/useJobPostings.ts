@@ -71,7 +71,7 @@ export const useJobPostings = () => {
         .from('job_postings')
         .select(`
           *,
-          profiles!job_postings_employer_id_fkey (
+          profiles (
             name,
             organization
           )
