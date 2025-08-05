@@ -422,6 +422,101 @@ export type Database = {
           },
         ]
       }
+      job_applications: {
+        Row: {
+          applicant_id: string
+          applied_at: string
+          cover_letter: string | null
+          created_at: string
+          id: string
+          job_posting_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["application_status"]
+          updated_at: string
+        }
+        Insert: {
+          applicant_id: string
+          applied_at?: string
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          job_posting_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Update: {
+          applicant_id?: string
+          applied_at?: string
+          cover_letter?: string | null
+          created_at?: string
+          id?: string
+          job_posting_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_job_posting_id_fkey"
+            columns: ["job_posting_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_postings: {
+        Row: {
+          created_at: string
+          description: string | null
+          employer_id: string
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          is_remote: boolean
+          location: string | null
+          posting_type: Database["public"]["Enums"]["job_posting_type"]
+          requirements: string | null
+          salary_range: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          employer_id: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_remote?: boolean
+          location?: string | null
+          posting_type?: Database["public"]["Enums"]["job_posting_type"]
+          requirements?: string | null
+          salary_range?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          employer_id?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_remote?: boolean
+          location?: string | null
+          posting_type?: Database["public"]["Enums"]["job_posting_type"]
+          requirements?: string | null
+          salary_range?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       module_instructors: {
         Row: {
           created_at: string
@@ -1190,6 +1285,7 @@ export type Database = {
       }
     }
     Enums: {
+      application_status: "pending" | "reviewed" | "accepted" | "rejected"
       attempt_status: "in-progress" | "completed" | "abandoned"
       difficulty_level:
         | "easy"
@@ -1198,6 +1294,7 @@ export type Database = {
         | "beginner"
         | "intermediate"
         | "advanced"
+      job_posting_type: "job" | "internship" | "project"
       module_status: "draft" | "active" | "archived" | "coming_soon"
       question_type:
         | "multiple-choice"
@@ -1340,6 +1437,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      application_status: ["pending", "reviewed", "accepted", "rejected"],
       attempt_status: ["in-progress", "completed", "abandoned"],
       difficulty_level: [
         "easy",
@@ -1349,6 +1447,7 @@ export const Constants = {
         "intermediate",
         "advanced",
       ],
+      job_posting_type: ["job", "internship", "project"],
       module_status: ["draft", "active", "archived", "coming_soon"],
       question_type: [
         "multiple-choice",

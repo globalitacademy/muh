@@ -87,8 +87,11 @@ const JobsTab = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h4 className="font-semibold">{job.title}</h4>
-                      {job.is_internship && (
+                      {job.posting_type === 'internship' && (
                         <Badge variant="outline">Պրակտիկա</Badge>
+                      )}
+                      {job.posting_type === 'project' && (
+                        <Badge variant="outline">Նախագիծ</Badge>
                       )}
                     </div>
                     

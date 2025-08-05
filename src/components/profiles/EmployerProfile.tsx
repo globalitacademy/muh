@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { Building2, UserPlus, Search, FileText, MessageSquare, Settings, Users, BarChart3, Home } from 'lucide-react';
 import SettingsTab from '@/components/settings/SettingsTab';
+import EmployerJobsTab from '@/components/employer/EmployerJobsTab';
 
 const EmployerProfile = () => {
   const { data: profile, isLoading } = useUserProfile();
@@ -157,17 +158,7 @@ const EmployerProfile = () => {
         </TabsContent>
 
         <TabsContent value="jobs" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-armenian">Աշխատանքի հայտարարություններ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <UserPlus className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p className="font-armenian">Աշխատանքի հայտարարությունների ֆունկցիան շուտով</p>
-              </div>
-            </CardContent>
-          </Card>
+          <EmployerJobsTab />
         </TabsContent>
 
         <TabsContent value="candidates" className="mt-6">
