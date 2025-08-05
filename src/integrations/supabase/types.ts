@@ -744,6 +744,110 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_access_code_usage: {
+        Row: {
+          access_code_id: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          module_id: string | null
+          session_duration_minutes: number | null
+          session_ended_at: string | null
+          session_started_at: string | null
+          used_at: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          access_code_id: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          module_id?: string | null
+          session_duration_minutes?: number | null
+          session_ended_at?: string | null
+          session_started_at?: string | null
+          used_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          access_code_id?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          module_id?: string | null
+          session_duration_minutes?: number | null
+          session_ended_at?: string | null
+          session_started_at?: string | null
+          used_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_access_code_usage_access_code_id_fkey"
+            columns: ["access_code_id"]
+            isOneToOne: false
+            referencedRelation: "partner_access_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_access_codes: {
+        Row: {
+          activity_duration_minutes: number
+          code: string
+          created_at: string
+          current_uses: number
+          description: string | null
+          expires_at: string
+          id: string
+          is_active: boolean
+          max_uses: number
+          metadata: Json | null
+          module_id: string | null
+          name: string
+          partner_id: string
+          status: Database["public"]["Enums"]["access_code_status"]
+          updated_at: string
+        }
+        Insert: {
+          activity_duration_minutes?: number
+          code: string
+          created_at?: string
+          current_uses?: number
+          description?: string | null
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number
+          metadata?: Json | null
+          module_id?: string | null
+          name: string
+          partner_id: string
+          status?: Database["public"]["Enums"]["access_code_status"]
+          updated_at?: string
+        }
+        Update: {
+          activity_duration_minutes?: number
+          code?: string
+          created_at?: string
+          current_uses?: number
+          description?: string | null
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          max_uses?: number
+          metadata?: Json | null
+          module_id?: string | null
+          name?: string
+          partner_id?: string
+          status?: Database["public"]["Enums"]["access_code_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       partner_course_enrollments: {
         Row: {
           completed_at: string | null
@@ -1536,6 +1640,10 @@ export type Database = {
         Args: { application_id: string; admin_id: string }
         Returns: undefined
       }
+      check_access_code_status: {
+        Args: { p_code: string }
+        Returns: Json
+      }
       cleanup_expired_locks: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -1564,6 +1672,10 @@ export type Database = {
         }
         Returns: string
       }
+      generate_access_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_user_role: {
         Args: { user_uuid: string }
         Returns: string
@@ -1587,8 +1699,13 @@ export type Database = {
         Args: { p_notification_id: string }
         Returns: undefined
       }
+      use_access_code: {
+        Args: { p_code: string; p_user_id?: string; p_module_id?: string }
+        Returns: Json
+      }
     }
     Enums: {
+      access_code_status: "active" | "inactive" | "expired" | "exhausted"
       application_status: "pending" | "reviewed" | "accepted" | "rejected"
       attempt_status: "in-progress" | "completed" | "abandoned"
       difficulty_level:
@@ -1758,6 +1875,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      access_code_status: ["active", "inactive", "expired", "exhausted"],
       application_status: ["pending", "reviewed", "accepted", "rejected"],
       attempt_status: ["in-progress", "completed", "abandoned"],
       difficulty_level: [
