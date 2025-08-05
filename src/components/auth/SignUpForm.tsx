@@ -16,6 +16,11 @@ const SignUpForm = () => {
   const [name, setName] = useState('');
   const [role, setRole] = useState('student');
   const [groupNumber, setGroupNumber] = useState('');
+  const [institutionName, setInstitutionName] = useState('');
+  const [directorName, setDirectorName] = useState('');
+  const [institutionAddress, setInstitutionAddress] = useState('');
+  const [institutionEmail, setInstitutionEmail] = useState('');
+  const [institutionPhone, setInstitutionPhone] = useState('');
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
@@ -24,11 +29,24 @@ const SignUpForm = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const result = await signUp(email, password, { 
+      const userData: any = { 
         name, 
-        role, 
-        groupNumber: role === 'student' ? groupNumber : undefined 
-      });
+        role 
+      };
+      
+      if (role === 'student' && groupNumber) {
+        userData.groupNumber = groupNumber;
+      }
+
+      if (role === 'partner') {
+        userData.institutionName = institutionName;
+        userData.directorName = directorName;
+        userData.institutionAddress = institutionAddress;
+        userData.institutionEmail = institutionEmail;
+        userData.institutionPhone = institutionPhone;
+      }
+
+      const result = await signUp(email, password, userData);
       
       if (!result.error) {
         setShowSuccessDialog(true);
@@ -99,6 +117,69 @@ const SignUpForm = () => {
             onChange={(e) => setGroupNumber(e.target.value)}
             placeholder="Ձեր խմբի համարը"
           />
+        </div>
+      )}
+      {role === 'partner' && (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="institution-name" className="font-armenian">Ուսումնական հաստատության անունը *</Label>
+            <Input
+              id="institution-name"
+              type="text"
+              value={institutionName}
+              onChange={(e) => setInstitutionName(e.target.value)}
+              placeholder="Մուտքագրեք հաստատության անունը"
+              required
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="director-name" className="font-armenian">Տնօրենի անունը *</Label>
+            <Input
+              id="director-name"
+              type="text"
+              value={directorName}
+              onChange={(e) => setDirectorName(e.target.value)}
+              placeholder="Մուտքագրեք տնօրենի անունը"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="institution-address" className="font-armenian">Հասցե *</Label>
+            <Input
+              id="institution-address"
+              type="text"
+              value={institutionAddress}
+              onChange={(e) => setInstitutionAddress(e.target.value)}
+              placeholder="Մուտքագրեք հաստատության հասցեն"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="institution-email" className="font-armenian">Էլ․ փոստ *</Label>
+            <Input
+              id="institution-email"
+              type="email"
+              value={institutionEmail}
+              onChange={(e) => setInstitutionEmail(e.target.value)}
+              placeholder="Մուտքագրեք հաստատության էլ․ փոստը"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="institution-phone" className="font-armenian">Հեռախոսահամար *</Label>
+            <Input
+              id="institution-phone"
+              type="tel"
+              value={institutionPhone}
+              onChange={(e) => setInstitutionPhone(e.target.value)}
+              placeholder="Մուտքագրեք հեռախոսահամարը"
+              required
+            />
+          </div>
         </div>
       )}
       <div className="space-y-2">
