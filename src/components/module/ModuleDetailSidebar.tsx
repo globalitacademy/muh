@@ -161,7 +161,10 @@ const ModuleDetailSidebar = ({
             </p>
           </div>
           
-          <CompanyCodeInput onCodeVerified={handleTempCodeVerified} />
+          <CompanyCodeInput 
+            onCodeVerified={handleTempCodeVerified} 
+            moduleId={module.id}
+          />
           
           <div className="text-xs text-center text-muted-foreground font-armenian border-t pt-3">
             {t('module.code-valid')}
