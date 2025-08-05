@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Users, Mail, Calendar } from 'lucide-react';
+import { Users, Mail, Calendar, Phone } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface EnrollmentWithDetails {
@@ -33,7 +33,7 @@ export default function PartnerStudentsTab() {
         .select(`
           *,
           partner_courses(title),
-          profiles!inner(name, email)
+          profiles(name, email)
         `)
         .eq('partner_id', user?.id)
         .order('enrolled_at', { ascending: false });
@@ -88,7 +88,7 @@ export default function PartnerStudentsTab() {
         <CardContent className="text-center py-8">
           <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <p className="text-muted-foreground">
-            Դեռ չկան գրանցված ուսանողներ ձեր դասընթացներում
+            Դեռ չկան գրանցված ուսանողներ և դիմումներ ձեր դասընթացներում
           </p>
         </CardContent>
       </Card>
@@ -96,58 +96,92 @@ export default function PartnerStudentsTab() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">Գրանցված ուսանողներ</h2>
-        <p className="text-muted-foreground">
-          Ձեր դասընթացներին գրանցված ուսանողների ցանկը
-        </p>
-      </div>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-bold">Գրանցված ուսանողներ և դիմումներ</h2>
+          <p className="text-muted-foreground">
+            Ձեր դասընթացներին գրանցված ուսանողների և ստացված դիմումների ցանկը
+          </p>
+        </div>
 
-      <div className="space-y-4">
-        {enrollments.map((enrollment) => (
-          <Card key={enrollment.id}>
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg">
-                    {enrollment.profiles?.name || 'Անանուն ուսանող'}
-                  </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {enrollment.partner_courses?.title}
-                  </p>
-                </div>
+        <div className="space-y-4">
+          {enrollments.map((enrollment) => {
+            // Parse notes for guest applications
+            const isGuestApplication = !enrollment.student_id;
+            let guestInfo = { name: '', email: '', phone: '', message: '' };
+            
+            if (isGuestApplication && enrollment.notes) {
+              const lines = enrollment.notes.split('\n');
+              lines.forEach(line => {
+                if (line.startsWith('Անուն:')) guestInfo.name = line.replace('Անուն:', '').trim();
+                if (line.startsWith('Էլ. փոստ:')) guestInfo.email = line.replace('Էլ. փոստ:', '').trim();
+                if (line.startsWith('Հեռախոս:')) guestInfo.phone = line.replace('Հեռախոս:', '').trim();
+                if (line.startsWith('Հաղորդագրություն:')) guestInfo.message = line.replace('Հաղորդագրություն:', '').trim();
+              });
+            }
+
+            return (
+              <Card key={enrollment.id}>
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <CardTitle className="text-lg">
+                        {isGuestApplication ? guestInfo.name : (enrollment.profiles?.name || 'Անանուն ուսանող')}
+                      </CardTitle>
+                      <p className="text-sm text-muted-foreground">
+                        {enrollment.partner_courses?.title}
+                      </p>
+                      {isGuestApplication && (
+                        <Badge variant="outline" className="mt-1">
+                          Հյուր դիմում
+                        </Badge>
+                      )}
+                    </div>
                 <Badge className={getStatusColor(enrollment.enrollment_status)}>
                   {getStatusText(enrollment.enrollment_status)}
                 </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {enrollment.profiles?.email && (
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {(isGuestApplication ? guestInfo.email : enrollment.profiles?.email) && (
+                    <div className="flex items-center gap-2">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">
+                        {isGuestApplication ? guestInfo.email : enrollment.profiles?.email}
+                      </span>
+                    </div>
+                  )}
+
+                  {isGuestApplication && guestInfo.phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm">{guestInfo.phone}</span>
+                    </div>
+                  )}
+
                   <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm">{enrollment.profiles.email}</span>
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm">
+                      Դիմել է՝ {format(new Date(enrollment.enrolled_at), 'dd/MM/yyyy')}
+                    </span>
+                  </div>
+                </div>
+
+                {(enrollment.notes || (isGuestApplication && guestInfo.message)) && (
+                  <div className="mt-4 p-3 bg-muted rounded-lg">
+                    <p className="text-sm text-muted-foreground mb-1">
+                      {isGuestApplication ? 'Հաղորդագրություն:' : 'Գրառումներ:'}
+                    </p>
+                    <p className="text-sm">
+                      {isGuestApplication ? guestInfo.message : enrollment.notes}
+                    </p>
                   </div>
                 )}
-
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">
-                    Գրանցվել է՝ {format(new Date(enrollment.enrolled_at), 'dd/MM/yyyy')}
-                  </span>
-                </div>
-              </div>
-
-              {enrollment.notes && (
-                <div className="mt-4 p-3 bg-muted rounded-lg">
-                  <p className="text-sm text-muted-foreground">Գրառումներ:</p>
-                  <p className="text-sm">{enrollment.notes}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+            );
+          })}
       </div>
     </div>
   );

@@ -158,8 +158,7 @@ export default function PartnerCoursesSection() {
                   variant="outline" 
                   className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors font-armenian"
                   onClick={() => {
-                    // For now, show more info - could link to detailed course page later
-                    navigate(`/courses`);
+                    navigate(`/partner-course/${course.id}`);
                   }}
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
