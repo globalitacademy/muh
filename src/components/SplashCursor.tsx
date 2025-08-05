@@ -58,7 +58,7 @@ function SplashCursor({
 
     const webglResult = getWebGLContext(canvas);
     if (!webglResult) {
-      console.warn('WebGL is not supported in this browser');
+      // Silently fall back to no visual effects if WebGL is not supported
       return;
     }
     
@@ -85,7 +85,7 @@ function SplashCursor({
       
       // Check if WebGL is supported
       if (!gl) {
-        console.warn('WebGL is not supported in this browser');
+        // Silently fall back to no visual effects if WebGL is not supported
         return null;
       }
       
