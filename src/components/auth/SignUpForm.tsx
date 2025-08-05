@@ -19,7 +19,6 @@ const SignUpForm = () => {
   const [institutionName, setInstitutionName] = useState('');
   const [directorName, setDirectorName] = useState('');
   const [institutionAddress, setInstitutionAddress] = useState('');
-  const [institutionEmail, setInstitutionEmail] = useState('');
   const [institutionPhone, setInstitutionPhone] = useState('');
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { signUp } = useAuth();
@@ -42,7 +41,6 @@ const SignUpForm = () => {
         userData.institutionName = institutionName;
         userData.directorName = directorName;
         userData.institutionAddress = institutionAddress;
-        userData.institutionEmail = institutionEmail;
         userData.institutionPhone = institutionPhone;
       }
 
@@ -153,18 +151,6 @@ const SignUpForm = () => {
               value={institutionAddress}
               onChange={(e) => setInstitutionAddress(e.target.value)}
               placeholder="Մուտքագրեք հաստատության հասցեն"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="institution-email" className="font-armenian">Էլ․ փոստ *</Label>
-            <Input
-              id="institution-email"
-              type="email"
-              value={institutionEmail}
-              onChange={(e) => setInstitutionEmail(e.target.value)}
-              placeholder="Մուտքագրեք հաստատության էլ․ փոստը"
               required
             />
           </div>
