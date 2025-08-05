@@ -69,13 +69,7 @@ export const useJobPostings = () => {
     queryFn: async (): Promise<JobPosting[]> => {
       const { data, error } = await supabase
         .from('job_postings')
-        .select(`
-          *,
-          profiles (
-            name,
-            organization
-          )
-        `)
+        .select('*')
         .eq('is_active', true)
         .order('created_at', { ascending: false });
 
