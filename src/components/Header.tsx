@@ -18,6 +18,7 @@ const Header = () => {
   const menuItems = [
     { href: '/', label: t('nav.home') },
     { href: '/specialties', label: t('nav.specialties') },
+    { href: '/jobs', label: t('nav.jobs') },
     { href: '/about', label: t('nav.about') },
     { href: '/contact', label: t('nav.contact') },
   ];

@@ -18,6 +18,7 @@ const translations = {
     'nav.home': 'Գլխավոր',
     'nav.courses': 'Դասընթացներ',
     'nav.specialties': 'Մասնագիտություններ',
+    'nav.jobs': 'Առաջարկներ',
     'nav.about': 'Մեր մասին',
     'nav.contact': 'Կապ',
     'nav.login': 'Մուտք',
