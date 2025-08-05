@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 export interface UserProfile {
   id: string;
   name: string | null;
+  first_name: string | null;
+  last_name: string | null;
   organization: string | null;
   role: string;
   group_number: string | null;
@@ -16,6 +18,17 @@ export interface UserProfile {
   bio: string | null;
   status: string;
   language_preference: string;
+  verified?: boolean | null;
+  email_verified?: boolean | null;
+  two_factor_enabled?: boolean | null;
+  birth_date?: string | null;
+  address?: string | null;
+  cover_photo_url?: string | null;
+  field_of_study?: string | null;
+  personal_website?: string | null;
+  linkedin_url?: string | null;
+  is_visible_to_employers?: boolean | null;
+  updated_at?: string;
 }
 
 export interface UserStats {
@@ -34,7 +47,7 @@ export const useAdminUsers = () => {
       console.log('Fetching all users for admin...');
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, name, organization, role, group_number, created_at, phone, department, avatar_url, bio, status, language_preference')
+        .select('id, name, first_name, last_name, organization, role, group_number, created_at, phone, department, avatar_url, bio, status, language_preference')
         .order('created_at', { ascending: false });
 
       if (error) {
