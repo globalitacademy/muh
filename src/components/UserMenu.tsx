@@ -12,6 +12,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminRole } from '@/hooks/useAdminRole';
+import { useUserRole } from '@/hooks/useUserRole';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { User, LogOut, BookOpen, Settings } from 'lucide-react';
@@ -20,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 const UserMenu = () => {
   const { user, signOut } = useAuth();
   const { data: isAdmin } = useAdminRole();
+  const { data: userRole } = useUserRole();
   const { data: profile, isLoading: profileLoading, refetch: refetchProfile } = useUserProfile();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -115,6 +117,12 @@ const UserMenu = () => {
           <DropdownMenuItem onClick={() => navigate('/admin')} className="font-armenian">
             <Settings className="mr-2 h-4 w-4" />
             <span>{t('user.admin')}</span>
+          </DropdownMenuItem>
+        )}
+        {userRole === 'partner' && (
+          <DropdownMenuItem onClick={() => navigate('/partner')} className="font-armenian">
+            <Settings className="mr-2 h-4 w-4" />
+            <span>Գործընկեր վահանակ</span>
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />

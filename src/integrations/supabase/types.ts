@@ -651,6 +651,190 @@ export type Database = {
           },
         ]
       }
+      partner_course_enrollments: {
+        Row: {
+          completed_at: string | null
+          course_id: string | null
+          created_at: string
+          enrolled_at: string | null
+          enrollment_status: string | null
+          id: string
+          notes: string | null
+          partner_id: string
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          course_id?: string | null
+          created_at?: string
+          enrolled_at?: string | null
+          enrollment_status?: string | null
+          id?: string
+          notes?: string | null
+          partner_id: string
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          course_id?: string | null
+          created_at?: string
+          enrolled_at?: string | null
+          enrollment_status?: string | null
+          id?: string
+          notes?: string | null
+          partner_id?: string
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_course_enrollments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "partner_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_courses: {
+        Row: {
+          application_deadline: string | null
+          course_type: string | null
+          created_at: string
+          current_students: number | null
+          curriculum: Json | null
+          description: string | null
+          description_en: string | null
+          description_ru: string | null
+          duration_weeks: number | null
+          end_date: string | null
+          id: string
+          institution_id: string | null
+          is_active: boolean | null
+          max_students: number | null
+          partner_id: string
+          price: number | null
+          requirements: string | null
+          start_date: string | null
+          status: string | null
+          title: string
+          title_en: string | null
+          title_ru: string | null
+          updated_at: string
+        }
+        Insert: {
+          application_deadline?: string | null
+          course_type?: string | null
+          created_at?: string
+          current_students?: number | null
+          curriculum?: Json | null
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          duration_weeks?: number | null
+          end_date?: string | null
+          id?: string
+          institution_id?: string | null
+          is_active?: boolean | null
+          max_students?: number | null
+          partner_id: string
+          price?: number | null
+          requirements?: string | null
+          start_date?: string | null
+          status?: string | null
+          title: string
+          title_en?: string | null
+          title_ru?: string | null
+          updated_at?: string
+        }
+        Update: {
+          application_deadline?: string | null
+          course_type?: string | null
+          created_at?: string
+          current_students?: number | null
+          curriculum?: Json | null
+          description?: string | null
+          description_en?: string | null
+          description_ru?: string | null
+          duration_weeks?: number | null
+          end_date?: string | null
+          id?: string
+          institution_id?: string | null
+          is_active?: boolean | null
+          max_students?: number | null
+          partner_id?: string
+          price?: number | null
+          requirements?: string | null
+          start_date?: string | null
+          status?: string | null
+          title?: string
+          title_en?: string | null
+          title_ru?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_courses_institution_id_fkey"
+            columns: ["institution_id"]
+            isOneToOne: false
+            referencedRelation: "partner_institutions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      partner_institutions: {
+        Row: {
+          address: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          id: string
+          institution_name: string
+          institution_type: string | null
+          is_active: boolean | null
+          is_verified: boolean | null
+          logo_url: string | null
+          partner_id: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          institution_name: string
+          institution_type?: string | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          partner_id: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          address?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          institution_name?: string
+          institution_type?: string | null
+          is_active?: boolean | null
+          is_verified?: boolean | null
+          logo_url?: string | null
+          partner_id?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       password_reset_tokens: {
         Row: {
           created_at: string | null
@@ -1310,6 +1494,7 @@ export type Database = {
         | "student"
         | "guest"
         | "employer"
+        | "partner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1464,6 +1649,7 @@ export const Constants = {
         "student",
         "guest",
         "employer",
+        "partner",
       ],
     },
   },
