@@ -1,10 +1,11 @@
 
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, User, Shield, GraduationCap, Building2 } from 'lucide-react';
+import { Users, User, Shield, GraduationCap, Building2, Building } from 'lucide-react';
 import EnhancedAdminInstructorsTab from './users/EnhancedAdminInstructorsTab';
 import EnhancedAdminStudentsTab from './users/EnhancedAdminStudentsTab';
 import AdminEmployersTab from './users/AdminEmployersTab';
+import AdminPartnersTab from './users/AdminPartnersTab';
 import AdminPermissionsTab from './users/AdminPermissionsTab';
 
 const AdminUsersTab = () => {
@@ -27,7 +28,7 @@ const AdminUsersTab = () => {
       <div className="glass-card rounded-2xl p-2 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
         <Tabs defaultValue="instructors" className="space-y-4 md:space-y-6">
           <div className="overflow-x-auto">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 bg-muted/50 p-1 rounded-xl min-w-max lg:min-w-0">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 bg-muted/50 p-1 rounded-xl min-w-max lg:min-w-0">
               <TabsTrigger value="instructors" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all text-xs sm:text-sm whitespace-nowrap">
                 <GraduationCap className="w-4 h-4 mr-1 sm:mr-2" />
                 <span className="hidden sm:inline">Դասախոսներ</span>
@@ -42,6 +43,11 @@ const AdminUsersTab = () => {
                 <Building2 className="w-4 h-4 mr-1 sm:mr-2" />
                 <span className="hidden sm:inline">Գործատուներ</span>
                 <span className="sm:hidden">Գործ.</span>
+              </TabsTrigger>
+              <TabsTrigger value="partners" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all text-xs sm:text-sm whitespace-nowrap">
+                <Building className="w-4 h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Գործընկերներ</span>
+                <span className="sm:hidden">Գործընկ.</span>
               </TabsTrigger>
               <TabsTrigger value="permissions" className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all text-xs sm:text-sm whitespace-nowrap">
                 <Shield className="w-4 h-4 mr-1 sm:mr-2" />
@@ -62,6 +68,10 @@ const AdminUsersTab = () => {
 
             <TabsContent value="employers" className="mt-4 md:mt-6">
               <AdminEmployersTab />
+            </TabsContent>
+
+            <TabsContent value="partners" className="mt-4 md:mt-6">
+              <AdminPartnersTab />
             </TabsContent>
 
             <TabsContent value="permissions" className="mt-4 md:mt-6">
