@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, userData?: { name?: string; role?: string; groupNumber?: string }) => {
+  const signUp = async (email: string, password: string, userData?: any) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
@@ -47,6 +47,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             name: userData?.name || '',
             role: userData?.role || 'student',
             groupNumber: userData?.groupNumber || '',
+            organizationName: userData?.organizationName || '',
+            managerName: userData?.managerName || '',
+            organizationPhone: userData?.organizationPhone || '',
+            organizationAddress: userData?.organizationAddress || '',
+            institutionName: userData?.institutionName || '',
+            directorName: userData?.directorName || '',
+            institutionAddress: userData?.institutionAddress || '',
+            institutionPhone: userData?.institutionPhone || '',
+            phone: userData?.phone || '',
+            department: userData?.department || '',
           }
         }
       });
@@ -67,9 +77,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       // Check if user was created successfully
       if (data.user && !data.user.email_confirmed_at) {
-        toast.success('Գրանցումը հաջողված է: Ստուգեք ձեր էլ.փոստը հաստատման համար:');
+        toast.success('Գրանցումը հաջողված է: Ադմինը կանցնի գիծ ձեր դիմումը և կծանուցի արդյունքի մասին:');
       } else if (data.user) {
-        toast.success('Գրանցումը հաջողված է: Կարող եք մուտք գործել:');
+        toast.success('Գրանցումը հաջողված է: Ադմինը կանցնի գիծ ձեր դիմումը:');
       }
       
       return { error: null };
@@ -102,6 +112,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       if (data.user) {
+        // Check if user is approved
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('status')
+          .eq('id', data.user.id)
+          .single();
+          
+        if (profile?.status === 'pending') {
+          await supabase.auth.signOut();
+          toast.error('Ձեր հաշիվը դեռ սպասման վիճակում է: Խնդրում ենք սպասել ադմինի հաստատմանը:');
+          return { error: new Error('Account pending approval') };
+        } else if (profile?.status === 'blocked' || profile?.status === 'suspended') {
+          await supabase.auth.signOut();
+          toast.error('Ձեր հաշիվը արգելափակված է: Կապվեք ադմինիստրատորի հետ:');
+          return { error: new Error('Account blocked') };
+        }
+        
         toast.success('Հաջողությամբ մուտք գործեցիք');
       }
       

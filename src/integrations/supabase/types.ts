@@ -1439,6 +1439,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      approve_user_application: {
+        Args: { application_id: string; admin_id: string }
+        Returns: undefined
+      }
       cleanup_expired_locks: {
         Args: Record<PropertyKey, never>
         Returns: undefined

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, User, Mail, Lock, CheckCircle } from 'lucide-react';
@@ -259,11 +259,23 @@ const SignUpForm = () => {
           </div>
           <DialogTitle className="font-armenian text-lg">Գրանցումը հաջողված է!</DialogTitle>
           <DialogDescription className="font-armenian text-center">
-            Հաստատման հղումը ուղարկվել է ձեր էլ.փոստի հասցեին: 
+            Ձեր գրանցման դիմումը ստացվել է և ուղարկվել է ադմինիստրատորին հաստատման համար: 
+            <br/>
+            Դուք կստանաք ծանուցում, երբ ձեր հաշիվը հաստատվի:
+            <br/>
+            Ստուգեք ձեր էլ.փոստը հաշվի հաստատման համար:
             <br />
             3 վայրկյանից ավտոմատ վերադառնում ենք գլխավոր էջ:
           </DialogDescription>
         </DialogHeader>
+        <DialogFooter>
+          <Button onClick={() => {
+            setShowSuccessDialog(false);
+            navigate('/');
+          }} className="font-armenian">
+            Լավ
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
     </>

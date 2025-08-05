@@ -50,7 +50,10 @@ export const useSubmitApplication = () => {
     mutationFn: async (applicationData: Omit<UserApplication, 'id' | 'created_at' | 'updated_at' | 'submitted_at'>) => {
       const { data, error } = await supabase
         .from('user_applications')
-        .insert([applicationData])
+        .insert([{
+          ...applicationData,
+          submitted_at: new Date().toISOString()
+        }])
         .select()
         .single();
       
@@ -73,25 +76,27 @@ export const useApproveApplication = () => {
   
   return useMutation({
     mutationFn: async ({ applicationId }: { applicationId: string }) => {
-      const { data, error } = await supabase
-        .from('user_applications')
-        .update({ 
-          status: 'approved',
-          reviewed_at: new Date().toISOString(),
-          reviewed_by: (await supabase.auth.getUser()).data.user?.id
-        })
-        .eq('id', applicationId)
-        .select()
-        .single();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { error } = await supabase.rpc('approve_user_application', {
+        application_id: applicationId,
+        admin_id: user.id
+      });
       
       if (error) throw error;
-      return data;
+      return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-applications'] });
-      toast.success('Դիմումը հաստատվեց');
+      queryClient.invalidateQueries({ queryKey: ['adminUsers'] });
+      queryClient.invalidateQueries({ queryKey: ['adminStudents'] });
+      queryClient.invalidateQueries({ queryKey: ['adminInstructors'] });
+      queryClient.invalidateQueries({ queryKey: ['adminEmployers'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-partners'] });
+      toast.success('Դիմումը հաջողությամբ հաստատվել է');
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Error approving application:', error);
       toast.error('Դիմումի հաստատման սխալ');
     },
@@ -103,26 +108,28 @@ export const useRejectApplication = () => {
   
   return useMutation({
     mutationFn: async ({ applicationId, reason }: { applicationId: string; reason?: string }) => {
-      const { data, error } = await supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const { error } = await supabase
         .from('user_applications')
         .update({ 
           status: 'rejected',
           rejection_reason: reason,
           reviewed_at: new Date().toISOString(),
-          reviewed_by: (await supabase.auth.getUser()).data.user?.id
+          reviewed_by: user.id,
+          updated_at: new Date().toISOString()
         })
-        .eq('id', applicationId)
-        .select()
-        .single();
+        .eq('id', applicationId);
       
       if (error) throw error;
-      return data;
+      return { success: true };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-applications'] });
-      toast.success('Դիմումը մերժվեց');
+      toast.success('Դիմումը մերժվել է');
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Error rejecting application:', error);
       toast.error('Դիմումի մերժման սխալ');
     },
