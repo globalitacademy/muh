@@ -21,7 +21,13 @@ const AdminEmployersTab = () => {
       console.log('Fetching employers...');
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select(`
+          id, name, first_name, last_name, organization, role, status, 
+          group_number, phone, department, avatar_url, bio, address, 
+          cover_photo_url, field_of_study, personal_website, linkedin_url, 
+          birth_date, is_visible_to_employers, email_verified, two_factor_enabled, 
+          verified, language_preference, created_at, updated_at
+        `)
         .eq('role', 'employer')
         .order('created_at', { ascending: false });
 
@@ -112,31 +118,42 @@ const AdminEmployersTab = () => {
                       </Badge>
                     </div>
                     
-                    <div className="space-y-2 text-sm text-muted-foreground">
-                      {employer.name && (
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium font-armenian">Տնօրեն:</span>
-                          <span className="font-armenian">{employer.name}</span>
-                        </div>
-                      )}
-                      {employer.phone && (
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium font-armenian">Հեռախոս:</span>
-                          <span>{employer.phone}</span>
-                        </div>
-                      )}
-                      {employer.bio && (
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium font-armenian">Հասցե:</span>
-                          <span className="font-armenian">{employer.bio}</span>
-                        </div>
-                      )}
-                      {employer.department && (
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium font-armenian">Բաժին:</span>
-                          <span className="font-armenian">{employer.department}</span>
-                        </div>
-                      )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                      <div className="space-y-1">
+                        {employer.name && (
+                          <div><span className="font-medium font-armenian">Տնօրեն:</span> <span className="font-armenian">{employer.name}</span></div>
+                        )}
+                        {(employer.first_name || employer.last_name) && (
+                          <div><span className="font-medium font-armenian">Անուն Ազգանուն:</span> <span className="font-armenian">{[employer.first_name, employer.last_name].filter(Boolean).join(' ')}</span></div>
+                        )}
+                        {employer.phone && (
+                          <div><span className="font-medium font-armenian">Հեռախոս:</span> {employer.phone}</div>
+                        )}
+                        {employer.department && (
+                          <div><span className="font-medium font-armenian">Բաժին:</span> <span className="font-armenian">{employer.department}</span></div>
+                        )}
+                        {employer.field_of_study && (
+                          <div><span className="font-medium font-armenian">Մասնագիտություն:</span> <span className="font-armenian">{employer.field_of_study}</span></div>
+                        )}
+                      </div>
+                      <div className="space-y-1">
+                        {(employer.address || employer.bio) && (
+                          <div><span className="font-medium font-armenian">Հասցե:</span> <span className="font-armenian">{employer.address || employer.bio}</span></div>
+                        )}
+                        {employer.personal_website && (
+                          <div><span className="font-medium font-armenian">Կայք:</span> <a href={employer.personal_website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{employer.personal_website}</a></div>
+                        )}
+                        {employer.linkedin_url && (
+                          <div><span className="font-medium font-armenian">LinkedIn:</span> <a href={employer.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">LinkedIn</a></div>
+                        )}
+                        {employer.birth_date && (
+                          <div><span className="font-medium font-armenian">Ծննդյան օր:</span> {new Date(employer.birth_date).toLocaleDateString('hy-AM')}</div>
+                        )}
+                        <div><span className="font-medium font-armenian">Գրանցվել է:</span> {new Date(employer.created_at).toLocaleDateString('hy-AM')}</div>
+                        {employer.email_verified !== null && (
+                          <div><span className="font-medium font-armenian">Էլ․ փոստ հաստատված:</span> <span className={employer.email_verified ? 'text-green-600' : 'text-red-600'}>{employer.email_verified ? 'Այո' : 'Ոչ'}</span></div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

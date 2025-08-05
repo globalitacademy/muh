@@ -21,9 +21,15 @@ const EnhancedAdminStudentsTab = () => {
     queryKey: ['adminStudents'],
     queryFn: async (): Promise<UserProfile[]> => {
       console.log('Fetching students...');
-      const { data, error } = await supabase
+    const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select(`
+          id, name, first_name, last_name, organization, role, status, 
+          group_number, phone, department, avatar_url, bio, address, 
+          cover_photo_url, field_of_study, personal_website, linkedin_url, 
+          birth_date, is_visible_to_employers, email_verified, two_factor_enabled, 
+          verified, language_preference, created_at, updated_at
+        `)
         .eq('role', 'student')
         .order('created_at', { ascending: false });
 
@@ -173,19 +179,49 @@ const EnhancedAdminStudentsTab = () => {
                           {student.name?.charAt(0) || 'Ու'}
                         </AvatarFallback>
                       </Avatar>
-                      <div>
-                        <p className="font-medium font-armenian">{student.name || 'Անանուն'}</p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span className="font-armenian">{student.organization || 'Կազմակերպություն նշված չէ'}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-medium font-armenian">{student.name || 'Անանուն'}</p>
                           <Badge 
-                            variant={student.status === 'active' ? 'default' : 'secondary'}
+                            variant={student.status === 'active' ? 'default' : 
+                                   student.status === 'pending' ? 'secondary' :
+                                   student.status === 'graduated' ? 'outline' : 'destructive'}
                             className="text-xs"
                           >
                             {student.status === 'active' ? 'Ակտիվ' : 
+                             student.status === 'pending' ? 'Ընթացքի մեջ' :
                              student.status === 'graduated' ? 'Ավարտած' :
                              student.status === 'suspended' ? 'Կասեցված' :
-                             student.status === 'blocked' ? 'Արգելափակված' : 'Անհայտ'}
+                             student.status === 'blocked' ? 'Արգելափակված' : student.status}
                           </Badge>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-1 text-sm text-muted-foreground">
+                          <div className="space-y-1">
+                            {student.organization && (
+                              <div><span className="font-medium font-armenian">Կազմակերպություն:</span> {student.organization}</div>
+                            )}
+                            {student.department && (
+                              <div><span className="font-medium font-armenian">Բաժին:</span> {student.department}</div>
+                            )}
+                            {student.phone && (
+                              <div><span className="font-medium font-armenian">Հեռախոս:</span> {student.phone}</div>
+                            )}
+                            {student.field_of_study && (
+                              <div><span className="font-medium font-armenian">Մասնագիտություն:</span> {student.field_of_study}</div>
+                            )}
+                          </div>
+                          <div className="space-y-1">
+                            {student.address && (
+                              <div><span className="font-medium font-armenian">Հասցե:</span> {student.address}</div>
+                            )}
+                            {student.personal_website && (
+                              <div><span className="font-medium font-armenian">Կայք:</span> <a href={student.personal_website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{student.personal_website}</a></div>
+                            )}
+                            {student.linkedin_url && (
+                              <div><span className="font-medium font-armenian">LinkedIn:</span> <a href={student.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">LinkedIn</a></div>
+                            )}
+                            <div><span className="font-medium font-armenian">Գրանցվել է:</span> {new Date(student.created_at).toLocaleDateString('hy-AM')}</div>
+                          </div>
                         </div>
                       </div>
                     </div>
