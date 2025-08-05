@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Search, Building2 } from 'lucide-react';
+import { Search, Building2, Plus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import UserActionsMenu from './shared/UserActionsMenu';
 
 const AdminPartnersTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { data: partners, isLoading } = useQuery({
+  const { data: partners, isLoading, refetch } = useQuery({
     queryKey: ['admin-partners'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -81,15 +82,21 @@ const AdminPartnersTab = () => {
           </div>
         </div>
 
-        <div className="relative w-full sm:w-80">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-          <Input
-            placeholder="Որոնել գործընկերների մեջ..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 font-armenian"
-          />
-        </div>
+        <Button className="font-armenian">
+          <Plus className="w-4 h-4 mr-2" />
+          Ավելացնել գործընկեր
+        </Button>
+      </div>
+
+      {/* Search */}
+      <div className="relative w-full sm:w-80">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+        <Input
+          placeholder="Որոնել գործընկերների մեջ..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="pl-10 font-armenian"
+        />
       </div>
 
       {/* Partners List */}
@@ -111,53 +118,63 @@ const AdminPartnersTab = () => {
         <div className="grid gap-4 md:gap-6">
           {filteredPartners.map((partner) => (
             <Card key={partner.id} className="hover:shadow-md transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="w-12 h-12">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start space-x-4 flex-1">
+                    <Avatar className="w-16 h-16">
                       <AvatarImage src={partner.avatar_url} />
-                      <AvatarFallback className="bg-gradient-to-br from-edu-blue to-edu-orange text-white font-semibold">
-                        {partner.name?.charAt(0) || partner.first_name?.charAt(0) || 'Գ'}
+                      <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-lg font-semibold">
+                        {partner.organization?.charAt(0) || partner.name?.charAt(0) || partner.first_name?.charAt(0) || 'Գ'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <CardTitle className="text-base font-armenian truncate">
-                          {partner.name || `${partner.first_name || ''} ${partner.last_name || ''}`.trim()}
-                        </CardTitle>
+                      <div className="flex items-center gap-2 flex-wrap mb-2">
+                        <h4 className="font-semibold text-lg font-armenian truncate">
+                          {partner.name || `${partner.first_name || ''} ${partner.last_name || ''}`.trim() || 'Անանուն գործընկեր'}
+                        </h4>
                         <Badge variant={partner.status === 'active' ? 'default' : 'secondary'} className="text-xs">
                           {partner.status === 'active' ? 'Ակտիվ' : 'Ապաակտիվ'}
                         </Badge>
                       </div>
-                      {partner.organization && (
-                        <p className="text-sm text-muted-foreground font-armenian truncate">
-                          {partner.organization}
-                        </p>
-                      )}
+                      
+                      <div className="space-y-2 text-sm text-muted-foreground">
+                        {partner.organization && (
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium font-armenian">Կազմակերպություն:</span>
+                            <span className="font-armenian">{partner.organization}</span>
+                          </div>
+                        )}
+                        {partner.phone && (
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium font-armenian">Հեռախոս:</span>
+                            <span>{partner.phone}</span>
+                          </div>
+                        )}
+                        {partner.address && (
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium font-armenian">Հասցե:</span>
+                            <span className="font-armenian truncate">{partner.address}</span>
+                          </div>
+                        )}
+                        {partner.bio && (
+                          <div className="flex items-start gap-2">
+                            <span className="font-medium font-armenian">Նկարագրություն:</span>
+                            <span className="font-armenian">{partner.bio}</span>
+                          </div>
+                        )}
+                        {partner.department && (
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium font-armenian">Բաժին:</span>
+                            <span className="font-armenian">{partner.department}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <UserActionsMenu 
                     user={partner} 
-                    onActionComplete={() => {
-                      // Refresh the data after an action
-                    }} 
+                    onActionComplete={() => refetch()} 
                   />
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                  {partner.phone && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground font-armenian">Հեռախոս:</span>
-                      <span className="font-medium">{partner.phone}</span>
-                    </div>
-                  )}
-                  {partner.address && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-muted-foreground font-armenian">Հասցե:</span>
-                      <span className="font-medium truncate">{partner.address}</span>
-                    </div>
-                  )}
                 </div>
               </CardContent>
             </Card>
