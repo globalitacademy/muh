@@ -104,7 +104,7 @@ const JobPostingsSection = () => {
 
                 {posting.salary_range && (
                   <div className="font-medium text-primary text-sm">
-                    {posting.salary_range}
+                    {posting.salary_range === "0" || posting.salary_range === "0 դրամ" ? "անվճար" : posting.salary_range}
                   </div>
                 )}
                 
