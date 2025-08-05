@@ -21,20 +21,14 @@ import { cn } from '@/lib/utils';
 
 const editUserSchema = z.object({
   name: z.string().min(1, 'Անունը պարտադիր է'),
-  first_name: z.string().optional(),
-  last_name: z.string().optional(),
+  phone: z.string().optional(),
+  birth_date: z.date().optional(),
   organization: z.string().optional(),
   department: z.string().optional(),
-  phone: z.string().optional(),
-  address: z.string().optional(),
-  bio: z.string().optional(),
-  field_of_study: z.string().optional(),
   personal_website: z.string().url('Սխալ URL ֆորմատ').optional().or(z.literal('')),
-  linkedin_url: z.string().url('Սխալ URL ֆորմատ').optional().or(z.literal('')),
-  group_number: z.string().optional(),
-  language_preference: z.enum(['hy', 'en', 'ru']),
-  is_visible_to_employers: z.boolean(),
-  birth_date: z.date().optional(),
+  organization_phone: z.string().optional(),
+  organization_email: z.string().email('Սխալ էլ․փոստի ֆորմատ').optional().or(z.literal('')),
+  address: z.string().optional(),
 });
 
 type EditUserFormData = z.infer<typeof editUserSchema>;
@@ -54,20 +48,14 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ open, onOpenChange, use
     resolver: zodResolver(editUserSchema),
     defaultValues: {
       name: user.name || '',
-      first_name: user.first_name || '',
-      last_name: user.last_name || '',
+      phone: user.phone || '',
+      birth_date: user.birth_date ? new Date(user.birth_date) : undefined,
       organization: user.organization || '',
       department: user.department || '',
-      phone: user.phone || '',
-      address: user.address || '',
-      bio: user.bio || '',
-      field_of_study: user.field_of_study || '',
       personal_website: user.personal_website || '',
-      linkedin_url: user.linkedin_url || '',
-      group_number: user.group_number || '',
-      language_preference: (user.language_preference as 'hy' | 'en' | 'ru') || 'hy',
-      is_visible_to_employers: user.is_visible_to_employers || false,
-      birth_date: user.birth_date ? new Date(user.birth_date) : undefined,
+      organization_phone: '', // This would need to be stored separately or in a JSON field
+      organization_email: '', // This would need to be stored separately or in a JSON field
+      address: user.address || '',
     },
   });
 
@@ -77,20 +65,17 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ open, onOpenChange, use
     try {
       const updateData = {
         name: data.name,
-        first_name: data.first_name || null,
-        last_name: data.last_name || null,
+        phone: data.phone || null,
+        birth_date: data.birth_date ? data.birth_date.toISOString().split('T')[0] : null,
         organization: data.organization || null,
         department: data.department || null,
-        phone: data.phone || null,
-        address: data.address || null,
-        bio: data.bio || null,
-        field_of_study: data.field_of_study || null,
         personal_website: data.personal_website || null,
-        linkedin_url: data.linkedin_url || null,
-        group_number: data.group_number || null,
-        language_preference: data.language_preference,
-        is_visible_to_employers: data.is_visible_to_employers,
-        birth_date: data.birth_date ? data.birth_date.toISOString().split('T')[0] : null,
+        address: data.address || null,
+        // Store organization contact info in bio field temporarily (ideally would be separate fields)
+        bio: JSON.stringify({
+          organization_phone: data.organization_phone || null,
+          organization_email: data.organization_email || null,
+        }),
         updated_at: new Date().toISOString(),
       };
 
@@ -147,50 +132,27 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ open, onOpenChange, use
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Personal Information */}
+          {/* Տնօրենի Անձնական տվյալներ */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold font-armenian">Անձնական տվյալներ</h3>
+            <h3 className="text-lg font-semibold font-armenian">Տնօրենի Անձնական տվյալներ</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name" className="font-armenian">
-                  Անուն *
+                  Անուն Ազգանուն *
                 </Label>
                 <Input
                   id="name"
                   {...form.register('name')}
                   className="font-armenian"
                   disabled={isLoading}
+                  placeholder="Գևորգ Քոսյան"
                 />
                 {form.formState.errors.name && (
                   <p className="text-sm text-red-500 font-armenian">
                     {form.formState.errors.name.message}
                   </p>
                 )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="first_name" className="font-armenian">
-                  Անուն
-                </Label>
-                <Input
-                  id="first_name"
-                  {...form.register('first_name')}
-                  className="font-armenian"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="last_name" className="font-armenian">
-                  Ազգանուն
-                </Label>
-                <Input
-                  id="last_name"
-                  {...form.register('last_name')}
-                  className="font-armenian"
-                  disabled={isLoading}
-                />
               </div>
 
               <div className="space-y-2">
@@ -202,6 +164,7 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ open, onOpenChange, use
                   type="tel"
                   {...form.register('phone')}
                   disabled={isLoading}
+                  placeholder="+374 XX XX XX XX"
                 />
               </div>
 
@@ -239,112 +202,50 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ open, onOpenChange, use
                   </PopoverContent>
                 </Popover>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="language_preference" className="font-armenian">
-                  Լեզվի նախընտրություն
-                </Label>
-                <Select
-                  value={form.watch('language_preference')}
-                  onValueChange={(value: 'hy' | 'en' | 'ru') => form.setValue('language_preference', value)}
-                  disabled={isLoading}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hy" className="font-armenian">Հայերեն</SelectItem>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="ru">Русский</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="address" className="font-armenian">
-                Հասցե
-              </Label>
-              <Input
-                id="address"
-                {...form.register('address')}
-                className="font-armenian"
-                disabled={isLoading}
-              />
             </div>
           </div>
 
-          {/* Professional Information */}
+          {/* Կազմակերպության տվյալներ */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold font-armenian">Մասնագիտական տվյալներ</h3>
+            <h3 className="text-lg font-semibold font-armenian">Կազմակերպության տվյալներ</h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="organization" className="font-armenian">
-                  Կազմակերպություն
+                  Կազմակերպության անունը
                 </Label>
                 <Input
                   id="organization"
                   {...form.register('organization')}
                   className="font-armenian"
                   disabled={isLoading}
+                  placeholder="Ընկերության անուն"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="department" className="font-armenian">
-                  Բաժին
+                  Օգտատիրոջ պաշտոն
                 </Label>
                 <Input
                   id="department"
                   {...form.register('department')}
                   className="font-armenian"
                   disabled={isLoading}
+                  placeholder="Տնօրեն, Բաժնի ղեկավար, և այլն"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="field_of_study" className="font-armenian">
-                  Մասնագիտություն
-                </Label>
-                <Input
-                  id="field_of_study"
-                  {...form.register('field_of_study')}
-                  className="font-armenian"
-                  disabled={isLoading}
-                />
-              </div>
-
-              {(user.role === 'student' || user.role === 'instructor') && (
-                <div className="space-y-2">
-                  <Label htmlFor="group_number" className="font-armenian">
-                    Խումբ
-                  </Label>
-                  <Input
-                    id="group_number"
-                    {...form.register('group_number')}
-                    disabled={isLoading}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Online Presence */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold font-armenian">Օնլայն ներկայություն</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="personal_website" className="font-armenian">
-                  Անձնական կայք
+                  Կազմակերպության վեբ կայք
                 </Label>
                 <Input
                   id="personal_website"
                   type="url"
                   {...form.register('personal_website')}
-                  placeholder="https://example.com"
                   disabled={isLoading}
+                  placeholder="https://company.com"
                 />
                 {form.formState.errors.personal_website && (
                   <p className="text-sm text-red-500 font-armenian">
@@ -354,57 +255,48 @@ const EditUserDialog: React.FC<EditUserDialogProps> = ({ open, onOpenChange, use
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="linkedin_url" className="font-armenian">
-                  LinkedIn
+                <Label htmlFor="organization_phone" className="font-armenian">
+                  Կազմակերպության հեռախոսահամար
                 </Label>
                 <Input
-                  id="linkedin_url"
-                  type="url"
-                  {...form.register('linkedin_url')}
-                  placeholder="https://linkedin.com/in/username"
+                  id="organization_phone"
+                  type="tel"
+                  {...form.register('organization_phone')}
                   disabled={isLoading}
+                  placeholder="+374 XX XX XX XX"
                 />
-                {form.formState.errors.linkedin_url && (
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="organization_email" className="font-armenian">
+                  Կազմակերպության էլ․փոստ
+                </Label>
+                <Input
+                  id="organization_email"
+                  type="email"
+                  {...form.register('organization_email')}
+                  disabled={isLoading}
+                  placeholder="info@company.com"
+                />
+                {form.formState.errors.organization_email && (
                   <p className="text-sm text-red-500 font-armenian">
-                    {form.formState.errors.linkedin_url.message}
+                    {form.formState.errors.organization_email.message}
                   </p>
                 )}
               </div>
-            </div>
-          </div>
 
-          {/* Settings */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold font-armenian">Կարգավորումներ</h3>
-            
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="is_visible_to_employers"
-                checked={form.watch('is_visible_to_employers')}
-                onCheckedChange={(checked) => form.setValue('is_visible_to_employers', checked)}
-                disabled={isLoading}
-              />
-              <Label htmlFor="is_visible_to_employers" className="font-armenian">
-                Գործատուների համար տեսանելի
-              </Label>
-            </div>
-          </div>
-
-          {/* Bio */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold font-armenian">Կենսագրություն</h3>
-            
-            <div className="space-y-2">
-              <Label htmlFor="bio" className="font-armenian">
-                Նկարագրություն
-              </Label>
-              <Textarea
-                id="bio"
-                {...form.register('bio')}
-                className="font-armenian min-h-[100px]"
-                placeholder="Գրեք ձեր մասին..."
-                disabled={isLoading}
-              />
+              <div className="space-y-2">
+                <Label htmlFor="address" className="font-armenian">
+                  Կազմակերպության հասցե
+                </Label>
+                <Input
+                  id="address"
+                  {...form.register('address')}
+                  className="font-armenian"
+                  disabled={isLoading}
+                  placeholder="Երևան, Բաղրամյան 1"
+                />
+              </div>
             </div>
           </div>
 
