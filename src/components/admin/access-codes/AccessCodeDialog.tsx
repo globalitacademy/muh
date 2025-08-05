@@ -178,15 +178,15 @@ export const AccessCodeDialog: React.FC<AccessCodeDialogProps> = ({
             <div className="space-y-2">
               <Label htmlFor="module_id" className="font-armenian">Մոդուլ (ոչ պարտադիր)</Label>
               <Select
-                value={watch('module_id') || ''}
-                onValueChange={(value) => setValue('module_id', value || undefined)}
+                value={watch('module_id') || 'all'}
+                onValueChange={(value) => setValue('module_id', value === 'all' ? undefined : value)}
                 disabled={isReadOnly}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Ընտրել մոդուլը" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Բոլոր մոդուլները</SelectItem>
+                  <SelectItem value="all">Բոլոր մոդուլները</SelectItem>
                   {modules.map((module) => (
                     <SelectItem key={module.id} value={module.id}>
                       {module.title}
