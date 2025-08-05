@@ -711,6 +711,7 @@ export type Database = {
           duration_weeks: number | null
           end_date: string | null
           id: string
+          image_url: string | null
           institution_id: string | null
           is_active: boolean | null
           max_students: number | null
@@ -736,6 +737,7 @@ export type Database = {
           duration_weeks?: number | null
           end_date?: string | null
           id?: string
+          image_url?: string | null
           institution_id?: string | null
           is_active?: boolean | null
           max_students?: number | null
@@ -761,6 +763,7 @@ export type Database = {
           duration_weeks?: number | null
           end_date?: string | null
           id?: string
+          image_url?: string | null
           institution_id?: string | null
           is_active?: boolean | null
           max_students?: number | null

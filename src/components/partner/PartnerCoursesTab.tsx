@@ -21,6 +21,7 @@ interface PartnerCourse {
   end_date?: string;
   status: string;
   is_active: boolean;
+  image_url?: string;
 }
 
 export default function PartnerCoursesTab() {
@@ -128,6 +129,15 @@ export default function PartnerCoursesTab() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Course Image */}
+                {course.image_url && (
+                  <img 
+                    src={course.image_url} 
+                    alt={course.title}
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                )}
+
                 {course.description && (
                   <p className="text-sm text-muted-foreground line-clamp-2">
                     {course.description}

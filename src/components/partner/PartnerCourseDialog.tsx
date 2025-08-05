@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Upload, X, Image } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface PartnerCourse {
@@ -27,6 +28,7 @@ interface PartnerCourse {
   application_deadline?: string;
   requirements?: string;
   status: string;
+  image_url?: string;
 }
 
 interface PartnerCourseDialogProps {
@@ -51,6 +53,8 @@ export default function PartnerCourseDialog({ isOpen, onClose, course }: Partner
     requirements: '',
     status: 'draft'
   });
+  const [isUploading, setIsUploading] = useState(false);
+  const [courseImage, setCourseImage] = useState<string | null>(null);
 
   const { data: institution } = useQuery({
     queryKey: ['partner-institution', user?.id],
@@ -83,6 +87,7 @@ export default function PartnerCourseDialog({ isOpen, onClose, course }: Partner
         requirements: course.requirements || '',
         status: course.status
       });
+      setCourseImage(course.image_url || null);
     } else {
       setFormData({
         title: '',
@@ -96,8 +101,71 @@ export default function PartnerCourseDialog({ isOpen, onClose, course }: Partner
         requirements: '',
         status: 'draft'
       });
+      setCourseImage(null);
     }
   }, [course, isOpen]);
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Սխալ",
+        description: "Խնդրում ենք ընտրել նկարի ֆայլ",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Սխալ",
+        description: "Ֆայլի չափը չպետք է գերազանցի 5 ՄԲ-ը",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}/${Date.now()}_course.${fileExt}`;
+
+      // Upload image
+      const { error: uploadError } = await supabase.storage
+        .from('course-images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('course-images')
+        .getPublicUrl(fileName);
+
+      setCourseImage(data.publicUrl);
+      
+      toast({
+        title: "Հաջողություն",
+        description: "Նկարը բարեհաջող վերբեռնվել է",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Սխալ",
+        description: "Չհաջողվեց վերբեռնել նկարը",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleImageRemove = () => {
+    setCourseImage(null);
+  };
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -117,7 +185,8 @@ export default function PartnerCourseDialog({ isOpen, onClose, course }: Partner
         end_date: data.end_date || null,
         application_deadline: data.application_deadline || null,
         requirements: data.requirements || null,
-        status: data.status
+        status: data.status,
+        image_url: courseImage
       };
 
       const { data: result, error } = await supabase
@@ -158,7 +227,8 @@ export default function PartnerCourseDialog({ isOpen, onClose, course }: Partner
         end_date: data.end_date || null,
         application_deadline: data.application_deadline || null,
         requirements: data.requirements || null,
-        status: data.status
+        status: data.status,
+        image_url: courseImage
       };
 
       const { data: result, error } = await supabase
@@ -207,6 +277,55 @@ export default function PartnerCourseDialog({ isOpen, onClose, course }: Partner
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Course Image Section */}
+          <div className="space-y-2">
+            <Label>Դասընթացի նկարը</Label>
+            {courseImage ? (
+              <div className="relative">
+                <img 
+                  src={courseImage} 
+                  alt="Դասընթացի նկար"
+                  className="w-full h-48 object-cover rounded-lg border"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleImageRemove}
+                  className="absolute top-2 right-2"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            ) : (
+              <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8">
+                <input
+                  id="course-image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  disabled={isUploading}
+                />
+                <div className="text-center">
+                  <Image className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => document.getElementById('course-image-upload')?.click()}
+                    disabled={isUploading}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    {isUploading ? 'Վերբեռնում...' : 'Ընտրել նկար'}
+                  </Button>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    PNG, JPG մինչև 5ՄԲ
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div>
             <Label htmlFor="title">Անվանումը *</Label>
             <Input
