@@ -20,6 +20,10 @@ const SignUpForm = () => {
   const [directorName, setDirectorName] = useState('');
   const [institutionAddress, setInstitutionAddress] = useState('');
   const [institutionPhone, setInstitutionPhone] = useState('');
+  const [organizationName, setOrganizationName] = useState('');
+  const [managerName, setManagerName] = useState('');
+  const [organizationPhone, setOrganizationPhone] = useState('');
+  const [organizationAddress, setOrganizationAddress] = useState('');
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const { signUp } = useAuth();
   const navigate = useNavigate();
@@ -42,6 +46,13 @@ const SignUpForm = () => {
         userData.directorName = directorName;
         userData.institutionAddress = institutionAddress;
         userData.institutionPhone = institutionPhone;
+      }
+
+      if (role === 'employer') {
+        userData.organizationName = organizationName;
+        userData.managerName = managerName;
+        userData.organizationPhone = organizationPhone;
+        userData.organizationAddress = organizationAddress;
       }
 
       const result = await signUp(email, password, userData);
@@ -163,6 +174,57 @@ const SignUpForm = () => {
               value={institutionPhone}
               onChange={(e) => setInstitutionPhone(e.target.value)}
               placeholder="Մուտքագրեք հեռախոսահամարը"
+              required
+            />
+          </div>
+        </div>
+      )}
+      {role === 'employer' && (
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="organization-name" className="font-armenian">Կազմակերպության անվանում *</Label>
+            <Input
+              id="organization-name"
+              type="text"
+              value={organizationName}
+              onChange={(e) => setOrganizationName(e.target.value)}
+              placeholder="Մուտքագրեք կազմակերպության անվանումը"
+              required
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="manager-name" className="font-armenian">Տնօրեն *</Label>
+            <Input
+              id="manager-name"
+              type="text"
+              value={managerName}
+              onChange={(e) => setManagerName(e.target.value)}
+              placeholder="Մուտքագրեք տնօրենի անունը"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="organization-phone" className="font-armenian">Հեռախոսահամար *</Label>
+            <Input
+              id="organization-phone"
+              type="tel"
+              value={organizationPhone}
+              onChange={(e) => setOrganizationPhone(e.target.value)}
+              placeholder="Մուտքագրեք հեռախոսահամարը"
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="organization-address" className="font-armenian">Հասցե *</Label>
+            <Input
+              id="organization-address"
+              type="text"
+              value={organizationAddress}
+              onChange={(e) => setOrganizationAddress(e.target.value)}
+              placeholder="Մուտքագրեք կազմակերպության հասցեն"
               required
             />
           </div>
