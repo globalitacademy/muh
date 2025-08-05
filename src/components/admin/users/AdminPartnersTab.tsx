@@ -117,64 +117,95 @@ const AdminPartnersTab = () => {
       ) : (
         <div className="grid gap-4 md:gap-6">
           {filteredPartners.map((partner) => (
-            <Card key={partner.id} className="hover:shadow-md transition-shadow">
+            <Card key={partner.id} className="hover:shadow-lg transition-all duration-200 border-0 shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-4 flex-1">
-                    <Avatar className="w-16 h-16">
-                      <AvatarImage src={partner.avatar_url} />
-                      <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-lg font-semibold">
-                        {partner.organization?.charAt(0) || partner.name?.charAt(0) || partner.first_name?.charAt(0) || 'Գ'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap mb-2">
-                        <h4 className="font-semibold text-lg font-armenian truncate">
-                          {partner.name || `${partner.first_name || ''} ${partner.last_name || ''}`.trim() || 'Անանուն գործընկեր'}
-                        </h4>
-                        <Badge variant={partner.status === 'active' ? 'default' : 'secondary'} className="text-xs">
-                          {partner.status === 'active' ? 'Ակտիվ' : 'Ապաակտիվ'}
-                        </Badge>
+                  <div className="flex items-start space-x-6 flex-1">
+                    {/* Organization Logo */}
+                    <div className="flex-shrink-0">
+                      <Avatar className="w-20 h-20 border-4 border-background shadow-lg">
+                        <AvatarImage src={partner.avatar_url} className="object-cover" />
+                        <AvatarFallback className="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-xl font-bold">
+                          {partner.organization?.charAt(0) || partner.name?.charAt(0) || 'Գ'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                    
+                    {/* Organization Information */}
+                    <div className="flex-1 min-w-0 space-y-4">
+                      {/* Header with Organization Name and Status */}
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h3 className="font-bold text-xl text-foreground font-armenian">
+                            {partner.organization || 'Կազմակերպություն նշված չէ'}
+                          </h3>
+                          <Badge 
+                            variant={partner.status === 'active' ? 'default' : 'secondary'} 
+                            className="text-xs font-medium"
+                          >
+                            {partner.status === 'active' ? 'Ակտիվ' : 'Ապաակտիվ'}
+                          </Badge>
+                        </div>
+                        
+                        {/* Director Information */}
+                        {partner.name && (
+                          <div className="flex items-center gap-2 text-base">
+                            <span className="font-semibold text-muted-foreground font-armenian">Տնօրեն:</span>
+                            <span className="font-medium text-foreground font-armenian">{partner.name}</span>
+                          </div>
+                        )}
                       </div>
                       
-                      <div className="space-y-2 text-sm text-muted-foreground">
-                        {partner.organization && (
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium font-armenian">Կազմակերպություն:</span>
-                            <span className="font-armenian">{partner.organization}</span>
-                          </div>
-                        )}
+                      {/* Contact Information Grid */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                         {partner.phone && (
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium font-armenian">Հեռախոս:</span>
-                            <span>{partner.phone}</span>
+                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Հեռախոս:</span>
+                            <span className="font-medium text-foreground">{partner.phone}</span>
                           </div>
                         )}
+                        
                         {partner.address && (
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium font-armenian">Հասցե:</span>
-                            <span className="font-armenian truncate">{partner.address}</span>
+                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Հասցե:</span>
+                            <span className="font-medium text-foreground font-armenian truncate">{partner.address}</span>
                           </div>
                         )}
-                        {partner.bio && (
-                          <div className="flex items-start gap-2">
-                            <span className="font-medium font-armenian">Նկարագրություն:</span>
-                            <span className="font-armenian">{partner.bio}</span>
-                          </div>
-                        )}
+                        
                         {partner.department && (
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium font-armenian">Բաժին:</span>
-                            <span className="font-armenian">{partner.department}</span>
+                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Բաժին:</span>
+                            <span className="font-medium text-foreground font-armenian">{partner.department}</span>
+                          </div>
+                        )}
+                        
+                        {partner.group_number && (
+                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Խումբ:</span>
+                            <span className="font-medium text-foreground">{partner.group_number}</span>
                           </div>
                         )}
                       </div>
+                      
+                      {/* Description */}
+                      {partner.bio && (
+                        <div className="border-t pt-3">
+                          <div className="space-y-2">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Նկարագրություն:</span>
+                            <p className="text-foreground font-armenian text-sm leading-relaxed">{partner.bio}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <UserActionsMenu 
-                    user={partner} 
-                    onActionComplete={() => refetch()} 
-                  />
+                  
+                  {/* Actions Menu */}
+                  <div className="flex-shrink-0 ml-4">
+                    <UserActionsMenu 
+                      user={partner} 
+                      onActionComplete={() => refetch()} 
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
