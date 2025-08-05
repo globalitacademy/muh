@@ -221,7 +221,14 @@ const Jobs = () => {
                   )}
                   
                   <div className="flex gap-2 pt-2">
-                    <Button className="font-armenian flex-1">
+                    <Button 
+                      className="font-armenian flex-1"
+                      onClick={() => {
+                        // For now, we'll show an alert with job details
+                        // In a real app, this would navigate to a detailed job page
+                        alert(`${posting.title}\n\n${posting.description || 'Նկարագրություն չկա'}\n\nՊահանջներ: ${posting.requirements || 'Նշված չէ'}\n\nԳտնվելու վայր: ${posting.location || (posting.is_remote ? 'Հեռակա' : 'Նշված չէ')}`);
+                      }}
+                    >
                       Դիտել մանրամասն
                     </Button>
                   </div>
