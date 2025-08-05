@@ -9,6 +9,8 @@ import { UserProfile, useUpdateUserRole } from '@/hooks/useAdminUsers';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
+import ViewUserDialog from './ViewUserDialog';
+import EditUserDialog from './EditUserDialog';
 
 interface UserActionsMenuProps {
   user: UserProfile;
@@ -231,130 +233,19 @@ const UserActionsMenu: React.FC<UserActionsMenuProps> = ({ user, onActionComplet
       </AlertDialog>
 
       {/* View Profile Dialog */}
-      <AlertDialog open={showViewDialog} onOpenChange={setShowViewDialog}>
-        <AlertDialogContent className="max-w-2xl">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="font-armenian">Օգտատիրոջ պրոֆիլ</AlertDialogTitle>
-          </AlertDialogHeader>
-          <div className="space-y-4 max-h-96 overflow-y-auto">
-            <div className="flex items-center gap-4">
-              <img 
-                src={user.avatar_url || '/placeholder.svg'} 
-                alt="Profile" 
-                className="w-16 h-16 rounded-full object-cover"
-              />
-              <div>
-                <h3 className="font-semibold text-lg font-armenian">
-                  {user.name || (user.first_name || user.last_name ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : 'Անանուն')}
-                </h3>
-                <p className="text-muted-foreground font-armenian">{user.organization || 'Կազմակերպություն նշված չէ'}</p>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium font-armenian">Դեր:</span>
-                <p>{user.role}</p>
-              </div>
-              {user.phone && (
-                <div>
-                  <span className="font-medium font-armenian">Հեռախոս:</span>
-                  <p>{user.phone}</p>
-                </div>
-              )}
-              {user.department && (
-                <div>
-                  <span className="font-medium font-armenian">Բաժին:</span>
-                  <p className="font-armenian">{user.department}</p>
-                </div>
-              )}
-              {user.group_number && (
-                <div>
-                  <span className="font-medium font-armenian">Խումբ:</span>
-                  <p>{user.group_number}</p>
-                </div>
-              )}
-              <div>
-                <span className="font-medium font-armenian">Կարգավիճակ:</span>
-                <p className="font-armenian">{user.status === 'active' ? 'Ակտիվ' : 'Ապաակտիվ'}</p>
-              </div>
-              <div>
-                <span className="font-medium font-armenian">Ստեղծման օր:</span>
-                <p>{new Date(user.created_at).toLocaleDateString('hy-AM')}</p>
-              </div>
-            </div>
-            
-            {user.bio && (
-              <div>
-                <span className="font-medium font-armenian">Նկարագրություն:</span>
-                <p className="font-armenian mt-1">{user.bio}</p>
-              </div>
-            )}
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="font-armenian">Փակել</AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ViewUserDialog 
+        open={showViewDialog} 
+        onOpenChange={setShowViewDialog}
+        user={user}
+      />
 
       {/* Edit Profile Dialog */}
-      <AlertDialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <AlertDialogContent className="max-w-2xl">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="font-armenian">Խմբագրել պրոֆիլը</AlertDialogTitle>
-          </AlertDialogHeader>
-          <div className="space-y-4 max-h-96 overflow-y-auto">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="font-medium font-armenian text-sm">Անուն</label>
-                <input 
-                  type="text" 
-                  className="w-full mt-1 px-3 py-2 border rounded-md"
-                  defaultValue={user.name || ''}
-                />
-              </div>
-              <div>
-                <label className="font-medium font-armenian text-sm">Կազմակերպություն</label>
-                <input 
-                  type="text" 
-                  className="w-full mt-1 px-3 py-2 border rounded-md"
-                  defaultValue={user.organization || ''}
-                />
-              </div>
-              <div>
-                <label className="font-medium font-armenian text-sm">Հեռախոս</label>
-                <input 
-                  type="tel" 
-                  className="w-full mt-1 px-3 py-2 border rounded-md"
-                  defaultValue={user.phone || ''}
-                />
-              </div>
-              <div>
-                <label className="font-medium font-armenian text-sm">Բաժին</label>
-                <input 
-                  type="text" 
-                  className="w-full mt-1 px-3 py-2 border rounded-md"
-                  defaultValue={user.department || ''}
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="font-medium font-armenian text-sm">Նկարագրություն</label>
-              <textarea 
-                className="w-full mt-1 px-3 py-2 border rounded-md h-20"
-                defaultValue={user.bio || ''}
-              />
-            </div>
-          </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="font-armenian">Չեղարկել</AlertDialogCancel>
-            <AlertDialogAction className="font-armenian">
-              Պահպանել
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <EditUserDialog 
+        open={showEditDialog} 
+        onOpenChange={setShowEditDialog}
+        user={user}
+        onSuccess={onActionComplete}
+      />
     </>
   );
 };
