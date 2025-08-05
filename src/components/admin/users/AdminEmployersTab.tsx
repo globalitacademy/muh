@@ -90,29 +90,52 @@ const AdminEmployersTab = () => {
       <div className="grid gap-4">
         {filteredEmployers.map((employer) => (
           <Card key={employer.id} className="hover:shadow-md transition-shadow">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <Avatar>
+            <CardContent className="p-6">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start space-x-4 flex-1">
+                  <Avatar className="w-16 h-16">
                     <AvatarImage src={employer.avatar_url || ''} />
-                    <AvatarFallback>
-                      <Building2 className="w-4 h-4" />
+                    <AvatarFallback className="bg-gradient-to-br from-edu-blue to-edu-orange text-white text-lg font-semibold">
+                      {employer.organization?.charAt(0) || employer.name?.charAt(0) || 'Գ'}
                     </AvatarFallback>
                   </Avatar>
-                  <div>
-                    <h4 className="font-medium font-armenian">{employer.name || 'Անանուն'}</h4>
-                    <p className="text-sm text-muted-foreground font-armenian">
-                      {employer.organization || 'Կազմակերպություն նշված չէ'}
-                    </p>
-                    <div className="flex items-center gap-2 mt-1">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h4 className="font-semibold text-lg font-armenian">
+                        {employer.organization || 'Կազմակերպություն նշված չէ'}
+                      </h4>
                       <Badge 
                         variant={employer.status === 'active' ? 'default' : 'secondary'}
                         className="text-xs"
                       >
                         {employer.status === 'active' ? 'Ակտիվ' : 'Ոչ ակտիվ'}
                       </Badge>
+                    </div>
+                    
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      {employer.name && (
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium font-armenian">Տնօրեն:</span>
+                          <span className="font-armenian">{employer.name}</span>
+                        </div>
+                      )}
                       {employer.phone && (
-                        <span className="text-xs text-muted-foreground">{employer.phone}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium font-armenian">Հեռախոս:</span>
+                          <span>{employer.phone}</span>
+                        </div>
+                      )}
+                      {employer.bio && (
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium font-armenian">Հասցե:</span>
+                          <span className="font-armenian">{employer.bio}</span>
+                        </div>
+                      )}
+                      {employer.department && (
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium font-armenian">Բաժին:</span>
+                          <span className="font-armenian">{employer.department}</span>
+                        </div>
                       )}
                     </div>
                   </div>

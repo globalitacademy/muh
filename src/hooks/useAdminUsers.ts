@@ -121,7 +121,7 @@ export const useUpdateUserRole = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, role }: { userId: string; role: 'admin' | 'instructor' | 'student' | 'employer' }) => {
+    mutationFn: async ({ userId, role }: { userId: string; role: 'admin' | 'instructor' | 'student' | 'employer' | 'partner' }) => {
       // Get current user for audit log
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       
@@ -157,6 +157,7 @@ export const useUpdateUserRole = () => {
       queryClient.invalidateQueries({ queryKey: ['adminInstructors'] });
       queryClient.invalidateQueries({ queryKey: ['adminStudents'] });
       queryClient.invalidateQueries({ queryKey: ['adminEmployers'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-partners'] });
       queryClient.invalidateQueries({ queryKey: ['adminInstructorsWithGroups'] });
       queryClient.invalidateQueries({ queryKey: ['userStats'] });
       queryClient.invalidateQueries({ queryKey: ['adminStats'] });

@@ -63,6 +63,7 @@ const UserActionsMenu: React.FC<UserActionsMenuProps> = ({ user, onActionComplet
       queryClient.invalidateQueries({ queryKey: ['adminInstructors'] });
       queryClient.invalidateQueries({ queryKey: ['adminStudents'] });
       queryClient.invalidateQueries({ queryKey: ['adminEmployers'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-partners'] });
       
       onActionComplete();
     } catch (error: any) {
@@ -75,7 +76,7 @@ const UserActionsMenu: React.FC<UserActionsMenuProps> = ({ user, onActionComplet
     }
   };
 
-  const handleRoleChange = (newRole: 'admin' | 'instructor' | 'student' | 'employer') => {
+  const handleRoleChange = (newRole: 'admin' | 'instructor' | 'student' | 'employer' | 'partner') => {
     updateUserRole.mutate({ userId: user.id, role: newRole });
   };
 
@@ -134,6 +135,14 @@ const UserActionsMenu: React.FC<UserActionsMenuProps> = ({ user, onActionComplet
           >
             <User className="w-4 h-4 mr-2" />
             Դարձնել գործատու
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => handleRoleChange('partner')}
+            disabled={user.role === 'partner'}
+            className="font-armenian"
+          >
+            <User className="w-4 h-4 mr-2" />
+            Դարձնել գործընկեր
           </DropdownMenuItem>
           
           <DropdownMenuSeparator />
