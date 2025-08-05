@@ -46,7 +46,7 @@ const JobPostingsSection = () => {
 
   return (
     <section className="py-20 bg-gradient-to-br from-background to-secondary/20">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold font-armenian mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             Աշխատանքային հնարավորություններ
