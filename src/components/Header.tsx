@@ -6,6 +6,7 @@ import { Menu, X, ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import UserMenu from './UserMenu';
 import ThemeToggle from './ThemeToggle';
+import { NotificationBell } from './notifications/NotificationBell';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
@@ -87,6 +88,7 @@ const Header = () => {
               <option value="ru">РУ</option>
             </select>
 
+            <NotificationBell />
             <ThemeToggle />
             <UserMenu />
           </div>
@@ -155,6 +157,7 @@ const Header = () => {
               </select>
               
               <div className="flex items-center space-x-2">
+                <NotificationBell />
                 <ThemeToggle />
                 <UserMenu />
               </div>

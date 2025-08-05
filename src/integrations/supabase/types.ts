@@ -651,6 +651,99 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          email_enabled: boolean
+          frequency: string
+          id: string
+          push_enabled: boolean
+          quiet_hours_enabled: boolean
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          sms_enabled: boolean
+          types_config: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_enabled?: boolean
+          frequency?: string
+          id?: string
+          push_enabled?: boolean
+          quiet_hours_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          sms_enabled?: boolean
+          types_config?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_enabled?: boolean
+          frequency?: string
+          id?: string
+          push_enabled?: boolean
+          quiet_hours_enabled?: boolean
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          sms_enabled?: boolean
+          types_config?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          message: string
+          metadata: Json | null
+          priority: Database["public"]["Enums"]["notification_priority"]
+          read_at: string | null
+          status: Database["public"]["Enums"]["notification_status"]
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          message: string
+          metadata?: Json | null
+          priority?: Database["public"]["Enums"]["notification_priority"]
+          read_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"]
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          message?: string
+          metadata?: Json | null
+          priority?: Database["public"]["Enums"]["notification_priority"]
+          read_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"]
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       partner_course_enrollments: {
         Row: {
           completed_at: string | null
@@ -1459,6 +1552,18 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      create_notification: {
+        Args: {
+          p_user_id: string
+          p_type: Database["public"]["Enums"]["notification_type"]
+          p_title: string
+          p_message: string
+          p_priority?: Database["public"]["Enums"]["notification_priority"]
+          p_action_url?: string
+          p_metadata?: Json
+        }
+        Returns: string
+      }
       get_user_role: {
         Args: { user_uuid: string }
         Returns: string
@@ -1474,6 +1579,14 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: boolean
       }
+      mark_all_notifications_read: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      mark_notification_read: {
+        Args: { p_notification_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       application_status: "pending" | "reviewed" | "accepted" | "rejected"
@@ -1487,6 +1600,22 @@ export type Database = {
         | "advanced"
       job_posting_type: "job" | "internship" | "project"
       module_status: "draft" | "active" | "archived" | "coming_soon"
+      notification_priority: "low" | "normal" | "high" | "urgent"
+      notification_status: "unread" | "read" | "archived"
+      notification_type:
+        | "course_enrollment"
+        | "course_completion"
+        | "assignment_due"
+        | "exam_reminder"
+        | "grade_published"
+        | "message_received"
+        | "announcement"
+        | "application_status"
+        | "payment_confirmation"
+        | "certificate_issued"
+        | "system_alert"
+        | "instructor_assignment"
+        | "partner_course_update"
       question_type:
         | "multiple-choice"
         | "true-false"
@@ -1641,6 +1770,23 @@ export const Constants = {
       ],
       job_posting_type: ["job", "internship", "project"],
       module_status: ["draft", "active", "archived", "coming_soon"],
+      notification_priority: ["low", "normal", "high", "urgent"],
+      notification_status: ["unread", "read", "archived"],
+      notification_type: [
+        "course_enrollment",
+        "course_completion",
+        "assignment_due",
+        "exam_reminder",
+        "grade_published",
+        "message_received",
+        "announcement",
+        "application_status",
+        "payment_confirmation",
+        "certificate_issued",
+        "system_alert",
+        "instructor_assignment",
+        "partner_course_update",
+      ],
       question_type: [
         "multiple-choice",
         "true-false",
