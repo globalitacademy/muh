@@ -59,7 +59,8 @@ const AdminPartnersTab = () => {
   const { data: partners, isLoading, refetch } = useQuery({
     queryKey: ['admin-partners'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // First get partners data
+      const { data: partnersData, error: partnersError } = await supabase
         .from('profiles')
         .select(`
           id,
@@ -86,26 +87,27 @@ const AdminPartnersTab = () => {
           language_preference,
           is_visible_to_employers,
           created_at,
-          updated_at,
-          partner_institutions (
-            id,
-            institution_name,
-            institution_type,
-            description,
-            logo_url,
-            website_url,
-            contact_email,
-            contact_phone,
-            address,
-            is_verified,
-            is_active
-          )
+          updated_at
         `)
         .eq('role', 'partner')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      return (data || []) as any;
+      if (partnersError) throw partnersError;
+
+      // Then get institutions data separately
+      const { data: institutionsData, error: institutionsError } = await supabase
+        .from('partner_institutions')
+        .select('*');
+
+      if (institutionsError) throw institutionsError;
+
+      // Merge the data
+      const partnersWithInstitutions = (partnersData || []).map(partner => ({
+        ...partner,
+        partner_institutions: (institutionsData || []).filter(inst => inst.partner_id === partner.id)
+      }));
+
+      return partnersWithInstitutions as any;
     },
   });
 
