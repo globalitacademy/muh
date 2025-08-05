@@ -18,7 +18,33 @@ const AdminPartnersTab = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select(`
+          id,
+          name,
+          first_name,
+          last_name,
+          organization,
+          role,
+          phone,
+          address,
+          department,
+          group_number,
+          avatar_url,
+          cover_photo_url,
+          bio,
+          status,
+          verified,
+          email_verified,
+          two_factor_enabled,
+          birth_date,
+          field_of_study,
+          personal_website,
+          linkedin_url,
+          language_preference,
+          is_visible_to_employers,
+          created_at,
+          updated_at
+        `)
         .eq('role', 'partner')
         .order('created_at', { ascending: false });
 
@@ -31,7 +57,9 @@ const AdminPartnersTab = () => {
     partner.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     partner.organization?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     partner.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    partner.last_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    partner.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    partner.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    partner.field_of_study?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
   if (isLoading) {
@@ -139,19 +167,33 @@ const AdminPartnersTab = () => {
                           <h3 className="font-bold text-xl text-foreground font-armenian">
                             {partner.organization || 'Կազմակերպություն նշված չէ'}
                           </h3>
-                          <Badge 
-                            variant={partner.status === 'active' ? 'default' : 'secondary'} 
-                            className="text-xs font-medium"
-                          >
-                            {partner.status === 'active' ? 'Ակտիվ' : 'Ապաակտիվ'}
-                          </Badge>
+                          <div className="flex gap-2">
+                            <Badge 
+                              variant={partner.status === 'active' ? 'default' : 'secondary'} 
+                              className="text-xs font-medium"
+                            >
+                              {partner.status === 'active' ? 'Ակտիվ' : 'Ապաակտիվ'}
+                            </Badge>
+                            {partner.verified && (
+                              <Badge variant="secondary" className="text-xs bg-green-100 text-green-800">
+                                Հաստատված
+                              </Badge>
+                            )}
+                            {partner.email_verified && (
+                              <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                                Էլ.փոստ հաստատված
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                         
                         {/* Director Information */}
-                        {partner.name && (
+                        {(partner.name || partner.first_name || partner.last_name) && (
                           <div className="flex items-center gap-2 text-base">
                             <span className="font-semibold text-muted-foreground font-armenian">Տնօրեն:</span>
-                            <span className="font-medium text-foreground font-armenian">{partner.name}</span>
+                            <span className="font-medium text-foreground font-armenian">
+                              {partner.name || `${partner.first_name || ''} ${partner.last_name || ''}`.trim()}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -196,6 +238,64 @@ const AdminPartnersTab = () => {
                           </div>
                         </div>
                       )}
+                      
+                      {/* Additional Information */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                        {partner.field_of_study && (
+                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Ոլորտ:</span>
+                            <span className="font-medium text-foreground font-armenian">{partner.field_of_study}</span>
+                          </div>
+                        )}
+                        
+                        {partner.personal_website && (
+                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Վեբկայք:</span>
+                            <a 
+                              href={partner.personal_website} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="font-medium text-blue-600 hover:text-blue-800 underline truncate"
+                            >
+                              {partner.personal_website}
+                            </a>
+                          </div>
+                        )}
+                        
+                        {partner.linkedin_url && (
+                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">LinkedIn:</span>
+                            <a 
+                              href={partner.linkedin_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="font-medium text-blue-600 hover:text-blue-800 underline"
+                            >
+                              LinkedIn պրոֆիլ
+                            </a>
+                          </div>
+                        )}
+                        
+                        {partner.birth_date && (
+                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Ծննդյան օր:</span>
+                            <span className="font-medium text-foreground">
+                              {new Date(partner.birth_date).toLocaleDateString('hy-AM')}
+                            </span>
+                          </div>
+                        )}
+                        
+                        {partner.language_preference && (
+                          <div className="flex items-center gap-2 p-2 bg-muted/30 rounded-md">
+                            <span className="font-medium text-muted-foreground font-armenian text-sm">Լեզու:</span>
+                            <span className="font-medium text-foreground">
+                              {partner.language_preference === 'hy' ? 'Հայերեն' : 
+                               partner.language_preference === 'en' ? 'English' : 
+                               partner.language_preference === 'ru' ? 'Русский' : partner.language_preference}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   
