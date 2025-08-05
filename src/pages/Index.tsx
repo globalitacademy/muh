@@ -17,8 +17,8 @@ const Index = () => {
       <main className="w-full">
         <Hero />
         <EnhancedFeatures />
-        <JobPostingsSection />
         <Courses />
+        <JobPostingsSection />
       </main>
       <Newsletter />
       <Footer />

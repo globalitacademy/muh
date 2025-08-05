@@ -107,6 +107,16 @@ const JobPostingsSection = () => {
                     {posting.salary_range}
                   </div>
                 )}
+                
+                <div className="pt-3">
+                  <Button 
+                    size="sm" 
+                    className="w-full font-armenian"
+                    onClick={() => window.open(`/job/${posting.id}`, '_blank')}
+                  >
+                    Դիմել
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           ))}
