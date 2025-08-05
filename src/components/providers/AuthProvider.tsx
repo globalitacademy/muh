@@ -4,13 +4,11 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { AuthContext } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Get initial session
@@ -151,7 +149,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         toast.success('Հաջողությամբ դուրս եկաք');
         // Navigate to home page after successful logout
         setTimeout(() => {
-          navigate('/');
+          window.location.href = '/';
         }, 500);
       }
     } catch (error: any) {
