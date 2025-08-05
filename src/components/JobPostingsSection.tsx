@@ -109,13 +109,14 @@ const JobPostingsSection = () => {
                 )}
                 
                 <div className="pt-3">
-                  <Button 
-                    size="sm" 
-                    className="w-full font-armenian"
-                    onClick={() => window.open(`/job/${posting.id}`, '_blank')}
-                  >
-                    Դիմել
-                  </Button>
+                  <Link to={`/job/${posting.id}`}>
+                    <Button 
+                      size="sm" 
+                      className="w-full font-armenian"
+                    >
+                      Դիմել
+                    </Button>
+                  </Link>
                 </div>
               </CardContent>
             </Card>
