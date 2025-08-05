@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, Building2, Globe, Mail, Phone, MapPin } from 'lucide-react';
+import { Plus, Building2, Globe, Mail, Phone, MapPin, Upload, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface PartnerInstitution {
@@ -30,6 +30,7 @@ export default function PartnerInstitutionTab() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     institution_name: '',
     institution_type: 'educational',
@@ -126,6 +127,115 @@ export default function PartnerInstitutionTab() {
     }
   };
 
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Սխալ",
+        description: "Խնդրում ենք ընտրել նկարի ֆայլ",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Սխալ",
+        description: "Ֆայլի չափը չպետք է գերազանցի 5 ՄԲ-ը",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}/logo.${fileExt}`;
+
+      // Delete existing logo if any
+      if (institution?.logo_url) {
+        const oldPath = institution.logo_url.split('/').pop();
+        if (oldPath) {
+          await supabase.storage
+            .from('institution-logos')
+            .remove([`${user?.id}/${oldPath}`]);
+        }
+      }
+
+      // Upload new logo
+      const { error: uploadError } = await supabase.storage
+        .from('institution-logos')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('institution-logos')
+        .getPublicUrl(fileName);
+
+      // Update institution with new logo URL
+      if (institution) {
+        const { error: updateError } = await supabase
+          .from('partner_institutions')
+          .update({ logo_url: data.publicUrl })
+          .eq('id', institution.id);
+
+        if (updateError) throw updateError;
+
+        toast({
+          title: "Հաջողություն",
+          description: "Լոգոն բարեհաջող վերբեռնվել է",
+        });
+        queryClient.invalidateQueries({ queryKey: ['partner-institution'] });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Սխալ",
+        description: "Չհաջողվեց վերբեռնել լոգոն",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleLogoRemove = async () => {
+    if (!institution?.logo_url) return;
+
+    try {
+      const path = institution.logo_url.split('/').pop();
+      if (path) {
+        await supabase.storage
+          .from('institution-logos')
+          .remove([`${user?.id}/${path}`]);
+      }
+
+      const { error } = await supabase
+        .from('partner_institutions')
+        .update({ logo_url: null })
+        .eq('id', institution.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Հաջողություն",
+        description: "Լոգոն հեռացվել է",
+      });
+      queryClient.invalidateQueries({ queryKey: ['partner-institution'] });
+    } catch (error) {
+      toast({
+        title: "Սխալ",
+        description: "Չհաջողվեց հեռացնել լոգոն",
+        variant: "destructive",
+      });
+    }
+  };
+
   const startEditing = () => {
     if (institution) {
       setFormData({
@@ -184,6 +294,39 @@ export default function PartnerInstitutionTab() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="logo-upload">Հաստատության լոգո</Label>
+              <div className="mt-2 flex items-center gap-4">
+                {formData.institution_name && (
+                  <div className="relative">
+                    <input
+                      id="logo-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleLogoUpload}
+                      className="hidden"
+                      disabled={isUploading}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById('logo-upload')?.click()}
+                      disabled={isUploading}
+                      className="w-full"
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      {isUploading ? 'Վերբեռնում...' : 'Ընտրել լոգո'}
+                    </Button>
+                  </div>
+                )}
+                {!formData.institution_name && (
+                  <p className="text-sm text-muted-foreground">
+                    Նախ լրացրեք հաստատության անունը
+                  </p>
+                )}
+              </div>
+            </div>
+
             <div>
               <Label htmlFor="institution_name">Հաստատության անվանումը *</Label>
               <Input
@@ -278,6 +421,54 @@ export default function PartnerInstitutionTab() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Institution Logo */}
+        {institution.logo_url && (
+          <div className="flex items-center gap-4">
+            <img 
+              src={institution.logo_url} 
+              alt={`${institution.institution_name} լոգո`}
+              className="h-16 w-16 object-contain rounded-lg border"
+            />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Հաստատության լոգո</p>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogoRemove}
+                className="text-red-600 hover:text-red-700 p-0 h-auto"
+              >
+                <X className="h-4 w-4 mr-1" />
+                Հեռացնել
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Upload logo section */}
+        <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-4">
+          <input
+            id="logo-upload-view"
+            type="file"
+            accept="image/*"
+            onChange={handleLogoUpload}
+            className="hidden"
+            disabled={isUploading}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => document.getElementById('logo-upload-view')?.click()}
+            disabled={isUploading}
+            className="w-full"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            {isUploading ? 'Վերբեռնում...' : institution.logo_url ? 'Փոխել լոգոն' : 'Վերբեռնել լոգո'}
+          </Button>
+          <p className="text-xs text-muted-foreground mt-2 text-center">
+            PNG, JPG մինչև 5ՄԲ
+          </p>
+        </div>
+
         {institution.description && (
           <p className="text-muted-foreground">{institution.description}</p>
         )}
