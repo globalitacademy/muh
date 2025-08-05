@@ -17,6 +17,7 @@ import Specialties from "./pages/Specialties";
 import MyCourses from "./pages/MyCourses";
 import Dashboard from "./pages/Dashboard";
 import Jobs from "./pages/Jobs";
+import JobDetail from "./pages/JobDetail";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
@@ -46,6 +47,7 @@ function App() {
                   <Route path="/my-courses" element={<MyCourses />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/jobs" element={<Jobs />} />
+                  <Route path="/job/:id" element={<JobDetail />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/login" element={<Login />} />

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,7 @@ import { MapPin, Building, Calendar, Search, Filter, Briefcase } from 'lucide-re
 import { format } from 'date-fns';
 
 const Jobs = () => {
+  const navigate = useNavigate();
   const { data: jobPostings, isLoading } = useJobPostings();
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
@@ -223,11 +225,7 @@ const Jobs = () => {
                   <div className="flex gap-2 pt-2">
                     <Button 
                       className="font-armenian flex-1"
-                      onClick={() => {
-                        // For now, we'll show an alert with job details
-                        // In a real app, this would navigate to a detailed job page
-                        alert(`${posting.title}\n\n${posting.description || 'Նկարագրություն չկա'}\n\nՊահանջներ: ${posting.requirements || 'Նշված չէ'}\n\nԳտնվելու վայր: ${posting.location || (posting.is_remote ? 'Հեռակա' : 'Նշված չէ')}`);
-                      }}
+                      onClick={() => navigate(`/job/${posting.id}`)}
                     >
                       Դիտել մանրամասն
                     </Button>
