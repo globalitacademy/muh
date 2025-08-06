@@ -8,10 +8,13 @@ import { useUserProfile } from '@/hooks/useUserProfile';
 import { Building2, UserPlus, Search, FileText, MessageSquare, Settings, Users, BarChart3, Home } from 'lucide-react';
 import SettingsTab from '@/components/settings/SettingsTab';
 import EmployerJobsTab from '@/components/employer/EmployerJobsTab';
+import { useEmployerJobPostings, useEmployerApplications } from '@/hooks/useJobPostings';
 
 const EmployerProfile = () => {
   const { data: profile, isLoading } = useUserProfile();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const { data: jobPostings = [], isLoading: jobsLoading } = useEmployerJobPostings();
+  const { data: applications = [], isLoading: appsLoading } = useEmployerApplications();
 
   if (isLoading) {
     return <div className="animate-pulse font-armenian">Բեռնվում է...</div>;
@@ -110,22 +113,26 @@ const EmployerProfile = () => {
               <CardTitle className="font-armenian">Ակտիվ հայտարարություններ</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <div>
-                    <h4 className="font-semibold font-armenian">React զարգացուցիչ</h4>
-                    <p className="text-sm text-muted-foreground">12 դիմում • 5 օր առաջ</p>
-                  </div>
-                  <Badge variant="secondary">Ակտիվ</Badge>
+              {jobsLoading ? (
+                <div className="text-sm text-muted-foreground font-armenian">Բեռնվում է...</div>
+              ) : (
+                <div className="space-y-3">
+                  {jobPostings.filter(p => p.is_active).slice(0, 5).map((p) => (
+                    <div key={p.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <h4 className="font-semibold font-armenian">{p.title}</h4>
+                        <p className="text-sm text-muted-foreground">
+                          {p.location || 'Տեղամաս նշված չէ'} • {p.posting_type === 'internship' ? 'Պրակտիկա' : p.posting_type === 'project' ? 'Նախագիծ' : 'Աշխատանք'}
+                        </p>
+                      </div>
+                      <Badge variant="secondary">Ակտիվ</Badge>
+                    </div>
+                  ))}
+                  {jobPostings.filter(p => p.is_active).length === 0 && (
+                    <div className="text-sm text-muted-foreground font-armenian">Այս պահին ակտիվ հայտարարություններ չկան</div>
+                  )}
                 </div>
-                <div className="flex items-center justify-between p-3 border rounded-lg">
-                  <div>
-                    <h4 className="font-semibold font-armenian">UI/UX դիզայներ</h4>
-                    <p className="text-sm text-muted-foreground">8 դիմում • 3 օր առաջ</p>
-                  </div>
-                  <Badge variant="secondary">Ակտիվ</Badge>
-                </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
@@ -137,20 +144,20 @@ const EmployerProfile = () => {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
-                  <p className="text-2xl font-bold">15</p>
+                  <p className="text-2xl font-bold">{jobPostings.filter(p => p.is_active).length}</p>
                   <p className="text-sm text-muted-foreground font-armenian">Ակտիվ հայտարարություններ</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold">248</p>
+                  <p className="text-2xl font-bold">{applications.length}</p>
                   <p className="text-sm text-muted-foreground font-armenian">Ընդհանուր դիմումներ</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold">32</p>
-                  <p className="text-sm text-muted-foreground font-armenian">Հարցազրույցներ</p>
+                  <p className="text-2xl font-bold">{applications.filter(a => a.status === 'pending').length}</p>
+                  <p className="text-sm text-muted-foreground font-armenian">Սպասում է</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold">12</p>
-                  <p className="text-sm text-muted-foreground font-armenian">Վարձակալված</p>
+                  <p className="text-2xl font-bold">{applications.filter(a => a.status === 'accepted').length}</p>
+                  <p className="text-sm text-muted-foreground font-armenian">Ընդունված</p>
                 </div>
               </div>
             </CardContent>
@@ -167,10 +174,28 @@ const EmployerProfile = () => {
               <CardTitle className="font-armenian">Թեկնածուներ</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
-                <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p className="font-armenian">Թեկնածուների ֆունկցիան շուտով</p>
-              </div>
+              {appsLoading ? (
+                <div className="text-sm text-muted-foreground font-armenian">Բեռնվում է...</div>
+              ) : applications.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p className="font-armenian">Դեռևս դիմումներ չկան</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {applications.slice(0, 10).map((app) => (
+                    <div key={app.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-semibold font-armenian">{app.profiles?.name || 'Անուն չի նշված'}</p>
+                        <p className="text-sm text-muted-foreground">{app.job_postings?.title}</p>
+                      </div>
+                      <Badge variant={app.status === 'accepted' ? 'default' : app.status === 'pending' ? 'secondary' : 'outline'}>
+                        {app.status}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
