@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useEmployerJobPostings } from '@/hooks/useJobPostings';
-import { Calendar, MapPin, Users, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Users, Eye, EyeOff, Loader2, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -73,6 +74,22 @@ const JobPostingsList = () => {
       setEditOpen(false);
     },
     onError: () => toast.error('Չհաջողվեց թարմացնել առաջարկը'),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('job_postings')
+        .delete()
+        .eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success('Առաջարկը ջնջվեց');
+      queryClient.invalidateQueries({ queryKey: ['employer-job-postings'] });
+      queryClient.invalidateQueries({ queryKey: ['job-postings'] });
+    },
+    onError: () => toast.error('Չհաջողվեց ջնջել առաջարկը'),
   });
 
   const openEdit = (posting: any) => {
@@ -203,6 +220,27 @@ const JobPostingsList = () => {
               <Button variant="outline" size="sm" className="font-armenian" onClick={() => openApplications(posting.id)}>
                 Դիմումներ
               </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive" size="sm" className="font-armenian">
+                    <Trash2 className="w-4 h-4 mr-1" /> Ջնջել
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="font-armenian">Վստա՞հ եք, որ ցանկանում եք ջնջել</AlertDialogTitle>
+                    <AlertDialogDescription className="font-armenian">
+                      Այս գործողությունը անդառնալի է։ Առաջարկը և կապված դիմումները չեն ջնջվի, բայց ուսանողները այլևս չեն տեսնի այս առաջարկը:
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="font-armenian">Չեղարկել</AlertDialogCancel>
+                    <AlertDialogAction className="font-armenian" onClick={() => deleteMutation.mutate(posting.id)}>
+                      {deleteMutation.isPending ? 'Ջնջվում է...' : 'Այո, ջնջել'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </CardContent>
         </Card>
