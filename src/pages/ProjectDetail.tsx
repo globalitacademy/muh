@@ -55,7 +55,7 @@ const StepsTab: React.FC<{ projectId: string }> = ({ projectId }) => {
   };
 
   return (
-    <Section title="Steps">
+    <Section title="Քայլեր">
       <div className="grid gap-3 md:grid-cols-4 items-end mb-4">
         <div className="md:col-span-2">
           <Label htmlFor="new-step">New step</Label>
@@ -129,7 +129,7 @@ const DiscussionsTab: React.FC<{ projectId: string }> = ({ projectId }) => {
   };
 
   return (
-    <Section title="Discussions">
+    <Section title="Քննարկումներ">
       <div className="grid gap-3 md:grid-cols-6 items-end mb-4">
         <div className="md:col-span-5">
           <Label htmlFor="msg">Message</Label>
@@ -181,7 +181,7 @@ const FilesTab: React.FC<{ projectId: string }> = ({ projectId }) => {
   const getPublicUrl = (file_path: string) => supabase.storage.from("project-files").getPublicUrl(file_path).data.publicUrl;
 
   return (
-    <Section title="Files">
+    <Section title="Ֆայլեր">
       <div className="grid gap-3 md:grid-cols-6 items-end mb-4">
         <div className="md:col-span-5">
           <Label htmlFor="file">Add file</Label>
@@ -237,7 +237,7 @@ const EvaluationTab: React.FC<{ projectId: string }> = ({ projectId }) => {
   };
 
   return (
-    <Section title="Evaluation">
+    <Section title="Գնահատական">
       <div className="grid gap-3 md:grid-cols-6 mb-4">
         <div>
           <Label htmlFor="score">Score</Label>
@@ -297,7 +297,7 @@ const TimelineTab: React.FC<{ projectId: string }> = ({ projectId }) => {
   };
 
   return (
-    <Section title="Timeline">
+    <Section title="Թայմլայն">
       <div className="grid gap-3 md:grid-cols-6 items-end mb-4">
         <div>
           <Label>Type</Label>
@@ -357,19 +357,46 @@ const ProjectDetail: React.FC = () => {
               {project.description && <p className="text-muted-foreground">{project.description}</p>}
             </header>
 
-            <Tabs defaultValue="overview">
+            <Tabs defaultValue="description">
               <TabsList className="flex flex-wrap">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="schedule">Schedule</TabsTrigger>
-                <TabsTrigger value="steps">Steps</TabsTrigger>
-                <TabsTrigger value="discussions">Discussions</TabsTrigger>
-                <TabsTrigger value="files">Files</TabsTrigger>
-                <TabsTrigger value="evaluation">Evaluation</TabsTrigger>
-                <TabsTrigger value="timeline">Timeline</TabsTrigger>
+                <TabsTrigger value="description">Նկարագիր</TabsTrigger>
+                <TabsTrigger value="schedule">Ժամանակացույց</TabsTrigger>
+                <TabsTrigger value="steps">Քայլեր</TabsTrigger>
+                <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
+                <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
+                <TabsTrigger value="evaluation">Գնահատական</TabsTrigger>
+                <TabsTrigger value="timeline">Թայմլայն</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview"><Section title="Overview" /></TabsContent>
-              <TabsContent value="schedule"><Section title="Schedule" /></TabsContent>
+              <TabsContent value="description">
+                <Section title="Նկարագիր">
+                  {project.description ? (
+                    <p>{project.description}</p>
+                  ) : (
+                    <p className="text-muted-foreground">Նկարագիր չկա։</p>
+                  )}
+                </Section>
+              </TabsContent>
+
+              <TabsContent value="schedule">
+                <Section title="Ժամանակացույց">
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div>
+                      <div className="text-sm text-muted-foreground">Սկիզբ</div>
+                      <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Ավարտ</div>
+                      <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
+                    </div>
+                    <div>
+                      <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
+                      <div className="font-medium">{project.status}</div>
+                    </div>
+                  </div>
+                </Section>
+              </TabsContent>
+
               <TabsContent value="steps"><StepsTab projectId={projectId} /></TabsContent>
               <TabsContent value="discussions"><DiscussionsTab projectId={projectId} /></TabsContent>
               <TabsContent value="files"><FilesTab projectId={projectId} /></TabsContent>
