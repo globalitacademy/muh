@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -11,6 +11,10 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useCreateJobPosting } from '@/hooks/useJobPostings';
 import { Loader2 } from 'lucide-react';
+import { useImageUpload } from '@/hooks/useImageUpload';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { toast } from '@/hooks/use-toast';
 
 const jobPostingSchema = z.object({
   title: z.string().min(1, 'Անվանումը պարտադիր է'),
@@ -31,8 +35,16 @@ interface JobPostingFormProps {
 
 const JobPostingForm = ({ onSuccess }: JobPostingFormProps) => {
   const createJobPosting = useCreateJobPosting();
+  const { user } = useAuth();
+  const uploader = useImageUpload({ bucket: 'project-files', maxSizeMB: 5 });
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [category, setCategory] = useState("");
+  const [skills, setSkills] = useState("");
+  const [projectDeadline, setProjectDeadline] = useState("");
+  const [maxApplicants, setMaxApplicants] = useState<number | "">("");
+  const [resourcesText, setResourcesText] = useState("");
   
-  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<JobPostingFormData>({
+  const { register, handleSubmit, formState: { errors }, setValue, watch, reset } = useForm<JobPostingFormData>({
     resolver: zodResolver(jobPostingSchema),
     defaultValues: {
       is_remote: false,
@@ -42,7 +54,7 @@ const JobPostingForm = ({ onSuccess }: JobPostingFormProps) => {
 
   const onSubmit = async (data: JobPostingFormData) => {
     try {
-      await createJobPosting.mutateAsync({
+      const jp = await createJobPosting.mutateAsync({
         title: data.title,
         description: data.description,
         requirements: data.requirements,
@@ -52,9 +64,37 @@ const JobPostingForm = ({ onSuccess }: JobPostingFormProps) => {
         posting_type: data.posting_type ?? 'job',
         expires_at: data.expires_at,
       });
+
+      // If it's a project, create a linked Project as well
+      if (data.posting_type === 'project') {
+        if (!user) throw new Error('Not authenticated');
+        const { error: perr } = await supabase
+          .from('projects')
+          .insert({
+            title: data.title,
+            description: data.description || null,
+            start_date: null,
+            end_date: null,
+            is_public: false,
+            creator_id: user.id,
+            creator_role: 'employer',
+            image_url: imageUrl,
+            category: category || null,
+            required_skills: skills ? skills.split(',').map(s => s.trim()).filter(Boolean) : null,
+            application_deadline: projectDeadline ? new Date(projectDeadline).toISOString() : null,
+            max_applicants: maxApplicants === '' ? null : Number(maxApplicants),
+            resources: resourcesText ? resourcesText.split('\n').map(r => r.trim()).filter(Boolean) : [],
+          });
+        if (perr) throw perr;
+      }
+
+      toast({ description: 'Հրապարակումը ստեղծվեց' });
+      reset();
+      setImageUrl(null); setCategory(''); setSkills(''); setProjectDeadline(''); setMaxApplicants(''); setResourcesText('');
       onSuccess?.();
-    } catch (error) {
-      console.error('Error creating job posting:', error);
+    } catch (error: any) {
+      console.error('Error creating job posting/project:', error);
+      toast({ variant: 'destructive', description: error.message || 'Սխալ է տեղի ունեցել' });
     }
   };
 
@@ -161,6 +201,64 @@ const JobPostingForm = ({ onSuccess }: JobPostingFormProps) => {
               {...register('expires_at')}
             />
           </div>
+
+          {watchedPostingType === 'project' && (
+            <div className="space-y-4 border rounded-lg p-4">
+              <p className="font-medium font-armenian">Նախագծի պարամետրեր</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2 md:col-span-2">
+                  <Label className="font-armenian">Նախագծի նկար</Label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-40 h-24 rounded-md overflow-hidden bg-muted">
+                      {imageUrl ? (
+                        <img src={imageUrl} alt="Project cover" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">Չկա նկար</div>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <Input type="file" accept="image/*" onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        if (!f) return;
+                        try {
+                          const url = await uploader.uploadImage(f, `project-cover-${Date.now()}`);
+                          if (url) setImageUrl(url);
+                        } catch (err: any) {
+                          toast({ variant: 'destructive', description: err.message || 'Նկարի վերբեռնումը ձախողվեց' });
+                        }
+                      }} />
+                      {imageUrl && (
+                        <Button type="button" variant="outline" onClick={async () => {
+                          try { await uploader.deleteImage(imageUrl); setImageUrl(null); } catch {}
+                        }}>Հեռացնել</Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-armenian">Կատեգորիա</Label>
+                  <Input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Օր․ Web, AI, Marketing" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-armenian">Հմտություններ (ստորակետերով)</Label>
+                  <Input value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="React, Node.js, SQL" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-armenian">Դիմումների վերջնաժամկետ</Label>
+                  <Input type="date" value={projectDeadline} onChange={(e) => setProjectDeadline(e.target.value)} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-armenian">Դիմումների սահմանափակում</Label>
+                  <Input type="number" min={1} value={maxApplicants} onChange={(e) => setMaxApplicants(e.target.value ? Number(e.target.value) : '')} />
+                </div>
+                <div className="space-y-2 md:col-span-2">
+                  <Label className="font-armenian">Օգտակար ռեսուրսներ (մեկ URL յուրաքանչյուր տողում)</Label>
+                  <Textarea rows={3} value={resourcesText} onChange={(e) => setResourcesText(e.target.value)} placeholder="https://example.com\nhttps://docs.example.com" />
+                </div>
+              </div>
+            </div>
+          )}
+
 
           <Button 
             type="submit" 
