@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useMyProjects, useCreateProject } from "@/hooks/useProjects";
 import { useUserRoles } from "@/hooks/useUserRole";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 const Projects: React.FC = () => {
@@ -25,11 +26,12 @@ const Projects: React.FC = () => {
   const [skills, setSkills] = useState("");
   const [applicationDeadline, setApplicationDeadline] = useState("");
   const [maxApplicants, setMaxApplicants] = useState<number | "">("");
+  const [resourcesText, setResourcesText] = useState("");
 
   const uploader = useImageUpload({ bucket: 'project-files', maxSizeMB: 5 });
 
   const onCreate = async () => {
-    if (!title.trim()) return toast.error("Please enter a title");
+    if (!title.trim()) return toast({ variant: "destructive", description: "Please enter a title" });
     try {
       const project = await createMutation.mutateAsync({
         title: title.trim(),
@@ -42,11 +44,12 @@ const Projects: React.FC = () => {
         required_skills: skills ? skills.split(",").map(s => s.trim()).filter(Boolean) : undefined,
         application_deadline: applicationDeadline ? new Date(applicationDeadline).toISOString() : undefined,
         max_applicants: maxApplicants === "" ? undefined : Number(maxApplicants),
+        resources: resourcesText ? resourcesText.split("\n").map(r => r.trim()).filter(Boolean) : undefined,
       });
-      toast.success("Project created");
+      toast({ description: "Project created" });
       nav(`/projects/${project.id}`);
     } catch (e: any) {
-      toast.error(e.message || "Failed to create project");
+      toast({ variant: "destructive", description: e.message || "Failed to create project" });
     }
   };
 
@@ -83,7 +86,7 @@ const Projects: React.FC = () => {
                         const url = await uploader.uploadImage(f, `project-cover-${Date.now()}`);
                         if (url) setImageUrl(url);
                       } catch (err: any) {
-                        toast.error(err.message || 'Upload failed');
+                        toast({ variant: "destructive", description: err.message || 'Upload failed' });
                       }
                     }} />
                     {imageUrl && (
@@ -120,6 +123,10 @@ const Projects: React.FC = () => {
               <div className="md:col-span-2">
                 <Label htmlFor="desc">Description</Label>
                 <Input id="desc" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Short description" />
+              </div>
+              <div className="md:col-span-2">
+                <Label htmlFor="resources">Useful resources (one URL per line)</Label>
+                <Textarea id="resources" value={resourcesText} onChange={(e) => setResourcesText(e.target.value)} placeholder="https://example.com\nhttps://docs.example.com" rows={4} />
               </div>
               <div className="md:col-span-2">
                 <Button onClick={onCreate} disabled={createMutation.isPending}>Create</Button>

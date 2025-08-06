@@ -16,7 +16,7 @@ import { useProjectFiles } from "@/hooks/useProjectFiles";
 import { useProjectEvaluations } from "@/hooks/useProjectEvaluations";
 import { useProjectTimeline } from "@/hooks/useProjectTimeline";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { Image } from "lucide-react";
 import { useProjectApplications } from "@/hooks/useProjectApplications";
 
@@ -46,13 +46,13 @@ const StepsTab: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const onAdd = async () => {
     const t = title.trim();
-    if (!t) return toast.error("Title is required");
+    if (!t) return toast({ variant: 'destructive', description: 'Title is required' });
     try {
       await create.mutateAsync({ title: t, status });
       setTitle("");
       setStatus("todo");
     } catch (e: any) {
-      toast.error(e.message || "Failed to add step");
+      toast({ variant: 'destructive', description: e.message || "Failed to add step" });
     }
   };
 
@@ -126,7 +126,7 @@ const DiscussionsTab: React.FC<{ projectId: string }> = ({ projectId }) => {
       await create.mutateAsync({ content: c });
       setContent("");
     } catch (e: any) {
-      toast.error(e.message || "Failed to post");
+      toast({ variant: 'destructive', description: e.message || "Failed to post" });
     }
   };
 
@@ -174,9 +174,9 @@ const FilesTab: React.FC<{ projectId: string }> = ({ projectId }) => {
     try {
       await upload.mutateAsync(file);
       setFile(null);
-      toast.success("Uploaded");
+      toast({ description: "Uploaded" });
     } catch (e: any) {
-      toast.error(e.message || "Upload failed");
+      toast({ variant: "destructive", description: e.message || "Upload failed" });
     }
   };
 
@@ -231,11 +231,11 @@ const EvaluationTab: React.FC<{ projectId: string }> = ({ projectId }) => {
   const [comments, setComments] = useState("");
 
   const onAdd = async () => {
-    if (!score) return toast.error("Score is required");
+    if (!score) return toast({ variant: 'destructive', description: 'Score is required' });
     try {
       await create.mutateAsync({ score, subject_user_id: subjectUser || null, subject_team: subjectTeam || null, comments });
       setScore(0); setSubjectUser(""); setSubjectTeam(""); setComments("");
-    } catch (e: any) { toast.error(e.message || "Failed to evaluate"); }
+    } catch (e: any) { toast({ variant: 'destructive', description: e.message || "Failed to evaluate" }); }
   };
 
   return (
@@ -291,11 +291,11 @@ const TimelineTab: React.FC<{ projectId: string }> = ({ projectId }) => {
 
   const onAdd = async () => {
     const t = title.trim();
-    if (!t) return toast.error("Title required");
+    if (!t) return toast({ variant: 'destructive', description: 'Title required' });
     try {
       await add.mutateAsync({ title: t, type, description });
       setTitle(""); setDescription(""); setType("note");
-    } catch (e: any) { toast.error(e.message || "Failed to add event"); }
+    } catch (e: any) { toast({ variant: 'destructive', description: e.message || "Failed to add event" }); }
   };
 
   return (
@@ -442,9 +442,9 @@ const ProjectDetail: React.FC = () => {
                             onClick={async () => {
                               try {
                                 await apply.mutateAsync(undefined);
-                                toast.success('Դիմումն ուղարկված է');
+                                toast({ description: 'Դիմումն ուղարկված է' });
                               } catch (e: any) {
-                                toast.error(e.message || 'Չհաջողվեց ուղարկել');
+                                toast({ variant: 'destructive', description: e.message || 'Չհաջողվեց ուղարկել' });
                               }
                             }}
                             disabled={
