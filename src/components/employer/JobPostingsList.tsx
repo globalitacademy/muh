@@ -1,14 +1,99 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useEmployerJobPostings } from '@/hooks/useJobPostings';
-import { Calendar, MapPin, Users, Eye, EyeOff } from 'lucide-react';
+import { Calendar, MapPin, Users, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
-
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 const JobPostingsList = () => {
   const { data: jobPostings, isLoading } = useEmployerJobPostings();
 
+  const [editOpen, setEditOpen] = useState(false);
+  const [appsOpen, setAppsOpen] = useState(false);
+  const [selectedPostingId, setSelectedPostingId] = useState<string | null>(null);
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    requirements: '',
+    salary_range: '',
+    location: '',
+    is_remote: false,
+    is_active: true,
+    expires_at: '' as string | undefined,
+  });
+
+  const queryClient = useQueryClient();
+
+  const { data: applications, isLoading: appsLoading } = useQuery({
+    queryKey: ['employer-applications-by-posting', selectedPostingId],
+    queryFn: async () => {
+      if (!selectedPostingId) return [] as any[];
+      const { data, error } = await supabase
+        .from('job_applications')
+        .select(`*,
+          profiles:profiles!job_applications_applicant_id_fkey (name, organization)
+        `)
+        .eq('job_posting_id', selectedPostingId)
+        .order('applied_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!selectedPostingId && appsOpen,
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedPostingId) throw new Error('No posting selected');
+      const { error } = await supabase
+        .from('job_postings')
+        .update({
+          title: form.title,
+          description: form.description,
+          requirements: form.requirements,
+          salary_range: form.salary_range,
+          location: form.location,
+          is_remote: form.is_remote,
+          is_active: form.is_active,
+          expires_at: form.expires_at || null,
+        })
+        .eq('id', selectedPostingId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success('Առաջարկը թարմացվել է');
+      queryClient.invalidateQueries({ queryKey: ['employer-job-postings'] });
+      setEditOpen(false);
+    },
+    onError: () => toast.error('Չհաջողվեց թարմացնել առաջարկը'),
+  });
+
+  const openEdit = (posting: any) => {
+    setSelectedPostingId(posting.id);
+    setForm({
+      title: posting.title || '',
+      description: posting.description || '',
+      requirements: posting.requirements || '',
+      salary_range: posting.salary_range || '',
+      location: posting.location || '',
+      is_remote: !!posting.is_remote,
+      is_active: !!posting.is_active,
+      expires_at: posting.expires_at || undefined,
+    });
+    setEditOpen(true);
+  };
+
+  const openApplications = (postingId: string) => {
+    setSelectedPostingId(postingId);
+    setAppsOpen(true);
+  };
   if (isLoading) {
     return (
       <Card>
@@ -112,16 +197,107 @@ const JobPostingsList = () => {
             )}
             
             <div className="flex gap-2 pt-2">
-              <Button variant="outline" size="sm" className="font-armenian">
+              <Button variant="outline" size="sm" className="font-armenian" onClick={() => openEdit(posting)}>
                 Խմբագրել
               </Button>
-              <Button variant="outline" size="sm" className="font-armenian">
+              <Button variant="outline" size="sm" className="font-armenian" onClick={() => openApplications(posting.id)}>
                 Դիմումներ
               </Button>
             </div>
           </CardContent>
         </Card>
       ))}
+
+      {/* Edit dialog */}
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-armenian">Առաջարկի խմբագրում</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="title">Վերնագիր</Label>
+              <Input id="title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="description">Նկարագիր</Label>
+              <Textarea id="description" rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="requirements">Պահանջներ</Label>
+              <Textarea id="requirements" rows={3} value={form.requirements} onChange={(e) => setForm({ ...form, requirements: e.target.value })} />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="salary">Աշխատավարձ</Label>
+                <Input id="salary" value={form.salary_range} onChange={(e) => setForm({ ...form, salary_range: e.target.value })} />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="location">Քաղաք/Տարածք</Label>
+                <Input id="location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+              <div className="flex items-center gap-2">
+                <Switch id="is_remote" checked={form.is_remote} onCheckedChange={(v) => setForm({ ...form, is_remote: v })} />
+                <Label htmlFor="is_remote">Հեռակա</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch id="is_active" checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
+                <Label htmlFor="is_active">Ակտիվ</Label>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="expires_at">Ժամկետի ավարտ</Label>
+                <Input id="expires_at" type="date" value={form.expires_at ? form.expires_at.substring(0,10) : ''} onChange={(e) => setForm({ ...form, expires_at: e.target.value })} />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button variant="outline" onClick={() => setEditOpen(false)} className="font-armenian">Չեղարկել</Button>
+              <Button onClick={() => updateMutation.mutate()} disabled={updateMutation.isPending} className="font-armenian">
+                {updateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Պահպանել
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Applications dialog */}
+      <Dialog open={appsOpen} onOpenChange={setAppsOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-armenian">Դիմումներ</DialogTitle>
+          </DialogHeader>
+          {appsLoading ? (
+            <div className="py-8 text-center font-armenian">Բեռնվում է...</div>
+          ) : !applications || applications.length === 0 ? (
+            <div className="py-8 text-center font-armenian">Դիմումներ չկան</div>
+          ) : (
+            <div className="space-y-4">
+              {applications.map((app: any) => (
+                <div key={app.id} className="border rounded-lg p-4 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-medium">{app.profiles?.name}</div>
+                      <div className="text-sm text-muted-foreground">{format(new Date(app.applied_at), 'dd/MM/yyyy')}</div>
+                    </div>
+                    <Badge variant={
+                      app.status === 'pending' ? 'secondary' :
+                      app.status === 'accepted' ? 'default' :
+                      app.status === 'rejected' ? 'destructive' : 'outline'
+                    }>
+                      {app.status === 'pending' ? 'Սպասվող' : app.status === 'accepted' ? 'Ընդունված' : app.status === 'rejected' ? 'Մերժված' : 'Դիտված'}
+                    </Badge>
+                  </div>
+                  {app.cover_letter && (
+                    <p className="text-sm text-muted-foreground">{app.cover_letter}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
