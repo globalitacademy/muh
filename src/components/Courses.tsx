@@ -1,17 +1,17 @@
-
 import React from 'react';
 import { Star } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import SpecialtiesList from './SpecialtiesList';
 import NetworkAnimation from './NetworkAnimation';
 import ScrollReveal from '@/components/ui/scroll-reveal';
-
 const Courses = () => {
   const context = useLanguage();
-  const { t } = context || { t: (key: string) => key };
-  
-  return (
-    <section className="relative py-24 bg-gradient-to-br from-background via-background/95 to-accent/10 w-full overflow-hidden">
+  const {
+    t
+  } = context || {
+    t: (key: string) => key
+  };
+  return <section className="relative py-24 bg-gradient-to-br from-background via-background/95 to-accent/10 w-full overflow-hidden">
       {/* Network Animation Background */}
       <div className="absolute inset-0 opacity-60">
         <NetworkAnimation />
@@ -34,12 +34,7 @@ const Courses = () => {
               {/* Content container with modern spacing */}
               <div className="relative z-10 px-8 py-12 md:px-16 md:py-16 text-center">
                 {/* Premium badge with neon glow */}
-                <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-gradient-to-r from-edu-blue/20 via-edu-purple/15 to-edu-blue/20 text-edu-blue mb-8 border border-edu-blue/30 shadow-lg backdrop-blur-xl relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-edu-blue/10 to-edu-purple/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <Star className="w-5 h-5 animate-pulse relative z-10" />
-                  <span className="text-sm font-semibold font-armenian tracking-wide relative z-10">{t('courses.professional-directions')}</span>
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-edu-blue/20 to-edu-purple/20 blur-xl opacity-50" />
-                </div>
+                
                 
                 {/* Modern typography with enhanced gradient */}
                 <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-8 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-[1.1] py-2 tracking-tight">
@@ -47,9 +42,7 @@ const Courses = () => {
                 </h2>
                 
                 {/* Enhanced description with better typography */}
-                <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground/90 font-armenian leading-relaxed max-w-5xl mx-auto font-light">
-                  {t('courses.modular-desc')}
-                </p>
+                
               </div>
               
               {/* Modern floating elements */}
@@ -77,8 +70,6 @@ const Courses = () => {
       
       {/* Bottom gradient fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
-    </section>
-  );
+    </section>;
 };
-
 export default Courses;
