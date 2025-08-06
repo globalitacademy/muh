@@ -1146,6 +1146,33 @@ export type Database = {
         }
         Relationships: []
       }
+      project_applications: {
+        Row: {
+          applicant_id: string
+          applied_at: string
+          cover_letter: string | null
+          id: string
+          project_id: string
+          status: string
+        }
+        Insert: {
+          applicant_id: string
+          applied_at?: string
+          cover_letter?: string | null
+          id?: string
+          project_id: string
+          status?: string
+        }
+        Update: {
+          applicant_id?: string
+          applied_at?: string
+          cover_letter?: string | null
+          id?: string
+          project_id?: string
+          status?: string
+        }
+        Relationships: []
+      }
       project_discussions: {
         Row: {
           author_id: string
@@ -1346,6 +1373,8 @@ export type Database = {
       }
       projects: {
         Row: {
+          application_deadline: string | null
+          category: string | null
           created_at: string
           creator_id: string
           creator_role: Database["public"]["Enums"]["user_role"]
@@ -1354,12 +1383,17 @@ export type Database = {
           id: string
           image_url: string | null
           is_public: boolean
+          max_applicants: number | null
+          required_skills: string[] | null
+          resources: Json | null
           start_date: string | null
           status: string
           title: string
           updated_at: string
         }
         Insert: {
+          application_deadline?: string | null
+          category?: string | null
           created_at?: string
           creator_id: string
           creator_role: Database["public"]["Enums"]["user_role"]
@@ -1368,12 +1402,17 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_public?: boolean
+          max_applicants?: number | null
+          required_skills?: string[] | null
+          resources?: Json | null
           start_date?: string | null
           status?: string
           title: string
           updated_at?: string
         }
         Update: {
+          application_deadline?: string | null
+          category?: string | null
           created_at?: string
           creator_id?: string
           creator_role?: Database["public"]["Enums"]["user_role"]
@@ -1382,6 +1421,9 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_public?: boolean
+          max_applicants?: number | null
+          required_skills?: string[] | null
+          resources?: Json | null
           start_date?: string | null
           status?: string
           title?: string

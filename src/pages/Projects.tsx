@@ -21,6 +21,10 @@ const Projects: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [category, setCategory] = useState("");
+  const [skills, setSkills] = useState("");
+  const [applicationDeadline, setApplicationDeadline] = useState("");
+  const [maxApplicants, setMaxApplicants] = useState<number | "">("");
 
   const uploader = useImageUpload({ bucket: 'project-files', maxSizeMB: 5 });
 
@@ -34,6 +38,10 @@ const Projects: React.FC = () => {
         end_date: undefined,
         is_public: false,
         image_url: imageUrl || undefined,
+        category: category || undefined,
+        required_skills: skills ? skills.split(",").map(s => s.trim()).filter(Boolean) : undefined,
+        application_deadline: applicationDeadline ? new Date(applicationDeadline).toISOString() : undefined,
+        max_applicants: maxApplicants === "" ? undefined : Number(maxApplicants),
       });
       toast.success("Project created");
       nav(`/projects/${project.id}`);
@@ -92,6 +100,22 @@ const Projects: React.FC = () => {
               <div>
                 <Label htmlFor="title">Title</Label>
                 <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Project title" />
+              </div>
+              <div>
+                <Label htmlFor="category">Category</Label>
+                <Input id="category" value={category} onChange={(e) => setCategory(e.target.value)} placeholder="e.g. Web, AI, Marketing" />
+              </div>
+              <div className="md:col-span-2">
+                <Label htmlFor="skills">Required skills (comma-separated)</Label>
+                <Input id="skills" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="React, Node.js, SQL" />
+              </div>
+              <div>
+                <Label htmlFor="deadline">Applications deadline</Label>
+                <Input id="deadline" type="date" value={applicationDeadline} onChange={(e) => setApplicationDeadline(e.target.value)} />
+              </div>
+              <div>
+                <Label htmlFor="capacity">Max applicants</Label>
+                <Input id="capacity" type="number" min={1} value={maxApplicants} onChange={(e) => setMaxApplicants(e.target.value ? Number(e.target.value) : "")} />
               </div>
               <div className="md:col-span-2">
                 <Label htmlFor="desc">Description</Label>

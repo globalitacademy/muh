@@ -18,6 +18,7 @@ import { useProjectTimeline } from "@/hooks/useProjectTimeline";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Image } from "lucide-react";
+import { useProjectApplications } from "@/hooks/useProjectApplications";
 
 const Section: React.FC<{ title: string; children?: React.ReactNode }> = ({ title, children }) => (
   <Card className="mb-6">
@@ -342,6 +343,7 @@ const ProjectDetail: React.FC = () => {
   const { id } = useParams();
   const projectId = useMemo(() => id as string, [id]);
   const { data: project, isLoading } = useProject(projectId);
+  const { data: applications, apply } = useProjectApplications(projectId);
 
   return (
     <div className="page-container">
@@ -370,12 +372,93 @@ const ProjectDetail: React.FC = () => {
               </TabsList>
 
               <TabsContent value="description">
-                <Section title="Նկարագիր">
-                  {project.description ? (
-                    <p>{project.description}</p>
-                  ) : (
-                    <p className="text-muted-foreground">Նկարագիր չկա։</p>
-                  )}
+                <Section title="Նախագծի մանրամասներ">
+                  <div className="grid gap-6 md:grid-cols-3">
+                    <div className="md:col-span-2 space-y-4">
+                      {project.image_url && (
+                        <img src={project.image_url} alt="Project cover image" className="w-full h-56 rounded-md object-cover" />
+                      )}
+                      <div>
+                        <div className="text-sm text-muted-foreground">Նկարագիր</div>
+                        <p className="mt-1">{project.description || 'Նկարագիր չկա։'}</p>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Հմտություններ</div>
+                        {project.required_skills?.length ? (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {project.required_skills.map((s: string) => (
+                              <span key={s} className="px-2 py-1 rounded-md bg-muted text-sm">{s}</span>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="mt-1 text-muted-foreground">Չեն նշվել</div>
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Օգտակար ռեսուրսներ</div>
+                        {Array.isArray(project.resources) && project.resources.length ? (
+                          <ul className="list-disc pl-5 mt-2 space-y-1">
+                            {project.resources.map((r: any, idx: number) => (
+                              <li key={idx}>
+                                {typeof r === 'string' ? (
+                                  <a href={r} target="_blank" rel="noreferrer" className="text-primary underline">{r}</a>
+                                ) : r?.url ? (
+                                  <a href={r.url} target="_blank" rel="noreferrer" className="text-primary underline">{r.title || r.url}</a>
+                                ) : (
+                                  <span className="text-sm">{JSON.stringify(r)}</span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="mt-1 text-muted-foreground">Չկան</div>
+                        )}
+                      </div>
+                    </div>
+                    <aside className="space-y-4">
+                      <div>
+                        <div className="text-sm text-muted-foreground">Կատեգորիա</div>
+                        <div className="font-medium">{project.category || '—'}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Հեղինակ (ID)</div>
+                        <div className="font-medium break-all">{project.creator_id}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Ավելացված է</div>
+                        <div className="font-medium">{new Date(project.created_at).toLocaleDateString()}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Դիմումների վերջնաժամկետ</div>
+                        <div className="font-medium">{project.application_deadline ? new Date(project.application_deadline).toLocaleDateString() : '—'}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Դիմումների քանակ / Սահմանափակում</div>
+                        <div className="font-medium">
+                          {(applications?.length || 0)} / {project.max_applicants ?? 'չկա'}
+                        </div>
+                        <div className="mt-2">
+                          <Button
+                            onClick={async () => {
+                              try {
+                                await apply.mutateAsync(undefined);
+                                toast.success('Դիմումն ուղարկված է');
+                              } catch (e: any) {
+                                toast.error(e.message || 'Չհաջողվեց ուղարկել');
+                              }
+                            }}
+                            disabled={
+                              apply.isPending ||
+                              (typeof project.max_applicants === 'number' && (applications?.length || 0) >= project.max_applicants) ||
+                              (project.application_deadline ? new Date(project.application_deadline) < new Date() : false)
+                            }
+                          >
+                            Դիմել նախագծին
+                          </Button>
+                        </div>
+                      </div>
+                    </aside>
+                  </div>
                 </Section>
               </TabsContent>
 
