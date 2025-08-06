@@ -18,7 +18,7 @@ export default function Partner() {
   const [activeTab, setActiveTab] = useState('institution');
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   if (isLoading) {
