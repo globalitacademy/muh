@@ -1146,6 +1146,246 @@ export type Database = {
         }
         Relationships: []
       }
+      project_discussions: {
+        Row: {
+          author_id: string
+          content: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          project_id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          project_id: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          project_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      project_evaluations: {
+        Row: {
+          comments: string | null
+          created_at: string
+          evaluator_id: string
+          id: string
+          project_id: string
+          rubric: Json
+          score: number
+          subject_team: string | null
+          subject_user_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          comments?: string | null
+          created_at?: string
+          evaluator_id: string
+          id?: string
+          project_id: string
+          rubric?: Json
+          score: number
+          subject_team?: string | null
+          subject_user_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          comments?: string | null
+          created_at?: string
+          evaluator_id?: string
+          id?: string
+          project_id?: string
+          rubric?: Json
+          score?: number
+          subject_team?: string | null
+          subject_user_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      project_files: {
+        Row: {
+          created_at: string
+          file_path: string
+          id: string
+          is_public: boolean
+          mime_type: string | null
+          name: string
+          project_id: string
+          size: number | null
+          uploader_id: string
+        }
+        Insert: {
+          created_at?: string
+          file_path: string
+          id?: string
+          is_public?: boolean
+          mime_type?: string | null
+          name: string
+          project_id: string
+          size?: number | null
+          uploader_id: string
+        }
+        Update: {
+          created_at?: string
+          file_path?: string
+          id?: string
+          is_public?: boolean
+          mime_type?: string | null
+          name?: string
+          project_id?: string
+          size?: number | null
+          uploader_id?: string
+        }
+        Relationships: []
+      }
+      project_members: {
+        Row: {
+          added_at: string
+          id: string
+          project_id: string
+          role: Database["public"]["Enums"]["project_member_role"]
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          id?: string
+          project_id: string
+          role?: Database["public"]["Enums"]["project_member_role"]
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          id?: string
+          project_id?: string
+          role?: Database["public"]["Enums"]["project_member_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      project_steps: {
+        Row: {
+          created_at: string
+          description: string | null
+          due_date: string | null
+          id: string
+          order_index: number
+          project_id: string
+          status: Database["public"]["Enums"]["project_step_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          order_index?: number
+          project_id: string
+          status?: Database["public"]["Enums"]["project_step_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          order_index?: number
+          project_id?: string
+          status?: Database["public"]["Enums"]["project_step_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      project_timeline_events: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_date: string
+          id: string
+          metadata: Json
+          project_id: string
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          metadata?: Json
+          project_id: string
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          metadata?: Json
+          project_id?: string
+          title?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          creator_id: string
+          creator_role: Database["public"]["Enums"]["user_role"]
+          description: string | null
+          end_date: string | null
+          id: string
+          is_public: boolean
+          start_date: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          creator_id: string
+          creator_role: Database["public"]["Enums"]["user_role"]
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_public?: boolean
+          start_date?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          creator_id?: string
+          creator_role?: Database["public"]["Enums"]["user_role"]
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          is_public?: boolean
+          start_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       questions: {
         Row: {
           category: string | null
@@ -1691,6 +1931,10 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: boolean
       }
+      is_project_member: {
+        Args: { p_project_id: string; p_user_id: string }
+        Returns: boolean
+      }
       mark_all_notifications_read: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -1733,6 +1977,8 @@ export type Database = {
         | "system_alert"
         | "instructor_assignment"
         | "partner_course_update"
+      project_member_role: "participant" | "mentor"
+      project_step_status: "todo" | "in_progress" | "done" | "blocked"
       question_type:
         | "multiple-choice"
         | "true-false"
@@ -1905,6 +2151,8 @@ export const Constants = {
         "instructor_assignment",
         "partner_course_update",
       ],
+      project_member_role: ["participant", "mentor"],
+      project_step_status: ["todo", "in_progress", "done", "blocked"],
       question_type: [
         "multiple-choice",
         "true-false",
