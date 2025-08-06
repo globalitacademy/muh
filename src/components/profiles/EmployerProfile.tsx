@@ -83,21 +83,36 @@ const EmployerProfile = () => {
               <CardTitle className="font-armenian">Գործատուի գործողություններ</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="default">
+              <Button
+                className="flex items-center gap-2 h-auto p-4 font-armenian"
+                variant="default"
+                onClick={() => setActiveTab('jobs')}
+                aria-label="Աշխատանք հայտարարել"
+              >
                 <UserPlus className="w-5 h-5" />
                 <div className="text-left">
                   <p className="font-semibold">Աշխատանք հայտարարել</p>
                   <p className="text-xs opacity-90">Նոր հայտարարություն</p>
                 </div>
               </Button>
-              <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="outline">
+              <Button
+                className="flex items-center gap-2 h-auto p-4 font-armenian"
+                variant="outline"
+                onClick={() => setActiveTab('candidates')}
+                aria-label="Դիտել թեկնածուներ"
+              >
                 <Search className="w-5 h-5" />
                 <div className="text-left">
                   <p className="font-semibold">Թեկնածուներ</p>
                   <p className="text-xs text-muted-foreground">Գտնել թեկնածուներ</p>
                 </div>
               </Button>
-              <Button className="flex items-center gap-2 h-auto p-4 font-armenian" variant="outline">
+              <Button
+                className="flex items-center gap-2 h-auto p-4 font-armenian"
+                variant="outline"
+                onClick={() => setActiveTab('candidates')}
+                aria-label="Դիտել CV-ներ"
+              >
                 <FileText className="w-5 h-5" />
                 <div className="text-left">
                   <p className="font-semibold">CV-ներ</p>
