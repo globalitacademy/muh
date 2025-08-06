@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useUserProfile } from '@/hooks/useUserProfile';
-import { Building2, UserPlus, Search, FileText, MessageSquare, Settings, Users, BarChart3, Home } from 'lucide-react';
+import { Building2, UserPlus, Search, FileText, MessageSquare, Settings, Users, BarChart3, Home, FolderKanban } from 'lucide-react';
 import SettingsTab from '@/components/settings/SettingsTab';
 import EmployerJobsTab from '@/components/employer/EmployerJobsTab';
+import EmployerProjectsTab from '@/components/employer/EmployerProjectsTab';
 import { useEmployerJobPostings, useEmployerApplications } from '@/hooks/useJobPostings';
 
 const EmployerProfile = () => {
@@ -49,7 +50,7 @@ const EmployerProfile = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="dashboard" className="font-armenian">
             <Home className="w-4 h-4 mr-2" />
             Գլխավոր
@@ -57,6 +58,10 @@ const EmployerProfile = () => {
           <TabsTrigger value="jobs" className="font-armenian">
             <UserPlus className="w-4 h-4 mr-2" />
             Հայտարարություններ
+          </TabsTrigger>
+          <TabsTrigger value="projects" className="font-armenian">
+            <FolderKanban className="w-4 h-4 mr-2" />
+            Նախագծեր
           </TabsTrigger>
           <TabsTrigger value="candidates" className="font-armenian">
             <Search className="w-4 h-4 mr-2" />
@@ -181,6 +186,10 @@ const EmployerProfile = () => {
 
         <TabsContent value="jobs" className="mt-6">
           <EmployerJobsTab />
+        </TabsContent>
+
+        <TabsContent value="projects" className="mt-6">
+          <EmployerProjectsTab />
         </TabsContent>
 
         <TabsContent value="candidates" className="mt-6">
