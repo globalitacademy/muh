@@ -1352,6 +1352,7 @@ export type Database = {
           description: string | null
           end_date: string | null
           id: string
+          image_url: string | null
           is_public: boolean
           start_date: string | null
           status: string
@@ -1365,6 +1366,7 @@ export type Database = {
           description?: string | null
           end_date?: string | null
           id?: string
+          image_url?: string | null
           is_public?: boolean
           start_date?: string | null
           status?: string
@@ -1378,6 +1380,7 @@ export type Database = {
           description?: string | null
           end_date?: string | null
           id?: string
+          image_url?: string | null
           is_public?: boolean
           start_date?: string | null
           status?: string

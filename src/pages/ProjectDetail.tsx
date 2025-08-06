@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useParams } from "react-router-dom";
@@ -17,6 +17,7 @@ import { useProjectEvaluations } from "@/hooks/useProjectEvaluations";
 import { useProjectTimeline } from "@/hooks/useProjectTimeline";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { Image } from "lucide-react";
 
 const Section: React.FC<{ title: string; children?: React.ReactNode }> = ({ title, children }) => (
   <Card className="mb-6">

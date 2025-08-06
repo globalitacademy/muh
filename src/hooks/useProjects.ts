@@ -12,6 +12,7 @@ export interface Project {
   status: string;
   creator_id: string;
   creator_role: string;
+  image_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -89,7 +90,7 @@ export const useCreateProject = () => {
   const client = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async (payload: Pick<Project, "title" | "description" | "start_date" | "end_date" | "is_public">) => {
+    mutationFn: async (payload: Pick<Project, "title" | "description" | "start_date" | "end_date" | "is_public" | "image_url">) => {
       if (!user) throw new Error("Not authenticated");
       const { data, error } = await supabase
         .from("projects")

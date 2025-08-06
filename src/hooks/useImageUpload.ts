@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 
 interface UseImageUploadOptions {
-  bucket: 'avatars' | 'portfolio-images';
+  bucket: 'avatars' | 'portfolio-images' | 'project-files';
   maxSizeMB?: number;
   allowedTypes?: string[];
 }
