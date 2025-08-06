@@ -10,7 +10,7 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Courses from "./pages/Courses";
-import CourseDetail from "./pages/CourseDetail";
+
 import ModuleDetail from "./pages/ModuleDetail";
 import TopicDetail from "./pages/TopicDetail";
 import Specialties from "./pages/Specialties";
@@ -45,7 +45,7 @@ function App() {
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/courses" element={<Courses />} />
-                  <Route path="/course/:id" element={<CourseDetail />} />
+                  
                   <Route path="/module/:id" element={<ModuleDetail />} />
                   <Route path="/topic/:topicId" element={<TopicDetail />} />
                   <Route path="/specialties" element={<Specialties />} />

@@ -148,7 +148,7 @@ const MyCourses = () => {
 
                   <div className="flex gap-2">
                     <Button 
-                      onClick={() => navigate(`/course/${moduleData.id}`)}
+                      onClick={() => navigate(`/module/${moduleData.id}`)}
                       className="flex-1 btn-modern font-armenian"
                     >
                       Շարունակել
