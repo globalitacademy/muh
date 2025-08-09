@@ -14,10 +14,12 @@ import { Eye, Edit, Settings, Trash2 } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
 const EmployerProjectsTab = () => {
+  console.log('EmployerProjectsTab loaded successfully');
   const { data: projects = [], isLoading } = useMyProjects();
   const uploader = useImageUpload({ bucket: 'project-files', maxSizeMB: 5 });
   const { user } = useAuth();
   const navigate = useNavigate();
+
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -165,6 +167,14 @@ const EmployerProjectsTab = () => {
       }
     }
   };
+
+  // Debug useEffect to check function availability
+  React.useEffect(() => {
+    console.log('Component mounted, checking functions:');
+    console.log('handleSave exists:', typeof handleSave);
+    console.log('resetForm exists:', typeof resetForm);
+    console.log('handleEditProject exists:', typeof handleEditProject);
+  }, []);
 
   return (
     <div className="space-y-6">
