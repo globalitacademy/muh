@@ -39,33 +39,36 @@ const useEmployerProjectApplications = () => {
     queryFn: async () => {
       if (!user?.id) return [];
       
-      const { data, error } = await supabase
+      // First get applications, then manually join with projects to filter by creator
+      const { data: applications, error } = await supabase
         .from('project_applications')
-        .select(`
-          *
-        `)
+        .select('*')
         .order('applied_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching project applications:', error);
+        throw error;
+      }
       
-      // Get project and profile data separately and filter by employer's projects
-      const dataWithRelations = await Promise.all(
-        (data || []).map(async (app) => {
-          const [projectRes, profileRes] = await Promise.all([
-            supabase.from('projects').select('id, title, description, creator_id').eq('id', app.project_id).single(),
-            supabase.from('profiles').select('id, name').eq('id', app.applicant_id).single()
-          ]);
-          
-          return {
+      // Get additional data and filter by employer's projects
+      const filteredApplications = [];
+      for (const app of applications || []) {
+        const [projectRes, profileRes] = await Promise.all([
+          supabase.from('projects').select('id, title, description, creator_id').eq('id', app.project_id).maybeSingle(),
+          supabase.from('profiles').select('id, name').eq('id', app.applicant_id).maybeSingle()
+        ]);
+        
+        // Only include if project belongs to current user
+        if (projectRes.data?.creator_id === user.id) {
+          filteredApplications.push({
             ...app,
             projects: projectRes.data,
             profiles: profileRes.data
-          };
-        })
-      );
+          });
+        }
+      }
       
-      // Filter only applications for projects created by current user
-      return dataWithRelations.filter(app => app.projects?.creator_id === user.id);
+      return filteredApplications;
     },
     enabled: !!user?.id,
   });
@@ -253,6 +256,16 @@ export const EmployerCandidatesTab: React.FC = () => {
 
   const pendingJobApps = jobApplications.filter(app => app.status === 'pending');
   const pendingProjectApps = projectApplications.filter(app => app.status === 'pending');
+  
+  // Separate internship applications from job applications
+  const jobOnlyApplications = jobApplications.filter(app => 
+    !app.job_postings || app.job_postings.posting_type !== 'internship'
+  );
+  const internshipApplications = jobApplications.filter(app => 
+    app.job_postings && app.job_postings.posting_type === 'internship'
+  );
+
+  const pendingInternshipApps = internshipApplications.filter(app => app.status === 'pending');
 
   return (
     <div className="space-y-6">
@@ -260,17 +273,8 @@ export const EmployerCandidatesTab: React.FC = () => {
         <h2 className="text-2xl font-bold">Թեկնածուներ</h2>
       </div>
 
-      <Tabs defaultValue="job-applications" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="job-applications" className="gap-2">
-            <FileText className="w-4 h-4" />
-            Աշխատանքային դիմումներ
-            {pendingJobApps.length > 0 && (
-              <Badge variant="destructive" className="ml-2">
-                {pendingJobApps.length}
-              </Badge>
-            )}
-          </TabsTrigger>
+      <Tabs defaultValue="project-applications" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="project-applications" className="gap-2">
             <FolderKanban className="w-4 h-4" />
             Նախագծային դիմումներ
@@ -280,48 +284,25 @@ export const EmployerCandidatesTab: React.FC = () => {
               </Badge>
             )}
           </TabsTrigger>
+          <TabsTrigger value="job-applications" className="gap-2">
+            <FileText className="w-4 h-4" />
+            Աշխատանքային դիմումներ
+            {pendingJobApps.length > 0 && (
+              <Badge variant="destructive" className="ml-2">
+                {pendingJobApps.length}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="internship-applications" className="gap-2">
+            <Search className="w-4 h-4" />
+            Պրակտիկային դիմումներ
+            {pendingInternshipApps.length > 0 && (
+              <Badge variant="destructive" className="ml-2">
+                {pendingInternshipApps.length}
+              </Badge>
+            )}
+          </TabsTrigger>
         </TabsList>
-
-        <TabsContent value="job-applications" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-armenian">Աշխատանքային հայտարարությունների դիմումներ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {jobAppsLoading ? (
-                <div className="text-sm text-muted-foreground font-armenian">Բեռնվում է...</div>
-              ) : jobApplications.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p className="font-armenian">Դեռևս դիմումներ չկան</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {jobApplications.map((app) => (
-                    <div key={app.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-semibold font-armenian">{app.profiles?.name || 'Անուն չի նշված'}</p>
-                        <p className="text-sm text-muted-foreground">{app.job_postings?.title}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Դիմել է՝ {new Date(app.created_at).toLocaleDateString('hy-AM')}
-                        </p>
-                      </div>
-                      <Badge variant={
-                        app.status === 'accepted' ? 'default' : 
-                        app.status === 'pending' ? 'secondary' : 
-                        'outline'
-                      }>
-                        {app.status === 'accepted' ? 'Ընդունված' :
-                         app.status === 'pending' ? 'Սպասում է' :
-                         app.status === 'rejected' ? 'Մերժված' : app.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         <TabsContent value="project-applications" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
@@ -393,6 +374,88 @@ export const EmployerCandidatesTab: React.FC = () => {
               )}
             </div>
           )}
+        </TabsContent>
+        
+        <TabsContent value="job-applications" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-armenian">Աշխատանքային հայտարարությունների դիմումներ</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {jobAppsLoading ? (
+                <div className="text-sm text-muted-foreground font-armenian">Բեռնվում է...</div>
+              ) : jobOnlyApplications.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p className="font-armenian">Դեռևս դիմումներ չկան</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {jobOnlyApplications.map((app) => (
+                    <div key={app.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-semibold font-armenian">{app.profiles?.name || 'Անուն չի նշված'}</p>
+                        <p className="text-sm text-muted-foreground">{app.job_postings?.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Դիմել է՝ {new Date(app.created_at).toLocaleDateString('hy-AM')}
+                        </p>
+                      </div>
+                      <Badge variant={
+                        app.status === 'accepted' ? 'default' : 
+                        app.status === 'pending' ? 'secondary' : 
+                        'outline'
+                      }>
+                        {app.status === 'accepted' ? 'Ընդունված' :
+                         app.status === 'pending' ? 'Սպասում է' :
+                         app.status === 'rejected' ? 'Մերժված' : app.status}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="internship-applications" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-armenian">Պրակտիկային դիմումներ</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {jobAppsLoading ? (
+                <div className="text-sm text-muted-foreground font-armenian">Բեռնվում է...</div>
+              ) : internshipApplications.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p className="font-armenian">Դեռևս պրակտիկային դիմումներ չկան</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {internshipApplications.map((app) => (
+                    <div key={app.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div>
+                        <p className="font-semibold font-armenian">{app.profiles?.name || 'Անուն չի նշված'}</p>
+                        <p className="text-sm text-muted-foreground">{app.job_postings?.title}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Դիմել է՝ {new Date(app.created_at).toLocaleDateString('hy-AM')}
+                        </p>
+                      </div>
+                      <Badge variant={
+                        app.status === 'accepted' ? 'default' : 
+                        app.status === 'pending' ? 'secondary' : 
+                        'outline'
+                      }>
+                        {app.status === 'accepted' ? 'Ընդունված' :
+                         app.status === 'pending' ? 'Սպասում է' :
+                         app.status === 'rejected' ? 'Մերժված' : app.status}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

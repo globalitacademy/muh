@@ -39,6 +39,7 @@ export interface JobApplication {
     description?: string;
     salary_range?: string;
     location?: string;
+    posting_type: 'job' | 'internship' | 'project';
     profiles?: {
       name: string;
       organization?: string;
@@ -186,6 +187,7 @@ export const useEmployerApplications = () => {
             description,
             salary_range,
             location,
+            posting_type,
             employer_id
           ),
           profiles!job_applications_applicant_id_fkey (
