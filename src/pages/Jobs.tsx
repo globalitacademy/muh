@@ -103,7 +103,7 @@ const Jobs = () => {
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold font-armenian mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold font-armenian mb-4 text-foreground">
             Աշխատանքային հնարավորություններ
           </h1>
           <p className="text-lg text-muted-foreground font-armenian max-w-2xl mx-auto">
