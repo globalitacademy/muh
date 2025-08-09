@@ -59,31 +59,40 @@ const useEmployerProjectApplications = () => {
       }
       
       if (!applications || applications.length === 0) {
-        console.log('No project applications found');
+        console.log('No project applications found in database');
         return [];
       }
+      
+      console.log('Found applications:', applications.length, applications);
+      console.log('Current user ID:', user.id);
       
       // Get additional data and filter by employer's projects
       const filteredApplications = [];
       for (const app of applications) {
+        console.log('Processing application:', app.id, 'for project:', app.project_id, 'applicant:', app.applicant_id);
+        
         const [projectRes, profileRes] = await Promise.all([
           supabase.from('projects').select('id, title, description, creator_id').eq('id', app.project_id).maybeSingle(),
           supabase.from('profiles').select('id, name, email, phone, organization, group_number, department, bio, field_of_study, linkedin_url').eq('id', app.applicant_id).maybeSingle()
         ]);
         
-        console.log('Project data:', projectRes.data, 'Profile data:', profileRes.data, 'User ID:', user.id);
+        console.log('Project query result:', projectRes);
+        console.log('Profile query result:', profileRes);
         
         // Only include if project belongs to current user
-        if (projectRes.data?.creator_id === user.id) {
+        if (projectRes.data && projectRes.data.creator_id === user.id) {
+          console.log('✓ Including application - project belongs to current user');
           filteredApplications.push({
             ...app,
             projects: projectRes.data,
             profiles: profileRes.data
           });
+        } else {
+          console.log('✗ Excluding application - project creator:', projectRes.data?.creator_id, 'current user:', user.id);
         }
       }
       
-      console.log('Filtered applications:', filteredApplications);
+      console.log('Final filtered applications:', filteredApplications.length, filteredApplications);
       return filteredApplications;
     },
     enabled: !!user?.id,
