@@ -28,6 +28,14 @@ interface ProjectApplication {
   profiles?: {
     id: string;
     name: string;
+    email?: string;
+    phone?: string;
+    organization?: string;
+    group_number?: string;
+    department?: string;
+    bio?: string;
+    field_of_study?: string;
+    linkedin_url?: string;
   };
 }
 
@@ -60,7 +68,7 @@ const useEmployerProjectApplications = () => {
       for (const app of applications) {
         const [projectRes, profileRes] = await Promise.all([
           supabase.from('projects').select('id, title, description, creator_id').eq('id', app.project_id).maybeSingle(),
-          supabase.from('profiles').select('id, name').eq('id', app.applicant_id).maybeSingle()
+          supabase.from('profiles').select('id, name, email, phone, organization, group_number, department, bio, field_of_study, linkedin_url').eq('id', app.applicant_id).maybeSingle()
         ]);
         
         console.log('Project data:', projectRes.data, 'Profile data:', profileRes.data, 'User ID:', user.id);
@@ -178,15 +186,45 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
         <div className="flex justify-between items-start mb-4">
           <div className="flex-1">
             <h3 className="font-semibold text-lg">{application.projects?.title}</h3>
-            <p className="text-muted-foreground">
-              {application.profiles?.name || 'Անանուն օգտատեր'}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Դիմել է՝ {new Date(application.applied_at).toLocaleDateString('hy-AM')}
-            </p>
+            <div className="mt-2 space-y-1">
+              <p className="font-medium text-primary">
+                {application.profiles?.name || 'Անանուն օգտատեր'}
+              </p>
+              {application.profiles?.email && (
+                <p className="text-sm text-muted-foreground">📧 {application.profiles.email}</p>
+              )}
+              {application.profiles?.phone && (
+                <p className="text-sm text-muted-foreground">📱 {application.profiles.phone}</p>
+              )}
+              {application.profiles?.organization && (
+                <p className="text-sm text-muted-foreground">🏢 {application.profiles.organization}</p>
+              )}
+              {application.profiles?.group_number && (
+                <p className="text-sm text-muted-foreground">👥 Խումբ {application.profiles.group_number}</p>
+              )}
+              {application.profiles?.field_of_study && (
+                <p className="text-sm text-muted-foreground">🎓 {application.profiles.field_of_study}</p>
+              )}
+              {application.profiles?.linkedin_url && (
+                <a href={application.profiles.linkedin_url} target="_blank" rel="noopener noreferrer" 
+                   className="text-sm text-blue-600 hover:underline">
+                  💼 LinkedIn պրոֆիլ
+                </a>
+              )}
+              <p className="text-sm text-muted-foreground">
+                📅 Դիմել է՝ {new Date(application.applied_at).toLocaleDateString('hy-AM')}
+              </p>
+            </div>
           </div>
           {getStatusBadge(application.status)}
         </div>
+
+        {application.profiles?.bio && (
+          <div className="mb-4">
+            <Label className="text-sm font-medium">Կենսագրական տվյալներ:</Label>
+            <p className="text-sm mt-1 p-2 bg-muted rounded">{application.profiles.bio}</p>
+          </div>
+        )}
 
         {application.cover_letter && (
           <div className="mb-4">
