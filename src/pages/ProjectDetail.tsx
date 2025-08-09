@@ -106,7 +106,12 @@ const StepsTab: React.FC<{
       <div className="grid gap-3 md:grid-cols-4 items-end mb-4">
         <div className="md:col-span-2">
           <Label htmlFor="new-step">New step</Label>
-          
+          <Input 
+            id="new-step"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter step title"
+          />
         </div>
         <div>
           <Label>Status</Label>
