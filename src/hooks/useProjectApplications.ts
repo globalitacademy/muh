@@ -6,6 +6,7 @@ export interface ProjectApplication {
   id: string;
   project_id: string;
   applicant_id: string;
+  applicant_name?: string;
   status: string;
   cover_letter?: string | null;
   applied_at: string;
@@ -43,6 +44,20 @@ export const useProjectApplications = (projectId?: string) => {
     onSuccess: () => client.invalidateQueries({ queryKey: ["project-applications", projectId] }),
   });
 
+  const updateStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: 'approved' | 'rejected' }) => {
+      const { data, error } = await supabase
+        .from("project_applications")
+        .update({ status })
+        .eq("id", id)
+        .select("*")
+        .single();
+      if (error) throw error;
+      return data as ProjectApplication;
+    },
+    onSuccess: () => client.invalidateQueries({ queryKey: ["project-applications", projectId] }),
+  });
+
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("project_applications").delete().eq("id", id);
@@ -52,5 +67,5 @@ export const useProjectApplications = (projectId?: string) => {
     onSuccess: () => client.invalidateQueries({ queryKey: ["project-applications", projectId] }),
   });
 
-  return { ...query, apply, remove };
+  return { ...query, apply, updateStatus, remove };
 };
