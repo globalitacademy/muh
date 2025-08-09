@@ -397,9 +397,9 @@ const ProjectDetail: React.FC = () => {
                       <div>
                         <div className="text-sm text-muted-foreground">Օգտակար ռեսուրսներ</div>
                         {Array.isArray(project.resources) && project.resources.length ? (
-                          <ul className="list-disc pl-5 mt-2 space-y-1">
+                          <ul className="flex flex-wrap gap-2 mt-2">
                             {project.resources.map((r: any, idx: number) => (
-                              <li key={idx}>
+                              <li key={idx} className="flex items-center">
                                 {typeof r === 'string' ? (
                                   <a href={r} target="_blank" rel="noreferrer" className="text-primary underline">{r}</a>
                                 ) : r?.url ? (
