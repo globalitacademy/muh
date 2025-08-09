@@ -8,15 +8,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useJobPostings } from '@/hooks/useJobPostings';
+import { useMyProjects } from '@/hooks/useProjects';
 import { MapPin, Building, Calendar, Search, Filter, Briefcase } from 'lucide-react';
 import { format } from 'date-fns';
 
 const Jobs = () => {
   const navigate = useNavigate();
-  const { data: jobPostings, isLoading } = useJobPostings();
+  const { data: jobPostings, isLoading: jobsLoading } = useJobPostings();
+  const { data: projects, isLoading: projectsLoading } = useMyProjects();
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [locationFilter, setLocationFilter] = useState('all');
+  
+  const isLoading = jobsLoading || projectsLoading;
 
   const getPostingTypeLabel = (type: string) => {
     switch (type) {
@@ -36,7 +40,34 @@ const Jobs = () => {
     }
   };
 
-  const filteredPostings = jobPostings?.filter(posting => {
+  // Convert projects to job posting format
+  const projectsAsPostings = projects?.map(project => ({
+    id: project.id,
+    title: project.title,
+    description: project.description || '',
+    posting_type: 'project' as const,
+    location: null,
+    is_remote: false,
+    created_at: project.created_at,
+    expires_at: project.application_deadline,
+    salary_range: null,
+    requirements: project.required_skills?.join(', '),
+    profiles: null,
+    isProject: true,
+    employer_id: project.creator_id,
+    is_active: true,
+    updated_at: project.updated_at
+  })) || [];
+
+  // Combine job postings and projects  
+  const regularJobPostings = (jobPostings || []).map(posting => ({
+    ...posting,
+    isProject: false
+  }));
+  
+  const allPostings = [...regularJobPostings, ...projectsAsPostings];
+
+  const filteredPostings = allPostings?.filter(posting => {
     const matchesSearch = posting.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          posting.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          posting.profiles?.organization?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -222,14 +253,14 @@ const Jobs = () => {
                     </div>
                   )}
                   
-                  <div className="flex gap-2 pt-2">
-                    <Button 
-                      className="font-armenian flex-1"
-                      onClick={() => navigate(`/job/${posting.id}`)}
-                    >
-                      Դիտել մանրամասն
-                    </Button>
-                  </div>
+                   <div className="flex gap-2 pt-2">
+                     <Button 
+                       className="font-armenian flex-1"
+                       onClick={() => navigate((posting as any).isProject ? `/projects/${posting.id}` : `/job/${posting.id}`)}
+                     >
+                       Դիտել մանրամասն
+                     </Button>
+                   </div>
                 </CardContent>
               </Card>
             ))}
