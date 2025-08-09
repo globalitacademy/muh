@@ -38,6 +38,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
+      console.log('Starting signup with data:', { email, userData });
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -60,6 +62,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           }
         }
       });
+      
+      console.log('Signup result:', { data, error });
 
       if (error) {
         // Handle specific error cases
