@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
 import { Eye, Edit, Settings, Trash2 } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 
 const EmployerProjectsTab = () => {
   const { data: projects = [], isLoading } = useMyProjects();
@@ -27,6 +28,7 @@ const EmployerProjectsTab = () => {
   const [maxApplicants, setMaxApplicants] = useState<number | ''>('');
   const [resources, setResources] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
 
   const handleCreate = async () => {
     const t = title.trim();
@@ -40,7 +42,7 @@ const EmployerProjectsTab = () => {
         description: description || null,
         start_date: null,
         end_date: null,
-        is_public: false,
+        is_public: isPublic,
         image_url: imageUrl,
         category: category || null,
         required_skills: skills ? skills.split(',').map(s => s.trim()).filter(Boolean) : null,
@@ -60,7 +62,7 @@ const EmployerProjectsTab = () => {
 
       toast({ description: 'Նախագիծը ստեղծվեց' });
       // Reset form
-      setTitle(''); setDescription(''); setImageUrl(null); setCategory(''); setSkills(''); setDeadline(''); setMaxApplicants(''); setResources('');
+      setTitle(''); setDescription(''); setImageUrl(null); setCategory(''); setSkills(''); setDeadline(''); setMaxApplicants(''); setResources(''); setIsPublic(false);
       // Go to detail page
       navigate(`/projects/${data.id}`);
     } catch (e: any) {
@@ -142,6 +144,15 @@ const EmployerProjectsTab = () => {
             <div className="space-y-2 md:col-span-2">
               <Label className="font-armenian">Օգտակար ռեսուրսներ (մեկ URL յուրաքանչյուր տողում)</Label>
               <Textarea rows={3} value={resources} onChange={(e) => setResources(e.target.value)} placeholder="https://example.com\nhttps://docs.example.com" />
+            </div>
+            <div className="space-y-2 md:col-span-2">
+              <div className="flex items-center space-x-2">
+                <Switch id="is-public" checked={isPublic} onCheckedChange={setIsPublic} />
+                <Label htmlFor="is-public" className="font-armenian">Հանրային նախագիծ (մատչելի է բոլորին)</Label>
+              </div>
+              <p className="text-sm text-muted-foreground font-armenian">
+                Եթե ակտիվացված է, նախագիծը կցուցադրվի հիմնական էջում և կլինի մատչելի բոլور օգտատերերին։
+              </p>
             </div>
             <div className="space-y-2 md:col-span-2">
               <Label className="font-armenian">Նախագծի նկար</Label>
