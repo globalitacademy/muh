@@ -79,11 +79,14 @@ export const usePublicProjects = () => {
   return useQuery({
     queryKey: ["public-projects"],
     queryFn: async () => {
+      console.log('Fetching public projects...');
       const { data, error } = await supabase
         .from("projects")
         .select("*")
         .eq("is_public", true)
         .order("created_at", { ascending: false });
+      
+      console.log('Public projects result:', { data, error });
       if (error) throw error;
       return data as Project[];
     },

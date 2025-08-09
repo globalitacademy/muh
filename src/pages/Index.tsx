@@ -6,6 +6,7 @@ import EnhancedFeatures from '@/components/EnhancedFeatures';
 import SplashCursor from '@/components/SplashCursor';
 import Courses from '@/components/Courses';
 import JobPostingsSection from '@/components/JobPostingsSection';
+import PublicProjectsSection from '@/components/PublicProjectsSection';
 import PartnerCoursesSection from '@/components/PartnerCoursesSection';
 import Newsletter from '@/components/Newsletter';
 import Footer from '@/components/Footer';
@@ -19,6 +20,7 @@ const Index = () => {
         <Hero />
         <EnhancedFeatures />
         <Courses />
+        <PublicProjectsSection />
         <JobPostingsSection />
         <PartnerCoursesSection />
       </main>

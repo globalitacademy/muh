@@ -21,7 +21,10 @@ import ProjectStats from '@/components/projects/ProjectStats';
 
 const Projects = () => {
   const navigate = useNavigate();
-  const { data: projects, isLoading } = usePublicProjects();
+  const { data: projects, isLoading, error } = usePublicProjects();
+  
+  console.log('Projects page - loading:', isLoading, 'data:', projects, 'error:', error);
+  
   const { data: userRoles } = useUserRole();
   const { data: userApplications } = useUserProjectApplications();
   const createProject = useCreateProject();
