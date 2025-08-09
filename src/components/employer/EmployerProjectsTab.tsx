@@ -146,15 +146,6 @@ const EmployerProjectsTab = () => {
               <Textarea rows={3} value={resources} onChange={(e) => setResources(e.target.value)} placeholder="https://example.com\nhttps://docs.example.com" />
             </div>
             <div className="space-y-2 md:col-span-2">
-              <div className="flex items-center space-x-2">
-                <Switch id="is-public" checked={isPublic} onCheckedChange={setIsPublic} />
-                <Label htmlFor="is-public" className="font-armenian">Հանրային նախագիծ (մատչելի է բոլորին)</Label>
-              </div>
-              <p className="text-sm text-muted-foreground font-armenian">
-                Եթե ակտիվացված է, նախագիծը կցուցադրվի հիմնական էջում և կլինի մատչելի բոլور օգտատերերին։
-              </p>
-            </div>
-            <div className="space-y-2 md:col-span-2">
               <Label className="font-armenian">Նախագծի նկար</Label>
               <div className="flex items-center gap-4">
                 <div className="w-40 h-24 rounded-md overflow-hidden bg-muted">
@@ -181,6 +172,21 @@ const EmployerProjectsTab = () => {
                     </Button>
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Public Project Switch */}
+          <div className="border-t pt-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center space-x-2">
+                  <Switch id="is-public" checked={isPublic} onCheckedChange={setIsPublic} />
+                  <Label htmlFor="is-public" className="font-armenian font-medium">Հանրային նախագիծ</Label>
+                </div>
+                <p className="text-sm text-muted-foreground font-armenian">
+                  Նախագիծը կցուցադրվի հիմնական էջում և կլինի մատչելի բոլորին
+                </p>
               </div>
             </div>
           </div>
