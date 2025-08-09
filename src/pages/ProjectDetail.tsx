@@ -425,14 +425,30 @@ const ProjectDetail: React.FC = () => {
   
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [editedProject, setEditedProject] = useState<Partial<typeof project>>({});
   return <div className="page-container">
       <Header />
       <main className="container mx-auto py-8">
         {isLoading ? <p>Loading…</p> : !project ? <p className="text-muted-foreground">Project not found</p> : <>
             <header className="mb-6">
-              <h1 className="text-2xl font-semibold">{project.title}</h1>
-              
+              <div className="flex items-center justify-between mb-4">
+                <h1 className="text-2xl font-semibold">{project.title}</h1>
+                <div className="flex items-center gap-2">
+                  <Switch 
+                    checked={isPreviewMode} 
+                    onCheckedChange={setIsPreviewMode}
+                  />
+                  <Label className="text-sm">Նախադիտման ռեժիմ</Label>
+                </div>
+              </div>
+              {isPreviewMode && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <p className="text-blue-800 text-sm">
+                    🔍 Նախադիտման ռեժիմ: Դուք տեսնում եք նախագիծը այնպես, ինչպես այն կցուցադրվի վերջնական հրապարակման ժամանակ
+                  </p>
+                </div>
+              )}
             </header>
 
             <Tabs defaultValue="description">
@@ -448,28 +464,30 @@ const ProjectDetail: React.FC = () => {
 
               <TabsContent value="description">
                 <Section title="Նախագծի մանրամասներ">
-                  <div className="flex justify-end mb-4">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        if (isEditingDescription) {
-                          updateProject.mutate({ id: projectId, ...editedProject });
-                          setIsEditingDescription(false);
-                        } else {
-                          setEditedProject(project || {});
-                          setIsEditingDescription(true);
-                        }
-                      }}
-                    >
-                      {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
-                    </Button>
-                  </div>
+                  {!isPreviewMode && (
+                    <div className="flex justify-end mb-4">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          if (isEditingDescription) {
+                            updateProject.mutate({ id: projectId, ...editedProject });
+                            setIsEditingDescription(false);
+                          } else {
+                            setEditedProject(project || {});
+                            setIsEditingDescription(true);
+                          }
+                        }}
+                      >
+                        {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
+                      </Button>
+                    </div>
+                  )}
                   <div className="grid gap-6 md:grid-cols-3">
                     <div className="md:col-span-2 space-y-4">
                       {project.image_url && <img src={project.image_url} alt="Project cover image" className="w-full h-56 rounded-md object-cover" />}
                       <div>
                         <div className="text-sm text-muted-foreground">Նկարագիր</div>
-                        {isEditingDescription ? (
+                        {(isEditingDescription && !isPreviewMode) ? (
                           <Textarea 
                             value={editedProject.description || ''} 
                             onChange={(e) => setEditedProject({...editedProject, description: e.target.value})}
@@ -482,7 +500,7 @@ const ProjectDetail: React.FC = () => {
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Հմտություններ</div>
-                        {isEditingDescription ? (
+                        {(isEditingDescription && !isPreviewMode) ? (
                           <Input 
                             value={editedProject.required_skills?.join(', ') || ''} 
                             onChange={(e) => setEditedProject({...editedProject, required_skills: e.target.value.split(',').map(s => s.trim())})}
@@ -496,7 +514,7 @@ const ProjectDetail: React.FC = () => {
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Օգտակար ռեսուրսներ</div>
-                        {isEditingDescription ? (
+                        {(isEditingDescription && !isPreviewMode) ? (
                           <Textarea 
                             value={Array.isArray(editedProject.resources) 
                               ? editedProject.resources.map(r => typeof r === 'string' ? r : r?.url || JSON.stringify(r)).join('\n')
@@ -575,26 +593,28 @@ const ProjectDetail: React.FC = () => {
 
               <TabsContent value="schedule">
                 <Section title="Ժամանակացույց">
-                  <div className="flex justify-end mb-4">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        if (isEditingSchedule) {
-                          updateProject.mutate({ id: projectId, ...editedProject });
-                          setIsEditingSchedule(false);
-                        } else {
-                          setEditedProject(project || {});
-                          setIsEditingSchedule(true);
-                        }
-                      }}
-                    >
-                      {isEditingSchedule ? 'Պահպանել' : 'Խմբագրել'}
-                    </Button>
-                  </div>
+                  {!isPreviewMode && (
+                    <div className="flex justify-end mb-4">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          if (isEditingSchedule) {
+                            updateProject.mutate({ id: projectId, ...editedProject });
+                            setIsEditingSchedule(false);
+                          } else {
+                            setEditedProject(project || {});
+                            setIsEditingSchedule(true);
+                          }
+                        }}
+                      >
+                        {isEditingSchedule ? 'Պահպանել' : 'Խմբագրել'}
+                      </Button>
+                    </div>
+                  )}
                   <div className="grid gap-4 md:grid-cols-3">
                     <div>
                       <div className="text-sm text-muted-foreground">Սկիզբ</div>
-                      {isEditingSchedule ? (
+                      {(isEditingSchedule && !isPreviewMode) ? (
                         <Input 
                           type="datetime-local" 
                           value={editedProject.start_date ? new Date(editedProject.start_date).toISOString().slice(0, 16) : ''} 
@@ -606,7 +626,7 @@ const ProjectDetail: React.FC = () => {
                     </div>
                     <div>
                       <div className="text-sm text-muted-foreground">Ավարտ</div>
-                      {isEditingSchedule ? (
+                      {(isEditingSchedule && !isPreviewMode) ? (
                         <Input 
                           type="datetime-local" 
                           value={editedProject.end_date ? new Date(editedProject.end_date).toISOString().slice(0, 16) : ''} 
@@ -618,7 +638,7 @@ const ProjectDetail: React.FC = () => {
                     </div>
                     <div>
                       <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
-                      {isEditingSchedule ? (
+                      {(isEditingSchedule && !isPreviewMode) ? (
                         <Select value={editedProject.status || project.status} onValueChange={(v) => setEditedProject({...editedProject, status: v})}>
                           <SelectTrigger>
                             <SelectValue />
