@@ -71,11 +71,13 @@ const EmployerProjectsTab = () => {
   };
 
   const handleEditProject = (projectId: string) => {
-    navigate(`/projects/${projectId}/edit`);
+    // Redirect to project detail page for now
+    navigate(`/projects/${projectId}`);
   };
 
   const handleManageProject = (projectId: string) => {
-    navigate(`/projects/${projectId}/manage`);
+    // Redirect to project detail page 
+    navigate(`/projects/${projectId}`);
   };
 
   const handleDeleteProject = async (projectId: string, projectTitle: string) => {
