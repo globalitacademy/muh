@@ -14,6 +14,7 @@ import AdminFinanceTab from './finance/AdminFinanceTab';
 import AdminCertificatesTab from './certificates/AdminCertificatesTab';
 import AdminCommunicationTab from './communication/AdminCommunicationTab';
 import { AdminAccessCodesTab } from './access-codes/AdminAccessCodesTab';
+import { AdminProjectsTab } from './projects/AdminProjectsTab';
 
 
 const AdminDashboard = () => {
@@ -41,6 +42,8 @@ const AdminDashboard = () => {
         return <AdminReportsTab />;
       case 'specialties':
         return <AdminSpecialtiesTab />;
+      case 'projects':
+        return <AdminProjectsTab />;
       case 'assessment':
         return <AdminAssessmentTab />;
       case 'applications':

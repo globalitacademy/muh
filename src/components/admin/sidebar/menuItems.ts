@@ -1,5 +1,5 @@
 
-import { BarChart3, Users, Settings, FileText, Activity, GraduationCap, Shield, DollarSign, Award, MessageSquare, Archive, UserPlus, Key } from 'lucide-react';
+import { BarChart3, Users, Settings, FileText, Activity, GraduationCap, Shield, DollarSign, Award, MessageSquare, Archive, UserPlus, Key, FolderOpen } from 'lucide-react';
 import { MenuItem } from './types';
 
 export const menuItems: MenuItem[] = [
@@ -28,6 +28,12 @@ export const menuItems: MenuItem[] = [
     id: 'specialties',
     label: 'Մասնագիտություններ',
     icon: GraduationCap,
+    category: 'content',
+    badge: null
+  }, {
+    id: 'projects', 
+    label: 'Նախագծեր',
+    icon: FolderOpen,
     category: 'content',
     badge: null
   }, {
