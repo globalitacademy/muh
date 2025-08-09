@@ -243,7 +243,7 @@ const Jobs = () => {
                     {posting.expires_at && (
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4" />
-                        <span>Ծանղավարտ {format(new Date(posting.expires_at), 'dd/MM/yyyy')}</span>
+                        <span>Դիմումների վերջնաժամկետ {format(new Date(posting.expires_at), 'dd/MM/yyyy')}</span>
                       </div>
                     )}
                   </div>
