@@ -434,12 +434,28 @@ const ProjectDetail: React.FC = () => {
             <header className="mb-6">
               <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-semibold">{project.title}</h1>
-                <div className="flex items-center gap-2">
-                  <Switch 
-                    checked={isPreviewMode} 
-                    onCheckedChange={setIsPreviewMode}
-                  />
-                  <Label className="text-sm">Նախադիտման ռեժիմ</Label>
+                <div className="flex items-center gap-4">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      if (isEditingDescription) {
+                        updateProject.mutate({ id: projectId, ...editedProject });
+                        setIsEditingDescription(false);
+                      } else {
+                        setEditedProject(project || {});
+                        setIsEditingDescription(true);
+                      }
+                    }}
+                  >
+                    {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
+                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={isPreviewMode} 
+                      onCheckedChange={setIsPreviewMode}
+                    />
+                    <Label className="text-sm">Նախադիտման ռեժիմ</Label>
+                  </div>
                 </div>
               </div>
               {isPreviewMode && (
@@ -454,24 +470,6 @@ const ProjectDetail: React.FC = () => {
             <Tabs defaultValue="description">
               <TabsContent value="description">
                 <Section title="">
-                  {!isPreviewMode && (
-                    <div className="flex justify-end mb-4">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => {
-                          if (isEditingDescription) {
-                            updateProject.mutate({ id: projectId, ...editedProject });
-                            setIsEditingDescription(false);
-                          } else {
-                            setEditedProject(project || {});
-                            setIsEditingDescription(true);
-                          }
-                        }}
-                      >
-                        {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
-                      </Button>
-                    </div>
-                  )}
                   <div className="grid gap-6 md:grid-cols-3">
                     <div className="md:col-span-2 space-y-4">
                       <h1 className="text-2xl font-semibold text-left">{project.title}</h1>
