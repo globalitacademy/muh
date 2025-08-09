@@ -210,9 +210,32 @@ const EmployerProjectsTab = () => {
             <div className="space-y-3">
               {projects.map((p) => (
                 <div key={p.id} className="flex items-center justify-between p-3 border rounded-lg hover-interactive">
-                  <div>
-                    <h4 className="font-semibold font-armenian">{p.title}</h4>
-                    <p className="text-sm text-muted-foreground">{p.category || 'Կատեգորիա չկա'} • {new Date(p.created_at).toLocaleDateString()}</p>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <div>
+                        <h4 className="font-semibold font-armenian">{p.title}</h4>
+                        <p className="text-sm text-muted-foreground">{p.category || 'Կատեգորիա չկա'} • {new Date(p.created_at).toLocaleDateString()}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Switch 
+                          checked={p.is_public || false} 
+                          onCheckedChange={async (checked) => {
+                            try {
+                              const { error } = await supabase
+                                .from('projects')
+                                .update({ is_public: checked })
+                                .eq('id', p.id);
+                              if (error) throw error;
+                              toast({ description: checked ? 'Նախագիծը դարձել է հանրային' : 'Նախագիծը դարձել է մասնավոր' });
+                              window.location.reload();
+                            } catch (error) {
+                              toast({ variant: 'destructive', description: 'Փոփոխությունը չհաջողվեց' });
+                            }
+                          }} 
+                        />
+                        <Label className="text-sm font-armenian">Հանրային</Label>
+                      </div>
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <Button size="sm" variant="outline" className="font-armenian" onClick={() => navigate(`/projects/${p.id}`)}>
