@@ -104,7 +104,7 @@ const Jobs = () => {
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold font-armenian mb-4 text-foreground">
-            Աշխատանքային հնարավորություններ
+            Գործատուների առաջարկներ
           </h1>
           <p className="text-lg text-muted-foreground font-armenian max-w-2xl mx-auto">
             Գտեք ձեր մասնագիտությանը համապատասխան աշխատանքներ, պրակտիկաներ և նախագծեր
