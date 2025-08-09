@@ -652,7 +652,7 @@ const ProjectDetail: React.FC = () => {
 
               <TabsContent value="schedule">
                 <Section title="Ժամանակացույց">
-                  {!isPreviewMode && (
+                  {!isPreviewMode && canEdit && (
                     <div className="flex justify-end mb-4">
                       <Button 
                         variant="outline" 
