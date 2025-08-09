@@ -106,7 +106,7 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     
-    /* Educational theme colors */
+    /* Educational theme colors - Enhanced */
     --edu-blue: 221.2 83.2% 53.3%;
     --edu-orange: 24 100% 50%;
     --edu-light-blue: 195 100% 85%;
@@ -114,6 +114,21 @@
     --edu-purple: 262.1 83.3% 57.8%;
     --success-green: 142 71% 45%;
     --warning-yellow: 48 96% 53%;
+    
+    /* Employer profile colors */
+    --employer-primary: 221.2 83.2% 53.3%;
+    --employer-secondary: 262.1 83.3% 57.8%;
+    --employer-accent: 24 100% 50%;
+    --employer-success: 142 71% 45%;
+    --employer-info: 195 100% 50%;
+    --employer-card: 0 0% 100%;
+    --employer-card-hover: 210 40% 98%;
+    
+    /* Status colors */
+    --status-pending: 48 96% 53%;
+    --status-approved: 142 71% 45%;
+    --status-rejected: 0 84.2% 60.2%;
+    --status-active: 142 71% 45%;
     
     /* Hover colors */
     --hover-bg: 210 40% 94%;
@@ -160,6 +175,21 @@
     --edu-purple: 262.1 83.3% 67.8%;
     --success-green: 142 71% 55%;
     --warning-yellow: 48 96% 63%;
+    
+    /* Employer profile colors - Dark mode */
+    --employer-primary: 217.2 91.2% 59.8%;
+    --employer-secondary: 262.1 83.3% 67.8%;
+    --employer-accent: 24 100% 60%;
+    --employer-success: 142 71% 55%;
+    --employer-info: 195 100% 60%;
+    --employer-card: 222.2 84% 4.9%;
+    --employer-card-hover: 217.2 32.6% 22%;
+    
+    /* Status colors - Dark mode */
+    --status-pending: 48 96% 63%;
+    --status-approved: 142 71% 55%;
+    --status-rejected: 0 62.8% 30.6%;
+    --status-active: 142 71% 55%;
     
     /* Hover colors - Dark mode */
     --hover-bg: 217.2 32.6% 20%;

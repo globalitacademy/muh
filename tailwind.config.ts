@@ -61,6 +61,19 @@ export default {
 				'edu-purple': 'hsl(var(--edu-purple))',
 				'success-green': 'hsl(var(--success-green))',
 				'warning-yellow': 'hsl(var(--warning-yellow))',
+				// Employer specific colors
+				'employer-primary': 'hsl(var(--employer-primary))',
+				'employer-secondary': 'hsl(var(--employer-secondary))',
+				'employer-accent': 'hsl(var(--employer-accent))',
+				'employer-success': 'hsl(var(--employer-success))',
+				'employer-info': 'hsl(var(--employer-info))',
+				'employer-card': 'hsl(var(--employer-card))',
+				'employer-card-hover': 'hsl(var(--employer-card-hover))',
+				// Status colors
+				'status-pending': 'hsl(var(--status-pending))',
+				'status-approved': 'hsl(var(--status-approved))',
+				'status-rejected': 'hsl(var(--status-rejected))',
+				'status-active': 'hsl(var(--status-active))',
 				// Hover colors
 				'hover-bg': 'hsl(var(--hover-bg))',
 				'hover-card': 'hsl(var(--hover-card))',
