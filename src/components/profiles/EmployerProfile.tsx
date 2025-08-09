@@ -9,6 +9,7 @@ import { Building2, UserPlus, Search, FileText, MessageSquare, Settings, Users, 
 import SettingsTab from '@/components/settings/SettingsTab';
 import EmployerJobsTab from '@/components/employer/EmployerJobsTab';
 import EmployerProjectsTab from '@/components/employer/EmployerProjectsTab';
+import { EmployerCandidatesTab } from '@/components/employer/EmployerCandidatesTab';
 import { useEmployerJobPostings, useEmployerApplications } from '@/hooks/useJobPostings';
 
 const EmployerProfile = () => {
@@ -193,35 +194,7 @@ const EmployerProfile = () => {
         </TabsContent>
 
         <TabsContent value="candidates" className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="font-armenian">Թեկնածուներ</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {appsLoading ? (
-                <div className="text-sm text-muted-foreground font-armenian">Բեռնվում է...</div>
-              ) : applications.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">
-                  <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p className="font-armenian">Դեռևս դիմումներ չկան</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {applications.slice(0, 10).map((app) => (
-                    <div key={app.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div>
-                        <p className="font-semibold font-armenian">{app.profiles?.name || 'Անուն չի նշված'}</p>
-                        <p className="text-sm text-muted-foreground">{app.job_postings?.title}</p>
-                      </div>
-                      <Badge variant={app.status === 'accepted' ? 'default' : app.status === 'pending' ? 'secondary' : 'outline'}>
-                        {app.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          <EmployerCandidatesTab />
         </TabsContent>
 
         <TabsContent value="analytics" className="mt-6">
