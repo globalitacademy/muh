@@ -246,10 +246,6 @@ const EmployerProjectsTab = () => {
                       <Edit className="h-4 w-4 mr-1" />
                       Խմբագրել
                     </Button>
-                    <Button size="sm" variant="outline" className="font-armenian" onClick={() => handleManageProject(p.id)}>
-                      <Settings className="h-4 w-4 mr-1" />
-                      Կառավարել
-                    </Button>
                     <Button size="sm" variant="destructive" className="font-armenian" onClick={() => handleDeleteProject(p.id, p.title)}>
                       <Trash2 className="h-4 w-4 mr-1" />
                       Ջնել
