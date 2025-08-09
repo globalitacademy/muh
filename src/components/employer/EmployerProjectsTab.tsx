@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import { toast } from '@/hooks/use-toast';
+import { Eye, Edit, Settings, Trash2 } from 'lucide-react';
 
 const EmployerProjectsTab = () => {
   const { data: projects = [], isLoading } = useMyProjects();
@@ -154,14 +155,29 @@ const EmployerProjectsTab = () => {
           ) : (
             <div className="space-y-3">
               {projects.map((p) => (
-                <div key={p.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div key={p.id} className="flex items-center justify-between p-3 border rounded-lg hover-interactive">
                   <div>
                     <h4 className="font-semibold font-armenian">{p.title}</h4>
                     <p className="text-sm text-muted-foreground">{p.category || 'Կատեգորիա չկա'} • {new Date(p.created_at).toLocaleDateString()}</p>
                   </div>
-                  <Button size="sm" variant="outline" className="font-armenian" onClick={() => navigate(`/projects/${p.id}`)}>
-                    Բացել նախագիծը
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="outline" className="font-armenian" onClick={() => navigate(`/projects/${p.id}`)}>
+                      <Eye className="h-4 w-4 mr-1" />
+                      Դիտել
+                    </Button>
+                    <Button size="sm" variant="outline" className="font-armenian">
+                      <Edit className="h-4 w-4 mr-1" />
+                      Խմբագրել
+                    </Button>
+                    <Button size="sm" variant="outline" className="font-armenian">
+                      <Settings className="h-4 w-4 mr-1" />
+                      Կառավարել
+                    </Button>
+                    <Button size="sm" variant="destructive" className="font-armenian">
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Ջնել
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
