@@ -452,16 +452,6 @@ const ProjectDetail: React.FC = () => {
             </header>
 
             <Tabs defaultValue="description">
-              <TabsList className="flex flex-wrap">
-                <TabsTrigger value="description">Նկարագիր</TabsTrigger>
-                <TabsTrigger value="schedule">Ժամանակացույց</TabsTrigger>
-                <TabsTrigger value="steps">Քայլեր</TabsTrigger>
-                <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
-                <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
-                <TabsTrigger value="evaluation">Գնահատական</TabsTrigger>
-                <TabsTrigger value="timeline">Թայմլայն</TabsTrigger>
-              </TabsList>
-
               <TabsContent value="description">
                 <Section title="Նախագծի մանրամասներ">
                   {!isPreviewMode && (
@@ -485,6 +475,16 @@ const ProjectDetail: React.FC = () => {
                   <div className="grid gap-6 md:grid-cols-3">
                     <div className="md:col-span-2 space-y-4">
                       {project.image_url && <img src={project.image_url} alt="Project cover image" className="w-full h-56 rounded-md object-cover" />}
+                      
+                      <TabsList className="flex flex-wrap">
+                        <TabsTrigger value="description">Նկարագիր</TabsTrigger>
+                        <TabsTrigger value="schedule">Ժամանակացույց</TabsTrigger>
+                        <TabsTrigger value="steps">Քայլեր</TabsTrigger>
+                        <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
+                        <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
+                        <TabsTrigger value="evaluation">Գնահատական</TabsTrigger>
+                        <TabsTrigger value="timeline">Թայմլայն</TabsTrigger>
+                      </TabsList>
                       <div>
                         <div className="text-sm text-muted-foreground">Նկարագիր</div>
                         {(isEditingDescription && !isPreviewMode) ? (
