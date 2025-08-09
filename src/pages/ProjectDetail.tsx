@@ -21,6 +21,7 @@ import { Image } from "lucide-react";
 import { useProjectApplications } from "@/hooks/useProjectApplications";
 import { Textarea } from "@/components/ui/textarea";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useAuth } from "@/hooks/useAuth";
 
 const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -75,8 +76,10 @@ const statusOptions = [{
 
 const StepsTab: React.FC<{
   projectId: string;
+  canEdit: boolean;
 }> = ({
-  projectId
+  projectId,
+  canEdit
 }) => {
   const {
     data: steps,
@@ -108,51 +111,59 @@ const StepsTab: React.FC<{
     }
   };
   return <Section title="Քայլեր">
-      <div className="grid gap-3 md:grid-cols-4 items-end mb-4">
-        <div className="md:col-span-2">
-          <Label htmlFor="new-step">New step</Label>
-          <Input 
-            id="new-step"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter step title"
-          />
+      {canEdit && (
+        <div className="grid gap-3 md:grid-cols-4 items-end mb-4">
+          <div className="md:col-span-2">
+            <Label htmlFor="new-step">New step</Label>
+            <Input 
+              id="new-step"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter step title"
+            />
+          </div>
+          <div>
+            <Label>Status</Label>
+            <Select value={status} onValueChange={v => setStatus(v as any)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select status" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Button onClick={onAdd} disabled={create.isPending}>Add</Button>
+          </div>
         </div>
-        <div>
-          <Label>Status</Label>
-          <Select value={status} onValueChange={v => setStatus(v as any)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              {statusOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Button onClick={onAdd} disabled={create.isPending}>Add</Button>
-        </div>
-      </div>
+      )}
 
       {isLoading ? <p>Loading…</p> : !steps?.length ? <p className="text-muted-foreground">No steps yet.</p> : <div className="space-y-3">
           {steps.map(s => <Card key={s.id}>
               <CardContent className="pt-4 grid gap-3 md:grid-cols-6 items-center">
                 <div className="md:col-span-3 font-medium">{s.title}</div>
                 <div className="md:col-span-2">
-                  <Select value={s.status} onValueChange={v => update.mutate({
-              id: s.id,
-              status: v as any
-            })}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {statusOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  {canEdit ? (
+                    <Select value={s.status} onValueChange={v => update.mutate({
+                      id: s.id,
+                      status: v as any
+                    })}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {statusOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <span className="capitalize">{s.status.replace('_', ' ')}</span>
+                  )}
                 </div>
                 <div className="text-right">
-                  <Button variant="outline" onClick={() => remove.mutate(s.id)}>Delete</Button>
+                  {canEdit && (
+                    <Button variant="outline" onClick={() => remove.mutate(s.id)}>Delete</Button>
+                  )}
                 </div>
               </CardContent>
             </Card>)}
@@ -429,11 +440,15 @@ const ProjectDetail: React.FC = () => {
   } = useProjectApplications(projectId);
   const updateProject = useUpdateProject();
   const { data: userRole } = useUserRole();
+  const { user } = useAuth();
   
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [editedProject, setEditedProject] = useState<Partial<typeof project>>({});
+
+  // Check if current user can edit this project
+  const canEdit = user && (user.id === project?.creator_id || userRole === 'admin');
 
   return (
     <div className="page-container">
@@ -449,27 +464,31 @@ const ProjectDetail: React.FC = () => {
               <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-semibold">{project.title}</h1>
                 <div className="flex items-center gap-4">
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      if (isEditingDescription) {
-                        updateProject.mutate({ id: projectId, ...editedProject });
-                        setIsEditingDescription(false);
-                      } else {
-                        setEditedProject(project || {});
-                        setIsEditingDescription(true);
-                      }
-                    }}
-                  >
-                    {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
-                  </Button>
-                  <div className="flex items-center gap-2">
-                    <Switch 
-                      checked={isPreviewMode} 
-                      onCheckedChange={setIsPreviewMode}
-                    />
-                    <Label className="text-sm">Նախադիտման ռեժիմ</Label>
-                  </div>
+                  {canEdit && (
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        if (isEditingDescription) {
+                          updateProject.mutate({ id: projectId, ...editedProject });
+                          setIsEditingDescription(false);
+                        } else {
+                          setEditedProject(project || {});
+                          setIsEditingDescription(true);
+                        }
+                      }}
+                    >
+                      {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
+                    </Button>
+                  )}
+                  {canEdit && (
+                    <div className="flex items-center gap-2">
+                      <Switch 
+                        checked={isPreviewMode} 
+                        onCheckedChange={setIsPreviewMode}
+                      />
+                      <Label className="text-sm">Նախադիտման ռեժիմ</Label>
+                    </div>
+                  )}
                 </div>
               </div>
               {isPreviewMode && (
@@ -671,7 +690,7 @@ const ProjectDetail: React.FC = () => {
               </TabsContent>
 
               <TabsContent value="steps">
-                <StepsTab projectId={projectId} />
+                <StepsTab projectId={projectId} canEdit={canEdit} />
               </TabsContent>
 
               <TabsContent value="discussions">
