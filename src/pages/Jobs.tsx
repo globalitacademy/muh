@@ -56,7 +56,8 @@ const Jobs = () => {
     isProject: true,
     employer_id: project.creator_id,
     is_active: true,
-    updated_at: project.updated_at
+    updated_at: project.updated_at,
+    image_url: project.image_url
   })) || [];
 
   // Combine job postings and projects  
@@ -186,6 +187,15 @@ const Jobs = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredPostings.map((posting) => (
               <Card key={posting.id} className="hover:shadow-lg transition-shadow">
+                {(posting as any).image_url && (
+                  <div className="w-full h-48 overflow-hidden rounded-t-lg">
+                    <img 
+                      src={(posting as any).image_url} 
+                      alt={posting.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex gap-2">
