@@ -17,8 +17,46 @@ import { useProjectEvaluations } from "@/hooks/useProjectEvaluations";
 import { useProjectTimeline } from "@/hooks/useProjectTimeline";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Image } from "lucide-react";
+import { Image, ChevronDown, ChevronUp } from "lucide-react";
 import { useProjectApplications } from "@/hooks/useProjectApplications";
+
+interface ExpandableTextProps {
+  text: string;
+  maxLines?: number;
+}
+
+const ExpandableText: React.FC<ExpandableTextProps> = ({ text, maxLines = 5 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Calculate if text is longer than maxLines (rough estimation)
+  const isLongText = text.length > maxLines * 50; // approximate 50 chars per line
+  
+  const displayText = isExpanded ? text : (isLongText ? text.substring(0, maxLines * 50) + "..." : text);
+  
+  return (
+    <div className="mt-1">
+      <p className="text-left leading-relaxed">{displayText}</p>
+      {isLongText && (
+        <button 
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-2 flex items-center gap-1 text-primary hover:text-primary/80 text-sm font-medium transition-colors"
+        >
+          {isExpanded ? (
+            <>
+              <span>Ավելի քիչ դիտել</span>
+              <ChevronUp size={16} />
+            </>
+          ) : (
+            <>
+              <span>Ավելին դիտել</span>
+              <ChevronDown size={16} />
+            </>
+          )}
+        </button>
+      )}
+    </div>
+  );
+};
 
 const Section: React.FC<{ title: string; children?: React.ReactNode }> = ({ title, children }) => (
   <Card className="mb-6">
@@ -378,10 +416,10 @@ const ProjectDetail: React.FC = () => {
                       {project.image_url && (
                         <img src={project.image_url} alt="Project cover image" className="w-full h-56 rounded-md object-cover" />
                       )}
-                      <div>
-                        <div className="text-sm text-muted-foreground">Նկարագիր</div>
-                        <p className="mt-1">{project.description || 'Նկարագիր չկա։'}</p>
-                      </div>
+                       <div>
+                         <div className="text-sm text-muted-foreground">Նկարագիր</div>
+                         <ExpandableText text={project.description || 'Նկարագիր չկա։'} />
+                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Հմտություններ</div>
                         {project.required_skills?.length ? (
