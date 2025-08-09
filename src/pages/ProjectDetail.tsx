@@ -396,7 +396,7 @@ const ProjectDetail: React.FC = () => {
         {isLoading ? <p>Loading…</p> : !project ? <p className="text-muted-foreground">Project not found</p> : <>
             <header className="mb-6">
               <h1 className="text-2xl font-semibold">{project.title}</h1>
-              {project.description && <p className="text-muted-foreground">{project.description}</p>}
+              
             </header>
 
             <Tabs defaultValue="description">
