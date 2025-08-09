@@ -141,7 +141,7 @@ const ProjectApplicationButton: React.FC<{
       onClick={handleApply}
       disabled={buttonState.disabled}
       variant={buttonState.variant}
-      className="w-full"
+      className="w-full min-h-[40px] flex items-center justify-center"
     >
       {buttonState.icon}
       {buttonState.text}
