@@ -39,47 +39,44 @@ const useEmployerProjectApplications = () => {
     queryFn: async () => {
       if (!user?.id) return [];
       
-      // Get all project applications with joined data
+      // First get all applications
       const { data: applications, error } = await supabase
         .from('project_applications')
-        .select(`
-          *,
-          projects!inner(id, title, description, creator_id),
-          profiles!inner(id, name)
-        `)
-        .eq('projects.creator_id', user.id)
+        .select('*')
         .order('applied_at', { ascending: false });
       
       if (error) {
         console.error('Error fetching project applications:', error);
-        // Fallback to manual join if automatic join fails
-        const { data: apps, error: fallbackError } = await supabase
-          .from('project_applications')
-          .select('*')
-          .order('applied_at', { ascending: false });
-        
-        if (fallbackError) throw fallbackError;
-        
-        const filteredApplications = [];
-        for (const app of apps || []) {
-          const [projectRes, profileRes] = await Promise.all([
-            supabase.from('projects').select('id, title, description, creator_id').eq('id', app.project_id).maybeSingle(),
-            supabase.from('profiles').select('id, name').eq('id', app.applicant_id).maybeSingle()
-          ]);
-          
-          if (projectRes.data?.creator_id === user.id) {
-            filteredApplications.push({
-              ...app,
-              projects: projectRes.data,
-              profiles: profileRes.data
-            });
-          }
-        }
-        
-        return filteredApplications;
+        throw error;
       }
       
-      return applications || [];
+      if (!applications || applications.length === 0) {
+        console.log('No project applications found');
+        return [];
+      }
+      
+      // Get additional data and filter by employer's projects
+      const filteredApplications = [];
+      for (const app of applications) {
+        const [projectRes, profileRes] = await Promise.all([
+          supabase.from('projects').select('id, title, description, creator_id').eq('id', app.project_id).maybeSingle(),
+          supabase.from('profiles').select('id, name').eq('id', app.applicant_id).maybeSingle()
+        ]);
+        
+        console.log('Project data:', projectRes.data, 'Profile data:', profileRes.data, 'User ID:', user.id);
+        
+        // Only include if project belongs to current user
+        if (projectRes.data?.creator_id === user.id) {
+          filteredApplications.push({
+            ...app,
+            projects: projectRes.data,
+            profiles: profileRes.data
+          });
+        }
+      }
+      
+      console.log('Filtered applications:', filteredApplications);
+      return filteredApplications;
     },
     enabled: !!user?.id,
   });
