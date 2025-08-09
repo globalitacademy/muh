@@ -20,6 +20,7 @@ import { toast } from "@/hooks/use-toast";
 import { Image } from "lucide-react";
 import { useProjectApplications } from "@/hooks/useProjectApplications";
 import { Textarea } from "@/components/ui/textarea";
+import { useUserRole } from "@/hooks/useUserRole";
 
 const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -420,6 +421,7 @@ const ProjectDetail: React.FC = () => {
     apply
   } = useProjectApplications(projectId);
   const updateProject = useUpdateProject();
+  const { data: userRole } = useUserRole();
   
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
@@ -539,21 +541,31 @@ const ProjectDetail: React.FC = () => {
                           {applications?.length || 0} / {project.max_applicants ?? 'չկա'}
                         </div>
                         <div className="mt-2">
-                          <Button onClick={async () => {
-                        try {
-                          await apply.mutateAsync(undefined);
-                          toast({
-                            description: 'Դիմումն ուղարկված է'
-                          });
-                        } catch (e: any) {
-                          toast({
-                            variant: 'destructive',
-                            description: e.message || 'Չհաջողվեց ուղարկել'
-                          });
-                        }
-                      }} disabled={apply.isPending || typeof project.max_applicants === 'number' && (applications?.length || 0) >= project.max_applicants || (project.application_deadline ? new Date(project.application_deadline) < new Date() : false)}>
-                            Դիմել նախագծին
-                          </Button>
+                          {userRole === 'student' ? (
+                            <Button onClick={async () => {
+                              try {
+                                await apply.mutateAsync(undefined);
+                                toast({
+                                  description: 'Դիմումն ուղարկված է'
+                                });
+                              } catch (e: any) {
+                                toast({
+                                  variant: 'destructive',
+                                  description: e.message || 'Չհաջողվեց ուղարկել'
+                                });
+                              }
+                            }} disabled={
+                              apply.isPending || 
+                              (typeof project.max_applicants === 'number' && (applications?.length || 0) >= project.max_applicants) || 
+                              (project.application_deadline ? new Date(project.application_deadline) < new Date() : false)
+                            }>
+                              Դիմել նախագծին
+                            </Button>
+                          ) : (
+                            <div className="text-sm text-muted-foreground">
+                              Միայն ուսանողները կարող են դիմել նախագծին
+                            </div>
+                          )}
                         </div>
                       </div>
                     </aside>
