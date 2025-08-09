@@ -494,11 +494,26 @@ const ProjectDetail: React.FC = () => {
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Օգտակար ռեսուրսներ</div>
-                        {Array.isArray(project.resources) && project.resources.length ? <ul className="flex flex-wrap gap-2 mt-2">
+                        {isEditingDescription ? (
+                          <Textarea 
+                            value={Array.isArray(editedProject.resources) 
+                              ? editedProject.resources.map(r => typeof r === 'string' ? r : r?.url || JSON.stringify(r)).join('\n')
+                              : ''
+                            } 
+                            onChange={(e) => setEditedProject({
+                              ...editedProject, 
+                              resources: e.target.value.split('\n').filter(line => line.trim()).map(line => ({ url: line.trim(), title: line.trim() }))
+                            })}
+                            placeholder="Ամեն տողում մեկ ռեսուրս (URL)"
+                            rows={3}
+                          />
+                        ) : (
+                          Array.isArray(project.resources) && project.resources.length ? <ul className="flex flex-wrap gap-2 mt-2">
                             {project.resources.map((r: any, idx: number) => <li key={idx} className="flex items-center">
                                 {typeof r === 'string' ? <a href={r} target="_blank" rel="noreferrer" className="text-primary underline">{r}</a> : r?.url ? <a href={r.url} target="_blank" rel="noreferrer" className="text-primary underline">{r.title || r.url}</a> : <span className="text-sm">{JSON.stringify(r)}</span>}
                               </li>)}
-                          </ul> : <div className="mt-1 text-muted-foreground">Չկան</div>}
+                          </ul> : <div className="mt-1 text-muted-foreground">Չկան</div>
+                        )}
                       </div>
                     </div>
                     <aside className="space-y-4">
