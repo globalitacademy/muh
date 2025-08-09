@@ -39,36 +39,47 @@ const useEmployerProjectApplications = () => {
     queryFn: async () => {
       if (!user?.id) return [];
       
-      // First get applications, then manually join with projects to filter by creator
+      // Get all project applications with joined data
       const { data: applications, error } = await supabase
         .from('project_applications')
-        .select('*')
+        .select(`
+          *,
+          projects!inner(id, title, description, creator_id),
+          profiles!inner(id, name)
+        `)
+        .eq('projects.creator_id', user.id)
         .order('applied_at', { ascending: false });
       
       if (error) {
         console.error('Error fetching project applications:', error);
-        throw error;
-      }
-      
-      // Get additional data and filter by employer's projects
-      const filteredApplications = [];
-      for (const app of applications || []) {
-        const [projectRes, profileRes] = await Promise.all([
-          supabase.from('projects').select('id, title, description, creator_id').eq('id', app.project_id).maybeSingle(),
-          supabase.from('profiles').select('id, name').eq('id', app.applicant_id).maybeSingle()
-        ]);
+        // Fallback to manual join if automatic join fails
+        const { data: apps, error: fallbackError } = await supabase
+          .from('project_applications')
+          .select('*')
+          .order('applied_at', { ascending: false });
         
-        // Only include if project belongs to current user
-        if (projectRes.data?.creator_id === user.id) {
-          filteredApplications.push({
-            ...app,
-            projects: projectRes.data,
-            profiles: profileRes.data
-          });
+        if (fallbackError) throw fallbackError;
+        
+        const filteredApplications = [];
+        for (const app of apps || []) {
+          const [projectRes, profileRes] = await Promise.all([
+            supabase.from('projects').select('id, title, description, creator_id').eq('id', app.project_id).maybeSingle(),
+            supabase.from('profiles').select('id, name').eq('id', app.applicant_id).maybeSingle()
+          ]);
+          
+          if (projectRes.data?.creator_id === user.id) {
+            filteredApplications.push({
+              ...app,
+              projects: projectRes.data,
+              profiles: profileRes.data
+            });
+          }
         }
+        
+        return filteredApplications;
       }
       
-      return filteredApplications;
+      return applications || [];
     },
     enabled: !!user?.id,
   });
@@ -253,6 +264,9 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
 export const EmployerCandidatesTab: React.FC = () => {
   const { data: jobApplications = [], isLoading: jobAppsLoading } = useEmployerApplications();
   const { data: projectApplications = [], isLoading: projectAppsLoading } = useEmployerProjectApplications();
+
+  console.log('Project Applications:', projectApplications);
+  console.log('Job Applications:', jobApplications);
 
   const pendingJobApps = jobApplications.filter(app => app.status === 'pending');
   const pendingProjectApps = projectApplications.filter(app => app.status === 'pending');
