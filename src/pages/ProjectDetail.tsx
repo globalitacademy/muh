@@ -394,7 +394,6 @@ const ProjectDetail: React.FC = () => {
         ) : (
           <>
             <header className="mb-6">
-              <h1 className="text-2xl font-semibold">{project.title}</h1>
             </header>
 
             <Tabs defaultValue="description">
@@ -412,6 +411,7 @@ const ProjectDetail: React.FC = () => {
                 <Section title="Նախագծի մանրամասներ">
                   <div className="grid gap-6 md:grid-cols-3">
                     <div className="md:col-span-2 space-y-4">
+                      <h1 className="text-2xl font-semibold">{project.title}</h1>
                       {project.image_url && (
                         <img src={project.image_url} alt="Project cover image" className="w-full h-56 rounded-md object-cover" />
                       )}
