@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useParams } from "react-router-dom";
-import { useProject } from "@/hooks/useProjects";
+import { useProject, useUpdateProject } from "@/hooks/useProjects";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Image } from "lucide-react";
 import { useProjectApplications } from "@/hooks/useProjectApplications";
+import { Textarea } from "@/components/ui/textarea";
+
 const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const shouldTruncate = text.length > 250; // approximately 5 lines
@@ -417,6 +419,11 @@ const ProjectDetail: React.FC = () => {
     data: applications,
     apply
   } = useProjectApplications(projectId);
+  const updateProject = useUpdateProject();
+  
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [isEditingSchedule, setIsEditingSchedule] = useState(false);
+  const [editedProject, setEditedProject] = useState<Partial<typeof project>>({});
   return <div className="page-container">
       <Header />
       <main className="container mx-auto py-8">
@@ -439,18 +446,51 @@ const ProjectDetail: React.FC = () => {
 
               <TabsContent value="description">
                 <Section title="Նախագծի մանրամասներ">
+                  <div className="flex justify-end mb-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        if (isEditingDescription) {
+                          updateProject.mutate({ id: projectId, ...editedProject });
+                          setIsEditingDescription(false);
+                        } else {
+                          setEditedProject(project || {});
+                          setIsEditingDescription(true);
+                        }
+                      }}
+                    >
+                      {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
+                    </Button>
+                  </div>
                   <div className="grid gap-6 md:grid-cols-3">
                     <div className="md:col-span-2 space-y-4">
                       {project.image_url && <img src={project.image_url} alt="Project cover image" className="w-full h-56 rounded-md object-cover" />}
                       <div>
                         <div className="text-sm text-muted-foreground">Նկարագիր</div>
-                        <ExpandableText text={project.description || 'Նկարագիր չկա։'} />
+                        {isEditingDescription ? (
+                          <Textarea 
+                            value={editedProject.description || ''} 
+                            onChange={(e) => setEditedProject({...editedProject, description: e.target.value})}
+                            placeholder="Նկարագիր"
+                            rows={6}
+                          />
+                        ) : (
+                          <ExpandableText text={project.description || 'Նկարագիր չկա։'} />
+                        )}
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Հմտություններ</div>
-                        {project.required_skills?.length ? <div className="mt-2 flex flex-wrap gap-2">
+                        {isEditingDescription ? (
+                          <Input 
+                            value={editedProject.required_skills?.join(', ') || ''} 
+                            onChange={(e) => setEditedProject({...editedProject, required_skills: e.target.value.split(',').map(s => s.trim())})}
+                            placeholder="Հմտությունները ստորակետով անջատեք"
+                          />
+                        ) : (
+                          project.required_skills?.length ? <div className="mt-2 flex flex-wrap gap-2">
                             {project.required_skills.map((s: string) => <span key={s} className="px-2 py-1 rounded-md bg-muted text-sm">{s}</span>)}
-                          </div> : <div className="mt-1 text-muted-foreground">Չեն նշվել</div>}
+                          </div> : <div className="mt-1 text-muted-foreground">Չեն նշվել</div>
+                        )}
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Օգտակար ռեսուրսներ</div>
@@ -508,18 +548,64 @@ const ProjectDetail: React.FC = () => {
 
               <TabsContent value="schedule">
                 <Section title="Ժամանակացույց">
+                  <div className="flex justify-end mb-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        if (isEditingSchedule) {
+                          updateProject.mutate({ id: projectId, ...editedProject });
+                          setIsEditingSchedule(false);
+                        } else {
+                          setEditedProject(project || {});
+                          setIsEditingSchedule(true);
+                        }
+                      }}
+                    >
+                      {isEditingSchedule ? 'Պահպանել' : 'Խմբագրել'}
+                    </Button>
+                  </div>
                   <div className="grid gap-4 md:grid-cols-3">
                     <div>
                       <div className="text-sm text-muted-foreground">Սկիզբ</div>
-                      <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
+                      {isEditingSchedule ? (
+                        <Input 
+                          type="datetime-local" 
+                          value={editedProject.start_date ? new Date(editedProject.start_date).toISOString().slice(0, 16) : ''} 
+                          onChange={(e) => setEditedProject({...editedProject, start_date: e.target.value})}
+                        />
+                      ) : (
+                        <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
+                      )}
                     </div>
                     <div>
                       <div className="text-sm text-muted-foreground">Ավարտ</div>
-                      <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
+                      {isEditingSchedule ? (
+                        <Input 
+                          type="datetime-local" 
+                          value={editedProject.end_date ? new Date(editedProject.end_date).toISOString().slice(0, 16) : ''} 
+                          onChange={(e) => setEditedProject({...editedProject, end_date: e.target.value})}
+                        />
+                      ) : (
+                        <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
+                      )}
                     </div>
                     <div>
                       <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
-                      <div className="font-medium">{project.status}</div>
+                      {isEditingSchedule ? (
+                        <Select value={editedProject.status || project.status} onValueChange={(v) => setEditedProject({...editedProject, status: v})}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="active">Active</SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                            <SelectItem value="paused">Paused</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <div className="font-medium">{project.status}</div>
+                      )}
                     </div>
                   </div>
                 </Section>

@@ -114,3 +114,22 @@ export const useCreateProject = () => {
     },
   });
 };
+
+export const useUpdateProject = () => {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, ...payload }: { id: string } & Partial<Pick<Project, "title" | "description" | "start_date" | "end_date" | "status" | "category" | "required_skills" | "resources" | "application_deadline" | "max_applicants" | "image_url" | "is_public">>) => {
+      const { data, error } = await supabase
+        .from("projects")
+        .update(payload)
+        .eq("id", id)
+        .select("*")
+        .single();
+      if (error) throw error;
+      return data as Project;
+    },
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["projects"] });
+    },
+  });
+};
