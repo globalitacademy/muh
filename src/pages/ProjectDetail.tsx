@@ -453,7 +453,7 @@ const ProjectDetail: React.FC = () => {
 
             <Tabs defaultValue="description">
               <TabsContent value="description">
-                <Section title="Նախագծի մանրամասներ">
+                <Section title={project.title}>
                   {!isPreviewMode && (
                     <div className="flex justify-end mb-4">
                       <Button 
