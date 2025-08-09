@@ -19,6 +19,28 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Image } from "lucide-react";
 import { useProjectApplications } from "@/hooks/useProjectApplications";
+const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const shouldTruncate = text.length > 250; // approximately 5 lines
+
+  return (
+    <div className="text-left">
+      <p className="mt-1">
+        {shouldTruncate && !isExpanded ? `${text.slice(0, 250)}...` : text}
+      </p>
+      {shouldTruncate && (
+        <Button
+          variant="link"
+          className="h-auto p-0 text-primary"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          {isExpanded ? 'Ցույց տալ ավելի քիչ' : 'Ցույց տալ ավելին'}
+        </Button>
+      )}
+    </div>
+  );
+};
+
 const Section: React.FC<{
   title: string;
   children?: React.ReactNode;
@@ -414,10 +436,13 @@ const ProjectDetail: React.FC = () => {
                 <Section title="Նախագծի մանրամասներ">
                   <div className="grid gap-6 md:grid-cols-3">
                     <div className="md:col-span-2 space-y-4">
+                      <div>
+                        <h1 className="text-2xl font-semibold mb-4">{project.title}</h1>
+                      </div>
                       {project.image_url && <img src={project.image_url} alt="Project cover image" className="w-full h-56 rounded-md object-cover" />}
                       <div>
                         <div className="text-sm text-muted-foreground">Նկարագիր</div>
-                        <p className="mt-1">{project.description || 'Նկարագիր չկա։'}</p>
+                        <ExpandableText text={project.description || 'Նկարագիր չկա։'} />
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Հմտություններ</div>
@@ -440,8 +465,8 @@ const ProjectDetail: React.FC = () => {
                         <div className="font-medium">{project.category || '—'}</div>
                       </div>
                       <div>
-                        <div className="text-sm text-muted-foreground">Հեղինակ (ID)</div>
-                        <div className="font-medium break-all">{project.creator_id}</div>
+                        <div className="text-sm text-muted-foreground">Գործատու կազմակերպություն</div>
+                        <div className="font-medium">{'Չի նշվել'}</div>
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Ավելացված է</div>
