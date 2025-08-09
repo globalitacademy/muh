@@ -29,42 +29,102 @@ const EmployerProjectsTab = () => {
   const [resources, setResources] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
+  const [editingProject, setEditingProject] = useState<any>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleCreate = async () => {
+  
+  const resetForm = () => {
+    setTitle('');
+    setDescription('');
+    setImageUrl(null);
+    setCategory('');
+    setSkills('');
+    setDeadline('');
+    setMaxApplicants('');
+    setResources('');
+    setIsPublic(false);
+    setEditingProject(null);
+    setIsEditing(false);
+  };
+
+  const handleEdit = (project: any) => {
+    setTitle(project.title || '');
+    setDescription(project.description || '');
+    setImageUrl(project.image_url || null);
+    setCategory(project.category || '');
+    setSkills(project.required_skills ? project.required_skills.join(', ') : '');
+    setDeadline(project.application_deadline ? new Date(project.application_deadline).toISOString().split('T')[0] : '');
+    setMaxApplicants(project.max_applicants || '');
+    setResources(Array.isArray(project.resources) ? project.resources.join('\n') : '');
+    setIsPublic(project.is_public || false);
+    setEditingProject(project);
+    setIsEditing(true);
+    
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSave = async () => {
     const t = title.trim();
     if (!t) return toast({ variant: 'destructive', description: 'Անվանումը պարտադիր է' });
     if (!user) return toast({ variant: 'destructive', description: 'Պետք է մուտք գործել' });
 
     try {
       setSubmitting(true);
-      const payload = {
-        title: t,
-        description: description || null,
-        start_date: null,
-        end_date: null,
-        is_public: isPublic,
-        image_url: imageUrl,
-        category: category || null,
-        required_skills: skills ? skills.split(',').map(s => s.trim()).filter(Boolean) : null,
-        resources: resources ? resources.split('\n').map(r => r.trim()).filter(Boolean) : [],
-        application_deadline: deadline ? new Date(deadline).toISOString() : null,
-        max_applicants: maxApplicants === '' ? null : Number(maxApplicants),
-        creator_id: user.id,
-        creator_role: 'employer',
-      } as any;
+      
+      if (isEditing && editingProject) {
+        // Update existing project
+        const payload = {
+          title: t,
+          description: description || null,
+          is_public: isPublic,
+          image_url: imageUrl,
+          category: category || null,
+          required_skills: skills ? skills.split(',').map(s => s.trim()).filter(Boolean) : null,
+          resources: resources ? resources.split('\n').map(r => r.trim()).filter(Boolean) : [],
+          application_deadline: deadline ? new Date(deadline).toISOString() : null,
+          max_applicants: maxApplicants === '' ? null : Number(maxApplicants),
+        };
 
-      const { data, error } = await supabase
-        .from('projects')
-        .insert(payload)
-        .select('*')
-        .single();
-      if (error) throw error;
+        const { error } = await supabase
+          .from('projects')
+          .update(payload)
+          .eq('id', editingProject.id);
+        
+        if (error) throw error;
 
-      toast({ description: 'Նախագիծը ստեղծվեց' });
-      // Reset form
-      setTitle(''); setDescription(''); setImageUrl(null); setCategory(''); setSkills(''); setDeadline(''); setMaxApplicants(''); setResources(''); setIsPublic(false);
-      // Go to detail page
-      navigate(`/projects/${data.id}`);
+        toast({ description: 'Նախագիծը թարմացվեց' });
+        resetForm();
+        window.location.reload();
+      } else {
+        // Create new project
+        const payload = {
+          title: t,
+          description: description || null,
+          start_date: null,
+          end_date: null,
+          is_public: isPublic,
+          image_url: imageUrl,
+          category: category || null,
+          required_skills: skills ? skills.split(',').map(s => s.trim()).filter(Boolean) : null,
+          resources: resources ? resources.split('\n').map(r => r.trim()).filter(Boolean) : [],
+          application_deadline: deadline ? new Date(deadline).toISOString() : null,
+          max_applicants: maxApplicants === '' ? null : Number(maxApplicants),
+          creator_id: user.id,
+          creator_role: 'employer',
+        } as any;
+
+        const { data, error } = await supabase
+          .from('projects')
+          .insert(payload)
+          .select('*')
+          .single();
+        if (error) throw error;
+
+        toast({ description: 'Նախագիծը ստեղծվեց' });
+        resetForm();
+        navigate(`/projects/${data.id}`);
+      }
     } catch (e: any) {
       toast({ variant: 'destructive', description: e.message || 'Սխալ է տեղի ունեցել' });
     } finally {
@@ -73,13 +133,10 @@ const EmployerProjectsTab = () => {
   };
 
   const handleEditProject = (projectId: string) => {
-    // Redirect to project detail page for now
-    navigate(`/projects/${projectId}`);
-  };
-
-  const handleManageProject = (projectId: string) => {
-    // Redirect to project detail page 
-    navigate(`/projects/${projectId}`);
+    const project = projects.find(p => p.id === projectId);
+    if (project) {
+      handleEdit(project);
+    }
   };
 
   const handleDeleteProject = async (projectId: string, projectTitle: string) => {
@@ -113,7 +170,16 @@ const EmployerProjectsTab = () => {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="font-armenian">Ստեղծել նոր նախագիծ</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="font-armenian">
+              {isEditing ? `Խմբագրել՝ ${editingProject?.title}` : 'Ստեղծել նոր նախագիծ'}
+            </CardTitle>
+            {isEditing && (
+              <Button variant="outline" onClick={resetForm} className="font-armenian">
+                Չեղարկել
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -191,8 +257,8 @@ const EmployerProjectsTab = () => {
             </div>
           </div>
 
-          <Button onClick={handleCreate} disabled={submitting} className="font-armenian w-full">
-            {submitting ? 'Ստեղծվում է…' : 'Ստեղծել նախագիծ'}
+          <Button onClick={handleSave} disabled={submitting} className="font-armenian w-full">
+            {submitting ? (isEditing ? 'Պահպանվում է…' : 'Ստեղծվում է…') : (isEditing ? 'Պահպանել փոփոխությունները' : 'Ստեղծել նախագիծ')}
           </Button>
         </CardContent>
       </Card>
