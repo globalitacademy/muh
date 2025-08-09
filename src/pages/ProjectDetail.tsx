@@ -17,7 +17,7 @@ import { useProjectEvaluations } from "@/hooks/useProjectEvaluations";
 import { useProjectTimeline } from "@/hooks/useProjectTimeline";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Image } from "lucide-react";
+import { Image, Clock, CheckCircle } from "lucide-react";
 import { useProjectApplications } from "@/hooks/useProjectApplications";
 import { Textarea } from "@/components/ui/textarea";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -59,6 +59,95 @@ const Section: React.FC<{
       {children || <p className="text-muted-foreground">Coming soon…</p>}
     </CardContent>
   </Card>;
+
+// Project Application Button Component
+const ProjectApplicationButton: React.FC<{
+  user: any;
+  project: any;
+  applications: any[] | undefined;
+  apply: any;
+}> = ({ user, project, applications, apply }) => {
+  // Check if user has already applied
+  const userApplication = applications?.find(app => app.applicant_id === user?.id);
+  
+  // Determine button state
+  const isApplied = !!userApplication;
+  const isExpired = project.application_deadline && new Date(project.application_deadline) < new Date();
+  const isMaxReached = typeof project.max_applicants === 'number' && (applications?.length || 0) >= project.max_applicants;
+  
+  // Determine button text and style based on application status
+  const getButtonState = () => {
+    if (!isApplied) {
+      return {
+        text: 'Դիմել նախագծին',
+        variant: 'default' as const,
+        disabled: apply.isPending || isMaxReached || isExpired,
+        icon: null
+      };
+    }
+    
+    switch (userApplication?.status) {
+      case 'pending':
+        return {
+          text: 'Սպասում է հաստատման',
+          variant: 'secondary' as const,
+          disabled: true,
+          icon: <Clock className="w-4 h-4 mr-2" />
+        };
+      case 'approved':
+        return {
+          text: 'Հաստատված',
+          variant: 'outline' as const,
+          disabled: true,
+          icon: <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+        };
+      case 'rejected':
+        return {
+          text: 'Մերժված',
+          variant: 'destructive' as const,
+          disabled: true,
+          icon: null
+        };
+      default:
+        return {
+          text: 'Դիմել նախագծին',
+          variant: 'default' as const,
+          disabled: apply.isPending || isMaxReached || isExpired,
+          icon: null
+        };
+    }
+  };
+  
+  const buttonState = getButtonState();
+  
+  const handleApply = async () => {
+    if (isApplied) return;
+    
+    try {
+      await apply.mutateAsync(undefined);
+      toast({
+        description: 'Դիմումն ուղարկված է և սպասում է հաստատման'
+      });
+    } catch (e: any) {
+      toast({
+        variant: 'destructive',
+        description: e.message || 'Չհաջողվեց ուղարկել'
+      });
+    }
+  };
+  
+  return (
+    <Button
+      onClick={handleApply}
+      disabled={buttonState.disabled}
+      variant={buttonState.variant}
+      className="w-full"
+    >
+      {buttonState.icon}
+      {buttonState.text}
+    </Button>
+  );
+};
 
 const statusOptions = [{
   value: "todo",
@@ -508,233 +597,186 @@ const ProjectDetail: React.FC = () => {
                       {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
                     </Button>
                   )}
-                  {canEdit && (
-                    <div className="flex items-center gap-2">
-                      <Switch 
-                        checked={isPreviewMode} 
-                        onCheckedChange={setIsPreviewMode}
-                      />
-                      <Label className="text-sm">Նախադիտման ռեժիմ</Label>
-                    </div>
-                  )}
                 </div>
               </div>
-              {isPreviewMode && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                  <p className="text-blue-800 text-sm">
-                    🔍 Նախադիտման ռեժիմ: Դուք տեսնում եք նախագիծը այնպես, ինչպես այն կցուցադրվի վերջնական հրապարակման ժամանակ
-                  </p>
-                </div>
-              )}
             </header>
 
-            <Tabs defaultValue="description" className="space-y-6">
-              <Section title="">
-                <div className="grid gap-6 md:grid-cols-3">
-                  <div className="md:col-span-2 space-y-4">
-                    {project.image_url && <img src={project.image_url} alt="Project cover image" className="w-full h-56 rounded-md object-cover" />}
-                    
-                    <TabsList className="flex flex-wrap">
-                      <TabsTrigger value="description">Նկարագիր</TabsTrigger>
-                      <TabsTrigger value="schedule">Ժամանակացույց</TabsTrigger>
-                      <TabsTrigger value="steps">Քայլեր</TabsTrigger>
-                      <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
-                      <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
-                      <TabsTrigger value="evaluation">Գնահատական</TabsTrigger>
-                      <TabsTrigger value="timeline">Թայմլայն</TabsTrigger>
-                    </TabsList>
-              <TabsContent value="description">
-                    <div>
-                      <div className="text-sm text-muted-foreground">Նկարագիր</div>
-                      {(isEditingDescription && !isPreviewMode) ? (
-                        <Textarea 
-                          value={editedProject.description || ''} 
-                          onChange={(e) => setEditedProject({...editedProject, description: e.target.value})}
-                          placeholder="Նկարագիր"
-                          rows={6}
-                        />
-                      ) : (
-                        <ExpandableText text={project.description || 'Նկարագիր չկա։'} />
+            <Tabs defaultValue="overview" className="space-y-4">
+              <TabsList className="grid w-full grid-cols-6">
+                <TabsTrigger value="overview">Ուղերթ</TabsTrigger>
+                <TabsTrigger value="schedule">Ժամանակացույց</TabsTrigger>
+                <TabsTrigger value="steps">Քայլեր</TabsTrigger>
+                <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
+                <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
+                <TabsTrigger value="evaluation">Գնահատական</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="overview">
+                <Section title="Նախագիծ">
+                  <div className="grid gap-6 lg:grid-cols-3">
+                    <div className="lg:col-span-2">
+                      <div className="mb-4">
+                        <div className="text-sm text-muted-foreground mb-2">Նկարագրություն</div>
+                        {isEditingDescription && !isPreviewMode ? (
+                          <Textarea
+                            value={editedProject.description || project.description || ''}
+                            onChange={(e) => setEditedProject({...editedProject, description: e.target.value})}
+                            className="min-h-[150px]"
+                            placeholder="Նախագծի նկարագրություն..."
+                          />
+                        ) : (
+                          <ExpandableText text={project.description || 'Նկարագրություն չի ավելացվել'} />
+                        )}
+                      </div>
+                      
+                      {project.required_skills && project.required_skills.length > 0 && (
+                        <div className="mb-4">
+                          <div className="text-sm text-muted-foreground mb-2">Անհրաժեշտ հմտություններ</div>
+                          <div className="flex flex-wrap gap-2">
+                            {project.required_skills.map((skill, index) => (
+                              <span key={index} className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm">
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {project.image_url && (
+                        <div className="mb-4">
+                          <div className="text-sm text-muted-foreground mb-2">Պատկեր</div>
+                          <img 
+                            src={project.image_url} 
+                            alt={project.title}
+                            className="w-full h-64 object-cover rounded-lg"
+                          />
+                        </div>
                       )}
                     </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Հմտություններ</div>
-                      {(isEditingDescription && !isPreviewMode) ? (
-                        <Input 
-                          value={editedProject.required_skills?.join(', ') || ''} 
-                          onChange={(e) => setEditedProject({...editedProject, required_skills: e.target.value.split(',').map(s => s.trim())})}
-                          placeholder="Հմտությունները ստորակետով անջատեք"
-                        />
-                      ) : (
-                        project.required_skills?.length ? <div className="mt-2 flex flex-wrap gap-2">
-                          {project.required_skills.map((s: string) => <span key={s} className="px-2 py-1 rounded-md bg-muted text-sm">{s}</span>)}
-                        </div> : <div className="mt-1 text-muted-foreground">Չեն նշվել</div>
+
+                    <aside className="space-y-4">
+                      <div>
+                        <div className="text-sm text-muted-foreground">Ստեղծող</div>
+                        <div className="font-medium">{project.creator_id}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
+                        <div className="font-medium">{project.status}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Դիմողների քանակ</div>
+                        <div className="font-medium">{applications?.length || 0}</div>
+                      </div>
+                      {project.max_applicants && (
+                        <div>
+                          <div className="text-sm text-muted-foreground">Առավելագույն դիմողներ</div>
+                          <div className="font-medium">{project.max_applicants}</div>
+                        </div>
                       )}
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Օգտակար ռեսուրսներ</div>
-                      {(isEditingDescription && !isPreviewMode) ? (
-                        <Textarea 
-                          value={Array.isArray(editedProject.resources) 
-                            ? editedProject.resources.map(r => typeof r === 'string' ? r : r?.url || JSON.stringify(r)).join('\n')
-                            : ''
-                          } 
-                          onChange={(e) => setEditedProject({
-                            ...editedProject, 
-                            resources: e.target.value.split('\n').filter(line => line.trim()).map(line => ({ url: line.trim(), title: line.trim() }))
-                          })}
-                          placeholder="Ամեն տողում մեկ ռեսուրս (URL)"
-                          rows={3}
-                        />
-                      ) : (
-                        Array.isArray(project.resources) && project.resources.length ? <ul className="flex flex-wrap gap-2 mt-2">
-                          {project.resources.map((r: any, idx: number) => <li key={idx} className="flex items-center">
-                              {typeof r === 'string' ? <a href={r} target="_blank" rel="noreferrer" className="text-primary underline">{r}</a> : r?.url ? <a href={r.url} target="_blank" rel="noreferrer" className="text-primary underline">{r.title || r.url}</a> : <span className="text-sm">{JSON.stringify(r)}</span>}
-                            </li>)}
-                        </ul> : <div className="mt-1 text-muted-foreground">Չկան</div>
-                      )}
-                    </div>
-                  </TabsContent>
-                  </div>
-                  <aside className="space-y-4">
-                    <div>
-                      <div className="text-sm text-muted-foreground">Կատեգորիա</div>
-                      <div className="font-medium">{project.category || '—'}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Գործատու կազմակերպություն</div>
-                      <div className="font-medium">{'Չի նշվել'}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Ավելացված է</div>
-                      <div className="font-medium">{new Date(project.created_at).toLocaleDateString()}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Դիմումների վերջնաժամկետ</div>
-                      <div className="font-medium">{project.application_deadline ? new Date(project.application_deadline).toLocaleDateString() : '—'}</div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Դիմումների քանակ / Սահմանափակում</div>
-                      <div className="font-medium">
-                        {applications?.length || 0} / {project.max_applicants ?? 'չկա'}
+                      <div>
+                        <div className="text-sm text-muted-foreground">Դիմումների վերջնաժամկետ</div>
+                        <div className="font-medium">{project.application_deadline ? new Date(project.application_deadline).toLocaleDateString() : '—'}</div>
                       </div>
                       <div className="mt-2">
                         {userRole === 'student' ? (
-                          <Button onClick={async () => {
-                            try {
-                              await apply.mutateAsync(undefined);
-                              toast({
-                                description: 'Դիմումն ուղարկված է'
-                              });
-                            } catch (e: any) {
-                              toast({
-                                variant: 'destructive',
-                                description: e.message || 'Չհաջողվեց ուղարկել'
-                              });
-                            }
-                          }} disabled={
-                            apply.isPending || 
-                            (typeof project.max_applicants === 'number' && (applications?.length || 0) >= project.max_applicants) || 
-                            (project.application_deadline ? new Date(project.application_deadline) < new Date() : false)
-                          }>
-                            Դիմել նախագծին
-                          </Button>
+                          <ProjectApplicationButton 
+                            user={user}
+                            project={project}
+                            applications={applications}
+                            apply={apply}
+                          />
                         ) : (
                           <div className="text-sm text-muted-foreground">
                             Միայն ուսանողները կարող են դիմել նախագծին
                           </div>
                         )}
                       </div>
-                    </div>
-                  </aside>
-                </div>
-              </Section>
-
-              <TabsContent value="schedule">
-                <Section title="Ժամանակացույց">
-                  {!isPreviewMode && canEdit && (
-                    <div className="flex justify-end mb-4">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => {
-                          if (isEditingSchedule) {
-                            updateProject.mutate({ id: projectId, ...editedProject });
-                            setIsEditingSchedule(false);
-                          } else {
-                            setEditedProject(project || {});
-                            setIsEditingSchedule(true);
-                          }
-                        }}
-                      >
-                        {isEditingSchedule ? 'Պահպանել' : 'Խմբագրել'}
-                      </Button>
-                    </div>
-                  )}
-                  <div className="grid gap-4 md:grid-cols-3">
-                    <div>
-                      <div className="text-sm text-muted-foreground">Սկիզբ</div>
-                      {(isEditingSchedule && !isPreviewMode) ? (
-                        <Input 
-                          type="datetime-local" 
-                          value={editedProject.start_date ? new Date(editedProject.start_date).toISOString().slice(0, 16) : ''} 
-                          onChange={(e) => setEditedProject({...editedProject, start_date: e.target.value})}
-                        />
-                      ) : (
-                        <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
-                      )}
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Ավարտ</div>
-                      {(isEditingSchedule && !isPreviewMode) ? (
-                        <Input 
-                          type="datetime-local" 
-                          value={editedProject.end_date ? new Date(editedProject.end_date).toISOString().slice(0, 16) : ''} 
-                          onChange={(e) => setEditedProject({...editedProject, end_date: e.target.value})}
-                        />
-                      ) : (
-                        <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
-                      )}
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
-                      {(isEditingSchedule && !isPreviewMode) ? (
-                        <Select value={editedProject.status || project.status} onValueChange={(v) => setEditedProject({...editedProject, status: v})}>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                            <SelectItem value="paused">Paused</SelectItem>
-                            <SelectItem value="cancelled">Cancelled</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <div className="font-medium">{project.status}</div>
-                      )}
-                    </div>
+                    </aside>
                   </div>
                 </Section>
-              </TabsContent>
 
-              <TabsContent value="steps">
-                <StepsTab projectId={projectId} canEdit={canEdit} />
-              </TabsContent>
+                <TabsContent value="schedule">
+                  <Section title="Ժամանակացույց">
+                    {!isPreviewMode && canEdit && (
+                      <div className="flex justify-end mb-4">
+                        <Button 
+                          variant="outline" 
+                          onClick={() => {
+                            if (isEditingSchedule) {
+                              updateProject.mutate({ id: projectId, ...editedProject });
+                              setIsEditingSchedule(false);
+                            } else {
+                              setEditedProject(project || {});
+                              setIsEditingSchedule(true);
+                            }
+                          }}
+                        >
+                          {isEditingSchedule ? 'Պահպանել' : 'Խմբագրել'}
+                        </Button>
+                      </div>
+                    )}
+                    <div className="grid gap-4 md:grid-cols-3">
+                      <div>
+                        <div className="text-sm text-muted-foreground">Սկիզբ</div>
+                        {(isEditingSchedule && !isPreviewMode) ? (
+                          <Input 
+                            type="datetime-local" 
+                            value={editedProject.start_date ? new Date(editedProject.start_date).toISOString().slice(0, 16) : ''} 
+                            onChange={(e) => setEditedProject({...editedProject, start_date: e.target.value})}
+                          />
+                        ) : (
+                          <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Ավարտ</div>
+                        {(isEditingSchedule && !isPreviewMode) ? (
+                          <Input 
+                            type="datetime-local" 
+                            value={editedProject.end_date ? new Date(editedProject.end_date).toISOString().slice(0, 16) : ''} 
+                            onChange={(e) => setEditedProject({...editedProject, end_date: e.target.value})}
+                          />
+                        ) : (
+                          <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
+                        )}
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
+                        {(isEditingSchedule && !isPreviewMode) ? (
+                          <Select value={editedProject.status || project.status} onValueChange={(v) => setEditedProject({...editedProject, status: v})}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="active">Active</SelectItem>
+                              <SelectItem value="completed">Completed</SelectItem>
+                              <SelectItem value="paused">Paused</SelectItem>
+                              <SelectItem value="cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="font-medium">{project.status}</div>
+                        )}
+                      </div>
+                    </div>
+                  </Section>
+                </TabsContent>
 
-              <TabsContent value="discussions">
-                <DiscussionsTab projectId={projectId} canEdit={canEdit} />
-              </TabsContent>
+                <TabsContent value="steps">
+                  <StepsTab projectId={projectId} canEdit={canEdit} />
+                </TabsContent>
 
-              <TabsContent value="files">
-                <FilesTab projectId={projectId} canEdit={canEdit} />
-              </TabsContent>
+                <TabsContent value="discussions">
+                  <DiscussionsTab projectId={projectId} canEdit={canEdit} />
+                </TabsContent>
 
-              <TabsContent value="evaluation">
-                <EvaluationTab projectId={projectId} canEdit={canEdit} />
-              </TabsContent>
+                <TabsContent value="files">
+                  <FilesTab projectId={projectId} canEdit={canEdit} />
+                </TabsContent>
 
-              <TabsContent value="timeline">
-                <TimelineTab projectId={projectId} canEdit={canEdit} />
+                <TabsContent value="evaluation">
+                  <EvaluationTab projectId={projectId} canEdit={canEdit} />
+                </TabsContent>
               </TabsContent>
             </Tabs>
           </>
