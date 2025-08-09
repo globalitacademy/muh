@@ -75,6 +75,21 @@ export const useMyProjects = () => {
   });
 };
 
+export const usePublicProjects = () => {
+  return useQuery({
+    queryKey: ["public-projects"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("is_public", true)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data as Project[];
+    },
+  });
+};
+
 export const useProject = (projectId?: string) => {
   return useQuery({
     queryKey: ["project", projectId],

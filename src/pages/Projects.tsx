@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useMyProjects, useCreateProject } from '@/hooks/useProjects';
+import { useMyProjects, useCreateProject, usePublicProjects } from '@/hooks/useProjects';
 import { useImageUpload } from '@/hooks/useImageUpload';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useUserProjectApplications } from '@/hooks/useUserProjectApplications';
@@ -21,7 +21,7 @@ import ProjectStats from '@/components/projects/ProjectStats';
 
 const Projects = () => {
   const navigate = useNavigate();
-  const { data: projects, isLoading } = useMyProjects();
+  const { data: projects, isLoading } = usePublicProjects();
   const { data: userRoles } = useUserRole();
   const { data: userApplications } = useUserProjectApplications();
   const createProject = useCreateProject();
