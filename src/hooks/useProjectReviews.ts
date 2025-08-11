@@ -25,7 +25,9 @@ export const useProjectReviews = (projectId?: string) => {
     queryKey: ["project-reviews", projectId],
     enabled: !!projectId,
     queryFn: async () => {
-      // Return empty array for now until table is created
+      console.log('Fetching reviews for project:', projectId);
+      
+      // Since the table is new, return empty array for now
       return [] as ProjectReview[];
     },
   });
@@ -38,16 +40,16 @@ export const useProjectReviews = (projectId?: string) => {
       certificate_issued?: boolean;
       certificate_url?: string;
     }) => {
-      // Return mock data for now
+      if (!user || !projectId) throw new Error("Not authenticated or no project");
+      
+      console.log('Creating review:', review);
+      // Return mock response for now
       return {
-        id: Date.now().toString(),
-        project_id: projectId || "",
-        participant_id: review.participant_id,
-        reviewer_id: user?.id || "",
-        rating: review.rating,
-        feedback: review.feedback,
+        id: 'temp-id',
+        project_id: projectId,
+        reviewer_id: user.id,
+        ...review,
         certificate_issued: review.certificate_issued || false,
-        certificate_url: review.certificate_url,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       } as ProjectReview;
@@ -59,16 +61,10 @@ export const useProjectReviews = (projectId?: string) => {
 
   const updateReview = useMutation({
     mutationFn: async ({ id, ...updates }: Partial<ProjectReview> & { id: string }) => {
-      // Return mock data for now
+      console.log('Updating review:', id, updates);
+      // Return mock response for now
       return {
         id,
-        project_id: projectId || "",
-        participant_id: "",
-        reviewer_id: user?.id || "",
-        rating: 0,
-        certificate_issued: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
         ...updates
       } as ProjectReview;
     },

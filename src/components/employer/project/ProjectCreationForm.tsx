@@ -14,7 +14,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, X, Plus } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import { useImageUpload } from "@/hooks/useImageUpload";
 
 const projectSchema = z.object({
   project_type: z.enum(['project', 'job', 'internship']),
@@ -53,8 +52,7 @@ export const ProjectCreationForm: React.FC<ProjectCreationFormProps> = ({
   const [timeline, setTimeline] = useState<Array<{ phase: string; description: string; weeks: number }>>([]);
   const [taskList, setTaskList] = useState<Array<{ title: string; description: string; required: boolean }>>([]);
   const [coverImage, setCoverImage] = useState<string>("");
-  
-  const { uploadImage, uploading } = useImageUpload({ bucket: "project-files" });
+  const [uploading, setUploading] = useState(false);
 
   const {
     register,
@@ -76,11 +74,16 @@ export const ProjectCreationForm: React.FC<ProjectCreationFormProps> = ({
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      setUploading(true);
       try {
-        const url = await uploadImage(file);
+        // Mock image upload for now
+        const url = URL.createObjectURL(file);
         setCoverImage(url);
+        toast.success("Image uploaded successfully");
       } catch (error) {
         toast.error("Failed to upload image");
+      } finally {
+        setUploading(false);
       }
     }
   };
@@ -344,103 +347,6 @@ export const ProjectCreationForm: React.FC<ProjectCreationFormProps> = ({
               {...register("max_applicants", { valueAsNumber: true })} 
               placeholder="Leave empty for unlimited"
             />
-          </div>
-
-          {/* Useful Resources */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <Label>Useful Resources</Label>
-              <Button type="button" onClick={addResource} variant="outline" size="sm">
-                <Plus className="h-4 w-4 mr-1" /> Add Resource
-              </Button>
-            </div>
-            {resources.map((resource, index) => (
-              <div key={index} className="flex gap-2 mb-2">
-                <Input
-                  value={resource.title}
-                  onChange={(e) => updateResource(index, 'title', e.target.value)}
-                  placeholder="Resource title"
-                />
-                <Input
-                  value={resource.url}
-                  onChange={(e) => updateResource(index, 'url', e.target.value)}
-                  placeholder="URL"
-                />
-                <Button type="button" onClick={() => removeResource(index)} variant="outline" size="sm">
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-
-          {/* Timeline */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <Label>Timeline</Label>
-              <Button type="button" onClick={addTimelinePhase} variant="outline" size="sm">
-                <Plus className="h-4 w-4 mr-1" /> Add Phase
-              </Button>
-            </div>
-            {timeline.map((phase, index) => (
-              <div key={index} className="grid grid-cols-3 gap-2 mb-2">
-                <Input
-                  value={phase.phase}
-                  onChange={(e) => updateTimelinePhase(index, 'phase', e.target.value)}
-                  placeholder="Phase name"
-                />
-                <Input
-                  value={phase.description}
-                  onChange={(e) => updateTimelinePhase(index, 'description', e.target.value)}
-                  placeholder="Description"
-                />
-                <div className="flex gap-2">
-                  <Input
-                    type="number"
-                    value={phase.weeks}
-                    onChange={(e) => updateTimelinePhase(index, 'weeks', parseInt(e.target.value) || 1)}
-                    placeholder="Weeks"
-                    min="1"
-                  />
-                  <Button type="button" onClick={() => removeTimelinePhase(index)} variant="outline" size="sm">
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Task List */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <Label>Implementation Steps</Label>
-              <Button type="button" onClick={addTask} variant="outline" size="sm">
-                <Plus className="h-4 w-4 mr-1" /> Add Task
-              </Button>
-            </div>
-            {taskList.map((task, index) => (
-              <div key={index} className="flex gap-2 mb-2">
-                <Input
-                  value={task.title}
-                  onChange={(e) => updateTask(index, 'title', e.target.value)}
-                  placeholder="Task title"
-                />
-                <Input
-                  value={task.description}
-                  onChange={(e) => updateTask(index, 'description', e.target.value)}
-                  placeholder="Task description"
-                />
-                <div className="flex items-center gap-2">
-                  <Label className="text-sm">Required</Label>
-                  <Switch
-                    checked={task.required}
-                    onCheckedChange={(checked) => updateTask(index, 'required', checked)}
-                  />
-                  <Button type="button" onClick={() => removeTask(index)} variant="outline" size="sm">
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
           </div>
 
           {/* Public Switch */}

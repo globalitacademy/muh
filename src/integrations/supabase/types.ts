@@ -1175,33 +1175,47 @@ export type Database = {
       }
       project_discussions: {
         Row: {
-          author_id: string
-          content: string
-          created_at: string
+          created_at: string | null
+          files: Json | null
           id: string
-          parent_id: string | null
+          is_private: boolean | null
+          message: string
+          participant_id: string
           project_id: string
-          updated_at: string
+          recipient_id: string | null
+          updated_at: string | null
         }
         Insert: {
-          author_id: string
-          content: string
-          created_at?: string
+          created_at?: string | null
+          files?: Json | null
           id?: string
-          parent_id?: string | null
+          is_private?: boolean | null
+          message: string
+          participant_id: string
           project_id: string
-          updated_at?: string
+          recipient_id?: string | null
+          updated_at?: string | null
         }
         Update: {
-          author_id?: string
-          content?: string
-          created_at?: string
+          created_at?: string | null
+          files?: Json | null
           id?: string
-          parent_id?: string | null
+          is_private?: boolean | null
+          message?: string
+          participant_id?: string
           project_id?: string
-          updated_at?: string
+          recipient_id?: string | null
+          updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "project_discussions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_evaluations: {
         Row: {
@@ -1301,6 +1315,53 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      project_reviews: {
+        Row: {
+          certificate_issued: boolean | null
+          certificate_url: string | null
+          created_at: string | null
+          feedback: string | null
+          id: string
+          participant_id: string
+          project_id: string
+          rating: number | null
+          reviewer_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          certificate_issued?: boolean | null
+          certificate_url?: string | null
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          participant_id: string
+          project_id: string
+          rating?: number | null
+          reviewer_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          certificate_issued?: boolean | null
+          certificate_url?: string | null
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          participant_id?: string
+          project_id?: string
+          rating?: number | null
+          reviewer_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_reviews_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       project_steps: {
         Row: {
