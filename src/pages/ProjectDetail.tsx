@@ -599,12 +599,16 @@ const ProjectDetail: React.FC = () => {
               </div>
               
               {project.image_url && (
-                <div className="mb-6">
+                <div className="mb-6 relative">
                   <img 
                     src={project.image_url} 
                     alt={project.title}
                     className="w-full h-64 object-cover rounded-lg"
                   />
+                  <div className="absolute top-3 left-3 bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm font-medium shadow-lg">
+                    {project.posting_type === 'practice' ? 'Պրակտիկա' : 
+                     project.posting_type === 'job' ? 'Աշխատանք' : 'Նախագիծ'}
+                  </div>
                 </div>
               )}
               
