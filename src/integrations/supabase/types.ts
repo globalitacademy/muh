@@ -1451,6 +1451,7 @@ export type Database = {
           status: string
           title: string
           updated_at: string
+          useful_links: string[] | null
         }
         Insert: {
           application_deadline?: string | null
@@ -1470,6 +1471,7 @@ export type Database = {
           status?: string
           title: string
           updated_at?: string
+          useful_links?: string[] | null
         }
         Update: {
           application_deadline?: string | null
@@ -1489,6 +1491,7 @@ export type Database = {
           status?: string
           title?: string
           updated_at?: string
+          useful_links?: string[] | null
         }
         Relationships: []
       }

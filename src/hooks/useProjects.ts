@@ -16,10 +16,12 @@ export interface Project {
   category?: string | null;
   required_skills?: string[] | null;
   resources?: any;
+  useful_links?: string[] | null;
   application_deadline?: string | null;
   max_applicants?: number | null;
   created_at: string;
   updated_at: string;
+  posting_type?: string;
   creator_profile?: {
     name: string;
     organization?: string;
@@ -147,7 +149,7 @@ export const useCreateProject = () => {
   const client = useQueryClient();
   const { user } = useAuth();
   return useMutation({
-    mutationFn: async (payload: Pick<Project, "title" | "description" | "start_date" | "end_date" | "is_public" | "image_url" | "category" | "required_skills" | "resources" | "application_deadline" | "max_applicants">) => {
+    mutationFn: async (payload: Pick<Project, "title" | "description" | "start_date" | "end_date" | "is_public" | "image_url" | "category" | "required_skills" | "resources" | "useful_links" | "application_deadline" | "max_applicants">) => {
       if (!user) throw new Error("Not authenticated");
       const { data, error } = await supabase
         .from("projects")
@@ -170,7 +172,7 @@ export const useCreateProject = () => {
 export const useUpdateProject = () => {
   const client = useQueryClient();
   return useMutation({
-    mutationFn: async ({ id, ...payload }: { id: string } & Partial<Pick<Project, "title" | "description" | "start_date" | "end_date" | "status" | "category" | "required_skills" | "resources" | "application_deadline" | "max_applicants" | "image_url" | "is_public">>) => {
+    mutationFn: async ({ id, ...payload }: { id: string } & Partial<Pick<Project, "title" | "description" | "start_date" | "end_date" | "status" | "category" | "required_skills" | "resources" | "useful_links" | "application_deadline" | "max_applicants" | "image_url" | "is_public">>) => {
       const { data, error } = await supabase
         .from("projects")
         .update(payload)
@@ -180,8 +182,9 @@ export const useUpdateProject = () => {
       if (error) throw error;
       return data as Project;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       client.invalidateQueries({ queryKey: ["projects"] });
+      client.invalidateQueries({ queryKey: ["project", variables.id] });
     },
   });
 };
