@@ -245,16 +245,25 @@ const StepsTab: React.FC<{
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {statusOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                        <SelectItem value="todo">Կատարելի</SelectItem>
+                        <SelectItem value="in_progress">Ընթացքի մեջ</SelectItem>
+                        <SelectItem value="done">Կատարված</SelectItem>
+                        <SelectItem value="blocked">Արգելափակված</SelectItem>
                       </SelectContent>
                     </Select>
                   ) : (
-                    <span className="capitalize">{s.status.replace('_', ' ')}</span>
+                    <span className="capitalize">
+                      {s.status === 'todo' ? 'Կատարելի' :
+                       s.status === 'in_progress' ? 'Ընթացքի մեջ' :
+                       s.status === 'done' ? 'Կատարված' :
+                       s.status === 'blocked' ? 'Արգելափակված' :
+                       s.status}
+                    </span>
                   )}
                 </div>
                 <div className="text-right">
                   {canEdit && (
-                    <Button variant="outline" onClick={() => remove.mutate(s.id)}>Delete</Button>
+                    <Button variant="outline" onClick={() => remove.mutate(s.id)}>Ջնջել</Button>
                   )}
                 </div>
               </CardContent>
