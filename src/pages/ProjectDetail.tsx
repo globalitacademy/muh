@@ -553,7 +553,8 @@ const ProjectDetail: React.FC = () => {
   } = useProject(projectId);
   const {
     data: applications,
-    apply
+    apply,
+    updateStatus
   } = useProjectApplications(projectId);
   const updateProject = useUpdateProject();
   const { data: userRole } = useUserRole();
@@ -613,16 +614,17 @@ const ProjectDetail: React.FC = () => {
             </header>
 
             <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 h-auto p-1">
+              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1 h-auto p-1">
                 <TabsTrigger value="overview">Նկարագրություն</TabsTrigger>
                 <TabsTrigger value="schedule">Ժամանակացույց</TabsTrigger>
                 <TabsTrigger value="steps">Քայլեր</TabsTrigger>
                 <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
                 <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
+                <TabsTrigger value="timeline">Թայմլայն</TabsTrigger>
                 <TabsTrigger value="evaluation">Գնահատական</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview">
+                <TabsContent value="overview">
                 <Section title="Նախագիծ">
                   <div className="grid gap-6 lg:grid-cols-3">
                     <div className="lg:col-span-2">
@@ -716,6 +718,65 @@ const ProjectDetail: React.FC = () => {
                   </div>
                 </Section>
 
+                {/* Applications Management Section for Project Creator */}
+                {canEdit && applications && applications.length > 0 && (
+                  <Section title="Դիմումների կառավարում">
+                    <div className="space-y-4">
+                      {applications.map((application) => (
+                        <Card key={application.id} className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="font-medium">{application.applicant_profile?.name || application.applicant_name || 'Անանուն'}</div>
+                              <div className="text-sm text-muted-foreground">
+                                Դիմել է՝ {new Date(application.applied_at).toLocaleDateString()}
+                              </div>
+                              {application.cover_letter && (
+                                <div className="mt-2 text-sm">
+                                  <span className="font-medium">Ուղեկցող նամակ:</span> {application.cover_letter}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 ml-4">
+                              <span className={`px-2 py-1 rounded-md text-xs font-medium ${
+                                application.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                application.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                'bg-red-100 text-red-800'
+                              }`}>
+                                {application.status === 'pending' ? 'Սպասում է' :
+                                 application.status === 'approved' ? 'Հաստատված' : 'Մերժված'}
+                              </span>
+                              {application.status === 'pending' && (
+                                <div className="flex gap-2">
+                                  <Button 
+                                    size="sm" 
+                                    onClick={() => {
+                                      updateStatus.mutate({ id: application.id, status: 'approved' });
+                                      toast({ description: 'Դիմումը հաստատված է' });
+                                    }}
+                                  >
+                                    Հաստատել
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="destructive"
+                                    onClick={() => {
+                                      updateStatus.mutate({ id: application.id, status: 'rejected' });
+                                      toast({ description: 'Դիմումը մերժված է' });
+                                    }}
+                                  >
+                                    Մերժել
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </Section>
+                )}
+              </TabsContent>
+
                 <TabsContent value="schedule">
                   <Section title="Ժամանակացույց">
                     {!isPreviewMode && canEdit && (
@@ -795,10 +856,13 @@ const ProjectDetail: React.FC = () => {
                   <FilesTab projectId={projectId} canEdit={canEdit} />
                 </TabsContent>
 
+                <TabsContent value="timeline">
+                  <TimelineTab projectId={projectId} canEdit={canEdit} />
+                </TabsContent>
+
                 <TabsContent value="evaluation">
                   <EvaluationTab projectId={projectId} canEdit={canEdit} />
                 </TabsContent>
-              </TabsContent>
             </Tabs>
           </>
         )}

@@ -10,6 +10,11 @@ export interface ProjectApplication {
   status: string;
   cover_letter?: string | null;
   applied_at: string;
+  applicant_profile?: {
+    name: string;
+    first_name?: string;
+    last_name?: string;
+  };
 }
 
 export const useProjectApplications = (projectId?: string) => {
