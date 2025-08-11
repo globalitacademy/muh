@@ -104,6 +104,7 @@ export const useProject = (projectId?: string) => {
     queryKey: ["project", projectId],
     enabled: !!projectId,
     queryFn: async () => {
+      console.log('Fetching project with ID:', projectId);
       const { data, error } = await supabase
         .from("projects")
         .select(`
@@ -117,7 +118,12 @@ export const useProject = (projectId?: string) => {
         `)
         .eq("id", projectId)
         .maybeSingle();
-      if (error) throw error;
+      
+      console.log('Project query result:', { data, error, projectId });
+      if (error) {
+        console.error('Project query error:', error);
+        throw error;
+      }
       console.log('Project data with creator:', data);
       return data as any;
     },
