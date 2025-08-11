@@ -702,6 +702,14 @@ const ProjectDetail: React.FC = () => {
                         <div className="font-medium">{project.status}</div>
                       </div>
                       <div>
+                        <div className="text-sm text-muted-foreground">Սկիզբ</div>
+                        <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm text-muted-foreground">Ավարտ</div>
+                        <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
+                      </div>
+                      <div>
                         <div className="text-sm text-muted-foreground">Դիմողների քանակ</div>
                         <div className="font-medium">{applications?.length || 0}</div>
                       </div>
