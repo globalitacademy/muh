@@ -658,12 +658,15 @@ const ProjectDetail: React.FC = () => {
                     <aside className="space-y-4">
                        <div>
                          <div className="text-sm text-muted-foreground">Ստեղծող</div>
-                         <div className="font-medium">
-                           {project.creator_profile?.organization || 
-                            project.creator_profile?.name || 
-                            `${project.creator_profile?.first_name || ''} ${project.creator_profile?.last_name || ''}`.trim() ||
-                            'Անանուն'}
-                         </div>
+                          <div className="font-medium">
+                            {(() => {
+                              console.log('Creator profile data:', project.creator_profile);
+                              const creatorName = project.creator_profile?.name || 
+                                                  `${project.creator_profile?.first_name || ''} ${project.creator_profile?.last_name || ''}`.trim() ||
+                                                  project.creator_profile?.organization;
+                              return creatorName || project.creator_id || 'Անանուն';
+                            })()}
+                          </div>
                        </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
