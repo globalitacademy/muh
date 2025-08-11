@@ -698,35 +698,82 @@ const ProjectDetail: React.FC = () => {
                        </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
-                        <div className="font-medium">
-                          {project.status === 'active' ? 'Ակտիվ' :
-                           project.status === 'completed' ? 'Ավարտված' :
-                           project.status === 'paused' ? 'Դադարեցված' :
-                           project.status === 'cancelled' ? 'Չեղարկված' :
-                           project.status}
-                        </div>
+                        {isEditingDescription && !isPreviewMode ? (
+                          <Select value={editedProject.status || project.status} onValueChange={(v) => setEditedProject({...editedProject, status: v})}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="active">Ակտիվ</SelectItem>
+                              <SelectItem value="completed">Ավարտված</SelectItem>
+                              <SelectItem value="paused">Դադարեցված</SelectItem>
+                              <SelectItem value="cancelled">Չեղարկված</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="font-medium">
+                            {project.status === 'active' ? 'Ակտիվ' :
+                             project.status === 'completed' ? 'Ավարտված' :
+                             project.status === 'paused' ? 'Դադարեցված' :
+                             project.status === 'cancelled' ? 'Չեղարկված' :
+                             project.status}
+                          </div>
+                        )}
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Սկիզբ</div>
-                        <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
+                        {isEditingDescription && !isPreviewMode ? (
+                          <Input 
+                            type="datetime-local" 
+                            value={editedProject.start_date ? new Date(editedProject.start_date).toISOString().slice(0, 16) : ''} 
+                            onChange={(e) => setEditedProject({...editedProject, start_date: e.target.value})}
+                          />
+                        ) : (
+                          <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
+                        )}
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Ավարտ</div>
-                        <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
+                        {isEditingDescription && !isPreviewMode ? (
+                          <Input 
+                            type="datetime-local" 
+                            value={editedProject.end_date ? new Date(editedProject.end_date).toISOString().slice(0, 16) : ''} 
+                            onChange={(e) => setEditedProject({...editedProject, end_date: e.target.value})}
+                          />
+                        ) : (
+                          <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
+                        )}
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Դիմողների քանակ</div>
                         <div className="font-medium">{applications?.length || 0}</div>
                       </div>
-                      {project.max_applicants && (
+                      {(project.max_applicants || (isEditingDescription && !isPreviewMode)) && (
                         <div>
                           <div className="text-sm text-muted-foreground">Առավելագույն դիմողներ</div>
-                          <div className="font-medium">{project.max_applicants}</div>
+                          {isEditingDescription && !isPreviewMode ? (
+                            <Input 
+                              type="number" 
+                              value={editedProject.max_applicants || project.max_applicants || ''} 
+                              onChange={(e) => setEditedProject({...editedProject, max_applicants: parseInt(e.target.value) || null})}
+                              placeholder="Առավելագույն դիմողներ"
+                            />
+                          ) : (
+                            <div className="font-medium">{project.max_applicants}</div>
+                          )}
                         </div>
                       )}
                       <div>
                         <div className="text-sm text-muted-foreground">Դիմումների վերջնաժամկետ</div>
-                        <div className="font-medium">{project.application_deadline ? new Date(project.application_deadline).toLocaleDateString() : '—'}</div>
+                        {isEditingDescription && !isPreviewMode ? (
+                          <Input 
+                            type="date" 
+                            value={editedProject.application_deadline ? new Date(editedProject.application_deadline).toISOString().slice(0, 10) : ''} 
+                            onChange={(e) => setEditedProject({...editedProject, application_deadline: e.target.value})}
+                          />
+                        ) : (
+                          <div className="font-medium">{project.application_deadline ? new Date(project.application_deadline).toLocaleDateString() : '—'}</div>
+                        )}
                       </div>
                       <div className="mt-2">
                         {userRole === 'student' ? (
