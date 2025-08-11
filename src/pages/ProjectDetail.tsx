@@ -578,6 +578,25 @@ const ProjectDetail: React.FC = () => {
         ) : (
           <>
             <header className="mb-6">
+              <div className="flex justify-end mb-4">
+                {canEdit && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      if (isEditingDescription) {
+                        updateProject.mutate({ id: projectId, ...editedProject });
+                        setIsEditingDescription(false);
+                      } else {
+                        setEditedProject(project || {});
+                        setIsEditingDescription(true);
+                      }
+                    }}
+                  >
+                    {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
+                  </Button>
+                )}
+              </div>
+              
               {project.image_url && (
                 <div className="mb-6">
                   <img 
@@ -590,24 +609,6 @@ const ProjectDetail: React.FC = () => {
               
               <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-semibold">{project.title}</h1>
-                <div className="flex items-center gap-4">
-                  {canEdit && (
-                    <Button 
-                      variant="outline" 
-                      onClick={() => {
-                        if (isEditingDescription) {
-                          updateProject.mutate({ id: projectId, ...editedProject });
-                          setIsEditingDescription(false);
-                        } else {
-                          setEditedProject(project || {});
-                          setIsEditingDescription(true);
-                        }
-                      }}
-                    >
-                      {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
-                    </Button>
-                  )}
-                </div>
               </div>
             </header>
 
