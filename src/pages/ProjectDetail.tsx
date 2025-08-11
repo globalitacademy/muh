@@ -642,18 +642,29 @@ const ProjectDetail: React.FC = () => {
                         )}
                       </div>
                       
-                      {project.required_skills && project.required_skills.length > 0 && (
+                      {(project.required_skills && project.required_skills.length > 0) || (isEditingDescription && !isPreviewMode) ? (
                         <div className="mb-4">
                           <div className="text-sm text-muted-foreground mb-2">Անհրաժեշտ հմտություններ</div>
-                          <div className="flex flex-wrap gap-2">
-                            {project.required_skills.map((skill, index) => (
-                              <span key={index} className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm">
-                                {skill}
-                              </span>
-                            ))}
-                          </div>
+                          {isEditingDescription && !isPreviewMode ? (
+                            <Input
+                              value={(editedProject.required_skills || project.required_skills || []).join(', ')}
+                              onChange={(e) => setEditedProject({
+                                ...editedProject, 
+                                required_skills: e.target.value.split(',').map(s => s.trim()).filter(s => s)
+                              })}
+                              placeholder="Մուտքագրեք հմտությունները ստորակետով բաժանված..."
+                            />
+                          ) : (
+                            <div className="flex flex-wrap gap-2">
+                              {(project.required_skills || []).map((skill, index) => (
+                                <span key={index} className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm">
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      )}
+                      ) : null}
 
                     </div>
 
