@@ -602,7 +602,7 @@ const ProjectDetail: React.FC = () => {
             </header>
 
             <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6">
+              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 h-auto p-1">
                 <TabsTrigger value="overview">Ուղերթ</TabsTrigger>
                 <TabsTrigger value="schedule">Ժամանակացույց</TabsTrigger>
                 <TabsTrigger value="steps">Քայլեր</TabsTrigger>
