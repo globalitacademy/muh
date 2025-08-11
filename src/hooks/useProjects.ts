@@ -105,27 +105,40 @@ export const useProject = (projectId?: string) => {
     enabled: !!projectId,
     queryFn: async () => {
       console.log('Fetching project with ID:', projectId);
-      const { data, error } = await supabase
+      const { data: projectData, error: projectError } = await supabase
         .from("projects")
-        .select(`
-          *,
-          creator_profile:profiles(
-            name,
-            organization,
-            first_name,
-            last_name
-          )
-        `)
+        .select("*")
         .eq("id", projectId)
         .maybeSingle();
       
-      console.log('Project query result:', { data, error, projectId });
-      if (error) {
-        console.error('Project query error:', error);
-        throw error;
+      if (projectError) {
+        console.error('Project query error:', projectError);
+        throw projectError;
       }
-      console.log('Project data with creator:', data);
-      return data as any;
+
+      if (!projectData) {
+        console.log('Project not found');
+        return null;
+      }
+
+      // Fetch creator profile separately
+      const { data: creatorProfile, error: profileError } = await supabase
+        .from("profiles")
+        .select("name, organization, first_name, last_name")
+        .eq("id", projectData.creator_id)
+        .maybeSingle();
+
+      if (profileError) {
+        console.warn('Creator profile query error:', profileError);
+      }
+
+      const result = {
+        ...projectData,
+        creator_profile: creatorProfile
+      };
+
+      console.log('Project data with creator:', result);
+      return result as any;
     },
   });
 };
