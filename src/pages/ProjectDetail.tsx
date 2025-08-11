@@ -656,10 +656,15 @@ const ProjectDetail: React.FC = () => {
                     </div>
 
                     <aside className="space-y-4">
-                      <div>
-                        <div className="text-sm text-muted-foreground">Ստեղծող</div>
-                        <div className="font-medium">{project.creator_id}</div>
-                      </div>
+                       <div>
+                         <div className="text-sm text-muted-foreground">Ստեղծող</div>
+                         <div className="font-medium">
+                           {project.creator_profile?.organization || 
+                            project.creator_profile?.name || 
+                            `${project.creator_profile?.first_name || ''} ${project.creator_profile?.last_name || ''}`.trim() ||
+                            'Անանուն'}
+                         </div>
+                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
                         <div className="font-medium">{project.status}</div>

@@ -20,6 +20,12 @@ export interface Project {
   max_applicants?: number | null;
   created_at: string;
   updated_at: string;
+  creator_profile?: {
+    name: string;
+    organization?: string;
+    first_name?: string;
+    last_name?: string;
+  } | null;
 }
 
 export interface ProjectMember {
@@ -100,11 +106,19 @@ export const useProject = (projectId?: string) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("projects")
-        .select("*")
+        .select(`
+          *,
+          creator_profile:profiles!creator_id(
+            name,
+            organization,
+            first_name,
+            last_name
+          )
+        `)
         .eq("id", projectId)
         .maybeSingle();
       if (error) throw error;
-      return data as Project | null;
+      return data as any;
     },
   });
 };
