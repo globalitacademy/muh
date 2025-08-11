@@ -183,7 +183,7 @@ const StepsTab: React.FC<{
     const t = title.trim();
     if (!t) return toast({
       variant: 'destructive',
-      description: 'Title is required'
+      description: 'Վերնագիրը պարտադիր է'
     });
     try {
       await create.mutateAsync({
@@ -195,7 +195,7 @@ const StepsTab: React.FC<{
     } catch (e: any) {
       toast({
         variant: 'destructive',
-        description: e.message || "Failed to add step"
+        description: e.message || "Չհաջողվեց ավելացնել քայլը"
       });
     }
   };
@@ -231,7 +231,7 @@ const StepsTab: React.FC<{
         </div>
       )}
 
-      {isLoading ? <p>Loading…</p> : !steps?.length ? <p className="text-muted-foreground">No steps yet.</p> : <div className="space-y-3">
+      {isLoading ? <p>Բեռնվում է…</p> : !steps?.length ? <p className="text-muted-foreground">Քայլեր դեռ չկան:</p> : <div className="space-y-3">
           {steps.map(s => <Card key={s.id}>
               <CardContent className="pt-4 grid gap-3 md:grid-cols-6 items-center">
                 <div className="md:col-span-3 font-medium">{s.title}</div>
@@ -297,7 +297,7 @@ const DiscussionsTab: React.FC<{
     } catch (e: any) {
       toast({
         variant: 'destructive',
-        description: e.message || "Failed to post"
+        description: e.message || "Չհաջողվեց ուղարկել"
       });
     }
   };
@@ -305,16 +305,16 @@ const DiscussionsTab: React.FC<{
       {canEdit && (
         <div className="grid gap-3 md:grid-cols-6 items-end mb-4">
           <div className="md:col-span-5">
-            <Label htmlFor="msg">Message</Label>
-            <Input id="msg" placeholder="Write a message…" value={content} onChange={e => setContent(e.target.value)} />
+            <Label htmlFor="msg">Հաղորդագրություն</Label>
+            <Input id="msg" placeholder="Գրեք հաղորդագրություն…" value={content} onChange={e => setContent(e.target.value)} />
           </div>
           <div>
-            <Button onClick={onSend} disabled={create.isPending}>Send</Button>
+            <Button onClick={onSend} disabled={create.isPending}>Ուղարկել</Button>
           </div>
         </div>
       )}
 
-      {isLoading ? <p>Loading…</p> : !messages?.length ? <p className="text-muted-foreground">No messages yet.</p> : <div className="space-y-3">
+      {isLoading ? <p>Բեռնվում է…</p> : !messages?.length ? <p className="text-muted-foreground">Հաղորդագրություններ դեռ չկան:</p> : <div className="space-y-3">
           {messages.map(m => <Card key={m.id}>
               <CardContent className="pt-4 flex items-start justify-between">
                 <div>
@@ -322,7 +322,7 @@ const DiscussionsTab: React.FC<{
                   <div className="mt-1">{m.content}</div>
                 </div>
                 {canEdit && (
-                  <Button variant="outline" onClick={() => remove.mutate(m.id)}>Delete</Button>
+                  <Button variant="outline" onClick={() => remove.mutate(m.id)}>Ջնջել</Button>
                 )}
               </CardContent>
             </Card>)}
@@ -351,12 +351,12 @@ const FilesTab: React.FC<{
       await upload.mutateAsync(file);
       setFile(null);
       toast({
-        description: "Uploaded"
+        description: "Վերբեռնված է"
       });
     } catch (e: any) {
       toast({
         variant: "destructive",
-        description: e.message || "Upload failed"
+        description: e.message || "Վերբեռնումը ձախողվեց"
       });
     }
   };
@@ -365,21 +365,21 @@ const FilesTab: React.FC<{
       {canEdit && (
         <div className="grid gap-3 md:grid-cols-6 items-end mb-4">
           <div className="md:col-span-5">
-            <Label htmlFor="file">Add file</Label>
+            <Label htmlFor="file">Ավելացնել ֆայլ</Label>
             <Input id="file" type="file" onChange={e => setFile(e.target.files?.[0] || null)} />
           </div>
           <div>
-            <Button onClick={onUpload} disabled={upload.isPending || !file}>Upload</Button>
+            <Button onClick={onUpload} disabled={upload.isPending || !file}>Վերբեռնել</Button>
           </div>
         </div>
       )}
 
-      {isLoading ? <p>Loading…</p> : !files?.length ? <p className="text-muted-foreground">No files yet.</p> : <div className="space-y-3">
+      {isLoading ? <p>Բեռնվում է…</p> : !files?.length ? <p className="text-muted-foreground">Ֆայլեր դեռ չկան:</p> : <div className="space-y-3">
           {files.map(f => <Card key={f.id}>
               <CardContent className="pt-4 grid gap-3 md:grid-cols-6 items-center">
                 <div className="md:col-span-3">
                   <div className="font-medium">{f.name}</div>
-                  <a className="text-sm text-primary underline" href={getPublicUrl(f.file_path)} target="_blank" rel="noreferrer">Open</a>
+                  <a className="text-sm text-primary underline" href={getPublicUrl(f.file_path)} target="_blank" rel="noreferrer">Բացել</a>
                 </div>
                 <div className="md:col-span-2 flex items-center gap-2">
                   {canEdit ? (
@@ -388,15 +388,15 @@ const FilesTab: React.FC<{
                         id: f.id,
                         is_public: v
                       })} />
-                      <span className="text-sm">Public</span>
+                      <span className="text-sm">Հանրային</span>
                     </>
                   ) : (
-                    <span className="text-sm">{f.is_public ? 'Public' : 'Private'}</span>
+                    <span className="text-sm">{f.is_public ? 'Հանրային' : 'Փակ'}</span>
                   )}
                 </div>
                 <div className="text-right">
                   {canEdit && (
-                    <Button variant="outline" onClick={() => remove.mutate(f)}>Delete</Button>
+                    <Button variant="outline" onClick={() => remove.mutate(f)}>Ջնջել</Button>
                   )}
                 </div>
               </CardContent>
@@ -425,7 +425,7 @@ const EvaluationTab: React.FC<{
   const onAdd = async () => {
     if (!score) return toast({
       variant: 'destructive',
-      description: 'Score is required'
+      description: 'Գնահատականը պարտադիր է'
     });
     try {
       await create.mutateAsync({
@@ -441,7 +441,7 @@ const EvaluationTab: React.FC<{
     } catch (e: any) {
       toast({
         variant: 'destructive',
-        description: e.message || "Failed to evaluate"
+        description: e.message || "Չհաջողվեց գնահատել"
       });
     }
   };
@@ -449,33 +449,33 @@ const EvaluationTab: React.FC<{
       {canEdit && (
         <div className="grid gap-3 md:grid-cols-6 mb-4">
           <div>
-            <Label htmlFor="score">Score</Label>
+            <Label htmlFor="score">Գնահատական</Label>
             <Input id="score" type="number" value={score} onChange={e => setScore(Number(e.target.value))} />
           </div>
           <div>
-            <Label htmlFor="user">Student ID (optional)</Label>
+            <Label htmlFor="user">Ուսանողի ID (ընտրովի)</Label>
             <Input id="user" value={subjectUser} onChange={e => setSubjectUser(e.target.value)} placeholder="UUID" />
           </div>
           <div>
-            <Label htmlFor="team">Team (optional)</Label>
-            <Input id="team" value={subjectTeam} onChange={e => setSubjectTeam(e.target.value)} placeholder="Team name/code" />
+            <Label htmlFor="team">Թիմ (ընտրովի)</Label>
+            <Input id="team" value={subjectTeam} onChange={e => setSubjectTeam(e.target.value)} placeholder="Թիմի անվանում/կոդ" />
           </div>
           <div className="md:col-span-2">
-            <Label htmlFor="comments">Comments</Label>
-            <Input id="comments" value={comments} onChange={e => setComments(e.target.value)} placeholder="Notes" />
+            <Label htmlFor="comments">Մեկնաբանություններ</Label>
+            <Input id="comments" value={comments} onChange={e => setComments(e.target.value)} placeholder="Նշումներ" />
           </div>
-          <div className="flex items-end"><Button onClick={onAdd} disabled={create.isPending}>Save</Button></div>
+          <div className="flex items-end"><Button onClick={onAdd} disabled={create.isPending}>Պահպանել</Button></div>
         </div>
       )}
 
-      {isLoading ? <p>Loading…</p> : !evals?.length ? <p className="text-muted-foreground">No evaluations yet.</p> : <div className="space-y-3">
+      {isLoading ? <p>Բեռնվում է…</p> : !evals?.length ? <p className="text-muted-foreground">Գնահատականներ դեռ չկան:</p> : <div className="space-y-3">
           {evals.map(ev => <Card key={ev.id}>
               <CardContent className="pt-4 grid md:grid-cols-6 items-center gap-3">
-                <div className="md:col-span-2 font-medium">Score: {ev.score}</div>
+                <div className="md:col-span-2 font-medium">Գնահատական: {ev.score}</div>
                 <div className="md:col-span-3 text-sm text-muted-foreground">{ev.comments}</div>
                 <div className="text-right">
                   {canEdit && (
-                    <Button variant="outline" onClick={() => remove.mutate(ev.id)}>Delete</Button>
+                    <Button variant="outline" onClick={() => remove.mutate(ev.id)}>Ջնջել</Button>
                   )}
                 </div>
               </CardContent>
@@ -503,7 +503,7 @@ const TimelineTab: React.FC<{
     const t = title.trim();
     if (!t) return toast({
       variant: 'destructive',
-      description: 'Title required'
+      description: 'Վերնագիրը պարտադիր է'
     });
     try {
       await add.mutateAsync({
@@ -517,7 +517,7 @@ const TimelineTab: React.FC<{
     } catch (e: any) {
       toast({
         variant: 'destructive',
-        description: e.message || "Failed to add event"
+        description: e.message || "Չհաջողվեց ավելացնել իրադարձությունը"
       });
     }
   };
@@ -525,24 +525,24 @@ const TimelineTab: React.FC<{
       {canEdit && (
         <div className="grid gap-3 md:grid-cols-6 items-end mb-4">
           <div>
-            <Label>Type</Label>
+            <Label>Տեսակ</Label>
             <Input value={type} onChange={e => setType(e.target.value)} />
           </div>
           <div className="md:col-span-2">
-            <Label>Title</Label>
+            <Label>Վերնագիր</Label>
             <Input value={title} onChange={e => setTitle(e.target.value)} />
           </div>
           <div className="md:col-span-2">
-            <Label>Description</Label>
+            <Label>Նկարագրություն</Label>
             <Input value={description} onChange={e => setDescription(e.target.value)} />
           </div>
           <div>
-            <Button onClick={onAdd} disabled={add.isPending}>Add</Button>
+            <Button onClick={onAdd} disabled={add.isPending}>Ավելացնել</Button>
           </div>
         </div>
       )}
 
-      {isLoading ? <p>Loading…</p> : !events?.length ? <p className="text-muted-foreground">No events yet.</p> : <div className="space-y-3">
+      {isLoading ? <p>Բեռնվում է…</p> : !events?.length ? <p className="text-muted-foreground">Իրադարձություններ դեռ չկան:</p> : <div className="space-y-3">
           {events.map(ev => <Card key={ev.id}>
               <CardContent className="pt-4">
                 <div className="text-sm text-muted-foreground">{new Date(ev.event_date).toLocaleString()} • {ev.type}</div>
@@ -585,9 +585,9 @@ const ProjectDetail: React.FC = () => {
       <Header />
       <main className="container mx-auto py-8">
         {isLoading ? (
-          <p>Loading…</p>
+          <p>Բեռնվում է…</p>
         ) : !project ? (
-          <p className="text-muted-foreground">Project not found</p>
+          <p className="text-muted-foreground">Նախագիծը չի գտնվել</p>
         ) : (
           <>
             <header className="mb-6">
