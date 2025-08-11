@@ -32,7 +32,7 @@ const Courses = () => {
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-edu-light-blue/20 via-transparent to-transparent" />
               
               {/* Content container with modern spacing */}
-              <div className="relative z-10 px-8 py-12 md:px-16 md:py-16 text-center">
+              <div className="relative z-10 px-8 py-12 md:px-16 md:py-16 text-center flex flex-col items-center justify-center">
                 {/* Premium badge with neon glow */}
                 
                 
