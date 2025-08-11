@@ -67,7 +67,7 @@ const EmployerProfile = () => {
       {/* Modern Tabs with Enhanced Design */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <Card className="border-none shadow-lg bg-employer-card/60 backdrop-blur-sm">
-          <TabsList className="grid w-full grid-cols-7 h-auto p-2 bg-gradient-to-r from-muted/50 to-muted/30 rounded-lg">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 h-auto p-2 bg-gradient-to-r from-muted/50 to-muted/30 rounded-lg gap-1">
             <TabsTrigger 
               value="dashboard" 
               className="font-armenian data-[state=active]:bg-employer-primary data-[state=active]:text-white data-[state=active]:shadow-lg flex flex-col gap-1 h-16 transition-all duration-200 hover:bg-hover-muted"
