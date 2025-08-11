@@ -661,10 +661,22 @@ const ProjectDetail: React.FC = () => {
                           <div className="font-medium">
                             {(() => {
                               console.log('Creator profile data:', project.creator_profile);
-                              const creatorName = project.creator_profile?.name || 
-                                                  `${project.creator_profile?.first_name || ''} ${project.creator_profile?.last_name || ''}`.trim() ||
-                                                  project.creator_profile?.organization;
-                              return creatorName || project.creator_id || 'Անանուն';
+                              
+                              // Priority: Organization name first, then user name, then fallback to ID
+                              if (project.creator_profile?.organization) {
+                                return project.creator_profile.organization;
+                              }
+                              
+                              if (project.creator_profile?.name) {
+                                return project.creator_profile.name;
+                              }
+                              
+                              const fullName = `${project.creator_profile?.first_name || ''} ${project.creator_profile?.last_name || ''}`.trim();
+                              if (fullName) {
+                                return fullName;
+                              }
+                              
+                              return project.creator_id || 'Անանուն';
                             })()}
                           </div>
                        </div>

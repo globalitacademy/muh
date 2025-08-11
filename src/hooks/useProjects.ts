@@ -108,7 +108,7 @@ export const useProject = (projectId?: string) => {
         .from("projects")
         .select(`
           *,
-          creator_profile:profiles!creator_id(
+          creator_profile:profiles(
             name,
             organization,
             first_name,
@@ -118,6 +118,7 @@ export const useProject = (projectId?: string) => {
         .eq("id", projectId)
         .maybeSingle();
       if (error) throw error;
+      console.log('Project data with creator:', data);
       return data as any;
     },
   });
