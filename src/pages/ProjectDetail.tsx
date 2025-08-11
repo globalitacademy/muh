@@ -203,27 +203,30 @@ const StepsTab: React.FC<{
       {canEdit && (
         <div className="grid gap-3 md:grid-cols-4 items-end mb-4">
           <div className="md:col-span-2">
-            <Label htmlFor="new-step">New step</Label>
+            <Label htmlFor="new-step">Նոր քայլ</Label>
             <Input 
               id="new-step"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter step title"
+              placeholder="Մուտքագրեք քայլի վերնագիրը"
             />
           </div>
           <div>
-            <Label>Status</Label>
+            <Label>Կարգավիճակ</Label>
             <Select value={status} onValueChange={v => setStatus(v as any)}>
               <SelectTrigger>
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder="Ընտրեք կարգավիճակը" />
               </SelectTrigger>
               <SelectContent>
-                {statusOptions.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+                <SelectItem value="todo">Կատարելի</SelectItem>
+                <SelectItem value="in_progress">Ընթացքի մեջ</SelectItem>
+                <SelectItem value="done">Կատարված</SelectItem>
+                <SelectItem value="blocked">Արգելափակված</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div>
-            <Button onClick={onAdd} disabled={create.isPending}>Add</Button>
+            <Button onClick={onAdd} disabled={create.isPending}>Ավելացնել</Button>
           </div>
         </div>
       )}
