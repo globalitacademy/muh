@@ -578,6 +578,16 @@ const ProjectDetail: React.FC = () => {
         ) : (
           <>
             <header className="mb-6">
+              {project.image_url && (
+                <div className="mb-6">
+                  <img 
+                    src={project.image_url} 
+                    alt={project.title}
+                    className="w-full h-64 object-cover rounded-lg"
+                  />
+                </div>
+              )}
+              
               <div className="flex items-center justify-between mb-4">
                 <h1 className="text-2xl font-semibold">{project.title}</h1>
                 <div className="flex items-center gap-4">
@@ -642,16 +652,6 @@ const ProjectDetail: React.FC = () => {
                         </div>
                       )}
 
-                      {project.image_url && (
-                        <div className="mb-4">
-                          <div className="text-sm text-muted-foreground mb-2">Պատկեր</div>
-                          <img 
-                            src={project.image_url} 
-                            alt={project.title}
-                            className="w-full h-64 object-cover rounded-lg"
-                          />
-                        </div>
-                      )}
                     </div>
 
                     <aside className="space-y-4">
