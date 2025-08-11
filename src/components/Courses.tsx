@@ -37,7 +37,7 @@ const Courses = () => {
                 
                 
                 {/* Modern typography with enhanced gradient */}
-                <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-8 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-[1.1] py-2 tracking-tight">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-8 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent leading-[1.1] py-2 tracking-tight">
                   {t('courses.choose-specialty')}
                 </h2>
                 
