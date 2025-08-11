@@ -738,9 +738,13 @@ const ProjectDetail: React.FC = () => {
                             apply={apply}
                           />
                         ) : (
-                          <div className="text-sm text-muted-foreground">
-                            Միայն ուսանողները կարող են դիմել նախագծին
-                          </div>
+                          <Button 
+                            disabled 
+                            className="w-full min-h-[40px] flex items-center justify-center"
+                            variant="secondary"
+                          >
+                            Միայն ուսանողները կարող են դիմել
+                          </Button>
                         )}
                       </div>
                     </aside>
