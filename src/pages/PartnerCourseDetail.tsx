@@ -212,7 +212,7 @@ export default function PartnerCourseDetail() {
                     </div>
                   </div>
                   
-                  <CardTitle className="text-3xl font-bold font-armenian">
+                  <CardTitle className="text-xl font-bold font-armenian">
                     {course.title}
                   </CardTitle>
                 </CardHeader>
