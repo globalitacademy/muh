@@ -7,6 +7,7 @@ export interface ProjectDiscussion {
   project_id: string;
   participant_id: string;
   message: string;
+  content: string; // Add content property for backward compatibility
   is_private: boolean;
   recipient_id?: string;
   files: any[];
@@ -34,7 +35,8 @@ export const useProjectDiscussions = (projectId?: string) => {
 
   const sendMessage = useMutation({
     mutationFn: async (message: {
-      message: string;
+      message?: string;
+      content?: string;
       is_private?: boolean;
       recipient_id?: string;
       files?: any[];
@@ -42,12 +44,17 @@ export const useProjectDiscussions = (projectId?: string) => {
       if (!user || !projectId) throw new Error("Not authenticated or no project");
       
       console.log('Sending message:', message);
+      const messageText = message.content || message.message || '';
+      
       // For now, just return a mock response
       return {
         id: 'temp-id',
         project_id: projectId,
         participant_id: user.id,
-        ...message,
+        message: messageText,
+        content: messageText,
+        is_private: message.is_private || false,
+        recipient_id: message.recipient_id,
         files: message.files || [],
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
@@ -58,8 +65,21 @@ export const useProjectDiscussions = (projectId?: string) => {
     },
   });
 
+  const deleteMessage = useMutation({
+    mutationFn: async (messageId: string) => {
+      console.log('Deleting message:', messageId);
+      // Mock delete for now
+      return messageId;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["project-discussions", projectId] });
+    },
+  });
+
   return {
     ...query,
     sendMessage,
+    create: sendMessage, // Alias for backward compatibility
+    remove: deleteMessage, // Add remove method
   };
 };
