@@ -56,7 +56,7 @@ const Section: React.FC<{
       <CardTitle className="text-lg">{title}</CardTitle>
     </CardHeader>
     <CardContent>
-      {children || <p className="text-muted-foreground">Coming soon…</p>}
+      {children || <p className="text-muted-foreground">Շուտով...</p>}
     </CardContent>
   </Card>;
 
