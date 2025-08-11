@@ -618,9 +618,8 @@ const ProjectDetail: React.FC = () => {
             </header>
 
             <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1 h-auto p-1">
+              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 h-auto p-1">
                 <TabsTrigger value="overview">Նկարագրություն</TabsTrigger>
-                <TabsTrigger value="schedule">Ժամանակացույց</TabsTrigger>
                 <TabsTrigger value="steps">Քայլեր</TabsTrigger>
                 <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
                 <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
@@ -809,73 +808,6 @@ const ProjectDetail: React.FC = () => {
                   </Section>
                 )}
               </TabsContent>
-
-                <TabsContent value="schedule">
-                  <Section title="Ժամանակացույց">
-                    {!isPreviewMode && canEdit && (
-                      <div className="flex justify-end mb-4">
-                        <Button 
-                          variant="outline" 
-                          onClick={() => {
-                            if (isEditingSchedule) {
-                              updateProject.mutate({ id: projectId, ...editedProject });
-                              setIsEditingSchedule(false);
-                            } else {
-                              setEditedProject(project || {});
-                              setIsEditingSchedule(true);
-                            }
-                          }}
-                        >
-                          {isEditingSchedule ? 'Պահպանել' : 'Խմբագրել'}
-                        </Button>
-                      </div>
-                    )}
-                    <div className="grid gap-4 md:grid-cols-3">
-                      <div>
-                        <div className="text-sm text-muted-foreground">Սկիզբ</div>
-                        {(isEditingSchedule && !isPreviewMode) ? (
-                          <Input 
-                            type="datetime-local" 
-                            value={editedProject.start_date ? new Date(editedProject.start_date).toISOString().slice(0, 16) : ''} 
-                            onChange={(e) => setEditedProject({...editedProject, start_date: e.target.value})}
-                          />
-                        ) : (
-                          <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
-                        )}
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Ավարտ</div>
-                        {(isEditingSchedule && !isPreviewMode) ? (
-                          <Input 
-                            type="datetime-local" 
-                            value={editedProject.end_date ? new Date(editedProject.end_date).toISOString().slice(0, 16) : ''} 
-                            onChange={(e) => setEditedProject({...editedProject, end_date: e.target.value})}
-                          />
-                        ) : (
-                          <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
-                        )}
-                      </div>
-                      <div>
-                        <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
-                        {(isEditingSchedule && !isPreviewMode) ? (
-                          <Select value={editedProject.status || project.status} onValueChange={(v) => setEditedProject({...editedProject, status: v})}>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="active">Active</SelectItem>
-                              <SelectItem value="completed">Completed</SelectItem>
-                              <SelectItem value="paused">Paused</SelectItem>
-                              <SelectItem value="cancelled">Cancelled</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <div className="font-medium">{project.status}</div>
-                        )}
-                      </div>
-                    </div>
-                  </Section>
-                </TabsContent>
 
                 <TabsContent value="steps">
                   <StepsTab projectId={projectId} canEdit={canEdit} />
