@@ -174,7 +174,7 @@ export default function PartnerCoursesSection() {
           <Button 
             variant="outline" 
             size="lg"
-            onClick={() => navigate('/courses')}
+            onClick={() => navigate('/private-courses')}
             className="font-armenian"
           >
             Դիտել բոլոր առաջարկները
