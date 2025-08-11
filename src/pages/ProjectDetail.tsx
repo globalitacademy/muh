@@ -857,23 +857,23 @@ const ProjectDetail: React.FC = () => {
               </TabsContent>
 
                 <TabsContent value="steps">
-                  <StepsTab projectId={projectId} canEdit={canEdit} />
+                  <StepsTab projectId={projectId} canEdit={canEdit && isEditingDescription} />
                 </TabsContent>
 
                 <TabsContent value="discussions">
-                  <DiscussionsTab projectId={projectId} canEdit={canEdit} />
+                  <DiscussionsTab projectId={projectId} canEdit={canEdit && isEditingDescription} />
                 </TabsContent>
 
                 <TabsContent value="files">
-                  <FilesTab projectId={projectId} canEdit={canEdit} />
+                  <FilesTab projectId={projectId} canEdit={canEdit && isEditingDescription} />
                 </TabsContent>
 
                 <TabsContent value="timeline">
-                  <TimelineTab projectId={projectId} canEdit={canEdit} />
+                  <TimelineTab projectId={projectId} canEdit={canEdit && isEditingDescription} />
                 </TabsContent>
 
                 <TabsContent value="evaluation">
-                  <EvaluationTab projectId={projectId} canEdit={canEdit} />
+                  <EvaluationTab projectId={projectId} canEdit={canEdit && isEditingDescription} />
                 </TabsContent>
             </Tabs>
           </>
