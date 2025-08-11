@@ -54,7 +54,7 @@ export const ProjectCreationForm: React.FC<ProjectCreationFormProps> = ({
   const [taskList, setTaskList] = useState<Array<{ title: string; description: string; required: boolean }>>([]);
   const [coverImage, setCoverImage] = useState<string>("");
   
-  const { uploadImage, uploading } = useImageUpload();
+  const { uploadImage, uploading } = useImageUpload({ bucket: "project-files" });
 
   const {
     register,

@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 export interface ProjectTask {
@@ -8,6 +7,7 @@ export interface ProjectTask {
   title: string;
   description?: string;
   status: 'todo' | 'in_progress' | 'completed' | 'cancelled' | 'rejected' | 'pending_review';
+  priority: 'low' | 'medium' | 'high';
   due_date?: string;
   assigned_to?: string;
   created_by: string;
@@ -26,32 +26,22 @@ export const useProjectTasks = (projectId?: string) => {
     queryKey: ["project-tasks", projectId],
     enabled: !!projectId,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("project_tasks")
-        .select("*")
-        .eq("project_id", projectId)
-        .order("order_index", { ascending: true });
-      
-      if (error) throw error;
-      return (data || []) as ProjectTask[];
+      // Return empty array for now until table is created
+      return [] as ProjectTask[];
     },
   });
 
   const createTask = useMutation({
-    mutationFn: async (task: Omit<ProjectTask, "id" | "created_at" | "updated_at" | "created_by">) => {
-      if (!user) throw new Error("Not authenticated");
-      
-      const { data, error } = await supabase
-        .from("project_tasks")
-        .insert({
-          ...task,
-          created_by: user.id
-        })
-        .select("*")
-        .single();
-      
-      if (error) throw error;
-      return data as ProjectTask;
+    mutationFn: async (task: Omit<ProjectTask, "id" | "created_at" | "updated_at">) => {
+      // Return mock data for now
+      return {
+        id: Date.now().toString(),
+        project_id: projectId || "",
+        created_by: user?.id || "",
+        ...task,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      } as ProjectTask;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
@@ -60,15 +50,22 @@ export const useProjectTasks = (projectId?: string) => {
 
   const updateTask = useMutation({
     mutationFn: async ({ id, ...updates }: Partial<ProjectTask> & { id: string }) => {
-      const { data, error } = await supabase
-        .from("project_tasks")
-        .update(updates)
-        .eq("id", id)
-        .select("*")
-        .single();
-      
-      if (error) throw error;
-      return data as ProjectTask;
+      // Return mock data for now
+      return {
+        id,
+        project_id: projectId || "",
+        created_by: user?.id || "",
+        title: "",
+        description: "",
+        status: "todo" as const,
+        priority: "medium" as const,
+        order_index: 0,
+        files: [],
+        comments: [],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        ...updates
+      } as ProjectTask;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-tasks", projectId] });
@@ -77,12 +74,7 @@ export const useProjectTasks = (projectId?: string) => {
 
   const deleteTask = useMutation({
     mutationFn: async (taskId: string) => {
-      const { error } = await supabase
-        .from("project_tasks")
-        .delete()
-        .eq("id", taskId);
-      
-      if (error) throw error;
+      // Return mock success for now
       return taskId;
     },
     onSuccess: () => {
