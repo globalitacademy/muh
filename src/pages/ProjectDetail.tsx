@@ -699,7 +699,13 @@ const ProjectDetail: React.FC = () => {
                        </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Կարգավիճակ</div>
-                        <div className="font-medium">{project.status}</div>
+                        <div className="font-medium">
+                          {project.status === 'active' ? 'Ակտիվ' :
+                           project.status === 'completed' ? 'Ավարտված' :
+                           project.status === 'paused' ? 'Դադարեցված' :
+                           project.status === 'cancelled' ? 'Չեղարկված' :
+                           project.status}
+                        </div>
                       </div>
                       <div>
                         <div className="text-sm text-muted-foreground">Սկիզբ</div>
