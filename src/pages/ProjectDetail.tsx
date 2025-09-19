@@ -731,12 +731,15 @@ const ProjectDetail: React.FC = () => {
                           <div className="space-y-2">
                             {(project.useful_links && project.useful_links.length > 0) ? (
                               (project.useful_links || []).map((link, index) => (
-                                <div key={index}>
+                                <div key={index} className="flex items-start gap-2">
+                                  <span className="text-muted-foreground font-mono text-sm min-w-[2ch]">
+                                    {index + 1}.
+                                  </span>
                                   <a 
                                     href={link} 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="text-primary hover:underline break-all"
+                                    className="text-primary hover:underline break-all flex-1"
                                   >
                                     {link}
                                   </a>
