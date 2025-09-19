@@ -577,6 +577,13 @@ const ProjectDetail: React.FC = () => {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [editedProject, setEditedProject] = useState<Partial<typeof project>>({});
 
+  // Initialize editedProject when project data is loaded
+  useEffect(() => {
+    if (project && !isEditingDescription) {
+      setEditedProject(project);
+    }
+  }, [project, isEditingDescription]);
+
   // Check if current user can edit this project
   const canEdit = user && (user.id === project?.creator_id || userRole === 'admin');
 
