@@ -19,6 +19,7 @@ import Dashboard from "./pages/Dashboard";
 import Jobs from "./pages/Jobs";
 import JobDetail from "./pages/JobDetail";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import Admin from "./pages/Admin";
 import Partner from "./pages/Partner";
 import PartnerCourseDetail from "./pages/PartnerCourseDetail";
@@ -54,6 +55,7 @@ function App() {
                   <Route path="/jobs" element={<Jobs />} />
                   <Route path="/job/:id" element={<JobDetail />} />
                   <Route path="/auth" element={<Auth />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/partner" element={<Partner />} />
                   <Route path="/partner-course/:courseId" element={<PartnerCourseDetail />} />

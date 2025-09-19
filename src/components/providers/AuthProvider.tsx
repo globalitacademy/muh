@@ -147,7 +147,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const resetPassword = async (email: string) => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth?tab=reset-password`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) {
@@ -165,6 +165,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       return { error: null };
     } catch (error: any) {
       console.error('Reset password error:', error);
+      toast.error('Սխալ է տեղի ունեցել: Խնդրում ենք նորից փորձել:');
+      return { error };
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) {
+        toast.error(`Գաղտնաբառի թարմացման սխալ: ${error.message}`);
+        return { error };
+      }
+
+      toast.success('Գաղտնաբառը հաջողությամբ թարմացվեց');
+      return { error: null };
+    } catch (error: any) {
+      console.error('Update password error:', error);
       toast.error('Սխալ է տեղի ունեցել: Խնդրում ենք նորից փորձել:');
       return { error };
     }
@@ -195,7 +215,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       signUp,
       signIn,
       signOut,
-      resetPassword
+      resetPassword,
+      updatePassword
     }}>
       {children}
     </AuthContext.Provider>

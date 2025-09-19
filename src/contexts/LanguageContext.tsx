@@ -67,7 +67,14 @@ const translations = {
     'auth.reset-email-sent': 'Վերականգնման հղումը ուղարկվել է',
     'auth.reset-email-sent-message': 'Խնդրում ենք ստուգել ձեր էլ. փոստը և հետևել ուղղորդմանը գաղտնաբառը վերականգնելու համար։',
     'auth.back-to-signin': 'Վերադառնալ մուտքի էջ',
-    'auth.enter-email-reset': 'Մուտքագրեք ձեր էլ. փոստի հասցեն',
+     'auth.enter-email-reset': 'Մուտքագրեք ձեր էլ. փոստի հասցեն',
+     'auth.set-new-password': 'Նոր գաղտնաբառ սահմանել',
+     'auth.new-password': 'Նոր գաղտնաբառ',
+     'auth.confirm-password': 'Հաստատել գաղտնաբառը',
+     'auth.update-password': 'Թարմացնել գաղտնաբառը',
+     'auth.passwords-not-match': 'Գաղտնաբառերը չեն համընկնում',
+     'auth.password-updated': 'Գաղտնաբառը հաջողությամբ թարմացվեց',
+     'auth.password-update-error': 'Գաղտնաբառի թարմացման սխալ',
     
     // Hero section
     'hero.title': 'Կրթություն առանց սահմանների',
@@ -364,7 +371,14 @@ const translations = {
     'auth.reset-email-sent': 'Ссылка для сброса отправлена',
     'auth.reset-email-sent-message': 'Пожалуйста, проверьте вашу электронную почту и следуйте инструкциям для сброса пароля.',
     'auth.back-to-signin': 'Вернуться к входу',
-    'auth.enter-email-reset': 'Введите ваш email адрес',
+     'auth.enter-email-reset': 'Введите ваш email адрес',
+     'auth.set-new-password': 'Установить новый пароль',
+     'auth.new-password': 'Новый пароль',
+     'auth.confirm-password': 'Подтвердить пароль',
+     'auth.update-password': 'Обновить пароль',
+     'auth.passwords-not-match': 'Пароли не совпадают',
+     'auth.password-updated': 'Пароль успешно обновлен',
+     'auth.password-update-error': 'Ошибка обновления пароля',
     
     // Hero section
     'hero.title': 'Образование без границ',
@@ -660,7 +674,14 @@ const translations = {
     'auth.reset-email-sent': 'Reset link sent',
     'auth.reset-email-sent-message': 'Please check your email and follow the instructions to reset your password.',
     'auth.back-to-signin': 'Back to Sign In',
-    'auth.enter-email-reset': 'Enter your email address',
+     'auth.enter-email-reset': 'Enter your email address',
+     'auth.set-new-password': 'Set New Password',
+     'auth.new-password': 'New Password',
+     'auth.confirm-password': 'Confirm Password',
+     'auth.update-password': 'Update Password',
+     'auth.passwords-not-match': 'Passwords do not match',
+     'auth.password-updated': 'Password updated successfully',
+     'auth.password-update-error': 'Password update error',
     
     // Hero section
     'hero.title': 'Education Without Limits',
