@@ -8,9 +8,11 @@ import { useNavigate } from 'react-router-dom';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import SignInForm from '@/components/auth/SignInForm';
 import SignUpForm from '@/components/auth/SignUpForm';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Auth = () => {
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,23 +38,23 @@ const Auth = () => {
           className="mb-6 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Վերադառնալ գլխավոր էջ
+          {t('auth.back-to-home')}
         </Button>
 
         <Card className="shadow-xl border">
           <CardHeader className="text-center pb-8">
             <CardTitle className="text-2xl font-bold font-armenian">
-              Բարի գալուստ
+              {t('auth.welcome')}
             </CardTitle>
             <CardDescription className="font-armenian">
-              Մուտք գործեք կամ ստեղծեք նոր հաշիվ
+              {t('auth.subtitle')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin" className="font-armenian">Մուտք</TabsTrigger>
-                <TabsTrigger value="signup" className="font-armenian">Գրանցում</TabsTrigger>
+                <TabsTrigger value="signin" className="font-armenian">{t('auth.signin')}</TabsTrigger>
+                <TabsTrigger value="signup" className="font-armenian">{t('auth.signup')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="signin" className="space-y-4">

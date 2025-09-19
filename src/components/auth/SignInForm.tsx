@@ -5,12 +5,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2, Mail, Lock } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const SignInForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { signIn } = useAuth();
+  const { t } = useLanguage();
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +27,7 @@ const SignInForm = () => {
   return (
     <form onSubmit={handleSignIn} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="signin-email" className="font-armenian">Էլ. փոստ</Label>
+        <Label htmlFor="signin-email" className="font-armenian">{t('auth.email')}</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -40,7 +42,7 @@ const SignInForm = () => {
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="signin-password" className="font-armenian">Գաղտնաբառ</Label>
+        <Label htmlFor="signin-password" className="font-armenian">{t('auth.password')}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -56,7 +58,7 @@ const SignInForm = () => {
       </div>
       <Button type="submit" className="w-full font-armenian" disabled={isLoading}>
         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-        Մուտք գործել
+        {t('auth.signin-button')}
       </Button>
     </form>
   );
