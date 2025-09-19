@@ -681,22 +681,22 @@ const ProjectDetail: React.FC = () => {
                         </div>
                       ) : null}
 
-                      {(project.useful_links && project.useful_links.length > 0) || (isEditingDescription && !isPreviewMode) ? (
-                        <div className="mb-4">
-                          <div className="text-sm text-muted-foreground mb-2">Օգտակար հղումներ</div>
-                          {isEditingDescription && !isPreviewMode ? (
-                            <Textarea
-                              value={(editedProject.useful_links || project.useful_links || []).join('\n')}
-                              onChange={(e) => setEditedProject({
-                                ...editedProject, 
-                                useful_links: e.target.value.split('\n').map(link => link.trim()).filter(link => link)
-                              })}
-                              placeholder="Մուտքագրեք հղումները (յուրաքանչյուրը նոր տողում)..."
-                              className="min-h-[100px]"
-                            />
-                          ) : (
-                            <div className="space-y-2">
-                              {(project.useful_links || []).map((link, index) => (
+                      <div className="mb-4">
+                        <div className="text-sm text-muted-foreground mb-2">Օգտակար հղումներ</div>
+                        {isEditingDescription && !isPreviewMode ? (
+                          <Textarea
+                            value={(editedProject.useful_links || project.useful_links || []).join('\n')}
+                            onChange={(e) => setEditedProject({
+                              ...editedProject, 
+                              useful_links: e.target.value.split('\n').map(link => link.trim()).filter(link => link)
+                            })}
+                            placeholder="Մուտքագրեք հղումները (յուրաքանչյուրը նոր տողում)..."
+                            className="min-h-[100px]"
+                          />
+                        ) : (
+                          <div className="space-y-2">
+                            {(project.useful_links && project.useful_links.length > 0) ? (
+                              (project.useful_links || []).map((link, index) => (
                                 <div key={index}>
                                   <a 
                                     href={link} 
@@ -707,11 +707,13 @@ const ProjectDetail: React.FC = () => {
                                     {link}
                                   </a>
                                 </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ) : null}
+                              ))
+                            ) : (
+                              <p className="text-muted-foreground text-sm">Օգտակար հղումներ դեռ չեն ավելացվել</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
 
                     </div>
 
