@@ -664,13 +664,14 @@ const ProjectDetail: React.FC = () => {
             </header>
 
             <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 h-auto p-1">
+              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1 h-auto p-1">
                 <TabsTrigger value="overview">Նկարագրություն</TabsTrigger>
                 <TabsTrigger value="steps">Քայլեր</TabsTrigger>
                 <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
                 <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
                 <TabsTrigger value="timeline">Թայմլայն</TabsTrigger>
                 <TabsTrigger value="evaluation">Գնահատական</TabsTrigger>
+                {canEdit && <TabsTrigger value="candidates">Թեկնածուներ ({applications?.length || 0})</TabsTrigger>}
               </TabsList>
 
                 <TabsContent value="overview">
@@ -954,64 +955,6 @@ const ProjectDetail: React.FC = () => {
                     </aside>
                   </div>
                 </Section>
-
-                {/* Applications Management Section for Project Creator */}
-                {canEdit && applications && applications.length > 0 && (
-                  <Section title="Դիմումների կառավարում">
-                    <div className="space-y-4">
-                      {applications.map((application) => (
-                        <Card key={application.id} className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="font-medium">{application.applicant_profile?.name || application.applicant_name || 'Անանուն'}</div>
-                              <div className="text-sm text-muted-foreground">
-                                Դիմել է՝ {new Date(application.applied_at).toLocaleDateString()}
-                              </div>
-                              {application.cover_letter && (
-                                <div className="mt-2 text-sm">
-                                  <span className="font-medium">Ուղեկցող նամակ:</span> {application.cover_letter}
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2 ml-4">
-                              <span className={`px-2 py-1 rounded-md text-xs font-medium ${
-                                application.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                application.status === 'approved' ? 'bg-green-100 text-green-800' :
-                                'bg-red-100 text-red-800'
-                              }`}>
-                                {application.status === 'pending' ? 'Սպասում է' :
-                                 application.status === 'approved' ? 'Հաստատված' : 'Մերժված'}
-                              </span>
-                              {application.status === 'pending' && (
-                                <div className="flex gap-2">
-                                  <Button 
-                                    size="sm" 
-                                    onClick={() => {
-                                      updateStatus.mutate({ id: application.id, status: 'approved' });
-                                      toast({ description: 'Դիմումը հաստատված է' });
-                                    }}
-                                  >
-                                    Հաստատել
-                                  </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="destructive"
-                                    onClick={() => {
-                                      updateStatus.mutate({ id: application.id, status: 'rejected' });
-                                      toast({ description: 'Դիմումը մերժված է' });
-                                    }}
-                                  >
-                                    Մերժել
-                                  </Button>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  </Section>
-                )}
               </TabsContent>
 
                 <TabsContent value="steps">
@@ -1033,6 +976,108 @@ const ProjectDetail: React.FC = () => {
                 <TabsContent value="evaluation">
                   <EvaluationTab projectId={projectId} canEdit={canEdit && isEditingDescription} />
                 </TabsContent>
+
+                {canEdit && (
+                  <TabsContent value="candidates">
+                    <Section title="Դիմումների կառավարում">
+                      {!applications?.length ? (
+                        <p className="text-muted-foreground">Դիմումներ դեռ չկան:</p>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <Card className="text-center">
+                              <CardContent className="p-4">
+                                <div className="text-2xl font-bold text-blue-600">
+                                  {applications.filter(app => app.status === 'pending').length}
+                                </div>
+                                <div className="text-sm text-muted-foreground">Սպասման մեջ</div>
+                              </CardContent>
+                            </Card>
+                            <Card className="text-center">
+                              <CardContent className="p-4">
+                                <div className="text-2xl font-bold text-green-600">
+                                  {applications.filter(app => app.status === 'approved').length}
+                                </div>
+                                <div className="text-sm text-muted-foreground">Հաստատված</div>
+                              </CardContent>
+                            </Card>
+                            <Card className="text-center">
+                              <CardContent className="p-4">
+                                <div className="text-2xl font-bold text-red-600">
+                                  {applications.filter(app => app.status === 'rejected').length}
+                                </div>
+                                <div className="text-sm text-muted-foreground">Մերժված</div>
+                              </CardContent>
+                            </Card>
+                          </div>
+
+                          <div className="space-y-4">
+                            {applications.map((application) => (
+                              <Card key={application.id} className="border-l-4 border-l-primary">
+                                <CardContent className="p-6">
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-3 mb-2">
+                                        <h3 className="font-semibold text-lg">
+                                          {application.applicant_profile?.name || application.applicant_name || 'Անանուն'}
+                                        </h3>
+                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                          application.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                          application.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                          'bg-red-100 text-red-800'
+                                        }`}>
+                                          {application.status === 'pending' ? 'Սպասման մեջ' :
+                                           application.status === 'approved' ? 'Հաստատված' : 'Մերժված'}
+                                        </span>
+                                      </div>
+                                      
+                                      <div className="text-sm text-muted-foreground mb-3">
+                                        Դիմել է՝ {new Date(application.applied_at).toLocaleString()}
+                                      </div>
+                                      
+                                      {application.cover_letter && (
+                                        <div className="bg-muted p-3 rounded-md">
+                                          <div className="text-sm font-medium mb-1">Ուղեկցող նամակ:</div>
+                                          <p className="text-sm">{application.cover_letter}</p>
+                                        </div>
+                                      )}
+                                    </div>
+                                    
+                                    {application.status === 'pending' && (
+                                      <div className="flex gap-2 ml-4">
+                                        <Button
+                                          size="sm"
+                                          onClick={() => {
+                                            updateStatus.mutate({ id: application.id, status: 'approved' });
+                                            toast({ description: 'Դիմումը հաստատված է' });
+                                          }}
+                                          disabled={updateStatus.isPending}
+                                        >
+                                          Հաստատել
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="destructive"
+                                          onClick={() => {
+                                            updateStatus.mutate({ id: application.id, status: 'rejected' });
+                                            toast({ description: 'Դիմումը մերժված է' });
+                                          }}
+                                          disabled={updateStatus.isPending}
+                                        >
+                                          Մերժել
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </Section>
+                  </TabsContent>
+                )}
             </Tabs>
           </>
         )}
