@@ -583,10 +583,10 @@ const ProjectDetail: React.FC = () => {
 
   // Initialize editedProject when project data is loaded
   useEffect(() => {
-    if (project && !isEditingDescription) {
+    if (project) {
       setEditedProject(project);
     }
-  }, [project, isEditingDescription]);
+  }, [project]);
 
   // Check if current user can edit this project
   const canEdit = user && (user.id === project?.creator_id || userRole === 'admin');
@@ -609,10 +609,19 @@ const ProjectDetail: React.FC = () => {
                     onClick={async () => {
                       if (isEditingDescription) {
                         try {
-                          await updateProject.mutateAsync({ 
-                            id: projectId, 
-                            ...editedProject 
-                          });
+                          const updatedData = {
+                            id: projectId,
+                            description: editedProject.description || project?.description,
+                            required_skills: editedProject.required_skills || project?.required_skills || [],
+                            useful_links: editedProject.useful_links || project?.useful_links || [],
+                            status: editedProject.status || project?.status,
+                            start_date: editedProject.start_date || project?.start_date,
+                            end_date: editedProject.end_date || project?.end_date,
+                            max_applicants: editedProject.max_applicants || project?.max_applicants,
+                            application_deadline: editedProject.application_deadline || project?.application_deadline
+                          };
+                          
+                          await updateProject.mutateAsync(updatedData);
                           setIsEditingDescription(false);
                           toast({
                             description: 'Փոփոխությունները պահպանված են'
@@ -624,7 +633,7 @@ const ProjectDetail: React.FC = () => {
                           });
                         }
                       } else {
-                        setEditedProject(project || {});
+                        setEditedProject({ ...project });
                         setIsEditingDescription(true);
                       }
                     }}
