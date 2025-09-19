@@ -17,11 +17,15 @@ import { useProjectEvaluations } from "@/hooks/useProjectEvaluations";
 import { useProjectTimeline } from "@/hooks/useProjectTimeline";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Image, Clock, CheckCircle } from "lucide-react";
+import { Image, Clock, CheckCircle, Calendar as CalendarIcon } from "lucide-react";
 import { useProjectApplications } from "@/hooks/useProjectApplications";
 import { Textarea } from "@/components/ui/textarea";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/hooks/useAuth";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -602,17 +606,31 @@ const ProjectDetail: React.FC = () => {
                 {canEdit && (
                   <Button 
                     variant="outline" 
-                    onClick={() => {
+                    onClick={async () => {
                       if (isEditingDescription) {
-                        updateProject.mutate({ id: projectId, ...editedProject });
-                        setIsEditingDescription(false);
+                        try {
+                          await updateProject.mutateAsync({ 
+                            id: projectId, 
+                            ...editedProject 
+                          });
+                          setIsEditingDescription(false);
+                          toast({
+                            description: 'Փոփոխությունները պահպանված են'
+                          });
+                        } catch (error) {
+                          toast({
+                            variant: 'destructive',
+                            description: 'Չհաջողվեց պահպանել փոփոխությունները'
+                          });
+                        }
                       } else {
                         setEditedProject(project || {});
                         setIsEditingDescription(true);
                       }
                     }}
+                    disabled={updateProject.isPending}
                   >
-                    {isEditingDescription ? 'Պահպանել' : 'Խմբագրել'}
+                    {isEditingDescription ? (updateProject.isPending ? 'Պահպանվում է...' : 'Պահպանել') : 'Խմբագրել'}
                   </Button>
                 )}
               </div>
@@ -776,11 +794,36 @@ const ProjectDetail: React.FC = () => {
                       <div>
                         <div className="text-sm text-muted-foreground">Սկիզբ</div>
                         {isEditingDescription && !isPreviewMode ? (
-                          <Input 
-                            type="datetime-local" 
-                            value={editedProject.start_date ? new Date(editedProject.start_date).toISOString().slice(0, 16) : ''} 
-                            onChange={(e) => setEditedProject({...editedProject, start_date: e.target.value})}
-                          />
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal",
+                                  !editedProject.start_date && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {editedProject.start_date ? (
+                                  format(new Date(editedProject.start_date), "PPP")
+                                ) : (
+                                  <span>Ընտրել ամսաթիվ</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={editedProject.start_date ? new Date(editedProject.start_date) : undefined}
+                                onSelect={(date) => setEditedProject({
+                                  ...editedProject, 
+                                  start_date: date ? date.toISOString() : null
+                                })}
+                                initialFocus
+                                className={cn("p-3 pointer-events-auto")}
+                              />
+                            </PopoverContent>
+                          </Popover>
                         ) : (
                           <div className="font-medium">{project.start_date ? new Date(project.start_date).toLocaleString() : "—"}</div>
                         )}
@@ -788,11 +831,36 @@ const ProjectDetail: React.FC = () => {
                       <div>
                         <div className="text-sm text-muted-foreground">Ավարտ</div>
                         {isEditingDescription && !isPreviewMode ? (
-                          <Input 
-                            type="datetime-local" 
-                            value={editedProject.end_date ? new Date(editedProject.end_date).toISOString().slice(0, 16) : ''} 
-                            onChange={(e) => setEditedProject({...editedProject, end_date: e.target.value})}
-                          />
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal",
+                                  !editedProject.end_date && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {editedProject.end_date ? (
+                                  format(new Date(editedProject.end_date), "PPP")
+                                ) : (
+                                  <span>Ընտրել ամսաթիվ</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={editedProject.end_date ? new Date(editedProject.end_date) : undefined}
+                                onSelect={(date) => setEditedProject({
+                                  ...editedProject, 
+                                  end_date: date ? date.toISOString() : null
+                                })}
+                                initialFocus
+                                className={cn("p-3 pointer-events-auto")}
+                              />
+                            </PopoverContent>
+                          </Popover>
                         ) : (
                           <div className="font-medium">{project.end_date ? new Date(project.end_date).toLocaleString() : "—"}</div>
                         )}
@@ -819,11 +887,36 @@ const ProjectDetail: React.FC = () => {
                       <div>
                         <div className="text-sm text-muted-foreground">Դիմումների վերջնաժամկետ</div>
                         {isEditingDescription && !isPreviewMode ? (
-                          <Input 
-                            type="date" 
-                            value={editedProject.application_deadline ? new Date(editedProject.application_deadline).toISOString().slice(0, 10) : ''} 
-                            onChange={(e) => setEditedProject({...editedProject, application_deadline: e.target.value})}
-                          />
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={cn(
+                                  "w-full justify-start text-left font-normal",
+                                  !editedProject.application_deadline && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {editedProject.application_deadline ? (
+                                  format(new Date(editedProject.application_deadline), "PPP")
+                                ) : (
+                                  <span>Ընտրել ամսաթիվ</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={editedProject.application_deadline ? new Date(editedProject.application_deadline) : undefined}
+                                onSelect={(date) => setEditedProject({
+                                  ...editedProject, 
+                                  application_deadline: date ? date.toISOString() : null
+                                })}
+                                initialFocus
+                                className={cn("p-3 pointer-events-auto")}
+                              />
+                            </PopoverContent>
+                          </Popover>
                         ) : (
                           <div className="font-medium">{project.application_deadline ? new Date(project.application_deadline).toLocaleDateString() : '—'}</div>
                         )}
