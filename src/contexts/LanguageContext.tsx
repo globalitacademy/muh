@@ -61,6 +61,13 @@ const translations = {
     'auth.success-title': 'Գրանցումը հաջողված է!',
     'auth.success-message': 'Ձեր գրանցման դիմումը ստացվել է և ուղարկվել է ադմինիստրատորին հաստատման համար: Դուք կստանաք ծանուցում, երբ ձեր հաշիվը հաստատվի: Ստուգեք ձեր էլ.փոստը հաշվի հաստատման համար: 3 վայրկյանից ավտոմատ վերադառնում ենք գլխավոր էջ:',
     'auth.ok': 'Լավ',
+    'auth.forgot-password': 'Մոռացե՞լ եք գաղտնաբառը',
+    'auth.reset-password': 'Վերականգնել գաղտնաբառը',
+    'auth.reset-password-button': 'Ուղարկել վերականգնման հղումը',
+    'auth.reset-email-sent': 'Վերականգնման հղումը ուղարկվել է',
+    'auth.reset-email-sent-message': 'Խնդրում ենք ստուգել ձեր էլ. փոստը և հետևել ուղղորդմանը գաղտնաբառը վերականգնելու համար։',
+    'auth.back-to-signin': 'Վերադառնալ մուտքի էջ',
+    'auth.enter-email-reset': 'Մուտքագրեք ձեր էլ. փոստի հասցեն',
     
     // Hero section
     'hero.title': 'Կրթություն առանց սահմանների',
@@ -351,6 +358,13 @@ const translations = {
     'auth.success-title': 'Регистрация прошла успешно!',
     'auth.success-message': 'Ваша заявка на регистрацию получена и отправлена администратору на утверждение. Вы получите уведомление, когда ваш аккаунт будет подтвержден. Проверьте вашу электронную почту для подтверждения аккаунта. Через 3 секунды автоматически вернемся на главную страницу.',
     'auth.ok': 'Хорошо',
+    'auth.forgot-password': 'Забыли пароль?',
+    'auth.reset-password': 'Сброс пароля',
+    'auth.reset-password-button': 'Отправить ссылку для сброса',
+    'auth.reset-email-sent': 'Ссылка для сброса отправлена',
+    'auth.reset-email-sent-message': 'Пожалуйста, проверьте вашу электронную почту и следуйте инструкциям для сброса пароля.',
+    'auth.back-to-signin': 'Вернуться к входу',
+    'auth.enter-email-reset': 'Введите ваш email адрес',
     
     // Hero section
     'hero.title': 'Образование без границ',
@@ -640,6 +654,13 @@ const translations = {
     'auth.success-title': 'Registration Successful!',
     'auth.success-message': 'Your registration request has been received and sent to the administrator for approval. You will receive a notification when your account is confirmed. Check your email to verify your account. Automatically returning to the home page in 3 seconds.',
     'auth.ok': 'OK',
+    'auth.forgot-password': 'Forgot password?',
+    'auth.reset-password': 'Reset Password',
+    'auth.reset-password-button': 'Send reset link',
+    'auth.reset-email-sent': 'Reset link sent',
+    'auth.reset-email-sent-message': 'Please check your email and follow the instructions to reset your password.',
+    'auth.back-to-signin': 'Back to Sign In',
+    'auth.enter-email-reset': 'Enter your email address',
     
     // Hero section
     'hero.title': 'Education Without Limits',

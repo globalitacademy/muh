@@ -144,6 +144,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth?tab=reset-password`,
+      });
+
+      if (error) {
+        if (error.message.includes('Invalid email')) {
+          toast.error('Խնդրում ենք մուտքագրել վավեր էլ.փոստի հասցե:');
+        } else if (error.message.includes('too many requests')) {
+          toast.error('Չափազանց շատ փորձություններ: Խնդրում ենք սպասել և նորից փորձել:');
+        } else {
+          toast.error(`Սխալ: ${error.message}`);
+        }
+        return { error };
+      }
+
+      toast.success('Գաղտնաբառի վերականգնման հղումն ուղարկվել է ձեր էլ.փոստին:');
+      return { error: null };
+    } catch (error: any) {
+      console.error('Reset password error:', error);
+      toast.error('Սխալ է տեղի ունեցել: Խնդրում ենք նորից փորձել:');
+      return { error };
+    }
+  };
+
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut();
@@ -168,7 +194,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       loading,
       signUp,
       signIn,
-      signOut
+      signOut,
+      resetPassword
     }}>
       {children}
     </AuthContext.Provider>

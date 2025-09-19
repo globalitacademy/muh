@@ -8,4 +8,5 @@ export interface AuthContextType {
   signUp: (email: string, password: string, userData?: { name?: string; role?: string; groupNumber?: string }) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: any }>;
 }

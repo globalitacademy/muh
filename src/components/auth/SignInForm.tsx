@@ -7,7 +7,11 @@ import { useAuth } from '@/hooks/useAuth';
 import { Loader2, Mail, Lock } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-const SignInForm = () => {
+interface SignInFormProps {
+  onForgotPassword?: () => void;
+}
+
+const SignInForm = ({ onForgotPassword }: SignInFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -60,6 +64,17 @@ const SignInForm = () => {
         {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         {t('auth.signin-button')}
       </Button>
+      
+      <div className="text-center">
+        <Button
+          type="button"
+          variant="link"
+          className="text-sm font-armenian text-muted-foreground hover:text-foreground"
+          onClick={onForgotPassword}
+        >
+          {t('auth.forgot-password')}
+        </Button>
+      </div>
     </form>
   );
 };

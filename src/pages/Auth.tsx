@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,12 +8,14 @@ import { useNavigate } from 'react-router-dom';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import SignInForm from '@/components/auth/SignInForm';
 import SignUpForm from '@/components/auth/SignUpForm';
+import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const Auth = () => {
   const { user, loading } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   useEffect(() => {
     if (user && !loading) {
@@ -51,20 +53,24 @@ const Auth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin" className="font-armenian">{t('auth.signin')}</TabsTrigger>
-                <TabsTrigger value="signup" className="font-armenian">{t('auth.signup')}</TabsTrigger>
-              </TabsList>
+            {showForgotPassword ? (
+              <ForgotPasswordForm onBackToSignIn={() => setShowForgotPassword(false)} />
+            ) : (
+              <Tabs defaultValue="signin" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="signin" className="font-armenian">{t('auth.signin')}</TabsTrigger>
+                  <TabsTrigger value="signup" className="font-armenian">{t('auth.signup')}</TabsTrigger>
+                </TabsList>
 
-              <TabsContent value="signin" className="space-y-4">
-                <SignInForm />
-              </TabsContent>
+                <TabsContent value="signin" className="space-y-4">
+                  <SignInForm onForgotPassword={() => setShowForgotPassword(true)} />
+                </TabsContent>
 
-              <TabsContent value="signup" className="space-y-4">
-                <SignUpForm />
-              </TabsContent>
-            </Tabs>
+                <TabsContent value="signup" className="space-y-4">
+                  <SignUpForm />
+                </TabsContent>
+              </Tabs>
+            )}
           </CardContent>
         </Card>
       </div>
