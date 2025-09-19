@@ -8,6 +8,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const ResetPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,24 +16,84 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isValidSession, setIsValidSession] = useState(false);
   const { updatePassword } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    // Check if we have the required tokens from the email link
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
-    
-    if (!accessToken || !refreshToken) {
-      toast.error('Invalid reset link');
-      navigate('/auth');
-    }
-  }, [searchParams, navigate]);
+    const handleAuthRecovery = async () => {
+      // Check for Supabase auth tokens in URL
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
+      
+      // Also check query parameters (fallback)
+      const queryAccessToken = searchParams.get('access_token');
+      const queryRefreshToken = searchParams.get('refresh_token');
+      
+      if (accessToken && refreshToken) {
+        try {
+          // Set the session with the tokens from the email link
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          
+          if (error) {
+            console.error('Error setting session:', error);
+            toast.error('Վերականգնման հղումը անվավեր է');
+            navigate('/auth');
+          } else {
+            setIsValidSession(true);
+          }
+        } catch (error) {
+          console.error('Error during auth recovery:', error);
+          toast.error('Վերականգնման հղումը անվավեր է');
+          navigate('/auth');
+        }
+      } else if (queryAccessToken && queryRefreshToken) {
+        try {
+          const { error } = await supabase.auth.setSession({
+            access_token: queryAccessToken,
+            refresh_token: queryRefreshToken
+          });
+          
+          if (error) {
+            console.error('Error setting session:', error);
+            toast.error('Վերականգնման հղումը անվավեր է');
+            navigate('/auth');
+          } else {
+            setIsValidSession(true);
+          }
+        } catch (error) {
+          console.error('Error during auth recovery:', error);
+          toast.error('Վերականգնման հղումը անվավեր է');
+          navigate('/auth');
+        }
+      } else {
+        // Check if user is already authenticated (may have been set by Supabase automatically)
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setIsValidSession(true);
+        } else {
+          toast.error('Վերականգնման հղումը անվավեր է կամ ժամկետանց');
+          navigate('/auth');
+        }
+      }
+    };
+
+    handleAuthRecovery();
+  }, [navigate, searchParams]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isValidSession) {
+      toast.error('Խնդրում ենք նորից օգտագործել վերականգնման հղումը');
+      return;
+    }
     
     if (newPassword !== confirmPassword) {
       toast.error(t('auth.passwords-not-match'));
@@ -40,7 +101,7 @@ const ResetPassword = () => {
     }
     
     if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.error('Գաղտնաբառը պետք է լինի առնվազն 6 նիշ');
       return;
     }
 
@@ -49,6 +110,8 @@ const ResetPassword = () => {
       const result = await updatePassword(newPassword);
       if (!result.error) {
         toast.success(t('auth.password-updated'));
+        // Sign out after password update to force fresh login
+        await supabase.auth.signOut();
         navigate('/auth');
       } else {
         toast.error(t('auth.password-update-error'));
@@ -57,6 +120,19 @@ const ResetPassword = () => {
       setIsLoading(false);
     }
   };
+
+  if (!isValidSession) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="w-full max-w-md text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground font-armenian">
+            Ստուգվում է վերականգնման հղումը...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
