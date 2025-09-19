@@ -74,6 +74,10 @@ const ProjectApplicationButton: React.FC<{
   // Check if user has already applied
   const userApplication = applications?.find(app => app.applicant_id === user?.id);
   
+  console.log('Applications data:', applications);
+  console.log('Current user ID:', user?.id);
+  console.log('User application found:', userApplication);
+  
   // Determine button state
   const isApplied = !!userApplication;
   const isExpired = project.application_deadline && new Date(project.application_deadline) < new Date();
@@ -125,14 +129,23 @@ const ProjectApplicationButton: React.FC<{
   const buttonState = getButtonState();
   
   const handleApply = async () => {
+    console.log('Apply button clicked');
+    console.log('User:', user);
+    console.log('Project ID:', project?.id);
+    console.log('Is Applied:', isApplied);
+    console.log('Button State:', buttonState);
+    
     if (isApplied) return;
     
     try {
-      await apply.mutateAsync(undefined);
+      console.log('Attempting to apply...');
+      const result = await apply.mutateAsync(undefined);
+      console.log('Apply result:', result);
       toast({
         description: 'Դիմումն ուղարկված է և սպասում է հաստատման'
       });
     } catch (e: any) {
+      console.error('Apply error:', e);
       toast({
         variant: 'destructive',
         description: e.message || 'Չհաջողվեց ուղարկել'

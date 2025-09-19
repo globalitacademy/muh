@@ -25,11 +25,21 @@ export const useProjectApplications = (projectId?: string) => {
     queryKey: ["project-applications", projectId],
     enabled: !!projectId,
     queryFn: async () => {
+      if (!projectId) return [];
+      
+      console.log('Fetching applications for project:', projectId);
+      
       const { data, error } = await supabase
         .from("project_applications")
         .select("*")
         .eq("project_id", projectId);
-      if (error) throw error;
+        
+      if (error) {
+        console.error('Error fetching applications:', error);
+        throw error;
+      }
+      
+      console.log('Applications fetched:', data);
       return (data || []) as ProjectApplication[];
     },
   });
