@@ -739,7 +739,7 @@ const ProjectDetail: React.FC = () => {
                                     href={link} 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="text-primary hover:underline break-all flex-1"
+                                    className="text-primary hover:underline break-all flex-1 text-left"
                                   >
                                     {link}
                                   </a>
