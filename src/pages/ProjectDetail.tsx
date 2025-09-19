@@ -29,7 +29,7 @@ const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
 
   return (
     <div className="text-left">
-      <p className="mt-1">
+      <p className="mt-1 whitespace-pre-wrap">
         {shouldTruncate && !isExpanded ? `${text.slice(0, 250)}...` : text}
       </p>
       {shouldTruncate && (
