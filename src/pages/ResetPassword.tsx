@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Loader2, Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from 'sonner';
@@ -17,75 +17,73 @@ const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isValidSession, setIsValidSession] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const { updatePassword } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   useEffect(() => {
     const handleAuthRecovery = async () => {
-      // Check for Supabase auth tokens in URL
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
-      const refreshToken = hashParams.get('refresh_token');
-      
-      // Also check query parameters (fallback)
-      const queryAccessToken = searchParams.get('access_token');
-      const queryRefreshToken = searchParams.get('refresh_token');
-      
-      if (accessToken && refreshToken) {
-        try {
-          // Set the session with the tokens from the email link
-          const { error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken
-          });
+      try {
+        setIsCheckingSession(true);
+        
+        // First check if there's a hash with tokens
+        const hashFragment = location.hash;
+        
+        if (hashFragment) {
+          // Parse the hash fragment for auth tokens
+          const hashParams = new URLSearchParams(hashFragment.substring(1));
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          const type = hashParams.get('type');
           
-          if (error) {
-            console.error('Error setting session:', error);
-            toast.error('Վերականգնման հղումը անվավեր է');
-            navigate('/auth');
-          } else {
-            setIsValidSession(true);
-          }
-        } catch (error) {
-          console.error('Error during auth recovery:', error);
-          toast.error('Վերականգնման հղումը անվավեր է');
-          navigate('/auth');
-        }
-      } else if (queryAccessToken && queryRefreshToken) {
-        try {
-          const { error } = await supabase.auth.setSession({
-            access_token: queryAccessToken,
-            refresh_token: queryRefreshToken
-          });
+          console.log('Hash params:', { accessToken: !!accessToken, refreshToken: !!refreshToken, type });
           
-          if (error) {
-            console.error('Error setting session:', error);
-            toast.error('Վերականգնման հղումը անվավեր է');
-            navigate('/auth');
-          } else {
+          if (accessToken && refreshToken && type === 'recovery') {
+            // Set the session with tokens from the URL
+            const { data, error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+            
+            if (error) {
+              console.error('Error setting session:', error);
+              toast.error('Վերականգնման հղումը անվավեր է');
+              navigate('/auth');
+              return;
+            }
+            
+            console.log('Session set successfully:', data);
             setIsValidSession(true);
+            setIsCheckingSession(false);
+            return;
           }
-        } catch (error) {
-          console.error('Error during auth recovery:', error);
-          toast.error('Վերականգնման հղումը անվավեր է');
-          navigate('/auth');
         }
-      } else {
-        // Check if user is already authenticated (may have been set by Supabase automatically)
+        
+        // If no hash tokens, check current session
         const { data: { session } } = await supabase.auth.getSession();
+        
         if (session) {
+          console.log('Existing session found:', session);
           setIsValidSession(true);
         } else {
+          console.log('No valid session or tokens found');
           toast.error('Վերականգնման հղումը անվավեր է կամ ժամկետանց');
           navigate('/auth');
         }
+        
+      } catch (error) {
+        console.error('Error during auth recovery:', error);
+        toast.error('Վերականգնման հղումը անվավեր է');
+        navigate('/auth');
+      } finally {
+        setIsCheckingSession(false);
       }
     };
 
     handleAuthRecovery();
-  }, [navigate, searchParams]);
+  }, [navigate, location.hash]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,12 +114,15 @@ const ResetPassword = () => {
       } else {
         toast.error(t('auth.password-update-error'));
       }
+    } catch (error) {
+      console.error('Password update error:', error);
+      toast.error(t('auth.password-update-error'));
     } finally {
       setIsLoading(false);
     }
   };
 
-  if (!isValidSession) {
+  if (isCheckingSession) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="w-full max-w-md text-center">
