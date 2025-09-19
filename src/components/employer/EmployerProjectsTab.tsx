@@ -57,7 +57,7 @@ const EmployerProjectsTab = () => {
     setSkills(project.required_skills ? project.required_skills.join(', ') : '');
     setDeadline(project.application_deadline ? new Date(project.application_deadline).toISOString().split('T')[0] : '');
     setMaxApplicants(project.max_applicants || '');
-    setResources(Array.isArray(project.resources) ? project.resources.join('\n') : '');
+    setResources(Array.isArray(project.useful_links) ? project.useful_links.join('\n') : '');
     setIsPublic(project.is_public || false);
     setEditingProject(project);
     setIsEditing(true);
@@ -83,7 +83,7 @@ const EmployerProjectsTab = () => {
           image_url: imageUrl,
           category: category || null,
           required_skills: skills ? skills.split(',').map(s => s.trim()).filter(Boolean) : null,
-          resources: resources ? resources.split('\n').map(r => r.trim()).filter(Boolean) : [],
+          useful_links: resources ? resources.split('\n').map(r => r.trim()).filter(Boolean) : [],
           application_deadline: deadline ? new Date(deadline).toISOString() : null,
           max_applicants: maxApplicants === '' ? null : Number(maxApplicants),
         };
@@ -109,7 +109,7 @@ const EmployerProjectsTab = () => {
           image_url: imageUrl,
           category: category || null,
           required_skills: skills ? skills.split(',').map(s => s.trim()).filter(Boolean) : null,
-          resources: resources ? resources.split('\n').map(r => r.trim()).filter(Boolean) : [],
+          useful_links: resources ? resources.split('\n').map(r => r.trim()).filter(Boolean) : [],
           application_deadline: deadline ? new Date(deadline).toISOString() : null,
           max_applicants: maxApplicants === '' ? null : Number(maxApplicants),
           creator_id: user.id,
