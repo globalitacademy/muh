@@ -61,7 +61,7 @@ const Header = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="text-foreground/80 hover:text-foreground transition-colors font-armenian text-sm font-medium p-0 h-auto">
-                  {t('nav.other')}
+                  Այլ
                   <ChevronDown className="h-4 w-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
@@ -128,7 +128,7 @@ const Header = () => {
                 
                 {/* Other items in mobile */}
                 <div className="border-t border-border/20 pt-3 mt-3">
-                  <p className="text-xs font-medium text-muted-foreground mb-2 font-armenian">{t('nav.other')}</p>
+                  <p className="text-xs font-medium text-muted-foreground mb-2 font-armenian">Այլ</p>
                   {otherItems.map((item) => (
                     <button
                       key={item.href}
