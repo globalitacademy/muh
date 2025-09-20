@@ -2044,6 +2044,10 @@ export type Database = {
         Args: { p_project_id: string; p_user_id: string }
         Returns: boolean
       }
+      is_user_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       mark_all_notifications_read: {
         Args: Record<PropertyKey, never>
         Returns: undefined
