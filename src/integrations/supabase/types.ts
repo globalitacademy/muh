@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
@@ -1986,7 +1986,7 @@ export type Database = {
     }
     Functions: {
       approve_user_application: {
-        Args: { application_id: string; admin_id: string }
+        Args: { admin_id: string; application_id: string }
         Returns: undefined
       }
       check_access_code_status: {
@@ -2011,13 +2011,13 @@ export type Database = {
       }
       create_notification: {
         Args: {
-          p_user_id: string
-          p_type: Database["public"]["Enums"]["notification_type"]
-          p_title: string
-          p_message: string
-          p_priority?: Database["public"]["Enums"]["notification_priority"]
           p_action_url?: string
+          p_message: string
           p_metadata?: Json
+          p_priority?: Database["public"]["Enums"]["notification_priority"]
+          p_title: string
+          p_type: Database["public"]["Enums"]["notification_type"]
+          p_user_id: string
         }
         Returns: string
       }
@@ -2031,8 +2031,8 @@ export type Database = {
       }
       has_role: {
         Args: {
-          _user_id: string
           _role: Database["public"]["Enums"]["user_role"]
+          _user_id: string
         }
         Returns: boolean
       }
@@ -2053,7 +2053,7 @@ export type Database = {
         Returns: undefined
       }
       use_access_code: {
-        Args: { p_code: string; p_user_id?: string; p_module_id?: string }
+        Args: { p_code: string; p_module_id?: string; p_user_id?: string }
         Returns: Json
       }
     }
