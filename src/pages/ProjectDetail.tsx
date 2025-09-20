@@ -135,7 +135,10 @@ const ProjectApplicationButton: React.FC<{
     console.log('Is Applied:', isApplied);
     console.log('Button State:', buttonState);
     
-    if (isApplied) return;
+    if (isApplied) {
+      console.log('User already applied, not proceeding');
+      return;
+    }
     
     try {
       console.log('Attempting to apply...');
