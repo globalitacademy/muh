@@ -28,7 +28,6 @@ interface ProjectApplication {
   profiles?: {
     id: string;
     name: string;
-    email?: string;
     phone?: string;
     organization?: string;
     group_number?: string;
@@ -36,6 +35,7 @@ interface ProjectApplication {
     bio?: string;
     field_of_study?: string;
     linkedin_url?: string;
+    avatar_url?: string;
   };
 }
 
@@ -47,10 +47,30 @@ const useEmployerProjectApplications = () => {
     queryFn: async () => {
       if (!user?.id) return [];
       
-      // First get all applications
+      // First get projects created by the current user
+      const { data: userProjects, error: projectsError } = await supabase
+        .from('projects')
+        .select('id')
+        .eq('creator_id', user.id);
+      
+      if (projectsError) {
+        console.error('Error fetching user projects:', projectsError);
+        throw projectsError;
+      }
+      
+      if (!userProjects || userProjects.length === 0) {
+        console.log('No projects found for user');
+        return [];
+      }
+      
+      const projectIds = userProjects.map(p => p.id);
+      console.log('User project IDs:', projectIds);
+      
+      // Fetch applications for user's projects
       const { data: applications, error } = await supabase
         .from('project_applications')
         .select('*')
+        .in('project_id', projectIds)
         .order('applied_at', { ascending: false });
       
       if (error) {
@@ -59,41 +79,45 @@ const useEmployerProjectApplications = () => {
       }
       
       if (!applications || applications.length === 0) {
-        console.log('No project applications found in database');
+        console.log('No applications found');
         return [];
       }
       
-      console.log('Found applications:', applications.length, applications);
-      console.log('Current user ID:', user.id);
+      console.log('Found applications:', applications.length);
       
-      // Get additional data and filter by employer's projects
-      const filteredApplications = [];
-      for (const app of applications) {
-        console.log('Processing application:', app.id, 'for project:', app.project_id, 'applicant:', app.applicant_id);
-        
-        const [projectRes, profileRes] = await Promise.all([
-          supabase.from('projects').select('id, title, description, creator_id').eq('id', app.project_id).maybeSingle(),
-          supabase.from('profiles').select('id, name, email, phone, organization, group_number, department, bio, field_of_study, linkedin_url').eq('id', app.applicant_id).maybeSingle()
-        ]);
-        
-        console.log('Project query result:', projectRes);
-        console.log('Profile query result:', profileRes);
-        
-        // Only include if project belongs to current user
-        if (projectRes.data && projectRes.data.creator_id === user.id) {
-          console.log('✓ Including application - project belongs to current user');
-          filteredApplications.push({
+      // Fetch project and profile data for each application
+      const enrichedApplications = await Promise.all(
+        applications.map(async (app) => {
+          const [projectRes, profileRes] = await Promise.all([
+            supabase
+              .from('projects')
+              .select('id, title, description, creator_id')
+              .eq('id', app.project_id)
+              .maybeSingle(),
+            supabase
+              .from('profiles')
+              .select('id, name, phone, organization, group_number, department, bio, field_of_study, linkedin_url, avatar_url')
+              .eq('id', app.applicant_id)
+              .maybeSingle()
+          ]);
+          
+          if (projectRes.error) {
+            console.error('Error fetching project:', projectRes.error);
+          }
+          if (profileRes.error) {
+            console.error('Error fetching profile:', profileRes.error);
+          }
+          
+          return {
             ...app,
             projects: projectRes.data,
             profiles: profileRes.data
-          });
-        } else {
-          console.log('✗ Excluding application - project creator:', projectRes.data?.creator_id, 'current user:', user.id);
-        }
-      }
+          };
+        })
+      );
       
-      console.log('Final filtered applications:', filteredApplications.length, filteredApplications);
-      return filteredApplications;
+      console.log('Enriched applications:', enrichedApplications);
+      return enrichedApplications;
     },
     enabled: !!user?.id,
   });
@@ -199,9 +223,6 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
               <p className="font-medium text-primary">
                 {application.profiles?.name || 'Անանուն օգտատեր'}
               </p>
-              {application.profiles?.email && (
-                <p className="text-sm text-muted-foreground">📧 {application.profiles.email}</p>
-              )}
               {application.profiles?.phone && (
                 <p className="text-sm text-muted-foreground">📱 {application.profiles.phone}</p>
               )}
