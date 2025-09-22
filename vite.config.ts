@@ -110,7 +110,21 @@ export default defineConfig(({ mode }) => ({
     // Additional optimizations - use default esbuild minification (faster than terser)
     minify: true, // Use default esbuild minifier
     
-    // Target modern browsers for smaller bundles
-    target: 'es2020'
+    // Target modern browsers for smaller bundles - eliminates legacy polyfills
+    target: 'es2022', // Modern target eliminates Array.find, String.startsWith/endsWith polyfills
+    
+    // Configure esbuild for modern browsers to reduce transpilation
+    esbuild: {
+      target: 'es2022',
+      // Keep class names and function names for better debugging
+      keepNames: true,
+      // Use native ES6+ features without transpilation
+      supported: {
+        'bigint': true,
+        'dynamic-import': true,
+        'optional-chaining': true,
+        'nullish-coalescing': true
+      }
+    }
   }
 }));
