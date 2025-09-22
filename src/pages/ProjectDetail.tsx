@@ -26,6 +26,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { ProjectTasksManagement } from "@/components/employer/project/ProjectTasksManagement";
 
 const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -680,13 +681,14 @@ const ProjectDetail: React.FC = () => {
             </header>
 
             <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-1 h-auto p-1">
+              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-1 h-auto p-1">
                 <TabsTrigger value="overview">Նկարագրություն</TabsTrigger>
                 <TabsTrigger value="steps">Քայլեր</TabsTrigger>
                 <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
                 <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
                 <TabsTrigger value="timeline">Թայմլայն</TabsTrigger>
                 <TabsTrigger value="evaluation">Գնահատական</TabsTrigger>
+                {canEdit && <TabsTrigger value="tasks">Առաջադրանքներ</TabsTrigger>}
                 {canEdit && <TabsTrigger value="candidates">Թեկնածուներ ({applications?.length || 0})</TabsTrigger>}
               </TabsList>
 
@@ -992,6 +994,12 @@ const ProjectDetail: React.FC = () => {
                 <TabsContent value="evaluation">
                   <EvaluationTab projectId={projectId} canEdit={canEdit && isEditingDescription} />
                 </TabsContent>
+
+                {canEdit && (
+                  <TabsContent value="tasks">
+                    <ProjectTasksManagement projectId={projectId} />
+                  </TabsContent>
+                )}
 
                 {canEdit && (
                   <TabsContent value="candidates">
