@@ -571,25 +571,46 @@ const TaskCard: React.FC<{ task: ProjectTask; onDelete: (id: string) => void; on
         {task.assignments && task.assignments.length > 0 && (
           <div className="space-y-2">
             <Label className="text-xs font-medium text-muted-foreground">Նշանակված ուսանողներ:</Label>
-            <div className="flex flex-wrap gap-2">
+            <div className="space-y-2">
               {task.assignments.map((assignment) => (
                 <div
                   key={assignment.id}
-                  className={`flex items-center gap-2 px-2 py-1 rounded-full text-xs ${
+                  className={`p-3 rounded-lg border ${
                     assignment.completed_at 
-                      ? 'bg-green-500/10 text-green-700' 
-                      : 'bg-gray-500/10 text-gray-700'
+                      ? 'bg-green-500/5 border-green-200' 
+                      : 'bg-gray-500/5 border-gray-200'
                   }`}
                 >
-                  <Avatar className="w-5 h-5">
-                    <AvatarImage src={assignment.profiles?.avatar_url} />
-                    <AvatarFallback className="text-xs">
-                      {assignment.profiles?.name?.charAt(0) || '?'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span>{assignment.profiles?.name || 'Անանուն'}</span>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Avatar className="w-6 h-6">
+                      <AvatarImage src={assignment.profiles?.avatar_url} />
+                      <AvatarFallback className="text-xs">
+                        {assignment.profiles?.name?.charAt(0) || '?'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium text-sm">{assignment.profiles?.name || 'Անանուն'}</span>
+                    {assignment.completed_at && (
+                      <div className="flex items-center gap-1 text-green-600">
+                        <CheckCircle className="w-4 h-4" />
+                        <span className="text-xs">Ներակցվել է</span>
+                      </div>
+                    )}
+                  </div>
+                  
                   {assignment.completed_at && (
-                    <CheckCircle className="w-3 h-3 text-green-600" />
+                    <div className="space-y-1 text-xs text-muted-foreground">
+                      <div>
+                        Ներակցման ամսաթիվ: {format(new Date(assignment.completed_at), 'dd.MM.yyyy HH:mm', { locale: hy })}
+                      </div>
+                      {assignment.submission_notes && (
+                        <div className="mt-2">
+                          <div className="font-medium">Ներակցման նշումներ:</div>
+                          <div className="bg-white/50 p-2 rounded mt-1 text-foreground">
+                            {assignment.submission_notes}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               ))}

@@ -210,7 +210,8 @@ export const useProjectTasks = (projectId?: string) => {
 
   const completeAssignment = useMutation({
     mutationFn: async ({ assignmentId, submissionNotes }: { assignmentId: string; submissionNotes?: string }) => {
-      const { data, error } = await supabase
+      // First update the assignment
+      const { data: assignment, error } = await supabase
         .from("project_task_assignments")
         .update({ 
           completed_at: new Date().toISOString(),
@@ -218,11 +219,42 @@ export const useProjectTasks = (projectId?: string) => {
           updated_at: new Date().toISOString()
         })
         .eq("id", assignmentId)
-        .select("*")
+        .select("task_id")
         .single();
         
       if (error) throw error;
-      return data;
+      
+      // Then check all assignments for this task to update task status
+      const { data: allAssignments, error: assignmentsError } = await supabase
+        .from("project_task_assignments")
+        .select("completed_at")
+        .eq("task_id", assignment.task_id);
+        
+      if (assignmentsError) throw assignmentsError;
+      
+      // Calculate completion status
+      const completedCount = allAssignments?.filter(a => a.completed_at).length || 0;
+      const totalCount = allAssignments?.length || 0;
+      
+      let newTaskStatus = 'pending';
+      if (completedCount === totalCount && totalCount > 0) {
+        newTaskStatus = 'completed';
+      } else if (completedCount > 0) {
+        newTaskStatus = 'in_progress';
+      }
+      
+      // Update task status
+      const { error: taskUpdateError } = await supabase
+        .from("project_tasks")
+        .update({ 
+          status: newTaskStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", assignment.task_id);
+        
+      if (taskUpdateError) throw taskUpdateError;
+      
+      return assignment;
     },
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ["project-tasks", projectId] });
