@@ -279,11 +279,15 @@ export const TasksTab: React.FC = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {task?.description && (
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {task.description}
+                    <div className="bg-muted/30 rounded-lg p-3 border">
+                      <div className="flex items-start gap-2 mb-2">
+                        <FileText className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-sm font-medium text-foreground">Նկարագրություն</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed pl-6">
+                        {task?.description || "Նկարագրություն չի տրամադրվել այս առաջադրանքի համար"}
                       </p>
-                    )}
+                    </div>
 
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       {task?.due_date && (
