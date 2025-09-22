@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { 
   CheckCircle, 
   XCircle, 
@@ -12,7 +13,8 @@ import {
   Mail, 
   Calendar,
   FileText,
-  Eye
+  Eye,
+  Trash2
 } from 'lucide-react';
 import { useProjectApplications } from '@/hooks/useProjectApplications';
 import { useToast } from '@/hooks/use-toast';
@@ -23,7 +25,7 @@ interface ApplicationManagementProps {
 }
 
 const ApplicationManagement: React.FC<ApplicationManagementProps> = ({ projectId }) => {
-  const { data: applications, updateStatus, isLoading } = useProjectApplications(projectId);
+  const { data: applications, updateStatus, remove, isLoading } = useProjectApplications(projectId);
   const { toast } = useToast();
   const [selectedApplication, setSelectedApplication] = useState<string | null>(null);
 
@@ -38,6 +40,22 @@ const ApplicationManagement: React.FC<ApplicationManagementProps> = ({ projectId
       toast({
         title: 'Error',
         description: 'Failed to update application status',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleDeleteApplication = async (applicationId: string) => {
+    try {
+      await remove.mutateAsync(applicationId);
+      toast({
+        title: 'Success',
+        description: 'Application deleted successfully',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete application',
         variant: 'destructive',
       });
     }
@@ -170,6 +188,35 @@ const ApplicationManagement: React.FC<ApplicationManagementProps> = ({ projectId
                           <XCircle className="h-4 w-4 mr-1" />
                           Մերժել
                         </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-destructive hover:text-destructive"
+                              disabled={remove.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Ջնջե՞լ դիմումը</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Այս գործողությունը չի կարելի հետ գցել։ Դիմումը ընդմիշտ կջնջվի:
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Չեղարկել</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteApplication(application.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Ջնջել
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                     
@@ -208,7 +255,38 @@ const ApplicationManagement: React.FC<ApplicationManagementProps> = ({ projectId
                           </p>
                         </div>
                       </div>
-                      {getStatusBadge(application.status)}
+                      <div className="flex items-center gap-2">
+                        {getStatusBadge(application.status)}
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-destructive hover:text-destructive"
+                              disabled={remove.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Ջնջե՞լ դիմումը</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Այս գործողությունը չի կարելի հետ գցել։ Դիմումը ընդմիշտ կջնջվի:
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Չեղարկել</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteApplication(application.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Ջնջել
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -239,7 +317,38 @@ const ApplicationManagement: React.FC<ApplicationManagementProps> = ({ projectId
                           </p>
                         </div>
                       </div>
-                      {getStatusBadge(application.status)}
+                      <div className="flex items-center gap-2">
+                        {getStatusBadge(application.status)}
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-destructive hover:text-destructive"
+                              disabled={remove.isPending}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Ջնջե՞լ դիմումը</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Այս գործողությունը չի կարելի հետ գցել։ Դիմումը ընդմիշտ կջնջվի:
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Չեղարկել</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteApplication(application.id)}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Ջնջել
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

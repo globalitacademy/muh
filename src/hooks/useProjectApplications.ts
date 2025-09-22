@@ -48,12 +48,31 @@ export const useProjectApplications = (projectId?: string) => {
     mutationFn: async (cover_letter?: string) => {
       if (!projectId) throw new Error("Missing project id");
       if (!user) throw new Error("Not authenticated");
+      
+      // Check if user already applied
+      const { data: existingApplication } = await supabase
+        .from("project_applications")
+        .select("id")
+        .eq("project_id", projectId)
+        .eq("applicant_id", user.id)
+        .single();
+        
+      if (existingApplication) {
+        throw new Error("You have already applied to this project");
+      }
+      
       const { data, error } = await supabase
         .from("project_applications")
         .insert({ project_id: projectId, applicant_id: user.id, cover_letter: cover_letter || null })
         .select("*")
         .single();
-      if (error) throw error;
+      if (error) {
+        // Handle unique constraint violation
+        if (error.code === '23505') {
+          throw new Error("You have already applied to this project");
+        }
+        throw error;
+      }
       return data as ProjectApplication;
     },
     onSuccess: () => client.invalidateQueries({ queryKey: ["project-applications", projectId] }),
