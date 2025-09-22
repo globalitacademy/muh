@@ -94,14 +94,8 @@ export default defineConfig(({ mode }) => ({
       }
     },
     
-    // Additional optimizations
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.logs in production
-        drop_debugger: true,
-      }
-    },
+    // Additional optimizations - use default esbuild minification (faster than terser)
+    minify: true, // Use default esbuild minifier
     
     // Target modern browsers for smaller bundles
     target: 'es2020'
