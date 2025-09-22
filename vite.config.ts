@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Optimize CSS extraction to prevent render blocking
-    cssCodeSplit: false, // Bundle CSS into single file for better defer loading
+    // CRITICAL FCP: Optimize CSS extraction for immediate rendering
+    cssCodeSplit: true, // Split CSS for better caching and loading
     rollupOptions: {
       output: {
         // Strategic code splitting using function-based approach for proper path handling

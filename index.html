@@ -161,6 +161,20 @@
         .lg\\:text-6xl { font-size: 3.75rem; line-height: 1; }
       }
       
+      /* Critical layout utilities for immediate content */
+      .items-center { align-items: center; }
+      .justify-center { text-align: center; }
+      .justify-between { justify-content: space-between; }
+      .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+      .gap-8 { gap: 2rem; }
+      .gap-3 { gap: 0.75rem; }
+      .mt-16 { margin-top: 4rem; }
+      .top-0 { top: 0; }
+      .left-0 { left: 0; }
+      .right-0 { right: 0; }
+      .z-50 { z-index: 50; }
+      }
+      
       /* SPEED INDEX OPTIMIZATION: Skeleton loading states */
       .skeleton-pulse {
         background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsla(var(--muted), 0.5) 50%, hsl(var(--muted)) 75%);
@@ -225,7 +239,87 @@
   </head>
 
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <!-- CRITICAL FCP OPTIMIZATION: Static content that renders immediately -->
+    <div id="root">
+      <!-- Static above-the-fold content for immediate FCP -->
+      <div class="page-container immediate-visible">
+        <!-- Static header skeleton -->
+        <header class="fixed top-0 left-0 right-0 z-50" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid hsl(214.3 31.8% 91.4%);">
+          <div class="content-container flex items-center justify-between py-4">
+            <div class="flex items-center gap-3">
+              <div style="width: 40px; height: 40px; background: linear-gradient(135deg, hsl(221 83% 53%), hsl(262 83% 58%)); border-radius: 8px;"></div>
+              <span class="font-bold text-lg">Learning Hub</span>
+            </div>
+            <div class="skeleton-pulse" style="width: 200px; height: 40px; border-radius: 8px;"></div>
+          </div>
+        </header>
+
+        <!-- Static hero content for immediate rendering -->
+        <main class="w-full">
+          <section class="min-h-screen flex items-center justify-center relative pt-20">
+            <div class="content-container text-center space-y-8">
+              <div class="hero-text-content">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight mb-6 text-gradient font-armenian">
+                  Կրթություն առանց սահմանների
+                </h1>
+                <p class="text-lg sm:text-xl mb-6 font-armenian" style="color: hsl(215.4 16.3% 46.9%); max-width: 600px; margin: 0 auto;">
+                  Ժամանակակից կրթական հարթակ բարձրորակ դասընթացներով, նախագծային ուսուցմամբ և մասնագիտական զարգացմամբ
+                </p>
+                <div class="flex gap-4 justify-center">
+                  <div class="btn-modern">
+                    Սկսել ուսուցումը
+                  </div>
+                  <div class="skeleton-pulse" style="width: 160px; height: 56px; border-radius: 12px;"></div>
+                </div>
+              </div>
+              
+              <!-- Static stats for immediate content -->
+              <div class="grid grid-cols-3 gap-8 mt-16">
+                <div class="text-center">
+                  <div class="text-4xl font-bold text-gradient mb-2">1000+</div>
+                  <div style="color: hsl(215.4 16.3% 46.9%);">Ուսանողներ</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-4xl font-bold text-gradient mb-2">50+</div>
+                  <div style="color: hsl(215.4 16.3% 46.9%);">Դասընթացներ</div>
+                </div>
+                <div class="text-center">
+                  <div class="text-4xl font-bold text-gradient mb-2">25+</div>
+                  <div style="color: hsl(215.4 16.3% 46.9%);">Ուսուցիչներ</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- CRITICAL: Load main script with high priority -->
+    <script type="module" src="/src/main.tsx" fetchpriority="high"></script>
+    
+    <!-- CRITICAL FCP: Hide static content once React loads -->
+    <script>
+      // Hide static content once React has rendered
+      let checkReactLoaded = setInterval(() => {
+        const root = document.getElementById('root');
+        if (root && root.children.length > 1) {
+          // React has rendered, hide static content
+          const staticContent = root.querySelector('.page-container.immediate-visible');
+          if (staticContent) {
+            staticContent.style.display = 'none';
+          }
+          clearInterval(checkReactLoaded);
+        }
+      }, 50);
+      
+      // Fallback: hide after 3 seconds regardless
+      setTimeout(() => {
+        const staticContent = document.querySelector('.page-container.immediate-visible');
+        if (staticContent) {
+          staticContent.style.display = 'none';
+        }
+        clearInterval(checkReactLoaded);
+      }, 3000);
+    </script>
   </body>
 </html>
