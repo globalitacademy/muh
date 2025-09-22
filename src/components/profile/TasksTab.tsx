@@ -6,8 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { CalendarIcon, CheckCircle, Clock, AlertTriangle, Users, FileText, FolderKanban } from 'lucide-react';
-import { useUserAssignedTasks } from '@/hooks/useProjectTasks';
-import { useTaskAssignments } from '@/hooks/useTaskAssignments';
+import { useAuth } from '@/hooks/useAuth';
+import { useTaskAssignments, useStudentProjectTasks } from '@/hooks/useTaskAssignments';
 import { toast } from '@/hooks/use-toast';
 import { formatDistanceToNow, isAfter } from 'date-fns';
 import { hy } from 'date-fns/locale';
@@ -100,11 +100,24 @@ const TaskCompletionDialog: React.FC<TaskCompletionDialogProps> = ({
 };
 
 export const TasksTab: React.FC = () => {
-  const { data: assignedTasks = [], isLoading } = useUserAssignedTasks();
-  const { completeAssignment } = useTaskAssignments();
+  const { user } = useAuth();
+  const { data: projectSteps = [], isLoading } = useStudentProjectTasks(user?.id || "");
+  const { markStepCompleted } = useTaskAssignments();
 
-  const handleCompleteTask = async (assignmentId: string, submissionNotes?: string) => {
-    await completeAssignment.mutateAsync({ assignmentId, submissionNotes });
+  const handleCompleteTask = async (taskId: string, submissionNotes?: string) => {
+    try {
+      await markStepCompleted.mutateAsync({ stepId: taskId });
+      toast({
+        title: "Հաջողություն",
+        description: "Առաջադրանքը նշվել է որպես կատարված",
+      });
+    } catch (error) {
+      toast({
+        title: "Սխալ",
+        description: "Չհաջողվեց կատարել գործողությունը",
+        variant: "destructive",
+      });
+    }
   };
 
   const getPriorityBadge = (priority: string) => {
@@ -127,8 +140,8 @@ export const TasksTab: React.FC = () => {
     );
   };
 
-  const getStatusBadge = (task: any, assignment: any) => {
-    if (assignment.completed_at) {
+  const getStatusBadge = (task: any) => {
+    if (task.status === 'done') {
       return (
         <Badge className="bg-green-500/10 text-green-700">
           <CheckCircle className="w-3 h-3 mr-1" />
@@ -167,8 +180,8 @@ export const TasksTab: React.FC = () => {
     );
   }
 
-  const pendingTasks = assignedTasks.filter(task => !task.completed_at);
-  const completedTasks = assignedTasks.filter(task => task.completed_at);
+  const pendingTasks = projectSteps.filter(task => task.status !== 'done');
+  const completedTasks = projectSteps.filter(task => task.status === 'done');
 
   return (
     <div className="space-y-6">
@@ -215,26 +228,23 @@ export const TasksTab: React.FC = () => {
             Ընթացիկ առաջադրանքներ
           </h3>
           <div className="space-y-4">
-            {pendingTasks.map((assignment) => {
-              const task = assignment.project_tasks;
-              const project = task?.projects;
+            {pendingTasks.map((task) => {
               const isOverdue = task?.due_date && isAfter(new Date(), new Date(task.due_date));
 
               return (
-                <Card key={assignment.id} className={`group hover:shadow-lg transition-all duration-200 ${isOverdue ? 'border-destructive/50' : ''}`}>
+                <Card key={task.id} className={`group hover:shadow-lg transition-all duration-200 ${isOverdue ? 'border-destructive/50' : ''}`}>
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <FolderKanban className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-medium text-primary">{project?.title}</span>
+                          <span className="text-sm font-medium text-primary">{task?.project_title}</span>
                         </div>
                         <CardTitle className="text-lg group-hover:text-primary transition-colors">
                           {task?.title}
                         </CardTitle>
                         <div className="flex items-center gap-2 mt-2">
-                          {task?.priority && getPriorityBadge(task.priority)}
-                          {getStatusBadge(task, assignment)}
+                          {getStatusBadge(task)}
                         </div>
                       </div>
                     </div>
@@ -260,14 +270,14 @@ export const TasksTab: React.FC = () => {
                       )}
                       <div className="flex items-center gap-1">
                         <Users className="w-4 h-4" />
-                        <span>Նախագիծ՝ {project?.title}</span>
+                        <span>Նախագիծ՝ {task?.project_title}</span>
                       </div>
                     </div>
 
-                    {!assignment.completed_at && (
+                    {task.status !== 'done' && (
                       <div className="pt-2">
                         <TaskCompletionDialog
-                          assignmentId={assignment.id}
+                          assignmentId={task.id}
                           taskTitle={task?.title || 'Առաջադրանք'}
                           onComplete={handleCompleteTask}
                         />
@@ -288,25 +298,21 @@ export const TasksTab: React.FC = () => {
             Կատարված առաջադրանքներ
           </h3>
           <div className="space-y-4">
-            {completedTasks.map((assignment) => {
-              const task = assignment.project_tasks;
-              const project = task?.projects;
-
+            {completedTasks.map((task) => {
               return (
-                <Card key={assignment.id} className="opacity-75 hover:opacity-100 transition-opacity">
+                <Card key={task.id} className="opacity-75 hover:opacity-100 transition-opacity">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                           <FolderKanban className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-medium text-primary">{project?.title}</span>
+                          <span className="text-sm font-medium text-primary">{task?.project_title}</span>
                         </div>
                         <CardTitle className="text-lg">
                           {task?.title}
                         </CardTitle>
                         <div className="flex items-center gap-2 mt-2">
-                          {task?.priority && getPriorityBadge(task.priority)}
-                          {getStatusBadge(task, assignment)}
+                          {getStatusBadge(task)}
                         </div>
                       </div>
                     </div>
@@ -316,23 +322,10 @@ export const TasksTab: React.FC = () => {
                       <div className="flex items-center gap-1">
                         <CheckCircle className="w-4 h-4 text-green-600" />
                         <span>
-                          Կատարվել է՝ {formatDistanceToNow(new Date(assignment.completed_at!), { 
-                            addSuffix: true,
-                            locale: hy 
-                          })}
+                          Կատարված
                         </span>
                       </div>
                     </div>
-
-                    {assignment.submission_notes && (
-                      <div className="p-3 bg-muted/50 rounded-md">
-                        <Label className="text-xs font-medium text-muted-foreground flex items-center gap-1 mb-1">
-                          <FileText className="w-3 h-3" />
-                          Լրացուցիչ նշումներ
-                        </Label>
-                        <p className="text-sm">{assignment.submission_notes}</p>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               );
@@ -341,7 +334,7 @@ export const TasksTab: React.FC = () => {
         </div>
       )}
 
-      {assignedTasks.length === 0 && (
+      {projectSteps.length === 0 && (
         <Card>
           <CardContent className="pt-6 text-center">
             <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
