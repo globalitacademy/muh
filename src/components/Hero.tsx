@@ -36,20 +36,20 @@ const Hero = () => {
               </div>
             </ScrollReveal>
 
-            <ScrollReveal delay={50}>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight immediate-visible">
+            <ScrollReveal delay={200}>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
                 <span className="text-gradient font-armenian block mb-2">{t('hero.title')}</span>
               </h1>
             </ScrollReveal>
 
-            <ScrollReveal delay={75}>
-              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed font-armenian max-w-2xl hero-text-content immediate-visible">
+            <ScrollReveal delay={100}>
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed font-armenian max-w-2xl hero-text-content">
                 {t('hero.description')}
               </p>
             </ScrollReveal>
 
-            <ScrollReveal delay={100}>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4 immediate-visible">
+            <ScrollReveal delay={400}>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button 
                   size="lg" 
                   className="btn-modern text-white px-8 py-4 text-lg font-armenian hover:shadow-glow min-h-[56px] inline-flex items-center gap-2" 
@@ -156,11 +156,7 @@ const Hero = () => {
                     <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full animate-pulse"></div>
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
-                    {statsLoading ? (
-                      <div className="stats-skeleton"></div>
-                    ) : (
-                      <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
-                    )}
+                    <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.students')}</div>
                   <div className="mt-2 text-xs text-green-600 font-medium">+12% {t('hero.stats.monthly-growth')}</div>
@@ -177,11 +173,7 @@ const Hero = () => {
                     <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-purple-600 mb-2 font-armenian">
-                    {statsLoading ? (
-                      <div className="stats-skeleton"></div>
-                    ) : (
-                      <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
-                    )}
+                    <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.modules')}</div>
                   <div className="mt-2 text-xs text-blue-600 font-medium">5 {t('hero.stats.new-modules')}</div>
@@ -198,11 +190,7 @@ const Hero = () => {
                     <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-pulse"></div>
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-orange-500 mb-2 font-armenian">
-                    {statsLoading ? (
-                      <div className="stats-skeleton"></div>
-                    ) : (
-                      <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
-                    )}
+                    <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.instructors')}</div>
                   <div className="mt-2 text-xs text-orange-600 font-medium">{t('hero.stats.experts')}</div>

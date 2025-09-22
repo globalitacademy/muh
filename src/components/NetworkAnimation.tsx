@@ -1,7 +1,6 @@
 
 import React, { useEffect, useRef } from 'react';
 import { PerformanceMonitor } from '@/utils/performanceMonitor';
-import { TTIOptimizer } from '@/utils/ttiOptimizer';
 
 interface Node {
   x: number;
@@ -28,26 +27,8 @@ const NetworkAnimation = () => {
   const timeRef = useRef<number>(0);
 
   useEffect(() => {
-    // TTI OPTIMIZATION: Defer until page is interactive
-    const ttiOptimizer = TTIOptimizer.getInstance();
-    let resizeTimeout: NodeJS.Timeout;
-    
-    const handleResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        // Will be implemented inside initAnimation
-      }, 250);
-    };
-    
-    const initAnimation = () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-      
-      // Check if main thread is available for animations
-      if (!ttiOptimizer.isReadyForHeavyWork()) {
-        setTimeout(initAnimation, 1000);
-        return;
-      }
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -207,9 +188,8 @@ const NetworkAnimation = () => {
     };
 
     const animate = () => {
-      // TTI OPTIMIZATION: Monitor main thread health
+      // Performance safeguard: adaptive frame rate based on device capabilities
       const perfMonitor = PerformanceMonitor.getInstance();
-      const ttiOptimizer = TTIOptimizer.getInstance();
       const frameInterval = perfMonitor.getFrameInterval();
       
       const now = performance.now();
@@ -219,50 +199,17 @@ const NetworkAnimation = () => {
       }
       timeRef.current = now;
       
-      // CRITICAL TBT FIX: Yield every few frames to prevent long tasks
-      const frameCount = Math.floor(now / 16.67);
-      if (frameCount % 3 === 0) {
-        // Yield to main thread every 3 frames (~50ms)
-        ttiOptimizer.yieldToMainThread().then(() => {
-          animationRef.current = requestAnimationFrame(animate);
-        });
-        return;
-      }
-      
-      // Skip animation frames if main thread is under pressure
-      if (!ttiOptimizer.isReadyForHeavyWork()) {
-        // Dramatically reduce animation when main thread is busy
-        setTimeout(() => {
-          animationRef.current = requestAnimationFrame(animate);
-        }, 200);
-        return;
-      }
-      
       // Update performance metrics
       perfMonitor.updateFrame();
       
-      // CRITICAL TBT FIX: Break animation work into micro-tasks
-      const animationStart = performance.now();
-      
-      // Adaptive complexity based on main thread availability
-      if (!perfMonitor.shouldReduceAnimations() && ttiOptimizer.isReadyForHeavyWork()) {
+      // Reduce animation complexity on low-end devices
+      if (!perfMonitor.shouldReduceAnimations()) {
         updateNodes();
-        
-        // Check if we've used more than 5ms, yield if so
-        if (performance.now() - animationStart > 5) {
-          ttiOptimizer.yieldToMainThread().then(() => {
-            updateConnections();
-            draw();
-            animationRef.current = requestAnimationFrame(animate);
-          });
-          return;
-        }
-        
         updateConnections();
       } else {
-        // Minimal animation for performance
+        // Simplified animation for performance
         updateNodes();
-        if (Math.random() > 0.8) updateConnections(); // Skip most connection updates
+        if (Math.random() > 0.5) updateConnections(); // Skip some connection updates
       }
       
       draw();
@@ -282,14 +229,11 @@ const NetworkAnimation = () => {
           createNodes();
         });
       }, 250);
-    }; // Close handleResize function
-    
-    }; // Close initAnimation function
-    // Start animation only when page is interactive
-    ttiOptimizer.whenInteractive(() => {
-      console.log('NetworkAnimation: Starting after TTI');
-      initAnimation();
-    });
+    };
+
+    resizeCanvas();
+    createNodes();
+    animate();
 
     window.addEventListener('resize', handleResize);
 
