@@ -23,71 +23,64 @@ export default defineConfig(({ mode }) => ({
     // Optimize JavaScript code splitting to reduce unused code
     rollupOptions: {
       output: {
-        // Strategic code splitting for maximum bundle optimization
-        manualChunks: {
-          // Core React and routing - needed immediately
-          'react-core': ['react', 'react-dom', 'react-router-dom'],
+        // Strategic code splitting using function-based approach for proper path handling
+        manualChunks: (id) => {
+          // Core React libraries - needed immediately
+          if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+            return 'react-core';
+          }
           
-          // UI components and utilities - needed for basic functionality
-          'ui-core': [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-toast',
-            'lucide-react'
-          ],
+          // UI components and utilities - needed for basic functionality  
+          if (id.includes('@radix-ui') || id.includes('lucide-react')) {
+            return 'ui-core';
+          }
           
           // Data management - used across multiple pages
-          'data-management': [
-            '@tanstack/react-query',
-            '@supabase/supabase-js'
-          ],
+          if (id.includes('@tanstack/react-query') || id.includes('@supabase/supabase-js')) {
+            return 'data-management';
+          }
           
           // Heavy animation components - defer loading
-          'animations': [
-            './src/components/SplashCursor.tsx',
-            './src/components/NetworkAnimation.tsx'
-          ],
+          if (id.includes('/SplashCursor.') || id.includes('/NetworkAnimation.')) {
+            return 'animations';
+          }
           
           // Admin and dashboard features - only for authenticated users
-          'admin': [
-            './src/pages/Admin.tsx',
-            './src/pages/Dashboard.tsx',
-            './src/components/admin/',
-            './src/components/employer/',
-            './src/components/instructor/'
-          ],
+          if (id.includes('/components/admin/') || id.includes('/Admin.') || id.includes('/Dashboard.') || 
+              id.includes('/components/employer/') || id.includes('/components/instructor/')) {
+            return 'admin';
+          }
           
           // Course and learning content - secondary pages
-          'learning': [
-            './src/pages/Courses.tsx',
-            './src/pages/ModuleDetail.tsx',
-            './src/pages/TopicDetail.tsx',
-            './src/pages/Specialties.tsx',
-            './src/pages/MyCourses.tsx'
-          ],
+          if (id.includes('/Courses.') || id.includes('/ModuleDetail.') || id.includes('/TopicDetail.') || 
+              id.includes('/Specialties.') || id.includes('/MyCourses.')) {
+            return 'learning';
+          }
           
           // Authentication and user management
-          'auth': [
-            './src/pages/Auth.tsx',
-            './src/pages/ResetPassword.tsx',
-            './src/components/auth/'
-          ],
+          if (id.includes('/Auth.') || id.includes('/ResetPassword.') || id.includes('/components/auth/')) {
+            return 'auth';
+          }
           
           // Projects and jobs - feature-specific
-          'projects-jobs': [
-            './src/pages/Projects.tsx',
-            './src/pages/ProjectDetail.tsx',
-            './src/pages/Jobs.tsx',
-            './src/pages/JobDetail.tsx'
-          ],
+          if (id.includes('/Projects.') || id.includes('/ProjectDetail.') || 
+              id.includes('/Jobs.') || id.includes('/JobDetail.')) {
+            return 'projects-jobs';
+          }
           
           // Partner functionality - specialized features
-          'partner': [
-            './src/pages/Partner.tsx',
-            './src/pages/PartnerCourseDetail.tsx',
-            './src/pages/PrivateCourses.tsx',
-            './src/components/partner/'
-          ]
+          if (id.includes('/Partner.') || id.includes('/PartnerCourseDetail.') || 
+              id.includes('/PrivateCourses.') || id.includes('/components/partner/')) {
+            return 'partner';
+          }
+          
+          // Keep vendor dependencies separate
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+          
+          // Default chunk for remaining code
+          return 'main';
         },
         
         // Optimize chunk file names for better caching
