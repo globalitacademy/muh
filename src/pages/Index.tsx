@@ -8,8 +8,22 @@ import Footer from '@/components/Footer';
 // CRITICAL: Load immediately for above-the-fold content
 import EnhancedFeatures from '@/components/EnhancedFeatures';
 
-// LAZY LOAD: Defer non-critical sections to reduce initial bundle
-const SplashCursor = lazy(() => import('@/components/SplashCursor'));
+// AGGRESSIVE TTI OPTIMIZATION: Defer ALL heavy components until page is interactive
+const SplashCursor = lazy(() => 
+  // Add delay to ensure page is interactive first
+  new Promise<{ default: React.ComponentType<any> }>(resolve => {
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(() => {
+        import('@/components/SplashCursor').then(module => resolve(module));
+      }, { timeout: 5000 });
+    } else {
+      setTimeout(() => {
+        import('@/components/SplashCursor').then(module => resolve(module));
+      }, 3000);
+    }
+  })
+);
+
 const Courses = lazy(() => import('@/components/Courses'));
 const JobPostingsSection = lazy(() => import('@/components/JobPostingsSection'));
 const PublicProjectsSection = lazy(() => import('@/components/PublicProjectsSection'));

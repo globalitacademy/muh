@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { PerformanceMonitor } from '@/utils/performanceMonitor';
+import { TTIOptimizer } from '@/utils/ttiOptimizer';
 
 function SplashCursor({
   SIM_RESOLUTION = 128,
@@ -21,10 +22,19 @@ function SplashCursor({
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    // Defer heavy WebGL initialization to improve FID
+    // CRITICAL TTI OPTIMIZATION: Only initialize when page is truly interactive
+    const ttiOptimizer = TTIOptimizer.getInstance();
+    
     const initializeEffect = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
+      
+      // Additional check: only proceed if main thread isn't busy
+      if (!ttiOptimizer.isReadyForHeavyWork()) {
+        console.log('SplashCursor: Delaying initialization due to main thread pressure');
+        setTimeout(initializeEffect, 2000);
+        return;
+      }
 
     function pointerPrototype() {
       this.id = -1;
@@ -800,7 +810,8 @@ function SplashCursor({
     let colorUpdateTimer = 0.0;
 
     function updateFrame() {
-      // Adaptive performance management
+      // TTI OPTIMIZATION: Monitor main thread and skip frames if busy
+      const ttiOptimizer = TTIOptimizer.getInstance();
       const perfMonitor = PerformanceMonitor.getInstance();
       const frameInterval = perfMonitor.getFrameInterval();
       
@@ -810,20 +821,27 @@ function SplashCursor({
         return;
       }
       
+      // Skip frame if main thread is under pressure
+      if (!ttiOptimizer.isReadyForHeavyWork()) {
+        // Reduce frame rate dramatically when main thread is busy
+        setTimeout(() => requestAnimationFrame(updateFrame), 100);
+        return;
+      }
+      
       // Update performance tracking
       perfMonitor.updateFrame();
       
-      // Skip expensive operations on low-end devices
+      // Progressive complexity based on performance
       if (perfMonitor.shouldReduceAnimations()) {
-        // Minimal update for low-end devices
+        // Minimal update for low-end devices or busy main thread
         const dt = calcDeltaTime();
-        if (Math.random() > 0.7) { // Reduce frequency of expensive operations
+        if (Math.random() > 0.9) { // Reduce frequency dramatically
           if (resizeCanvas()) initFramebuffers();
           step(dt);
         }
         render(null);
       } else {
-        // Full update for capable devices
+        // Full update for capable devices with available main thread
         const dt = calcDeltaTime();
         if (resizeCanvas()) initFramebuffers();
         updateColors(dt);

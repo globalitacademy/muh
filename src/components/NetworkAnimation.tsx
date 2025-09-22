@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { PerformanceMonitor } from '@/utils/performanceMonitor';
+import { TTIOptimizer } from '@/utils/ttiOptimizer';
 
 interface Node {
   x: number;
@@ -27,8 +28,26 @@ const NetworkAnimation = () => {
   const timeRef = useRef<number>(0);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    // TTI OPTIMIZATION: Defer until page is interactive
+    const ttiOptimizer = TTIOptimizer.getInstance();
+    let resizeTimeout: NodeJS.Timeout;
+    
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        // Will be implemented inside initAnimation
+      }, 250);
+    };
+    
+    const initAnimation = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      
+      // Check if main thread is available for animations
+      if (!ttiOptimizer.isReadyForHeavyWork()) {
+        setTimeout(initAnimation, 1000);
+        return;
+      }
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -188,8 +207,9 @@ const NetworkAnimation = () => {
     };
 
     const animate = () => {
-      // Performance safeguard: adaptive frame rate based on device capabilities
+      // TTI OPTIMIZATION: Monitor main thread health
       const perfMonitor = PerformanceMonitor.getInstance();
+      const ttiOptimizer = TTIOptimizer.getInstance();
       const frameInterval = perfMonitor.getFrameInterval();
       
       const now = performance.now();
@@ -199,17 +219,26 @@ const NetworkAnimation = () => {
       }
       timeRef.current = now;
       
+      // Skip animation frames if main thread is under pressure
+      if (!ttiOptimizer.isReadyForHeavyWork()) {
+        // Dramatically reduce animation when main thread is busy
+        setTimeout(() => {
+          animationRef.current = requestAnimationFrame(animate);
+        }, 200);
+        return;
+      }
+      
       // Update performance metrics
       perfMonitor.updateFrame();
       
-      // Reduce animation complexity on low-end devices
-      if (!perfMonitor.shouldReduceAnimations()) {
+      // Adaptive complexity based on main thread availability
+      if (!perfMonitor.shouldReduceAnimations() && ttiOptimizer.isReadyForHeavyWork()) {
         updateNodes();
         updateConnections();
       } else {
-        // Simplified animation for performance
+        // Minimal animation for performance
         updateNodes();
-        if (Math.random() > 0.5) updateConnections(); // Skip some connection updates
+        if (Math.random() > 0.7) updateConnections(); // Skip most connection updates
       }
       
       draw();
@@ -229,11 +258,14 @@ const NetworkAnimation = () => {
           createNodes();
         });
       }, 250);
-    };
-
-    resizeCanvas();
-    createNodes();
-    animate();
+    }; // Close handleResize function
+    
+    }; // Close initAnimation function
+    // Start animation only when page is interactive
+    ttiOptimizer.whenInteractive(() => {
+      console.log('NetworkAnimation: Starting after TTI');
+      initAnimation();
+    });
 
     window.addEventListener('resize', handleResize);
 
