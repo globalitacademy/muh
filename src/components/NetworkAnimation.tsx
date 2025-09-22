@@ -1,5 +1,6 @@
 
 import React, { useEffect, useRef } from 'react';
+import { PerformanceMonitor } from '@/utils/performanceMonitor';
 
 interface Node {
   x: number;
@@ -187,8 +188,30 @@ const NetworkAnimation = () => {
     };
 
     const animate = () => {
-      updateNodes();
-      updateConnections();
+      // Performance safeguard: adaptive frame rate based on device capabilities
+      const perfMonitor = PerformanceMonitor.getInstance();
+      const frameInterval = perfMonitor.getFrameInterval();
+      
+      const now = performance.now();
+      if (now - timeRef.current < frameInterval) {
+        animationRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      timeRef.current = now;
+      
+      // Update performance metrics
+      perfMonitor.updateFrame();
+      
+      // Reduce animation complexity on low-end devices
+      if (!perfMonitor.shouldReduceAnimations()) {
+        updateNodes();
+        updateConnections();
+      } else {
+        // Simplified animation for performance
+        updateNodes();
+        if (Math.random() > 0.5) updateConnections(); // Skip some connection updates
+      }
+      
       draw();
       animationRef.current = requestAnimationFrame(animate);
     };

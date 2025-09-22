@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
+import { PerformanceMonitor } from '@/utils/performanceMonitor';
 
 function SplashCursor({
   SIM_RESOLUTION = 128,
@@ -799,19 +800,45 @@ function SplashCursor({
     let colorUpdateTimer = 0.0;
 
     function updateFrame() {
-      const dt = calcDeltaTime();
-      if (resizeCanvas()) initFramebuffers();
-      updateColors(dt);
-      applyInputs();
-      step(dt);
-      render(null);
+      // Adaptive performance management
+      const perfMonitor = PerformanceMonitor.getInstance();
+      const frameInterval = perfMonitor.getFrameInterval();
+      
+      const now = performance.now();
+      if (now - lastUpdateTime < frameInterval) {
+        requestAnimationFrame(updateFrame);
+        return;
+      }
+      
+      // Update performance tracking
+      perfMonitor.updateFrame();
+      
+      // Skip expensive operations on low-end devices
+      if (perfMonitor.shouldReduceAnimations()) {
+        // Minimal update for low-end devices
+        const dt = calcDeltaTime();
+        if (Math.random() > 0.7) { // Reduce frequency of expensive operations
+          if (resizeCanvas()) initFramebuffers();
+          step(dt);
+        }
+        render(null);
+      } else {
+        // Full update for capable devices
+        const dt = calcDeltaTime();
+        if (resizeCanvas()) initFramebuffers();
+        updateColors(dt);
+        applyInputs();
+        step(dt);
+        render(null);
+      }
+      
       requestAnimationFrame(updateFrame);
     }
 
     function calcDeltaTime() {
-      let now = Date.now();
+      let now = performance.now(); // Use performance.now() for better precision
       let dt = (now - lastUpdateTime) / 1000;
-      dt = Math.min(dt, 0.016666);
+      dt = Math.min(dt, 0.016666); // Cap at 60fps
       lastUpdateTime = now;
       return dt;
     }
