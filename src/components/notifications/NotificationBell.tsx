@@ -7,8 +7,28 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useUnreadNotifications } from '@/hooks/useNotifications';
+import { useDeferredQuery } from '@/hooks/useDeferredQuery';
+import { supabase } from '@/integrations/supabase/client';
 import { NotificationList } from './NotificationList';
+
+// Use deferred loading for notifications to avoid blocking critical path
+const useUnreadNotifications = () => {
+  return useDeferredQuery(
+    ['notifications', 'unread'],
+    async () => {
+      const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('status', 'unread')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    },
+    2000, // Delay notifications loading by 2 seconds
+    { staleTime: 60 * 1000 } // Cache for 1 minute
+  );
+};
 
 export const NotificationBell = () => {
   const { data: unreadNotifications = [] } = useUnreadNotifications();

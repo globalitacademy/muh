@@ -11,6 +11,7 @@ import NetworkAnimation from '@/components/NetworkAnimation';
 const Hero = () => {
   const { t } = useLanguage();
   const navigate = useNavigate();
+  // Defer stats loading to avoid blocking critical rendering path
   const { data: stats, isLoading: statsLoading } = useContactStats();
 
   return (

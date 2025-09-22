@@ -6,35 +6,38 @@ export const useContactStats = () => {
   return useQuery({
     queryKey: ['contact-stats'],
     queryFn: async () => {
-      // Get total active students count
-      const { count: studentsCount, error: studentsError } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'student');
+      // Use count queries for better performance instead of selecting all data
+      const [studentsResult, modulesResult, instructorsResult] = await Promise.all([
+        supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'student'),
+        supabase
+          .from('modules')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_active', true),
+        supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .eq('role', 'instructor'),
+      ]);
 
-      if (studentsError) throw studentsError;
-
-      // Get total modules count (representing courses/content available)
-      const { count: modulesCount, error: modulesError } = await supabase
-        .from('modules')
-        .select('*', { count: 'exact', head: true })
-        .eq('is_active', true);
-
-      if (modulesError) throw modulesError;
-
-      // Get total instructors count
-      const { count: instructorsCount, error: instructorsError } = await supabase
-        .from('profiles')
-        .select('*', { count: 'exact', head: true })
-        .eq('role', 'instructor');
-
-      if (instructorsError) throw instructorsError;
+      if (studentsResult.error) throw studentsResult.error;
+      if (modulesResult.error) throw modulesResult.error;
+      if (instructorsResult.error) throw instructorsResult.error;
 
       return {
-        studentsCount: studentsCount || 0,
-        modulesCount: modulesCount || 0,
-        instructorsCount: instructorsCount || 0
+        studentsCount: studentsResult.count || 0,
+        modulesCount: modulesResult.count || 0,
+        instructorsCount: instructorsResult.count || 0,
       };
-    }
+    },
+    // Defer this query to not block critical rendering path
+    enabled: typeof window !== 'undefined',
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    gcTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+    // Add slight delay to ensure critical content loads first
+    refetchOnMount: false, // Don't refetch on every mount
+    refetchOnWindowFocus: false, // Don't refetch on window focus
   });
 };
