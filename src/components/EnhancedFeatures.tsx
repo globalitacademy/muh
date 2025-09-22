@@ -47,32 +47,84 @@ const EnhancedFeatures = () => {
     const container = containerRef.current;
     if (!container) return;
     const cards = container.querySelectorAll('.feature-card');
+    
+    // Cache getBoundingClientRect results to prevent forced reflows
+    let containerRect: DOMRect | null = null;
+    let cardRects: DOMRect[] = [];
+    let animationFrameId: number | null = null;
+    let pendingUpdate = false;
+    
+    const cacheRects = () => {
+      containerRect = container.getBoundingClientRect();
+      cardRects = Array.from(cards).map(card => card.getBoundingClientRect());
+    };
+    
+    // Initial cache
+    cacheRects();
+    
+    // Throttled mouse move handler using requestAnimationFrame
     const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      cards.forEach((card, index) => {
-        const cardRect = card.getBoundingClientRect();
-        const cardCenterX = cardRect.left + cardRect.width / 2 - rect.left;
-        const cardCenterY = cardRect.top + cardRect.height / 2 - rect.top;
-        const distance = Math.sqrt(Math.pow(x - cardCenterX, 2) + Math.pow(y - cardCenterY, 2));
-        const maxDistance = 300;
-        const influence = Math.max(0, 1 - distance / maxDistance);
-        const rotateX = (y - cardCenterY) * influence * 0.1;
-        const rotateY = (x - cardCenterX) * influence * -0.1;
-        (card as HTMLElement).style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(${influence * 20}px)`;
+      if (!containerRect || pendingUpdate) return;
+      
+      pendingUpdate = true;
+      
+      // Batch DOM reads and writes using requestAnimationFrame
+      animationFrameId = requestAnimationFrame(() => {
+        const x = e.clientX - containerRect!.left;
+        const y = e.clientY - containerRect!.top;
+        
+        cards.forEach((card, index) => {
+          if (!cardRects[index]) return;
+          
+          const cardCenterX = cardRects[index].left + cardRects[index].width / 2 - containerRect!.left;
+          const cardCenterY = cardRects[index].top + cardRects[index].height / 2 - containerRect!.top;
+          const distance = Math.sqrt(Math.pow(x - cardCenterX, 2) + Math.pow(y - cardCenterY, 2));
+          const maxDistance = 300;
+          const influence = Math.max(0, 1 - distance / maxDistance);
+          const rotateX = (y - cardCenterY) * influence * 0.1;
+          const rotateY = (x - cardCenterX) * influence * -0.1;
+          
+          // Use transform3d for hardware acceleration and avoid layout thrashing
+          (card as HTMLElement).style.transform = `translate3d(0, 0, ${influence * 20}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        pendingUpdate = false;
       });
     };
+    
     const handleMouseLeave = () => {
-      cards.forEach(card => {
-        (card as HTMLElement).style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      
+      requestAnimationFrame(() => {
+        cards.forEach(card => {
+          (card as HTMLElement).style.transform = 'translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg)';
+        });
       });
     };
-    container.addEventListener('mousemove', handleMouseMove);
+    
+    // Debounced resize handler to recache rects
+    let resizeTimeout: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        cacheRects();
+      }, 100);
+    };
+    
+    container.addEventListener('mousemove', handleMouseMove, { passive: true });
     container.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('resize', handleResize);
+    
     return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      clearTimeout(resizeTimeout);
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mouseleave', handleMouseLeave);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
   return <section className="py-16 sm:py-20 lg:py-24 bg-background w-full relative overflow-hidden">

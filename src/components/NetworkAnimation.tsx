@@ -34,13 +34,20 @@ const NetworkAnimation = () => {
 
     console.log('NetworkAnimation: Design-integrated animation initializing');
 
+    // Cache parent rect to avoid forced reflows
+    let cachedParentRect: DOMRect | null = null;
+    
     const resizeCanvas = () => {
       const parent = canvas.parentElement;
       if (!parent) return;
       
-      const rect = parent.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      // Use cached rect or get fresh one if not available
+      if (!cachedParentRect) {
+        cachedParentRect = parent.getBoundingClientRect();
+      }
+      
+      canvas.width = cachedParentRect.width;
+      canvas.height = cachedParentRect.height;
       
       console.log(`NetworkAnimation: Canvas resized to ${canvas.width}x${canvas.height}`);
     };
@@ -190,8 +197,14 @@ const NetworkAnimation = () => {
     const handleResize = () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
-        resizeCanvas();
-        createNodes();
+        // Clear cached rect on resize and recalculate
+        cachedParentRect = null;
+        
+        // Use requestAnimationFrame to batch DOM reads and writes
+        requestAnimationFrame(() => {
+          resizeCanvas();
+          createNodes();
+        });
       }, 250);
     };
 

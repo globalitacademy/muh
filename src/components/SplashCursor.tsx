@@ -814,12 +814,22 @@ function SplashCursor({
       return dt;
     }
 
+    // Cache canvas dimensions to reduce forced reflows
+    let cachedCanvasWidth = 0;
+    let cachedCanvasHeight = 0;
+    let dimensionsCacheValid = false;
+    
     function resizeCanvas() {
-      let width = scaleByPixelRatio(canvas.clientWidth);
-      let height = scaleByPixelRatio(canvas.clientHeight);
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
+      // Use cached dimensions if available and valid
+      if (!dimensionsCacheValid) {
+        cachedCanvasWidth = scaleByPixelRatio(canvas.clientWidth);
+        cachedCanvasHeight = scaleByPixelRatio(canvas.clientHeight);
+        dimensionsCacheValid = true;
+      }
+      
+      if (canvas.width !== cachedCanvasWidth || canvas.height !== cachedCanvasHeight) {
+        canvas.width = cachedCanvasWidth;
+        canvas.height = cachedCanvasHeight;
         return true;
       }
       return false;
@@ -1202,7 +1212,19 @@ function SplashCursor({
       }
     });
 
+    // Add window resize handler to invalidate cached dimensions
+    const handleResize = () => {
+      dimensionsCacheValid = false;
+    };
+    
+    window.addEventListener('resize', handleResize);
+
     updateFrame();
+    
+    // Cleanup function
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     SIM_RESOLUTION,
