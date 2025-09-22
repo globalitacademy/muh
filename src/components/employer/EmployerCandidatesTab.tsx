@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useEmployerJobPostings, useEmployerApplications } from '@/hooks/useJobPostings';
-import { Search, CheckCircle, XCircle, Clock, FileText, FolderKanban, Trash2 } from 'lucide-react';
+import { Search, CheckCircle, XCircle, Clock, FileText, FolderKanban, Trash2, User, Calendar } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
@@ -247,63 +247,96 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="pt-6">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex-1">
-            <h3 className="font-semibold text-lg">{application.projects?.title}</h3>
-            <div className="mt-2 space-y-1">
-              <p className="font-medium text-primary">
+    <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-background to-muted/20 backdrop-blur-sm">
+      <CardContent className="p-6">
+        <div className="flex justify-between items-start mb-6">
+          <div className="flex-1 space-y-4">
+            <div className="space-y-2">
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                <FolderKanban className="w-4 h-4 mr-2" />
+                {application.projects?.title}
+              </div>
+              <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors">
                 {application.profiles?.name || 'Անանուն օգտատեր'}
-              </p>
+              </h3>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {application.profiles?.phone && (
-                <p className="text-sm text-muted-foreground">📱 {application.profiles.phone}</p>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                    <span className="text-blue-600">📱</span>
+                  </div>
+                  <span>{application.profiles.phone}</span>
+                </div>
               )}
               {application.profiles?.organization && (
-                <p className="text-sm text-muted-foreground">🏢 {application.profiles.organization}</p>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-8 h-8 rounded-full bg-purple-500/10 flex items-center justify-center">
+                    <span className="text-purple-600">🏢</span>
+                  </div>
+                  <span>{application.profiles.organization}</span>
+                </div>
               )}
               {application.profiles?.group_number && (
-                <p className="text-sm text-muted-foreground">👥 Խումբ {application.profiles.group_number}</p>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center">
+                    <span className="text-green-600">👥</span>
+                  </div>
+                  <span>Խումբ {application.profiles.group_number}</span>
+                </div>
               )}
               {application.profiles?.field_of_study && (
-                <p className="text-sm text-muted-foreground">🎓 {application.profiles.field_of_study}</p>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center">
+                    <span className="text-amber-600">🎓</span>
+                  </div>
+                  <span>{application.profiles.field_of_study}</span>
+                </div>
               )}
               {application.profiles?.linkedin_url && (
                 <a href={application.profiles.linkedin_url} target="_blank" rel="noopener noreferrer" 
-                   className="text-sm text-blue-600 hover:underline">
-                  💼 LinkedIn պրոֆիլ
+                   className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 transition-colors group/link">
+                  <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center group-hover/link:bg-blue-500/20 transition-colors">
+                    <span>💼</span>
+                  </div>
+                  <span className="underline underline-offset-2">LinkedIn պրոֆիլ</span>
                 </a>
               )}
-              <p className="text-sm text-muted-foreground">
-                📅 Դիմել է՝ {new Date(application.applied_at).toLocaleDateString('hy-AM')}
-              </p>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center">
+                  <Calendar className="w-4 h-4 text-orange-600" />
+                </div>
+                <span>Դիմել է՝ {new Date(application.applied_at).toLocaleDateString('hy-AM')}</span>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          
+          <div className="flex flex-col items-end gap-3">
             {getStatusBadge(application.status)}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
                   size="sm"
-                  variant="outline"
-                  className="text-destructive hover:text-destructive"
+                  variant="ghost"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10 transition-all duration-200 group/delete"
                   disabled={loading}
                 >
-                  <Trash2 className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4 group-hover/delete:scale-110 transition-transform" />
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent className="border-0 shadow-2xl">
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Ջնջե՞լ դիմումը</AlertDialogTitle>
-                  <AlertDialogDescription>
+                  <AlertDialogTitle className="text-destructive">Ջնջե՞լ դիմումը</AlertDialogTitle>
+                  <AlertDialogDescription className="text-muted-foreground">
                     Այս գործողությունը չի կարելի հետ գցել։ Դիմումը ընդմիշտ կջնջվի:
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Չեղարկել</AlertDialogCancel>
+                  <AlertDialogCancel className="hover:bg-muted">Չեղարկել</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleDelete}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg hover:shadow-destructive/25"
                   >
                     Ջնջել
                   </AlertDialogAction>
@@ -314,25 +347,35 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
         </div>
 
         {application.profiles?.bio && (
-          <div className="mb-4">
-            <Label className="text-sm font-medium">Կենսագրական տվյալներ:</Label>
-            <p className="text-sm mt-1 p-2 bg-muted rounded">{application.profiles.bio}</p>
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <User className="w-4 h-4 text-primary" />
+              <Label className="text-sm font-semibold text-foreground">Կենսագրական տվյալներ</Label>
+            </div>
+            <div className="p-4 bg-muted/50 rounded-lg border border-border/50 backdrop-blur-sm">
+              <p className="text-sm leading-relaxed text-muted-foreground">{application.profiles.bio}</p>
+            </div>
           </div>
         )}
 
         {application.cover_letter && (
-          <div className="mb-4">
-            <Label className="text-sm font-medium">Ուղեկցող նամակ:</Label>
-            <p className="text-sm mt-1 p-2 bg-muted rounded">{application.cover_letter}</p>
+          <div className="mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <FileText className="w-4 h-4 text-primary" />
+              <Label className="text-sm font-semibold text-foreground">Ուղեկցող նամակ</Label>
+            </div>
+            <div className="p-4 bg-gradient-to-br from-primary/5 to-primary/10 rounded-lg border border-primary/20 backdrop-blur-sm">
+              <p className="text-sm leading-relaxed text-foreground/90">{application.cover_letter}</p>
+            </div>
           </div>
         )}
 
         {application.status === 'pending' && (
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button 
               onClick={handleApprove}
               disabled={loading}
-              className="flex-1"
+              className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg hover:shadow-green-500/25 transition-all duration-200"
             >
               <CheckCircle className="w-4 h-4 mr-2" />
               Հաստատել
@@ -341,41 +384,42 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
             <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
               <DialogTrigger asChild>
                 <Button 
-                  variant="destructive" 
-                  className="flex-1"
+                  variant="outline" 
+                  className="flex-1 border-destructive/30 text-destructive hover:bg-destructive/10 hover:border-destructive/50 transition-all duration-200"
                   disabled={loading}
                 >
                   <XCircle className="w-4 h-4 mr-2" />
                   Մերժել
                 </Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="border-0 shadow-2xl">
                 <DialogHeader>
-                  <DialogTitle>Մերժել դիմումը</DialogTitle>
+                  <DialogTitle className="text-destructive">Մերժել դիմումը</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="rejection-reason">Մերժման պատճառ (ոչ պարտադիր)</Label>
+                    <Label htmlFor="rejection-reason" className="text-sm font-medium">Մերժման պատճառ (ոչ պարտադիր)</Label>
                     <Textarea
                       id="rejection-reason"
                       value={rejectionReason}
                       onChange={(e) => setRejectionReason(e.target.value)}
                       placeholder="Նշեք մերժման պատճառը..."
+                      className="mt-2 border-border/50 focus:border-destructive/50"
                     />
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     <Button
                       onClick={handleReject}
                       variant="destructive"
                       disabled={loading}
-                      className="flex-1"
+                      className="flex-1 shadow-lg hover:shadow-destructive/25"
                     >
                       Մերժել
                     </Button>
                     <Button
                       onClick={() => setShowRejectDialog(false)}
                       variant="outline"
-                      className="flex-1"
+                      className="flex-1 hover:bg-muted"
                     >
                       Չեղարկել
                     </Button>
