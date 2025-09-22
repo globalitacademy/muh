@@ -84,12 +84,25 @@ export default defineConfig(({ mode }) => ({
           return 'main';
         },
         
-        // Optimize chunk file names for better caching
+        // Optimize chunk file names for better caching with longer hash
         chunkFileNames: (chunkInfo) => {
           const facadeModuleId = chunkInfo.facadeModuleId 
             ? chunkInfo.facadeModuleId.split('/').pop()?.replace('.tsx', '') || 'chunk'
             : 'chunk';
-          return `js/${facadeModuleId}-[hash].js`;
+          return `js/${facadeModuleId}-[hash:12].js`;
+        },
+        
+        // Optimize asset file names for better caching
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name?.split('.') ?? [];
+          const ext = info[info.length - 1];
+          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+            return `img/[name]-[hash:12][extname]`;
+          }
+          if (/css/i.test(ext)) {
+            return `css/[name]-[hash:12][extname]`;
+          }
+          return `assets/[name]-[hash:12][extname]`;
         }
       }
     },

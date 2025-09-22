@@ -11,12 +11,18 @@
     <!-- Educational Favicon -->
     <link rel="icon" href="/education-favicon.svg" type="image/svg+xml">
 
-    <!-- Critical performance optimizations -->
+    <!-- Critical performance optimizations with cache hints -->
+    <meta http-equiv="Cache-Control" content="public, max-age=31536000, immutable" />
+    <meta name="format-detection" content="telephone=no" />
+    
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://uiiholvhyjxlutzuebpb.supabase.co">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://uiiholvhyjxlutzuebpb.supabase.co">
+    <link rel="preconnect" href="https://uiiholvhyjxlutzuebpb.supabase.co" crossorigin>
+    
+    <!-- Resource hints for critical assets -->
+    <link rel="modulepreload" as="script" crossorigin />
     
     <!-- SPEED INDEX OPTIMIZATION: Preload critical resources -->
     <link rel="preload" as="script" href="/src/main.tsx" crossorigin>
