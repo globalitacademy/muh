@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useProject } from "@/hooks/useProjects";
 import { ProjectApplicationsManagement } from "./ProjectApplicationsManagement";
-import { ProjectTasksManagement } from "./ProjectTasksManagement";
+import { UnifiedProjectTasksManagement } from "../../project/UnifiedProjectTasksManagement";
 import { ProjectDiscussionsManagement } from "./ProjectDiscussionsManagement";
 import { ProjectFilesManagement } from "./ProjectFilesManagement";
 import { ProjectTimelineManagement } from "./ProjectTimelineManagement";
@@ -255,7 +255,7 @@ export const ProjectManagementDashboard: React.FC<ProjectManagementDashboardProp
         </TabsContent>
 
         <TabsContent value="tasks">
-          <ProjectTasksManagement projectId={projectId} />
+          <UnifiedProjectTasksManagement projectId={projectId} />
         </TabsContent>
 
         <TabsContent value="discussions">
