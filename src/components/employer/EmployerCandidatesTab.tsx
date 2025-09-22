@@ -7,8 +7,9 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useEmployerJobPostings, useEmployerApplications } from '@/hooks/useJobPostings';
-import { Search, CheckCircle, XCircle, Clock, FileText, FolderKanban } from 'lucide-react';
+import { Search, CheckCircle, XCircle, Clock, FileText, FolderKanban, Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
@@ -147,11 +148,24 @@ const useUpdateProjectApplicationStatus = () => {
   };
 };
 
+const useDeleteProjectApplication = () => {
+  return async (applicationId: string) => {
+    const { error } = await supabase
+      .from('project_applications')
+      .delete()
+      .eq('id', applicationId);
+    
+    if (error) throw error;
+    return { success: true };
+  };
+};
+
 const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({ application }) => {
   const [rejectionReason, setRejectionReason] = useState('');
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [loading, setLoading] = useState(false);
   const updateStatus = useUpdateProjectApplicationStatus();
+  const deleteApplication = useDeleteProjectApplication();
 
   const handleApprove = async () => {
     setLoading(true);
@@ -187,6 +201,25 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
       setRejectionReason('');
       toast({
         description: 'Դիմումը մերժվել է'
+      });
+      // Refresh page to update data
+      window.location.reload();
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        description: 'Սխալ է տեղի ունեցել'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      await deleteApplication(application.id);
+      toast({
+        description: 'Դիմումը ջնջվել է'
       });
       // Refresh page to update data
       window.location.reload();
@@ -246,7 +279,38 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
               </p>
             </div>
           </div>
-          {getStatusBadge(application.status)}
+          <div className="flex items-center gap-2">
+            {getStatusBadge(application.status)}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="text-destructive hover:text-destructive"
+                  disabled={loading}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Ջնջե՞լ դիմումը</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Այս գործողությունը չի կարելի հետ գցել։ Դիմումը ընդմիշտ կջնջվի:
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Չեղարկել</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    Ջնջել
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
 
         {application.profiles?.bio && (
