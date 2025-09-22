@@ -806,14 +806,14 @@ const ProjectDetail: React.FC = () => {
             </header>
 
             <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-8 gap-1 h-auto p-1">
+              <TabsList className="grid w-full grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-9 gap-1 h-auto p-1">
                 <TabsTrigger value="overview">Նկարագրություն</TabsTrigger>
                 <TabsTrigger value="steps">Քայլեր</TabsTrigger>
                 <TabsTrigger value="discussions">Քննարկումներ</TabsTrigger>
                 <TabsTrigger value="files">Ֆայլեր</TabsTrigger>
                 <TabsTrigger value="timeline">Թայմլայն</TabsTrigger>
                 <TabsTrigger value="evaluation">Գնահատական</TabsTrigger>
-                {canEdit && <TabsTrigger value="tasks">Առաջադրանքներ</TabsTrigger>}
+                <TabsTrigger value="tasks">Առաջադրանքներ</TabsTrigger>
                 {canEdit && <TabsTrigger value="candidates">Թեկնածուներ ({applications?.length || 0})</TabsTrigger>}
               </TabsList>
 
@@ -1120,11 +1120,9 @@ const ProjectDetail: React.FC = () => {
                   <EvaluationTab projectId={projectId} canEdit={canEdit && isEditingDescription} />
                 </TabsContent>
 
-                {canEdit && (
-                  <TabsContent value="tasks">
-                    <ProjectTasksManagement projectId={projectId} />
-                  </TabsContent>
-                )}
+                <TabsContent value="tasks">
+                  <ProjectTasksManagement projectId={projectId} />
+                </TabsContent>
 
                 {canEdit && (
                   <TabsContent value="candidates">
