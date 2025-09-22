@@ -18,6 +18,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://uiiholvhyjxlutzuebpb.supabase.co">
     
+    <!-- SPEED INDEX OPTIMIZATION: Preload critical resources -->
+    <link rel="preload" as="script" href="/src/main.tsx" crossorigin>
+    <link rel="prefetch" as="script" href="/src/components/Hero.tsx">
+    <link rel="prefetch" as="script" href="/src/components/Header.tsx">
+    
     <!-- OPTIMIZED FONT LOADING: Eliminate 230ms render blocking -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@100;200;300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
@@ -150,8 +155,36 @@
         .lg\\:text-6xl { font-size: 3.75rem; line-height: 1; }
       }
       
+      /* SPEED INDEX OPTIMIZATION: Skeleton loading states */
+      .skeleton-pulse {
+        background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsla(var(--muted), 0.5) 50%, hsl(var(--muted)) 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+      }
+      
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+      
+      /* Immediate visibility for critical elements */
+      .immediate-visible {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+      
       @media (min-width: 1280px) {
         .xl\\:text-7xl { font-size: 4.5rem; line-height: 1; }
+      }
+      
+      /* CRITICAL: Prevent layout shift during stats loading */
+      .stats-skeleton {
+        background: hsl(var(--muted));
+        border-radius: 0.5rem;
+        width: 3rem;
+        height: 2.5rem;
+        animation: shimmer 1.5s infinite;
       }
     </style>
     

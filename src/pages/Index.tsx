@@ -15,10 +15,10 @@ const JobPostingsSection = lazy(() => import('@/components/JobPostingsSection'))
 const PublicProjectsSection = lazy(() => import('@/components/PublicProjectsSection'));
 const PartnerCoursesSection = lazy(() => import('@/components/PartnerCoursesSection'));
 
-// Minimal loading placeholder for lazy sections
+// Optimized loading placeholder for Speed Index improvement
 const SectionLoader = () => (
   <div className="w-full h-64 flex items-center justify-center">
-    <div className="animate-pulse bg-muted rounded-lg w-full h-full"></div>
+    <div className="skeleton-pulse rounded-lg w-full h-full"></div>
   </div>
 );
 
