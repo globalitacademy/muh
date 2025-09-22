@@ -2176,7 +2176,16 @@ export type Database = {
         | "instructor_assignment"
         | "partner_course_update"
       project_member_role: "participant" | "mentor"
-      project_step_status: "todo" | "in_progress" | "done" | "blocked"
+      project_step_status:
+        | "todo"
+        | "in_progress"
+        | "done"
+        | "blocked"
+        | "submitted"
+        | "completed"
+        | "rejected"
+        | "cancelled"
+        | "returned"
       question_type:
         | "multiple-choice"
         | "true-false"
@@ -2350,7 +2359,17 @@ export const Constants = {
         "partner_course_update",
       ],
       project_member_role: ["participant", "mentor"],
-      project_step_status: ["todo", "in_progress", "done", "blocked"],
+      project_step_status: [
+        "todo",
+        "in_progress",
+        "done",
+        "blocked",
+        "submitted",
+        "completed",
+        "rejected",
+        "cancelled",
+        "returned",
+      ],
       question_type: [
         "multiple-choice",
         "true-false",
