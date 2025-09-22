@@ -219,6 +219,16 @@ const NetworkAnimation = () => {
       }
       timeRef.current = now;
       
+      // CRITICAL TBT FIX: Yield every few frames to prevent long tasks
+      const frameCount = Math.floor(now / 16.67);
+      if (frameCount % 3 === 0) {
+        // Yield to main thread every 3 frames (~50ms)
+        ttiOptimizer.yieldToMainThread().then(() => {
+          animationRef.current = requestAnimationFrame(animate);
+        });
+        return;
+      }
+      
       // Skip animation frames if main thread is under pressure
       if (!ttiOptimizer.isReadyForHeavyWork()) {
         // Dramatically reduce animation when main thread is busy
@@ -231,14 +241,28 @@ const NetworkAnimation = () => {
       // Update performance metrics
       perfMonitor.updateFrame();
       
+      // CRITICAL TBT FIX: Break animation work into micro-tasks
+      const animationStart = performance.now();
+      
       // Adaptive complexity based on main thread availability
       if (!perfMonitor.shouldReduceAnimations() && ttiOptimizer.isReadyForHeavyWork()) {
         updateNodes();
+        
+        // Check if we've used more than 5ms, yield if so
+        if (performance.now() - animationStart > 5) {
+          ttiOptimizer.yieldToMainThread().then(() => {
+            updateConnections();
+            draw();
+            animationRef.current = requestAnimationFrame(animate);
+          });
+          return;
+        }
+        
         updateConnections();
       } else {
         // Minimal animation for performance
         updateNodes();
-        if (Math.random() > 0.7) updateConnections(); // Skip most connection updates
+        if (Math.random() > 0.8) updateConnections(); // Skip most connection updates
       }
       
       draw();

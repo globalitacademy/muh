@@ -113,9 +113,57 @@ export class TTIOptimizer {
       if ('scheduler' in window && 'postTask' in (window as any).scheduler) {
         (window as any).scheduler.postTask(resolve, { priority: 'background' });
       } else if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => resolve());
+        requestIdleCallback(() => resolve(), { timeout: 5 });
       } else {
         setTimeout(resolve, 0);
+      }
+    });
+  }
+
+  // Process array in chunks to avoid blocking main thread
+  async processInChunks<T, R>(
+    array: T[],
+    processor: (item: T, index: number) => R,
+    chunkSize: number = 10
+  ): Promise<R[]> {
+    const results: R[] = [];
+    
+    for (let i = 0; i < array.length; i += chunkSize) {
+      const chunk = array.slice(i, i + chunkSize);
+      const chunkResults = chunk.map((item, idx) => processor(item, i + idx));
+      results.push(...chunkResults);
+      
+      // Yield to main thread after each chunk
+      if (i + chunkSize < array.length) {
+        await this.yieldToMainThread();
+      }
+    }
+    
+    return results;
+  }
+
+  // Time-sliced execution for heavy operations
+  async executeWithTimeSlicing<T>(
+    operation: () => T,
+    maxTime: number = 5
+  ): Promise<T> {
+    const startTime = performance.now();
+    
+    return new Promise((resolve, reject) => {
+      const execute = () => {
+        try {
+          const result = operation();
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      if (performance.now() - startTime > maxTime) {
+        // Yield and reschedule
+        this.yieldToMainThread().then(execute);
+      } else {
+        execute();
       }
     });
   }

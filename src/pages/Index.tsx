@@ -8,26 +8,45 @@ import Footer from '@/components/Footer';
 // CRITICAL: Load immediately for above-the-fold content
 import EnhancedFeatures from '@/components/EnhancedFeatures';
 
-// AGGRESSIVE TTI OPTIMIZATION: Defer ALL heavy components until page is interactive
-const SplashCursor = lazy(() => 
-  // Add delay to ensure page is interactive first
-  new Promise<{ default: React.ComponentType<any> }>(resolve => {
-    if ('requestIdleCallback' in window) {
-      requestIdleCallback(() => {
-        import('@/components/SplashCursor').then(module => resolve(module));
-      }, { timeout: 5000 });
-    } else {
-      setTimeout(() => {
-        import('@/components/SplashCursor').then(module => resolve(module));
-      }, 3000);
-    }
-  })
+// AGGRESSIVE TBT OPTIMIZATION: Use MessageChannel for immediate yielding
+const createDeferredLoader = (importFn: () => Promise<any>, delay: number = 0) => {
+  return lazy(() => 
+    new Promise<{ default: React.ComponentType<any> }>(resolve => {
+      const loadComponent = () => {
+        // Use MessageChannel for non-blocking task scheduling
+        if ('MessageChannel' in window) {
+          const channel = new MessageChannel();
+          channel.port2.onmessage = () => {
+            importFn().then(module => resolve(module));
+          };
+          channel.port1.postMessage(null);
+        } else if ('requestIdleCallback' in window) {
+          requestIdleCallback(() => {
+            importFn().then(module => resolve(module));
+          }, { timeout: 2000 });
+        } else {
+          setTimeout(() => {
+            importFn().then(module => resolve(module));
+          }, delay);
+        }
+      };
+
+      // Further delay heavy components to prevent main thread blocking
+      setTimeout(loadComponent, delay);
+    })
+  );
+};
+
+const SplashCursor = createDeferredLoader(
+  () => import('@/components/SplashCursor'), 
+  4000 // Delay until page is definitely interactive
 );
 
-const Courses = lazy(() => import('@/components/Courses'));
-const JobPostingsSection = lazy(() => import('@/components/JobPostingsSection'));
-const PublicProjectsSection = lazy(() => import('@/components/PublicProjectsSection'));
-const PartnerCoursesSection = lazy(() => import('@/components/PartnerCoursesSection'));
+// Use deferred loading for all heavy sections to prevent blocking
+const Courses = createDeferredLoader(() => import('@/components/Courses'), 100);
+const JobPostingsSection = createDeferredLoader(() => import('@/components/JobPostingsSection'), 200);
+const PublicProjectsSection = createDeferredLoader(() => import('@/components/PublicProjectsSection'), 300);
+const PartnerCoursesSection = createDeferredLoader(() => import('@/components/PartnerCoursesSection'), 400);
 
 // Optimized loading placeholder for Speed Index improvement
 const SectionLoader = () => (
