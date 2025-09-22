@@ -20,29 +20,96 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // CSS optimization to reduce unused CSS
-    cssCodeSplit: true,
+    // Optimize JavaScript code splitting to reduce unused code
     rollupOptions: {
       output: {
-        // Split CSS by entry points to enable better loading
+        // Strategic code splitting for maximum bundle optimization
         manualChunks: {
-          // Critical components that need immediate CSS
-          'critical': [
-            './src/components/Hero.tsx',
-            './src/components/Header.tsx'
+          // Core React and routing - needed immediately
+          'react-core': ['react', 'react-dom', 'react-router-dom'],
+          
+          // UI components and utilities - needed for basic functionality
+          'ui-core': [
+            '@radix-ui/react-dialog',
+            '@radix-ui/react-dropdown-menu',
+            '@radix-ui/react-toast',
+            'lucide-react'
           ],
-          // Non-critical components that can load later
-          'features': [
-            './src/components/EnhancedFeatures.tsx',
-            './src/components/Courses.tsx'
+          
+          // Data management - used across multiple pages
+          'data-management': [
+            '@tanstack/react-query',
+            '@supabase/supabase-js'
           ],
-          // Heavy animation components
+          
+          // Heavy animation components - defer loading
           'animations': [
             './src/components/SplashCursor.tsx',
             './src/components/NetworkAnimation.tsx'
+          ],
+          
+          // Admin and dashboard features - only for authenticated users
+          'admin': [
+            './src/pages/Admin.tsx',
+            './src/pages/Dashboard.tsx',
+            './src/components/admin/',
+            './src/components/employer/',
+            './src/components/instructor/'
+          ],
+          
+          // Course and learning content - secondary pages
+          'learning': [
+            './src/pages/Courses.tsx',
+            './src/pages/ModuleDetail.tsx',
+            './src/pages/TopicDetail.tsx',
+            './src/pages/Specialties.tsx',
+            './src/pages/MyCourses.tsx'
+          ],
+          
+          // Authentication and user management
+          'auth': [
+            './src/pages/Auth.tsx',
+            './src/pages/ResetPassword.tsx',
+            './src/components/auth/'
+          ],
+          
+          // Projects and jobs - feature-specific
+          'projects-jobs': [
+            './src/pages/Projects.tsx',
+            './src/pages/ProjectDetail.tsx',
+            './src/pages/Jobs.tsx',
+            './src/pages/JobDetail.tsx'
+          ],
+          
+          // Partner functionality - specialized features
+          'partner': [
+            './src/pages/Partner.tsx',
+            './src/pages/PartnerCourseDetail.tsx',
+            './src/pages/PrivateCourses.tsx',
+            './src/components/partner/'
           ]
+        },
+        
+        // Optimize chunk file names for better caching
+        chunkFileNames: (chunkInfo) => {
+          const facadeModuleId = chunkInfo.facadeModuleId 
+            ? chunkInfo.facadeModuleId.split('/').pop()?.replace('.tsx', '') || 'chunk'
+            : 'chunk';
+          return `js/${facadeModuleId}-[hash].js`;
         }
       }
-    }
+    },
+    
+    // Additional optimizations
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.logs in production
+        drop_debugger: true,
+      }
+    },
+    
+    // Target modern browsers for smaller bundles
+    target: 'es2020'
   }
 }));

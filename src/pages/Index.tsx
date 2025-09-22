@@ -2,16 +2,25 @@
 import React, { lazy, Suspense } from 'react';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
-import EnhancedFeatures from '@/components/EnhancedFeatures';
-import Courses from '@/components/Courses';
-import JobPostingsSection from '@/components/JobPostingsSection';
-import PublicProjectsSection from '@/components/PublicProjectsSection';
-import PartnerCoursesSection from '@/components/PartnerCoursesSection';
 import Newsletter from '@/components/Newsletter';
 import Footer from '@/components/Footer';
 
-// Lazy load heavy animation component to improve FID
+// CRITICAL: Load immediately for above-the-fold content
+import EnhancedFeatures from '@/components/EnhancedFeatures';
+
+// LAZY LOAD: Defer non-critical sections to reduce initial bundle
 const SplashCursor = lazy(() => import('@/components/SplashCursor'));
+const Courses = lazy(() => import('@/components/Courses'));
+const JobPostingsSection = lazy(() => import('@/components/JobPostingsSection'));
+const PublicProjectsSection = lazy(() => import('@/components/PublicProjectsSection'));
+const PartnerCoursesSection = lazy(() => import('@/components/PartnerCoursesSection'));
+
+// Minimal loading placeholder for lazy sections
+const SectionLoader = () => (
+  <div className="w-full h-64 flex items-center justify-center">
+    <div className="animate-pulse bg-muted rounded-lg w-full h-full"></div>
+  </div>
+);
 
 const Index = () => {
   return (
@@ -23,10 +32,18 @@ const Index = () => {
       <main className="w-full">
         <Hero />
         <EnhancedFeatures />
-        <Courses />
-        <PublicProjectsSection />
-        <JobPostingsSection />
-        <PartnerCoursesSection />
+        <Suspense fallback={<SectionLoader />}>
+          <Courses />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <PublicProjectsSection />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <JobPostingsSection />
+        </Suspense>
+        <Suspense fallback={<SectionLoader />}>
+          <PartnerCoursesSection />
+        </Suspense>
       </main>
       <Newsletter />
       <Footer />
