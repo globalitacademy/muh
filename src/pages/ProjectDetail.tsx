@@ -28,6 +28,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ProjectTasksManagement } from "@/components/employer/project/ProjectTasksManagement";
+import { ProjectTasksView } from "@/components/project/ProjectTasksView";
 
 const ExpandableText: React.FC<{ text: string }> = ({ text }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -1121,7 +1122,11 @@ const ProjectDetail: React.FC = () => {
                 </TabsContent>
 
                 <TabsContent value="tasks">
-                  <ProjectTasksManagement projectId={projectId} />
+                  {canEdit ? (
+                    <ProjectTasksManagement projectId={projectId} />
+                  ) : (
+                    <ProjectTasksView projectId={projectId} />
+                  )}
                 </TabsContent>
 
                 {canEdit && (
