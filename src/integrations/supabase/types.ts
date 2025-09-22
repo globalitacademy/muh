@@ -1399,6 +1399,91 @@ export type Database = {
         }
         Relationships: []
       }
+      project_task_assignments: {
+        Row: {
+          assigned_to: string
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          submission_notes: string | null
+          task_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to: string
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          submission_notes?: string | null
+          task_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          submission_notes?: string | null
+          task_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_task_assignments_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "project_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_tasks: {
+        Row: {
+          assigned_by: string
+          created_at: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          priority: string | null
+          project_id: string
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_by: string
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string | null
+          project_id: string
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_by?: string
+          created_at?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: string | null
+          project_id?: string
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_tasks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_timeline_events: {
         Row: {
           created_at: string

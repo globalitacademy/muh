@@ -429,6 +429,18 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
             </Dialog>
           </div>
         )}
+
+        {application.status !== 'pending' && (
+          <div className="pt-4 border-t border-border/50">
+            <Button 
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              onClick={() => {/* Navigate to tasks management */}}
+            >
+              <FolderKanban className="w-4 h-4 mr-2" />
+              Կառավարել առաջադրանքները
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
