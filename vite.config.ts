@@ -20,7 +20,8 @@ export default defineConfig(({ mode }) => ({
     },
   },
   build: {
-    // Optimize JavaScript code splitting to reduce unused code
+    // Optimize CSS extraction to prevent render blocking
+    cssCodeSplit: false, // Bundle CSS into single file for better defer loading
     rollupOptions: {
       output: {
         // Strategic code splitting using function-based approach for proper path handling
