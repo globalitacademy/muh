@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useEmployerJobPostings, useEmployerApplications } from '@/hooks/useJobPostings';
 import { Search, CheckCircle, XCircle, Clock, FileText, FolderKanban, Trash2, User, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Textarea } from '@/components/ui/textarea';
@@ -161,6 +162,7 @@ const useDeleteProjectApplication = () => {
 };
 
 const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({ application }) => {
+  const navigate = useNavigate();
   const [rejectionReason, setRejectionReason] = useState('');
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -434,7 +436,7 @@ const ProjectApplicationCard: React.FC<{ application: ProjectApplication }> = ({
           <div className="pt-4 border-t border-border/50">
             <Button 
               className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-              onClick={() => {/* Navigate to tasks management */}}
+              onClick={() => navigate(`/projects/${application.projects?.id}`)}
             >
               <FolderKanban className="w-4 h-4 mr-2" />
               Կառավարել առաջադրանքները
