@@ -26,9 +26,19 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setTimeout(() => {
-            setIsVisible(true);
-          }, delay);
+          // Use requestIdleCallback to break up long tasks and improve FID
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+              setTimeout(() => {
+                setIsVisible(true);
+              }, delay);
+            });
+          } else {
+            // Fallback for browsers without requestIdleCallback
+            setTimeout(() => {
+              setIsVisible(true);
+            }, delay);
+          }
           
           if (once) {
             observer.unobserve(entry.target);

@@ -20,8 +20,10 @@ function SplashCursor({
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    // Defer heavy WebGL initialization to improve FID
+    const initializeEffect = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
     function pointerPrototype() {
       this.id = -1;
@@ -1221,10 +1223,19 @@ function SplashCursor({
 
     updateFrame();
     
-    // Cleanup function
+    // Cleanup function for the effect
     return () => {
       window.removeEventListener('resize', handleResize);
     };
+  }; // Close initializeEffect function
+    
+  // Use requestIdleCallback to defer heavy initialization and improve FID
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(initializeEffect, { timeout: 2000 });
+  } else {
+    // Fallback: delay initialization to improve initial responsiveness
+    setTimeout(initializeEffect, 100);
+  }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     SIM_RESOLUTION,
