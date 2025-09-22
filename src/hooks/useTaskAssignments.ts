@@ -24,13 +24,28 @@ export const useStudentProjectTasks = (userId: string) => {
       // Get project steps for those projects
       const { data: steps, error: stepsError } = await supabase
         .from("project_steps")  
-        .select(`
-          *,
-          projects(id, title)
-        `)
+        .select("*")
         .in("project_id", projectIds);
 
       if (stepsError) throw stepsError;
+
+      if (!steps || steps.length === 0) {
+        return [];
+      }
+
+      // Get project titles separately
+      const { data: projects, error: projectsError } = await supabase
+        .from("projects")
+        .select("id, title")
+        .in("id", projectIds);
+
+      if (projectsError) throw projectsError;
+
+      // Create a map of project titles
+      const projectTitlesMap = projects?.reduce((acc: any, project: any) => {
+        acc[project.id] = project.title;
+        return acc;
+      }, {}) || {};
 
       // Transform project steps into task format  
       return steps?.map((step: any) => ({
@@ -40,7 +55,7 @@ export const useStudentProjectTasks = (userId: string) => {
         description: step.description,
         status: step.status,
         due_date: step.due_date,
-        project_title: step.projects?.title,
+        project_title: projectTitlesMap[step.project_id],
         type: 'project_step' as const,
         created_at: step.created_at,
         updated_at: step.updated_at
