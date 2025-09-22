@@ -173,6 +173,7 @@ export const useProjectTasks = (projectId?: string) => {
     },
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ["project-tasks", projectId] });
+      client.invalidateQueries({ queryKey: ["user-assigned-tasks"] });
     },
   });
 

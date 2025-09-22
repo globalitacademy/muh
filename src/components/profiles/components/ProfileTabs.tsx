@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, BookOpen, Award, Briefcase, Settings, Target, MessageSquare, FileText } from 'lucide-react';
+import { User, BookOpen, Award, Briefcase, Settings, Target, MessageSquare, FileText, ClipboardList } from 'lucide-react';
 import EnhancedPersonalInfoTab from '@/components/profile/EnhancedPersonalInfoTab';
 import AcademicProgressTab from '@/components/profile/AcademicProgressTab';
 import CertificatesTab from '@/components/profile/CertificatesTab';
@@ -10,6 +10,7 @@ import ProfileSettingsTab from '@/components/profile/ProfileSettingsTab';
 import EnhancedPortfolioTab from '@/components/profile/EnhancedPortfolioTab';
 import MessagesTab from '@/components/profile/MessagesTab';
 import ExamsTab from '@/components/profile/ExamsTab';
+import { TasksTab } from '@/components/profile/TasksTab';
 
 interface UserProfile {
   id: string;
@@ -45,7 +46,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
 }) => {
   return (
     <Tabs value={activeTab} onValueChange={onTabChange} className="space-y-6">
-      <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 bg-muted/50 p-1 rounded-xl">
+      <TabsList className="grid w-full grid-cols-4 lg:grid-cols-9 bg-muted/50 p-1 rounded-xl">
         <TabsTrigger 
           value="overview" 
           className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all"
@@ -68,6 +69,14 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
         >
           <Target className="w-4 h-4 mr-2" />
           <span className="hidden sm:inline">Պորտֆոլիո</span>
+        </TabsTrigger>
+        
+        <TabsTrigger 
+          value="tasks" 
+          className="font-armenian data-[state=active]:bg-background data-[state=active]:shadow-sm rounded-lg transition-all"
+        >
+          <ClipboardList className="w-4 h-4 mr-2" />
+          <span className="hidden sm:inline">Առաջադրանքներ</span>
         </TabsTrigger>
         
         <TabsTrigger 
@@ -122,6 +131,10 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({
 
         <TabsContent value="portfolio" className="mt-6">
           <EnhancedPortfolioTab />
+        </TabsContent>
+
+        <TabsContent value="tasks" className="mt-6">
+          <TasksTab />
         </TabsContent>
 
         <TabsContent value="certificates" className="mt-6">
