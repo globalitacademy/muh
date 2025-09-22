@@ -189,6 +189,8 @@ export const ProjectTasksView: React.FC<ProjectTasksViewProps> = ({ projectId })
     queryFn: async () => {
       if (!projectId || !user) return [];
       
+      console.log("Fetching tasks for project:", projectId, "user:", user.id);
+      
       // First get the tasks for this project
       const { data: tasks, error: tasksError } = await supabase
         .from("project_tasks")
