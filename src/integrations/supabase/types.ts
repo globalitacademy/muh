@@ -1459,9 +1459,15 @@ export type Database = {
           description: string | null
           due_date: string | null
           id: string
+          order_index: number | null
           priority: string | null
           project_id: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           status: string | null
+          submission_notes: string | null
+          submitted_at: string | null
           title: string
           updated_at: string | null
         }
@@ -1471,9 +1477,15 @@ export type Database = {
           description?: string | null
           due_date?: string | null
           id?: string
+          order_index?: number | null
           priority?: string | null
           project_id: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: string | null
+          submission_notes?: string | null
+          submitted_at?: string | null
           title: string
           updated_at?: string | null
         }
@@ -1483,9 +1495,15 @@ export type Database = {
           description?: string | null
           due_date?: string | null
           id?: string
+          order_index?: number | null
           priority?: string | null
           project_id?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: string | null
+          submission_notes?: string | null
+          submitted_at?: string | null
           title?: string
           updated_at?: string | null
         }
