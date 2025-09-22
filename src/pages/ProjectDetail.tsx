@@ -15,6 +15,7 @@ import { useProjectDiscussions } from "@/hooks/useProjectDiscussions";
 import { useProjectFiles } from "@/hooks/useProjectFiles";
 import { useProjectEvaluations } from "@/hooks/useProjectEvaluations";
 import { useProjectTimeline } from "@/hooks/useProjectTimeline";
+import { useTaskAssignments } from "@/hooks/useTaskAssignments";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Image, Clock, CheckCircle, Calendar as CalendarIcon } from "lucide-react";
@@ -198,8 +199,11 @@ const StepsTab: React.FC<{
     remove,
     isLoading
   } = useProjectSteps(projectId);
+  const { reviewStep } = useTaskAssignments();
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState<typeof statusOptions[number]["value"]>("todo");
+  const [reviewNotes, setReviewNotes] = useState<{[key: string]: string}>({});
+  
   const onAdd = async () => {
     const t = title.trim();
     if (!t) return toast({
@@ -218,6 +222,51 @@ const StepsTab: React.FC<{
         variant: 'destructive',
         description: e.message || "Չհաջողվեց ավելացնել քայլը"
       });
+    }
+  };
+
+  const handleReviewStep = async (stepId: string, newStatus: string) => {
+    try {
+      await reviewStep.mutateAsync({
+        stepId,
+        status: newStatus,
+        reviewNotes: reviewNotes[stepId] || undefined
+      });
+      setReviewNotes(prev => ({ ...prev, [stepId]: '' }));
+      toast({
+        description: 'Գնահատականը պահպանվել է'
+      });
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        description: 'Չհաջողվեց գնահատել առաջադրանքը'
+      });
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'text-green-600';
+      case 'submitted': return 'text-blue-600'; 
+      case 'rejected': return 'text-red-600';
+      case 'returned': return 'text-orange-600';
+      case 'cancelled': return 'text-gray-600';
+      case 'in_progress': return 'text-yellow-600';
+      default: return 'text-gray-500';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'todo': return 'Կատարելի';
+      case 'in_progress': return 'Ընթացքի մեջ';
+      case 'completed': return 'Կատարված';
+      case 'submitted': return 'Ներկայացված';
+      case 'rejected': return 'Մերժված';
+      case 'returned': return 'Վերադարձված';
+      case 'cancelled': return 'Չեղարկված';
+      case 'blocked': return 'Արգելափակված';
+      default: return status;
     }
   };
   return <Section title="Քայլեր">
@@ -254,39 +303,115 @@ const StepsTab: React.FC<{
 
       {isLoading ? <p>Բեռնվում է…</p> : !steps?.length ? <p className="text-muted-foreground">Քայլեր դեռ չկան:</p> : <div className="space-y-3">
           {steps.map(s => <Card key={s.id}>
-              <CardContent className="pt-4 grid gap-3 md:grid-cols-6 items-center">
-                <div className="md:col-span-3 font-medium">{s.title}</div>
-                <div className="md:col-span-2">
-                  {canEdit ? (
-                    <Select value={s.status} onValueChange={v => update.mutate({
-                      id: s.id,
-                      status: v as any
-                    })}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="todo">Կատարելի</SelectItem>
-                        <SelectItem value="in_progress">Ընթացքի մեջ</SelectItem>
-                        <SelectItem value="done">Կատարված</SelectItem>
-                        <SelectItem value="blocked">Արգելափակված</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <span className="capitalize">
-                      {s.status === 'todo' ? 'Կատարելի' :
-                       s.status === 'in_progress' ? 'Ընթացքի մեջ' :
-                       s.status === 'done' ? 'Կատարված' :
-                       s.status === 'blocked' ? 'Արգելափակված' :
-                       s.status}
-                    </span>
-                  )}
+              <CardContent className="pt-4">
+                <div className="grid gap-3 md:grid-cols-6 items-start">
+                  {/* Step Title and Description */}
+                  <div className="md:col-span-2">
+                    <div className="font-medium">{s.title}</div>
+                    {s.description && (
+                      <div className="text-sm text-muted-foreground mt-1">{s.description}</div>
+                    )}
+                    {(s as any).submission_notes && (
+                      <div className="mt-2 p-2 bg-blue-50 rounded text-sm">
+                        <div className="font-medium text-blue-700">Ուսանողի նշումներ:</div>
+                        <div className="text-blue-600">{(s as any).submission_notes}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Status Display/Control */}
+                  <div className="md:col-span-2">
+                    {canEdit ? (
+                      <>
+                        <Select value={s.status} onValueChange={v => update.mutate({
+                          id: s.id,
+                          status: v as any
+                        })}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="todo">Կատարելի</SelectItem>
+                            <SelectItem value="in_progress">Ընթացքի մեջ</SelectItem>
+                            <SelectItem value="submitted">Ներկայացված</SelectItem>
+                            <SelectItem value="completed">Կատարված</SelectItem>
+                            <SelectItem value="rejected">Մերժված</SelectItem>
+                            <SelectItem value="returned">Վերադարձված</SelectItem>
+                            <SelectItem value="cancelled">Չեղարկված</SelectItem>
+                            <SelectItem value="blocked">Արգելափակված</SelectItem>
+                          </SelectContent>
+                        </Select>
+
+                        {/* Review actions for submitted tasks */}
+                        {(s as any).status === 'submitted' && (
+                          <div className="mt-2 space-y-2">
+                            <Textarea
+                              placeholder="Գնահատական (ոչ պարտադիր)"
+                              value={reviewNotes[s.id] || ''}
+                              onChange={(e) => setReviewNotes(prev => ({ ...prev, [s.id]: e.target.value }))}
+                              className="text-sm"
+                              rows={2}
+                            />
+                            <div className="flex gap-1 flex-wrap">
+                              <Button 
+                                size="sm" 
+                                variant="default"
+                                onClick={() => handleReviewStep(s.id, 'completed')}
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                Կատարված
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleReviewStep(s.id, 'returned')}
+                                className="border-orange-500 text-orange-600 hover:bg-orange-50"
+                              >
+                                Վերադարձնել
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="destructive"
+                                onClick={() => handleReviewStep(s.id, 'rejected')}
+                              >
+                                Մերժել
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <span className={`capitalize font-medium ${getStatusColor(s.status)}`}>
+                        {getStatusLabel(s.status)}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Timestamps and Actions */}
+                  <div className="md:col-span-2 text-right space-y-1">
+                    <div className="text-xs text-muted-foreground">
+                      {(s as any).submitted_at && (
+                        <div>Ներկայացվել է: {new Date((s as any).submitted_at).toLocaleString()}</div>
+                      )}
+                      {(s as any).reviewed_at && (
+                        <div>Գնահատվել է: {new Date((s as any).reviewed_at).toLocaleString()}</div>
+                      )}
+                    </div>
+                    {canEdit && (
+                      <Button variant="outline" size="sm" onClick={() => remove.mutate(s.id)}>
+                        Ջնջել
+                      </Button>
+                    )}
+                  </div>
                 </div>
-                <div className="text-right">
-                  {canEdit && (
-                    <Button variant="outline" onClick={() => remove.mutate(s.id)}>Ջնջել</Button>
-                  )}
-                </div>
+
+                {/* Review notes display */}
+                {(s as any).review_notes && (
+                  <div className="mt-3 p-2 bg-gray-50 rounded text-sm">
+                    <div className="font-medium text-gray-700">Գնահատական:</div>
+                    <div className="text-gray-600">{(s as any).review_notes}</div>
+                  </div>
+                )}
               </CardContent>
             </Card>)}
         </div>}

@@ -53,12 +53,39 @@ export const useStudentProjectTasks = (userId: string) => {
 export const useTaskAssignments = () => {
   const client = useQueryClient();
 
-  const markStepCompleted = useMutation({
-    mutationFn: async ({ stepId }: { stepId: string }) => {
+  const submitStep = useMutation({
+    mutationFn: async ({ stepId, submissionNotes }: { stepId: string; submissionNotes?: string }) => {
       const { data, error } = await supabase
         .from("project_steps")
         .update({ 
-          status: 'done',
+          status: 'submitted',
+          submitted_at: new Date().toISOString(),
+          submission_notes: submissionNotes,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", stepId)
+        .select("*")
+        .single();
+        
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      // Invalidate all related queries
+      client.invalidateQueries({ queryKey: ["student-project-tasks"] });
+      client.invalidateQueries({ queryKey: ["project-steps"] });
+    },
+  });
+
+  const reviewStep = useMutation({
+    mutationFn: async ({ stepId, status, reviewNotes }: { stepId: string; status: string; reviewNotes?: string }) => {
+      const { data, error } = await supabase
+        .from("project_steps")
+        .update({ 
+          status: status as any,
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: (await supabase.auth.getUser()).data.user?.id,
+          review_notes: reviewNotes,
           updated_at: new Date().toISOString()
         })
         .eq("id", stepId)
@@ -98,5 +125,5 @@ export const useTaskAssignments = () => {
     },
   });
 
-  return { completeAssignment, markStepCompleted };
+  return { completeAssignment, submitStep, reviewStep };
 };

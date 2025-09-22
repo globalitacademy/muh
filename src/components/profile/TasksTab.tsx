@@ -51,14 +51,14 @@ const TaskCompletionDialog: React.FC<TaskCompletionDialogProps> = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700">
+        <Button size="sm" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
           <CheckCircle className="w-4 h-4 mr-2" />
-          Նշել որպես կատարված
+          Ներկայացնել առաջադրանքը
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Կատարել առաջադրանքը</DialogTitle>
+          <DialogTitle>Ներկայացնել առաջադրանքը</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div>
@@ -83,7 +83,7 @@ const TaskCompletionDialog: React.FC<TaskCompletionDialogProps> = ({
               disabled={isSubmitting}
               className="flex-1"
             >
-              {isSubmitting ? "Գրանցվում է..." : "Կատարել"}
+              {isSubmitting ? "Ուղարկվում է..." : "Ներկայացնել"}
             </Button>
             <Button 
               variant="outline" 
@@ -102,19 +102,19 @@ const TaskCompletionDialog: React.FC<TaskCompletionDialogProps> = ({
 export const TasksTab: React.FC = () => {
   const { user } = useAuth();
   const { data: projectSteps = [], isLoading } = useStudentProjectTasks(user?.id || "");
-  const { markStepCompleted } = useTaskAssignments();
+  const { submitStep } = useTaskAssignments();
 
-  const handleCompleteTask = async (taskId: string, submissionNotes?: string) => {
+  const handleSubmitTask = async (taskId: string, submissionNotes?: string) => {
     try {
-      await markStepCompleted.mutateAsync({ stepId: taskId });
+      await submitStep.mutateAsync({ stepId: taskId, submissionNotes });
       toast({
-        title: "Հաջողություն",
-        description: "Առաջադրանքը նշվել է որպես կատարված",
+        title: "Հաջողություն", 
+        description: "Առաջադրանքը ներկայացվել է գնահատման",
       });
     } catch (error) {
       toast({
         title: "Սխալ",
-        description: "Չհաջողվեց կատարել գործողությունը",
+        description: "Չհաջողվեց ներկայացնել առաջադրանքը",
         variant: "destructive",
       });
     }
@@ -141,32 +141,61 @@ export const TasksTab: React.FC = () => {
   };
 
   const getStatusBadge = (task: any) => {
-    if (task.status === 'done') {
-      return (
-        <Badge className="bg-green-500/10 text-green-700">
-          <CheckCircle className="w-3 h-3 mr-1" />
-          Կատարված
-        </Badge>
-      );
+    switch (task.status) {
+      case 'completed':
+        return (
+          <Badge className="bg-green-500/10 text-green-700">
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Կատարված
+          </Badge>
+        );
+      case 'submitted':
+        return (
+          <Badge className="bg-blue-500/10 text-blue-700">
+            <Clock className="w-3 h-3 mr-1" />
+            Ներկայացված
+          </Badge>
+        );
+      case 'rejected':
+        return (
+          <Badge variant="destructive">
+            <AlertTriangle className="w-3 h-3 mr-1" />
+            Մերժված
+          </Badge>
+        );
+      case 'returned':
+        return (
+          <Badge className="bg-orange-500/10 text-orange-700">
+            <AlertTriangle className="w-3 h-3 mr-1" />
+            Վերադարձված
+          </Badge>
+        );
+      case 'cancelled':
+        return (
+          <Badge className="bg-gray-500/10 text-gray-700">
+            <AlertTriangle className="w-3 h-3 mr-1" />
+            Չեղարկված
+          </Badge>
+        );
+      default:
+        const isOverdue = task.due_date && isAfter(new Date(), new Date(task.due_date));
+        
+        if (isOverdue) {
+          return (
+            <Badge variant="destructive">
+              <AlertTriangle className="w-3 h-3 mr-1" />
+              Ուշացած
+            </Badge>
+          );
+        }
+        
+        return (
+          <Badge className="bg-blue-500/10 text-blue-700">
+            <Clock className="w-3 h-3 mr-1" />
+            Ընթացքում
+          </Badge>
+        );
     }
-    
-    const isOverdue = task.due_date && isAfter(new Date(), new Date(task.due_date));
-    
-    if (isOverdue) {
-      return (
-        <Badge variant="destructive">
-          <AlertTriangle className="w-3 h-3 mr-1" />
-          Ուշացած
-        </Badge>
-      );
-    }
-    
-    return (
-      <Badge className="bg-blue-500/10 text-blue-700">
-        <Clock className="w-3 h-3 mr-1" />
-        Ընթացքում
-      </Badge>
-    );
   };
 
   if (isLoading) {
@@ -180,8 +209,8 @@ export const TasksTab: React.FC = () => {
     );
   }
 
-  const pendingTasks = projectSteps.filter(task => task.status !== 'done');
-  const completedTasks = projectSteps.filter(task => task.status === 'done');
+  const pendingTasks = projectSteps.filter(task => !['completed', 'cancelled'].includes(task.status));
+  const completedTasks = projectSteps.filter(task => ['completed', 'cancelled'].includes(task.status));
 
   return (
     <div className="space-y-6">
@@ -274,13 +303,22 @@ export const TasksTab: React.FC = () => {
                       </div>
                     </div>
 
-                    {task.status !== 'done' && (
+                    {!['completed', 'submitted', 'cancelled'].includes(task.status) && (
                       <div className="pt-2">
                         <TaskCompletionDialog
                           assignmentId={task.id}
                           taskTitle={task?.title || 'Առաջադրանք'}
-                          onComplete={handleCompleteTask}
+                          onComplete={handleSubmitTask}
                         />
+                      </div>
+                    )}
+                    
+                    {task.status === 'submitted' && (
+                      <div className="pt-2">
+                        <Badge className="bg-blue-500/10 text-blue-700">
+                          <Clock className="w-3 h-3 mr-1" />
+                          Սպասում է գնահատման
+                        </Badge>
                       </div>
                     )}
                   </CardContent>

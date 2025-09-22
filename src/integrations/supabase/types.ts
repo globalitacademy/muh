@@ -1371,7 +1371,12 @@ export type Database = {
           id: string
           order_index: number
           project_id: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           status: Database["public"]["Enums"]["project_step_status"]
+          submission_notes: string | null
+          submitted_at: string | null
           title: string
           updated_at: string
         }
@@ -1382,7 +1387,12 @@ export type Database = {
           id?: string
           order_index?: number
           project_id: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: Database["public"]["Enums"]["project_step_status"]
+          submission_notes?: string | null
+          submitted_at?: string | null
           title: string
           updated_at?: string
         }
@@ -1393,7 +1403,12 @@ export type Database = {
           id?: string
           order_index?: number
           project_id?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           status?: Database["public"]["Enums"]["project_step_status"]
+          submission_notes?: string | null
+          submitted_at?: string | null
           title?: string
           updated_at?: string
         }
