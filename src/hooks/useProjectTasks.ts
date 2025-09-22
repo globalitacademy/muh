@@ -138,6 +138,59 @@ export const useProjectTasks = (projectId?: string) => {
     },
   });
 
+  const updateTask = useMutation({
+    mutationFn: async ({ id, title, description, due_date, priority, assigned_to }: { 
+      id: string; 
+      title: string; 
+      description?: string; 
+      due_date?: string; 
+      priority: 'low' | 'medium' | 'high';
+      assigned_to: string[];
+    }) => {
+      // Update the task
+      const { data: task, error: taskError } = await supabase
+        .from("project_tasks")
+        .update({
+          title,
+          description,
+          due_date,
+          priority,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", id)
+        .select("*")
+        .single();
+        
+      if (taskError) throw taskError;
+      
+      // Delete existing assignments
+      const { error: deleteError } = await supabase
+        .from("project_task_assignments")
+        .delete()
+        .eq("task_id", id);
+        
+      if (deleteError) throw deleteError;
+      
+      // Create new assignments
+      if (assigned_to.length > 0) {
+        const assignments = assigned_to.map(userId => ({
+          task_id: id,
+          assigned_to: userId,
+        }));
+        
+        const { error: assignmentError } = await supabase
+          .from("project_task_assignments")
+          .insert(assignments);
+          
+        if (assignmentError) throw assignmentError;
+      }
+      
+      return task;
+    },
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["project-tasks", projectId] });
+    },
+  });
   const updateTaskStatus = useMutation({
     mutationFn: async ({ taskId, status }: { taskId: string; status: string }) => {
       const { data, error } = await supabase
@@ -195,6 +248,7 @@ export const useProjectTasks = (projectId?: string) => {
   return { 
     ...query, 
     createTask, 
+    updateTask,
     updateTaskStatus, 
     completeAssignment,
     deleteTask 

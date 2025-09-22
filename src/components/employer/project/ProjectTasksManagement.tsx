@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CalendarIcon, Plus, Trash2, Users, Clock, CheckCircle, AlertTriangle } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, Edit3, Users, Clock, CheckCircle, AlertTriangle } from "lucide-react";
 import { useProjectTasks, ProjectTask } from "@/hooks/useProjectTasks";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -240,7 +240,209 @@ const CreateTaskDialog: React.FC<{ projectId: string; onTaskCreated: () => void 
   );
 };
 
-const TaskCard: React.FC<{ task: ProjectTask; onDelete: (id: string) => void }> = ({ task, onDelete }) => {
+const EditTaskDialog: React.FC<{ task: ProjectTask; onTaskUpdated: () => void }> = ({ task, onTaskUpdated }) => {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState<CreateTaskFormData>({
+    title: task.title,
+    description: task.description || '',
+    due_date: task.due_date ? new Date(task.due_date).toISOString().slice(0, 16) : '',
+    priority: task.priority as 'low' | 'medium' | 'high',
+    assigned_to: task.assignments?.map(a => a.assigned_to) || []
+  });
+
+  const { updateTask } = useProjectTasks(task.project_id);
+
+  // Get project applicants and members
+  const { data: applicants = [] } = useQuery({
+    queryKey: ['project-applicants', task.project_id],
+    queryFn: async () => {
+      // First get approved applications
+      const { data: applications, error } = await supabase
+        .from('project_applications')
+        .select('applicant_id')
+        .eq('project_id', task.project_id)
+        .eq('status', 'approved');
+      
+      if (error) throw error;
+      
+      if (!applications || applications.length === 0) return [];
+      
+      // Then get profiles for these applicants
+      const applicantIds = applications.map(app => app.applicant_id);
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, name, avatar_url')
+        .in('id', applicantIds);
+        
+      if (profilesError) throw profilesError;
+      
+      // Combine data
+      return applications.map(app => ({
+        applicant_id: app.applicant_id,
+        profiles: profiles?.find(profile => profile.id === app.applicant_id) || null
+      }));
+    },
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!formData.title.trim()) {
+      toast({
+        title: "Սխալ",
+        description: "Նշեք առաջադրանքի անվանումը",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formData.assigned_to.length === 0) {
+      toast({
+        title: "Սխալ", 
+        description: "Ընտրեք առնվազն մեկ ուսանող",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await updateTask.mutateAsync({
+        id: task.id,
+        title: formData.title,
+        description: formData.description || undefined,
+        due_date: formData.due_date || undefined,
+        priority: formData.priority,
+        assigned_to: formData.assigned_to
+      });
+
+      toast({
+        title: "Հաջողություն",
+        description: "Առաջադրանքը թարմացվել է",
+      });
+
+      setOpen(false);
+      onTaskUpdated();
+    } catch (error) {
+      toast({
+        title: "Սխալ",
+        description: "Առաջադրանքը չհաջողվեց թարմացնել",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUserToggle = (userId: string) => {
+    setFormData(prev => ({
+      ...prev,
+      assigned_to: prev.assigned_to.includes(userId)
+        ? prev.assigned_to.filter(id => id !== userId)
+        : [...prev.assigned_to, userId]
+    }));
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="ghost" className="text-primary hover:text-primary hover:bg-primary/10">
+          <Edit3 className="w-4 h-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Խմբագրել առաջադրանքը</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="edit-title">Անվանում *</Label>
+            <Input
+              id="edit-title"
+              value={formData.title}
+              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              placeholder="Առաջադրանքի անվանումը"
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="edit-description">Նկարագրություն</Label>
+            <Textarea
+              id="edit-description"
+              value={formData.description}
+              onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              placeholder="Առաջադրանքի մանրամասն նկարագրությունը"
+              rows={3}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="edit-due_date">Կատարման ժամկետ</Label>
+              <Input
+                id="edit-due_date"
+                type="datetime-local"
+                value={formData.due_date}
+                onChange={(e) => setFormData(prev => ({ ...prev, due_date: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="edit-priority">Կարևորություն</Label>
+              <Select value={formData.priority} onValueChange={(value: 'low' | 'medium' | 'high') => setFormData(prev => ({ ...prev, priority: value }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Ցածր</SelectItem>
+                  <SelectItem value="medium">Միջին</SelectItem>
+                  <SelectItem value="high">Բարձր</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div>
+            <Label>Նշանակել ուսանողներին *</Label>
+            <div className="space-y-2 max-h-40 overflow-y-auto border rounded-md p-2">
+              {applicants.length === 0 ? (
+                <p className="text-sm text-muted-foreground">Հաստատված ուսանողներ չկան</p>
+              ) : (
+                applicants.map((applicant) => (
+                  <div key={applicant.applicant_id} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`edit-user-${applicant.applicant_id}`}
+                      checked={formData.assigned_to.includes(applicant.applicant_id)}
+                      onCheckedChange={() => handleUserToggle(applicant.applicant_id)}
+                    />
+                    <Avatar className="w-6 h-6">
+                      <AvatarImage src={applicant.profiles?.avatar_url} />
+                      <AvatarFallback className="text-xs">
+                        {applicant.profiles?.name?.charAt(0) || '?'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <Label htmlFor={`edit-user-${applicant.applicant_id}`} className="text-sm cursor-pointer">
+                      {applicant.profiles?.name || 'Անանուն'}
+                    </Label>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
+          <div className="flex gap-2 pt-4">
+            <Button type="submit" disabled={updateTask.isPending} className="flex-1">
+              {updateTask.isPending ? "Թարմացվում է..." : "Պահպանել"}
+            </Button>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
+              Չեղարկել
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const TaskCard: React.FC<{ task: ProjectTask; onDelete: (id: string) => void; onUpdate: () => void }> = ({ task, onDelete, onUpdate }) => {
   const getPriorityBadge = (priority: string) => {
     const colors = {
       low: 'bg-green-500/10 text-green-700 border-green-200',
@@ -313,12 +515,14 @@ const TaskCard: React.FC<{ task: ProjectTask; onDelete: (id: string) => void }> 
               )}
             </div>
           </div>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10">
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </AlertDialogTrigger>
+          <div className="flex gap-1">
+            <EditTaskDialog task={task} onTaskUpdated={onUpdate} />
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Ջնջե՞լ առաջադրանքը</AlertDialogTitle>
@@ -333,7 +537,8 @@ const TaskCard: React.FC<{ task: ProjectTask; onDelete: (id: string) => void }> 
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
-          </AlertDialog>
+            </AlertDialog>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -452,7 +657,7 @@ export const ProjectTasksManagement: React.FC<ProjectTasksManagementProps> = ({ 
       ) : (
         <div className="grid gap-4">
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onDelete={handleDeleteTask} />
+            <TaskCard key={task.id} task={task} onDelete={handleDeleteTask} onUpdate={refetch} />
           ))}
         </div>
       )}
