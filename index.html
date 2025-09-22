@@ -17,6 +17,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@100;200;300;400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Armenian:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"></noscript>
+    <style>
+      /* Critical inline styles to prevent layout shift for LCP element */
+      .font-armenian {
+        font-family: 'Noto Sans Armenian', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-display: swap;
+      }
+      /* Prevent layout shift for hero content */
+      .hero-text-content {
+        min-height: 84px; /* Reserve space based on the LCP element height */
+      }
+    </style>
 
     <meta property="og:title" content="Կրթություն առանց սահմանների - Limitless Learning Hub" />
     <meta property="og:description" content="Ժամանակակից կրթական հարթակ բարձրորակ դասընթացներով, նախագծային ուսուցմամբ և մասնագիտական զարգացմամբ" />

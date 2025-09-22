@@ -41,8 +41,8 @@ const Hero = () => {
               </h1>
             </ScrollReveal>
 
-            <ScrollReveal delay={300}>
-              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed font-armenian max-w-2xl">
+            <ScrollReveal delay={100}>
+              <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed font-armenian max-w-2xl hero-text-content">
                 {t('hero.description')}
               </p>
             </ScrollReveal>
