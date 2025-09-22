@@ -9,6 +9,26 @@ export default {
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
 	],
+	// Optimize CSS purging for better unused CSS removal
+	safelist: [
+		// Keep essential animation classes that might be dynamically applied
+		'animate-pulse',
+		'animate-bounce',
+		'animate-scale-in',
+		'hover:scale-105',
+		'transition-all',
+		'duration-300',
+		'ease-out',
+		// Keep critical responsive classes
+		'sm:text-xl',
+		'lg:text-5xl',
+		'xl:text-7xl',
+		// Keep essential layout classes
+		'grid',
+		'flex',
+		'relative',
+		'absolute',
+	],
 	prefix: "",
 	theme: {
 		container: {

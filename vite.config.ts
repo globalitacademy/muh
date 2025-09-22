@@ -19,4 +19,30 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // CSS optimization to reduce unused CSS
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        // Split CSS by entry points to enable better loading
+        manualChunks: {
+          // Critical components that need immediate CSS
+          'critical': [
+            './src/components/Hero.tsx',
+            './src/components/Header.tsx'
+          ],
+          // Non-critical components that can load later
+          'features': [
+            './src/components/EnhancedFeatures.tsx',
+            './src/components/Courses.tsx'
+          ],
+          // Heavy animation components
+          'animations': [
+            './src/components/SplashCursor.tsx',
+            './src/components/NetworkAnimation.tsx'
+          ]
+        }
+      }
+    }
+  }
 }));
