@@ -2107,26 +2107,11 @@ export type Database = {
         Args: { admin_id: string; application_id: string }
         Returns: undefined
       }
-      check_access_code_status: {
-        Args: { p_code: string }
-        Returns: Json
-      }
-      cleanup_expired_locks: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_expired_reset_tokens: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_expired_sessions: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_old_failed_attempts: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      check_access_code_status: { Args: { p_code: string }; Returns: Json }
+      cleanup_expired_locks: { Args: never; Returns: undefined }
+      cleanup_expired_reset_tokens: { Args: never; Returns: undefined }
+      cleanup_expired_sessions: { Args: never; Returns: undefined }
+      cleanup_old_failed_attempts: { Args: never; Returns: undefined }
       create_notification: {
         Args: {
           p_action_url?: string
@@ -2139,14 +2124,8 @@ export type Database = {
         }
         Returns: string
       }
-      generate_access_code: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_user_role: {
-        Args: { user_uuid: string }
-        Returns: string
-      }
+      generate_access_code: { Args: never; Returns: string }
+      get_user_role: { Args: { user_uuid: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["user_role"]
@@ -2154,22 +2133,13 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_admin_or_instructor: {
-        Args: { user_uuid: string }
-        Returns: boolean
-      }
+      is_admin_or_instructor: { Args: { user_uuid: string }; Returns: boolean }
       is_project_member: {
         Args: { p_project_id: string; p_user_id: string }
         Returns: boolean
       }
-      is_user_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      mark_all_notifications_read: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      is_user_admin: { Args: never; Returns: boolean }
+      mark_all_notifications_read: { Args: never; Returns: undefined }
       mark_notification_read: {
         Args: { p_notification_id: string }
         Returns: undefined
