@@ -189,9 +189,9 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+          <div className="w-full bg-muted rounded-full h-2 mb-4">
             <div 
-              className="bg-edu-blue h-2 rounded-full transition-all duration-300" 
+              className="bg-primary h-2 rounded-full transition-all duration-300" 
               style={{ width: `${progressPercentage}%` }}
             />
           </div>
@@ -225,7 +225,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
                     </span>
                     <div className="flex items-center gap-2">
                       {isCompleted && (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-armenian">
+                        <span className="text-xs bg-success/20 text-success-foreground px-2 py-1 rounded-full font-armenian">
                           {t('topic.completed')}
                         </span>
                       )}
@@ -276,13 +276,13 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
 
       {/* Complete All Button */}
       {allSectionsCompleted && (
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-success/30 bg-success/10">
           <CardContent className="p-6 text-center">
-            <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-green-800 font-armenian mb-2">
+            <CheckCircle className="w-12 h-12 text-success-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-success-foreground font-armenian mb-2">
               {t('topic.congratulations')}
             </h3>
-            <p className="text-green-700 font-armenian mb-4">
+            <p className="text-success-foreground/90 font-armenian mb-4">
               {t('topic.all-sections-done')}
             </p>
             <Button onClick={onComplete} className="font-armenian">
@@ -321,9 +321,9 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
                         )}
                         {resource.difficulty && (
                           <span className={`text-xs px-2 py-1 rounded font-armenian ${
-                            resource.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
-                            resource.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-red-100 text-red-800'
+                            resource.difficulty === 'beginner' ? 'bg-success/20 text-success-foreground' :
+                            resource.difficulty === 'intermediate' ? 'bg-warning/20 text-warning-foreground' :
+                            'bg-destructive/20 text-destructive-foreground'
                           }`}>
                             {resource.difficulty === 'beginner' ? 'Սկսնակ' :
                              resource.difficulty === 'intermediate' ? 'Միջին' : 'Առաջադեմ'}
