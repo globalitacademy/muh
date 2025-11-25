@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import UpdateTopicContentButton from './UpdateTopicContentButton';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, Edit, Trash2, Lock, Unlock, Clock, Plus, FileText, HelpCircle, Link } from 'lucide-react';
@@ -62,10 +63,13 @@ const SpecialtyTopicsList = ({ moduleId }: SpecialtyTopicsListProps) => {
         <h4 className="font-medium font-armenian">
           Թեմաներ և դասեր ({topics?.length || 0})
         </h4>
-        <Button onClick={handleAddTopic} size="sm" className="font-armenian">
-          <Plus className="w-4 h-4 mr-1" />
-          Նոր թեմա
-        </Button>
+        <div className="flex gap-2">
+          <UpdateTopicContentButton />
+          <Button onClick={handleAddTopic} size="sm" className="font-armenian">
+            <Plus className="w-4 h-4 mr-1" />
+            Նոր թեմա
+          </Button>
+        </div>
       </div>
 
       {!topics || topics.length === 0 ? (
