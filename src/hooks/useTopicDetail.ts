@@ -6,6 +6,19 @@ import { useAuth } from '@/hooks/useAuth';
 import { useEnrollments } from '@/hooks/useEnrollments';
 import { useUserProgress, useUpdateProgress } from '@/hooks/useUserProgress';
 
+// Helper function to recursively parse JSON strings
+const recursiveJSONParse = (data: any): any => {
+  if (typeof data === 'string') {
+    try {
+      const parsed = JSON.parse(data);
+      return recursiveJSONParse(parsed); // Recursively parse in case of double encoding
+    } catch {
+      return data; // Return as is if parsing fails
+    }
+  }
+  return data;
+};
+
 // Helper functions to check content availability
 const hasVideoContent = (topic: any): boolean => {
   return !!(topic?.video_url && topic.video_url.trim() !== '');
@@ -14,9 +27,7 @@ const hasVideoContent = (topic: any): boolean => {
 const hasExercises = (topic: any): boolean => {
   if (!topic?.exercises) return false;
   try {
-    const exercises = typeof topic.exercises === 'string' 
-      ? JSON.parse(topic.exercises) 
-      : topic.exercises;
+    const exercises = recursiveJSONParse(topic.exercises);
     
     // Check if it's an object with exercises property
     if (exercises && typeof exercises === 'object' && 'exercises' in exercises) {
@@ -33,9 +44,7 @@ const hasExercises = (topic: any): boolean => {
 const hasQuiz = (topic: any): boolean => {
   if (!topic?.quiz_questions) return false;
   try {
-    const questions = typeof topic.quiz_questions === 'string' 
-      ? JSON.parse(topic.quiz_questions) 
-      : topic.quiz_questions;
+    const questions = recursiveJSONParse(topic.quiz_questions);
     
     // Check if it's an object with questions property
     if (questions && typeof questions === 'object' && 'questions' in questions) {
