@@ -2,9 +2,15 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlayCircle, CheckCircle, FileText } from 'lucide-react';
+import { PlayCircle, CheckCircle, FileText, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+import 'react-pdf/dist/esm/Page/TextLayer.css';
+
+// Configure PDF.js worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface TopicVideoLessonProps {
   topicId: string;
@@ -13,6 +19,12 @@ interface TopicVideoLessonProps {
 
 const TopicVideoLesson = ({ topicId, onComplete }: TopicVideoLessonProps) => {
   const [completedSections, setCompletedSections] = useState<string[]>([]);
+  const [numPages, setNumPages] = useState<number>(0);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages);
+  };
 
   // Helper function to convert YouTube URL to embed format
   const getYouTubeEmbedUrl = (url: string): string | null => {
@@ -128,11 +140,69 @@ const TopicVideoLesson = ({ topicId, onComplete }: TopicVideoLessonProps) => {
             /* PDF Viewer */
             isUploadedContent ? (
               <div className="mb-4">
-                <iframe
-                  src={topic.video_url}
-                  className="w-full h-[600px] rounded-lg border"
-                  title={`${topic.title} - Պրեզենտացիա`}
-                />
+                <div className="bg-muted rounded-lg overflow-hidden">
+                  <Document
+                    file={topic.video_url}
+                    onLoadSuccess={onDocumentLoadSuccess}
+                    loading={
+                      <div className="w-full h-[600px] flex items-center justify-center">
+                        <div className="text-center">
+                          <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-2 animate-pulse" />
+                          <p className="text-muted-foreground font-armenian">Բեռնվում է...</p>
+                        </div>
+                      </div>
+                    }
+                    error={
+                      <div className="w-full h-[600px] flex items-center justify-center">
+                        <div className="text-center">
+                          <FileText className="w-12 h-12 text-destructive mx-auto mb-2" />
+                          <p className="text-destructive font-armenian">PDF-ը բեռնելու սխալ</p>
+                        </div>
+                      </div>
+                    }
+                  >
+                    <div className="flex items-center justify-center bg-background p-4">
+                      <Page 
+                        pageNumber={pageNumber} 
+                        renderTextLayer={true}
+                        renderAnnotationLayer={true}
+                        className="shadow-lg"
+                        width={Math.min(window.innerWidth - 100, 800)}
+                      />
+                    </div>
+                  </Document>
+                  
+                  {/* PDF Navigation Controls */}
+                  {numPages > 0 && (
+                    <div className="flex items-center justify-between p-4 bg-background border-t">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPageNumber(prev => Math.max(1, prev - 1))}
+                        disabled={pageNumber <= 1}
+                        className="font-armenian"
+                      >
+                        <ChevronLeft className="w-4 h-4 mr-1" />
+                        Նախորդ
+                      </Button>
+                      
+                      <span className="text-sm font-armenian">
+                        Էջ {pageNumber} / {numPages}
+                      </span>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPageNumber(prev => Math.min(numPages, prev + 1))}
+                        disabled={pageNumber >= numPages}
+                        className="font-armenian"
+                      >
+                        Հաջորդ
+                        <ChevronRight className="w-4 h-4 ml-1" />
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
