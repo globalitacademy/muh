@@ -101,6 +101,7 @@ const TopicVideoLesson = ({ topicId, onComplete }: TopicVideoLessonProps) => {
 
   // Get the proper embed URL for the video
   const embedUrl = getYouTubeEmbedUrl(topic.video_url);
+  const isUploadedVideo = topic.video_url && topic.video_url.includes('topic-videos');
 
   return (
     <div className="space-y-6">
@@ -122,6 +123,17 @@ const TopicVideoLesson = ({ topicId, onComplete }: TopicVideoLessonProps) => {
                 title={`${topic.title} - Տեսադաս`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               />
+            </div>
+          ) : isUploadedVideo ? (
+            <div className="aspect-video mb-4">
+              <video
+                src={topic.video_url}
+                controls
+                className="w-full h-full rounded-lg"
+                title={`${topic.title} - Տեսադաս`}
+              >
+                Ձեր բրաուզերը չի աջակցում վիդեո նվագարկմանը
+              </video>
             </div>
           ) : topic.video_url ? (
             <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
