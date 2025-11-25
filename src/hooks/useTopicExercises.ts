@@ -1,12 +1,10 @@
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Exercise } from '@/components/exercises/types';
 
 export const useTopicExercises = (topicId: string) => {
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [completedExercises, setCompletedExercises] = useState<string[]>([]);
 
   // Fetch exercises from database
   const { data: topic, isLoading, error } = useQuery({
@@ -116,31 +114,9 @@ export const useTopicExercises = (topicId: string) => {
     }
   }, [topic?.exercises]);
 
-  const handleAnswerChange = (exerciseId: string, value: string) => {
-    setAnswers(prev => ({
-      ...prev,
-      [exerciseId]: value
-    }));
-  };
-
-  const handleSubmitExercise = (exerciseId: string, onComplete: () => void) => {
-    if (!completedExercises.includes(exerciseId)) {
-      setCompletedExercises(prev => [...prev, exerciseId]);
-      
-      // If all exercises completed, enable next step
-      if (completedExercises.length + 1 === exercises.length) {
-        setTimeout(onComplete, 1000);
-      }
-    }
-  };
-
   return {
     exercises,
-    answers,
-    completedExercises,
     isLoading,
-    error,
-    handleAnswerChange,
-    handleSubmitExercise
+    error
   };
 };
