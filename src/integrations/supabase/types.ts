@@ -1829,6 +1829,7 @@ export type Database = {
       topics: {
         Row: {
           content: string | null
+          content_type: string | null
           created_at: string
           description: string | null
           description_en: string | null
@@ -1849,6 +1850,7 @@ export type Database = {
         }
         Insert: {
           content?: string | null
+          content_type?: string | null
           created_at?: string
           description?: string | null
           description_en?: string | null
@@ -1869,6 +1871,7 @@ export type Database = {
         }
         Update: {
           content?: string | null
+          content_type?: string | null
           created_at?: string
           description?: string | null
           description_en?: string | null

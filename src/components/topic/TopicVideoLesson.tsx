@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlayCircle, CheckCircle } from 'lucide-react';
+import { PlayCircle, CheckCircle, FileText } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -43,19 +43,19 @@ const TopicVideoLesson = ({ topicId, onComplete }: TopicVideoLessonProps) => {
   const { data: topic, isLoading, error } = useQuery({
     queryKey: ['topic-video', topicId],
     queryFn: async () => {
-      console.log('Fetching topic video for:', topicId);
+      console.log('Fetching topic content for:', topicId);
       const { data, error } = await supabase
         .from('topics')
-        .select('title, video_url')
+        .select('title, video_url, content_type')
         .eq('id', topicId)
         .maybeSingle();
       
       if (error) {
-        console.error('Error fetching topic video:', error);
+        console.error('Error fetching topic content:', error);
         throw error;
       }
       
-      console.log('Topic video fetched:', data);
+      console.log('Topic content fetched:', data);
       return data;
     },
     enabled: !!topicId
@@ -66,8 +66,8 @@ const TopicVideoLesson = ({ topicId, onComplete }: TopicVideoLessonProps) => {
       const newCompleted = [...completedSections, sectionId];
       setCompletedSections(newCompleted);
       
-      // Complete the video lesson after marking as watched
-      if (sectionId === 'video') {
+      // Complete the lesson after marking as viewed
+      if (sectionId === 'content') {
         setTimeout(onComplete, 1000);
       }
     }
@@ -99,69 +99,100 @@ const TopicVideoLesson = ({ topicId, onComplete }: TopicVideoLessonProps) => {
     );
   }
 
-  // Get the proper embed URL for the video
-  const embedUrl = getYouTubeEmbedUrl(topic.video_url);
-  const isUploadedVideo = topic.video_url && topic.video_url.includes('topic-videos');
+  // Determine content type and get proper URLs
+  const isPdf = topic.content_type === 'pdf' || topic.video_url?.endsWith('.pdf');
+  const embedUrl = !isPdf ? getYouTubeEmbedUrl(topic.video_url) : null;
+  const isUploadedContent = topic.video_url && topic.video_url.includes('topic-videos');
 
   return (
     <div className="space-y-6">
-      {/* Video Section */}
+      {/* Content Section */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-armenian">
-            <PlayCircle className="w-5 h-5 text-edu-blue" />
-            Տեսադաս
+            {isPdf ? (
+              <>
+                <FileText className="w-5 h-5 text-edu-blue" />
+                Պրեզենտացիա
+              </>
+            ) : (
+              <>
+                <PlayCircle className="w-5 h-5 text-edu-blue" />
+                Տեսադաս
+              </>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {embedUrl ? (
-            <div className="aspect-video mb-4">
-              <iframe
-                src={embedUrl}
-                className="w-full h-full rounded-lg"
-                allowFullScreen
-                title={`${topic.title} - Տեսադաս`}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              />
-            </div>
-          ) : isUploadedVideo ? (
-            <div className="aspect-video mb-4">
-              <video
-                src={topic.video_url}
-                controls
-                className="w-full h-full rounded-lg"
-                title={`${topic.title} - Տեսադաս`}
-              >
-                Ձեր բրաուզերը չի աջակցում վիդեո նվագարկմանը
-              </video>
-            </div>
-          ) : topic.video_url ? (
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
-              <div className="text-center">
-                <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-                <p className="text-muted-foreground font-armenian mb-2">Անվավեր տեսանյութի հղում</p>
-                <p className="text-xs text-muted-foreground font-armenian">
-                  Խնդրում ենք ստուգել YouTube հղումը
-                </p>
+          {isPdf ? (
+            /* PDF Viewer */
+            isUploadedContent ? (
+              <div className="mb-4">
+                <iframe
+                  src={topic.video_url}
+                  className="w-full h-[600px] rounded-lg border"
+                  title={`${topic.title} - Պրեզենտացիա`}
+                />
               </div>
-            </div>
+            ) : (
+              <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
+                <div className="text-center">
+                  <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground font-armenian">PDF պրեզենտացիան շուտով կլինի հասանելի</p>
+                </div>
+              </div>
+            )
           ) : (
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
-              <div className="text-center">
-                <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-                <p className="text-muted-foreground font-armenian">Տեսադասը շուտով կլինի հասանելի</p>
+            /* Video Player */
+            embedUrl ? (
+              <div className="aspect-video mb-4">
+                <iframe
+                  src={embedUrl}
+                  className="w-full h-full rounded-lg"
+                  allowFullScreen
+                  title={`${topic.title} - Տեսադաս`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                />
               </div>
-            </div>
+            ) : isUploadedContent ? (
+              <div className="aspect-video mb-4">
+                <video
+                  src={topic.video_url}
+                  controls
+                  className="w-full h-full rounded-lg"
+                  title={`${topic.title} - Տեսադաս`}
+                >
+                  Ձեր բրաուզերը չի աջակցում վիդեո նվագարկմանը
+                </video>
+              </div>
+            ) : topic.video_url ? (
+              <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
+                <div className="text-center">
+                  <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground font-armenian mb-2">Անվավեր տեսանյութի հղում</p>
+                  <p className="text-xs text-muted-foreground font-armenian">
+                    Խնդրում ենք ստուգել YouTube հղումը
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-4">
+                <div className="text-center">
+                  <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-muted-foreground font-armenian">Տեսադասը շուտով կլինի հասանելի</p>
+                </div>
+              </div>
+            )
           )}
           <Button 
-            onClick={() => markSectionComplete('video')}
-            disabled={completedSections.includes('video')}
+            onClick={() => markSectionComplete('content')}
+            disabled={completedSections.includes('content')}
             className="w-full font-armenian"
           >
-            {completedSections.includes('video') ? (
+            {completedSections.includes('content') ? (
               <>
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Տեսադասը դիտված է
+                {isPdf ? 'Պրեզենտացիան դիտված է' : 'Տեսադասը դիտված է'}
               </>
             ) : (
               'Նշել որպես դիտված'
