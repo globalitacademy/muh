@@ -70,7 +70,27 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
     return [];
   };
 
+  // Parse resources
+  const parseResources = (resources: any) => {
+    if (!resources) return [];
+    
+    try {
+      let parsed = typeof resources === 'string' ? JSON.parse(resources) : resources;
+      
+      // Handle wrapped format {resources: [...]}
+      if (parsed && typeof parsed === 'object' && 'resources' in parsed) {
+        parsed = parsed.resources;
+      }
+      
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      console.error('Error parsing resources:', e);
+      return [];
+    }
+  };
+
   const contentSections = parseContentSections(topic?.content);
+  const resources = parseResources(topic?.resources);
 
   const toggleSection = (sectionId: string) => {
     const newExpanded = new Set(expandedSections);
@@ -257,19 +277,57 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
       )}
 
       {/* Resources Section (if available) */}
-      {topic.resources && (
+      {resources.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-armenian">
               <FileText className="w-5 h-5 text-edu-blue" />
-              {t('topic.additional-resources')}
+              Լրացուցիչ ռեսուրսներ
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="prose prose-sm max-w-none font-armenian">
-              <pre className="whitespace-pre-wrap bg-muted p-4 rounded text-sm">
-                {JSON.stringify(topic.resources, null, 2)}
-              </pre>
+            <div className="space-y-3">
+              {resources.map((resource: any, index: number) => (
+                <div key={resource.id || index} className="border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-foreground font-armenian mb-1">
+                        {resource.title}
+                      </h4>
+                      <p className="text-sm text-muted-foreground font-armenian mb-2">
+                        {resource.description}
+                      </p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {resource.type && (
+                          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded font-armenian">
+                            {resource.type}
+                          </span>
+                        )}
+                        {resource.difficulty && (
+                          <span className={`text-xs px-2 py-1 rounded font-armenian ${
+                            resource.difficulty === 'beginner' ? 'bg-green-100 text-green-800' :
+                            resource.difficulty === 'intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
+                          }`}>
+                            {resource.difficulty === 'beginner' ? 'Սկսնակ' :
+                             resource.difficulty === 'intermediate' ? 'Միջին' : 'Առաջադեմ'}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {resource.url && (
+                      <a
+                        href={resource.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline text-sm font-medium font-armenian whitespace-nowrap"
+                      >
+                        Բացել →
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
