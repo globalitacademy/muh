@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface AIGenerateButtonProps {
   topicTitle: string;
-  type: 'content' | 'exercises' | 'quiz';
+  type: 'content' | 'exercises' | 'quiz' | 'resources';
   onGenerated: (data: any) => void;
   disabled?: boolean;
 }
@@ -18,7 +18,8 @@ const AIGenerateButton = ({ topicTitle, type, onGenerated, disabled }: AIGenerat
   const labels = {
     content: 'Գեներացնել բովանդակություն',
     exercises: 'Գեներացնել վարժություններ',
-    quiz: 'Գեներացնել վիկտորինա'
+    quiz: 'Գեներացնել վիկտորինա',
+    resources: 'Գեներացնել ռեսուրսներ'
   };
 
   const handleGenerate = async () => {

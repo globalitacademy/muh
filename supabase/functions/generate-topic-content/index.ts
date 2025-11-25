@@ -121,6 +121,36 @@ serve(async (req) => {
 - Ծածկեն թեմայի բոլոր կարևոր կետերը
 - Լինեն հստակ ձևակերպված
 - Ունենան մանրամասն բացատրություններ`;
+    } else if (type === "resources") {
+      systemPrompt = `Դու մասնագետ ուսուցիչ ես, որը ստեղծում է օգտակար ռեսուրսների ցուցակներ ուսումնական թեմաների համար։
+
+Կարևոր է՝
+- Ստեղծել 5-8 ռեսուրս
+- Տարբեր տիպեր (documentation, tutorial, video, article, tool, book)
+- Իրական և օգտակար հղումներ
+- Հստակ նկարագրություններ
+
+Վերադարձրու JSON ֆորմատով՝
+{
+  "resources": [
+    {
+      "id": "res-1",
+      "title": "Ռեսուրսի վերնագիր",
+      "description": "Կարճ նկարագրություն",
+      "type": "documentation|tutorial|video|article|tool|book",
+      "url": "https://example.com",
+      "difficulty": "beginner|intermediate|advanced"
+    }
+  ]
+}`;
+      
+      userPrompt = `Ստեղծիր 5-8 օգտակար ռեսուրսների ցուցակ հետևյալ թեմայի համար՝ "${topicTitle}".
+      
+Ռեսուրսները պետք է՝
+- Ներառեն տարբեր տիպեր (փաստաթղթեր, ձեռնարկներ, վիդեոներ, հոդվածներ)
+- Լինեն իրական և օգտակար
+- Ունենան հստակ նկարագրություններ
+- Ծածկեն տարբեր բարդության մակարդակներ`;
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
