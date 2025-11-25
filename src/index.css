@@ -38,25 +38,27 @@
 }
 
 .ql-editor blockquote {
-  border-left: 4px solid #ccc;
+  border-left: 4px solid hsl(var(--border));
   margin-bottom: 1em;
   margin-top: 1em;
   padding-left: 16px;
 }
 
 .ql-editor code {
-  background: #f4f4f4;
-  border: 1px solid #ddd;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
   border-radius: 4px;
+  color: hsl(var(--foreground));
   font-family: 'Courier New', Courier, monospace;
   font-size: 0.9em;
   padding: 2px 4px;
 }
 
 .ql-editor pre {
-  background: #f4f4f4;
-  border: 1px solid #ddd;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
   border-radius: 4px;
+  color: hsl(var(--foreground));
   font-family: 'Courier New', Courier, monospace;
   font-size: 0.9em;
   overflow-x: auto;
@@ -70,12 +72,13 @@
 }
 
 .ql-editor a {
-  color: #06b6d4;
+  color: hsl(var(--primary));
   text-decoration: underline;
 }
 
 .ql-editor a:hover {
-  color: #0891b2;
+  color: hsl(var(--primary));
+  opacity: 0.8;
 }
 
 @layer base {
