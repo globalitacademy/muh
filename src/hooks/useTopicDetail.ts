@@ -72,7 +72,24 @@ export const useTopicDetail = () => {
       const { data, error } = await supabase
         .from('topics')
         .select(`
-          *,
+          id,
+          module_id,
+          title,
+          title_en,
+          title_ru,
+          description,
+          description_en,
+          description_ru,
+          content,
+          video_url,
+          duration_minutes,
+          order_index,
+          is_free,
+          exercises,
+          quiz_questions,
+          resources,
+          created_at,
+          updated_at,
           modules (
             id,
             title,
