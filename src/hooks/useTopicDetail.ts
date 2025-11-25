@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useEnrollments } from '@/hooks/useEnrollments';
 import { useUserProgress, useUpdateProgress } from '@/hooks/useUserProgress';
+import { useAccessSession } from '@/hooks/useAccessSession';
 
 // Helper function to recursively parse JSON strings
 const recursiveJSONParse = (data: any): any => {
@@ -64,6 +65,7 @@ export const useTopicDetail = () => {
   const { data: enrollments } = useEnrollments();
   const { data: userProgress } = useUserProgress();
   const updateProgress = useUpdateProgress();
+  const { hasModuleAccess } = useAccessSession();
   const [activeTab, setActiveTab] = useState('content'); // Start with theoretical content
   const [progress, setProgress] = useState(0);
 
@@ -139,6 +141,12 @@ export const useTopicDetail = () => {
       return true;
     }
     
+    // Check for active access code session for this module
+    if (topic.module_id && hasModuleAccess(topic.module_id)) {
+      console.log('TopicDetail - Access granted via active access code session');
+      return true;
+    }
+    
     // For paid topics, check if user is enrolled in the module
     if (user && enrollments && topic.modules) {
       const isEnrolled = enrollments.some(e => e.module_id === topic.module_id);
@@ -148,7 +156,7 @@ export const useTopicDetail = () => {
     
     console.log('TopicDetail - No access granted');
     return false;
-  }, [topic, user, enrollments]);
+  }, [topic, user, enrollments, hasModuleAccess]);
 
   // Calculate available tabs based on content
   const availableTabs = useMemo(() => {
