@@ -1,11 +1,8 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTopicExercises } from '@/hooks/useTopicExercises';
-import { useUpdateProgress } from '@/hooks/useUserProgress';
-import { useAuth } from '@/hooks/useAuth';
 import ExercisesHeader from '@/components/exercises/ExercisesHeader';
 import ExerciseCard from '@/components/exercises/ExerciseCard';
-import ExercisesCompletion from '@/components/exercises/ExercisesCompletion';
 import ExercisesLoading from '@/components/exercises/ExercisesLoading';
 import ExercisesError from '@/components/exercises/ExercisesError';
 import ExercisesEmpty from '@/components/exercises/ExercisesEmpty';
@@ -17,30 +14,11 @@ interface TopicExercisesProps {
 }
 
 const TopicExercises = ({ topicId, moduleId, onComplete }: TopicExercisesProps) => {
-  const { user } = useAuth();
-  const updateProgress = useUpdateProgress();
   const {
     exercises,
-    answers,
-    completedExercises,
     isLoading,
-    error,
-    handleAnswerChange,
-    handleSubmitExercise
+    error
   } = useTopicExercises(topicId);
-
-  // Track completion and save progress
-  useEffect(() => {
-    if (exercises.length > 0 && completedExercises.length === exercises.length && user && moduleId) {
-      // All exercises completed, save progress
-      updateProgress.mutate({
-        topicId: topicId,
-        moduleId: moduleId,
-        progressPercentage: 100,
-        completed: true
-      });
-    }
-  }, [exercises.length, completedExercises.length, user, topicId, moduleId, updateProgress]);
 
   if (isLoading) {
     return <ExercisesLoading />;
@@ -57,24 +35,16 @@ const TopicExercises = ({ topicId, moduleId, onComplete }: TopicExercisesProps) 
   return (
     <div className="space-y-6">
       <ExercisesHeader 
-        completedCount={completedExercises.length} 
         totalCount={exercises.length} 
       />
 
-      {exercises.map((exercise) => (
+      {exercises.map((exercise, index) => (
         <ExerciseCard
           key={exercise.id}
           exercise={exercise}
-          answer={answers[exercise.id]}
-          isCompleted={completedExercises.includes(exercise.id)}
-          onAnswerChange={(value) => handleAnswerChange(exercise.id, value)}
-          onSubmit={() => handleSubmitExercise(exercise.id, onComplete)}
+          index={index + 1}
         />
       ))}
-
-      {exercises.length > 0 && completedExercises.length === exercises.length && (
-        <ExercisesCompletion />
-      )}
     </div>
   );
 };
