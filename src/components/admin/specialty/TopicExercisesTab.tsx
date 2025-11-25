@@ -1,11 +1,12 @@
-
 import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import AIGenerateButton from './AIGenerateButton';
 
 interface TopicExercisesFormData {
   exercises: string;
   resources: string;
+  title?: string;
 }
 
 interface TopicExercisesTabProps {
@@ -14,10 +15,23 @@ interface TopicExercisesTabProps {
 }
 
 const TopicExercisesTab = ({ formData, onFormDataChange }: TopicExercisesTabProps) => {
+  const handleAIGenerate = (data: any) => {
+    if (data.exercises) {
+      onFormDataChange({ exercises: JSON.stringify(data, null, 2) });
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="exercises" className="font-armenian">Վարժություններ (JSON ֆորմատով)</Label>
+        <div className="flex items-center justify-between mb-2">
+          <Label htmlFor="exercises" className="font-armenian">Վարժություններ (JSON ֆորմատով)</Label>
+          <AIGenerateButton
+            topicTitle={formData.title || ''}
+            type="exercises"
+            onGenerated={handleAIGenerate}
+          />
+        </div>
         <Textarea
           id="exercises"
           value={formData.exercises}

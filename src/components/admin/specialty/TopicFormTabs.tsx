@@ -55,6 +55,7 @@ const TopicFormTabs = ({
         <TopicContentSections
           sections={contentSections}
           onChange={onContentSectionsChange}
+          topicTitle={formData.title}
         />
       </TabsContent>
 
