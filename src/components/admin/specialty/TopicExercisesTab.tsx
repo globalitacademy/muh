@@ -15,9 +15,15 @@ interface TopicExercisesTabProps {
 }
 
 const TopicExercisesTab = ({ formData, onFormDataChange }: TopicExercisesTabProps) => {
-  const handleAIGenerate = (data: any) => {
+  const handleAIGenerateExercises = (data: any) => {
     if (data.exercises) {
       onFormDataChange({ exercises: JSON.stringify(data, null, 2) });
+    }
+  };
+
+  const handleAIGenerateResources = (data: any) => {
+    if (data.resources) {
+      onFormDataChange({ resources: JSON.stringify(data, null, 2) });
     }
   };
 
@@ -29,7 +35,7 @@ const TopicExercisesTab = ({ formData, onFormDataChange }: TopicExercisesTabProp
           <AIGenerateButton
             topicTitle={formData.title || ''}
             type="exercises"
-            onGenerated={handleAIGenerate}
+            onGenerated={handleAIGenerateExercises}
           />
         </div>
         <Textarea
@@ -41,7 +47,14 @@ const TopicExercisesTab = ({ formData, onFormDataChange }: TopicExercisesTabProp
         />
       </div>
       <div>
-        <Label htmlFor="resources" className="font-armenian">Ռեսուրսներ (JSON ֆորմատով)</Label>
+        <div className="flex items-center justify-between mb-2">
+          <Label htmlFor="resources" className="font-armenian">Ռեսուրսներ (JSON ֆորմատով)</Label>
+          <AIGenerateButton
+            topicTitle={formData.title || ''}
+            type="resources"
+            onGenerated={handleAIGenerateResources}
+          />
+        </div>
         <Textarea
           id="resources"
           value={formData.resources}
