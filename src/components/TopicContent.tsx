@@ -70,12 +70,28 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
     return [];
   };
 
+  // Helper function to recursively parse JSON strings
+  const recursiveJSONParse = (data: any): any => {
+    if (typeof data === 'string') {
+      try {
+        const parsed = JSON.parse(data);
+        return recursiveJSONParse(parsed); // Recursively parse in case of double encoding
+      } catch {
+        return data; // Return as is if parsing fails
+      }
+    }
+    return data;
+  };
+
   // Parse resources
   const parseResources = (resources: any) => {
     if (!resources) return [];
     
     try {
-      let parsed = typeof resources === 'string' ? JSON.parse(resources) : resources;
+      // Use recursive parsing to handle double-encoded JSON
+      let parsed = recursiveJSONParse(resources);
+      
+      console.log('Parsed resources:', parsed);
       
       // Handle wrapped format {resources: [...]}
       if (parsed && typeof parsed === 'object' && 'resources' in parsed) {
