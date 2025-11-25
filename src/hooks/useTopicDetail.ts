@@ -17,6 +17,13 @@ const hasExercises = (topic: any): boolean => {
     const exercises = typeof topic.exercises === 'string' 
       ? JSON.parse(topic.exercises) 
       : topic.exercises;
+    
+    // Check if it's an object with exercises property
+    if (exercises && typeof exercises === 'object' && 'exercises' in exercises) {
+      return Array.isArray(exercises.exercises) && exercises.exercises.length > 0;
+    }
+    
+    // Check if it's directly an array
     return Array.isArray(exercises) && exercises.length > 0;
   } catch {
     return false;
@@ -29,6 +36,13 @@ const hasQuiz = (topic: any): boolean => {
     const questions = typeof topic.quiz_questions === 'string' 
       ? JSON.parse(topic.quiz_questions) 
       : topic.quiz_questions;
+    
+    // Check if it's an object with questions property
+    if (questions && typeof questions === 'object' && 'questions' in questions) {
+      return Array.isArray(questions.questions) && questions.questions.length > 0;
+    }
+    
+    // Check if it's directly an array
     return Array.isArray(questions) && questions.length > 0;
   } catch {
     return false;

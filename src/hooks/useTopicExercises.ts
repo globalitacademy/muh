@@ -58,6 +58,12 @@ export const useTopicExercises = (topicId: string) => {
       
       console.log('Parsed exercises data:', exercisesData);
       
+      // Check if it's an object with exercises property
+      if (exercisesData && typeof exercisesData === 'object' && 'exercises' in exercisesData) {
+        exercisesData = exercisesData.exercises;
+        console.log('Extracted exercises array from object:', exercisesData);
+      }
+      
       // Ensure it's an array
       if (!Array.isArray(exercisesData)) {
         console.log('Exercises data is not an array:', typeof exercisesData);

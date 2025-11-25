@@ -82,6 +82,12 @@ export const useQuiz = (topicId: string) => {
       
       console.log('Parsed quiz questions data:', questionsData);
       
+      // Check if it's an object with questions property
+      if (questionsData && typeof questionsData === 'object' && 'questions' in questionsData) {
+        questionsData = questionsData.questions;
+        console.log('Extracted questions array from object:', questionsData);
+      }
+      
       // Ensure it's an array
       if (!Array.isArray(questionsData)) {
         console.log('Quiz questions data is not an array:', typeof questionsData);
