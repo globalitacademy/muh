@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Trash2, Plus, GripVertical, Edit3 } from 'lucide-react';
 import RichTextEditor from '@/components/ui/rich-text-editor';
+import AIGenerateButton from './AIGenerateButton';
 import {
   DragDropContext,
   Droppable,
@@ -23,9 +24,10 @@ export interface ContentSection {
 interface TopicContentSectionsProps {
   sections: ContentSection[];
   onChange: (sections: ContentSection[]) => void;
+  topicTitle?: string;
 }
 
-const TopicContentSections = ({ sections, onChange }: TopicContentSectionsProps) => {
+const TopicContentSections = ({ sections, onChange, topicTitle = '' }: TopicContentSectionsProps) => {
   const [expandedSection, setExpandedSection] = useState<string | null>(
     sections.length > 0 ? sections[0].id : null
   );
@@ -73,14 +75,36 @@ const TopicContentSections = ({ sections, onChange }: TopicContentSectionsProps)
     onChange(reorderedSections);
   };
 
+  const handleAIGenerate = (data: any) => {
+    if (data.sections && Array.isArray(data.sections)) {
+      const newSections: ContentSection[] = data.sections.map((section: any, index: number) => ({
+        id: `section-${Date.now()}-${index}`,
+        title: section.title || `Բաժին ${index + 1}`,
+        content: section.content || '',
+        order: index
+      }));
+      onChange(newSections);
+      if (newSections.length > 0) {
+        setExpandedSection(newSections[0].id);
+      }
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium font-armenian">Տեսական նյութի բաժիններ</h3>
-        <Button onClick={addSection} size="sm" className="font-armenian">
-          <Plus className="w-4 h-4 mr-2" />
-          Ավելացնել բաժին
-        </Button>
+        <div className="flex gap-2">
+          <AIGenerateButton
+            topicTitle={topicTitle}
+            type="content"
+            onGenerated={handleAIGenerate}
+          />
+          <Button onClick={addSection} size="sm" className="font-armenian">
+            <Plus className="w-4 h-4 mr-2" />
+            Ավելացնել բաժին
+          </Button>
+        </div>
       </div>
 
       {sections.length === 0 ? (
