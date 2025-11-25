@@ -4,8 +4,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Upload, X, Loader2 } from 'lucide-react';
+import { Upload, X, Loader2, FileText, Video } from 'lucide-react';
 import { useVideoUpload } from '@/hooks/useVideoUpload';
+import { usePdfUpload } from '@/hooks/usePdfUpload';
 import { toast } from 'sonner';
 
 interface TopicBasicInfoFormData {
@@ -19,6 +20,7 @@ interface TopicBasicInfoFormData {
   duration_minutes: number;
   order_index: number;
   is_free: boolean;
+  content_type: 'video' | 'pdf' | 'none';
 }
 
 interface TopicBasicInfoTabProps {
@@ -27,8 +29,12 @@ interface TopicBasicInfoTabProps {
 }
 
 const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProps) => {
-  const { uploadVideo, deleteVideo, uploading } = useVideoUpload();
+  const { uploadVideo, deleteVideo, uploading: videoUploading } = useVideoUpload();
+  const { uploadPdf, deletePdf, uploading: pdfUploading } = usePdfUpload();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [contentType, setContentType] = useState<'video' | 'pdf'>(formData.content_type === 'pdf' ? 'pdf' : 'video');
+  
+  const uploading = videoUploading || pdfUploading;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,22 +46,39 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
   const handleUpload = async () => {
     if (!selectedFile) return;
 
-    const url = await uploadVideo(selectedFile);
+    let url: string | null = null;
+    if (contentType === 'video') {
+      url = await uploadVideo(selectedFile);
+    } else {
+      url = await uploadPdf(selectedFile);
+    }
+    
     if (url) {
-      onFormDataChange({ video_url: url });
+      onFormDataChange({ 
+        video_url: url,
+        content_type: contentType
+      });
       setSelectedFile(null);
     }
   };
 
-  const handleRemoveVideo = async () => {
+  const handleRemoveContent = async () => {
     if (formData.video_url && formData.video_url.includes('topic-videos')) {
-      await deleteVideo(formData.video_url);
+      if (formData.content_type === 'pdf') {
+        await deletePdf(formData.video_url);
+      } else {
+        await deleteVideo(formData.video_url);
+      }
     }
-    onFormDataChange({ video_url: '' });
+    onFormDataChange({ 
+      video_url: '',
+      content_type: 'none'
+    });
     setSelectedFile(null);
   };
 
-  const isUploadedVideo = formData.video_url && formData.video_url.includes('topic-videos');
+  const isUploadedContent = formData.video_url && formData.video_url.includes('topic-videos');
+  const isPdf = formData.content_type === 'pdf' || formData.video_url?.endsWith('.pdf');
 
   return (
     <div className="space-y-4">
@@ -115,34 +138,71 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
       </div>
 
       <div className="space-y-3">
-        <Label className="font-armenian">Վիդեո</Label>
+        <Label className="font-armenian">Դասի նյութ</Label>
         
-        {/* YouTube URL Input */}
-        <div>
-          <Label htmlFor="video_url" className="text-sm font-armenian">YouTube URL</Label>
-          <Input
-            id="video_url"
-            value={formData.video_url}
-            onChange={(e) => onFormDataChange({ video_url: e.target.value })}
-            placeholder="https://youtube.com/..."
-            disabled={!!selectedFile || uploading}
-          />
+        {/* Content Type Selection */}
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant={contentType === 'video' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setContentType('video')}
+            disabled={!!formData.video_url || uploading}
+            className="font-armenian"
+          >
+            <Video className="w-4 h-4 mr-2" />
+            Վիդեո
+          </Button>
+          <Button
+            type="button"
+            variant={contentType === 'pdf' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setContentType('pdf')}
+            disabled={!!formData.video_url || uploading}
+            className="font-armenian"
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            PDF պրեզենտացիա
+          </Button>
         </div>
+        
+        {/* YouTube URL Input (only for video) */}
+        {contentType === 'video' && (
+          <div>
+            <Label htmlFor="video_url" className="text-sm font-armenian">YouTube URL</Label>
+            <Input
+              id="video_url"
+              value={formData.video_url}
+              onChange={(e) => onFormDataChange({ 
+                video_url: e.target.value,
+                content_type: 'video'
+              })}
+              placeholder="https://youtube.com/..."
+              disabled={!!selectedFile || uploading}
+            />
+          </div>
+        )}
 
         {/* Divider */}
-        <div className="flex items-center gap-2">
-          <div className="flex-1 border-t border-border" />
-          <span className="text-sm text-muted-foreground font-armenian">կամ</span>
-          <div className="flex-1 border-t border-border" />
-        </div>
+        {contentType === 'video' && (
+          <div className="flex items-center gap-2">
+            <div className="flex-1 border-t border-border" />
+            <span className="text-sm text-muted-foreground font-armenian">կամ</span>
+            <div className="flex-1 border-t border-border" />
+          </div>
+        )}
 
-        {/* Video Upload */}
+        {/* File Upload */}
         <div>
-          <Label className="text-sm font-armenian">Վերբեռնել համակարգչից</Label>
+          <Label className="text-sm font-armenian">
+            {contentType === 'video' ? 'Վերբեռնել վիդեո' : 'Վերբեռնել PDF'}
+          </Label>
           <div className="flex items-center gap-2 mt-1">
             <Input
               type="file"
-              accept="video/mp4,video/webm,video/ogg,video/quicktime"
+              accept={contentType === 'video' 
+                ? "video/mp4,video/webm,video/ogg,video/quicktime" 
+                : "application/pdf"}
               onChange={handleFileSelect}
               disabled={!!formData.video_url || uploading}
               className="flex-1"
@@ -175,12 +235,14 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
           )}
         </div>
 
-        {/* Current Video Display */}
+        {/* Current Content Display */}
         {formData.video_url && (
           <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
             <div className="flex-1">
               <p className="text-sm font-medium font-armenian">
-                {isUploadedVideo ? 'Վերբեռնված վիդեո' : 'YouTube հղում'}
+                {isUploadedContent 
+                  ? (isPdf ? 'Վերբեռնված PDF' : 'Վերբեռնված վիդեո')
+                  : 'YouTube հղում'}
               </p>
               <p className="text-xs text-muted-foreground truncate">
                 {formData.video_url}
@@ -190,7 +252,7 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
               type="button"
               variant="ghost"
               size="sm"
-              onClick={handleRemoveVideo}
+              onClick={handleRemoveContent}
             >
               <X className="w-4 h-4" />
             </Button>

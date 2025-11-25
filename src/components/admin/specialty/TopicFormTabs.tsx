@@ -17,6 +17,7 @@ interface FormData {
   duration_minutes: number;
   order_index: number;
   is_free: boolean;
+  content_type: 'video' | 'pdf' | 'none';
   exercises: string;
   resources: string;
   quiz_questions: string;
