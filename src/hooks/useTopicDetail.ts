@@ -158,26 +158,35 @@ export const useTopicDetail = () => {
     return false;
   }, [topic, user, enrollments, hasModuleAccess]);
 
-  // Calculate available tabs based on content
+  // Calculate available tabs based on content and access
   const availableTabs = useMemo(() => {
     if (!topic) return ['content'];
     
     const tabs = ['content']; // Always include content tab
     
-    if (hasVideoContent(topic)) {
-      tabs.push('video');
-    }
+    // If user has access via active access code session, show all tabs
+    const hasActiveSession = topic.module_id && hasModuleAccess(topic.module_id);
     
-    if (hasExercises(topic)) {
-      tabs.push('exercises');
-    }
-    
-    if (hasQuiz(topic)) {
-      tabs.push('quiz');
+    if (hasActiveSession) {
+      // Show all tabs when access code is active
+      tabs.push('video', 'exercises', 'quiz');
+    } else {
+      // Otherwise, only show tabs for which content exists
+      if (hasVideoContent(topic)) {
+        tabs.push('video');
+      }
+      
+      if (hasExercises(topic)) {
+        tabs.push('exercises');
+      }
+      
+      if (hasQuiz(topic)) {
+        tabs.push('quiz');
+      }
     }
     
     return tabs;
-  }, [topic]);
+  }, [topic, hasModuleAccess]);
 
   // Function to get next available tab
   const getNextTab = (currentTab: string): string | null => {
