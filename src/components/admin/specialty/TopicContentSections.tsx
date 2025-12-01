@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Trash2, Plus, GripVertical, Edit3 } from 'lucide-react';
+import { Trash2, Plus, GripVertical, Edit3, Presentation } from 'lucide-react';
 import RichTextEditor from '@/components/ui/rich-text-editor';
 import AIGenerateButton from './AIGenerateButton';
+import SlidePresentation, { Slide } from './SlidePresentation';
 import {
   DragDropContext,
   Droppable,
@@ -31,6 +32,7 @@ const TopicContentSections = ({ sections, onChange, topicTitle = '' }: TopicCont
   const [expandedSection, setExpandedSection] = useState<string | null>(
     sections.length > 0 ? sections[0].id : null
   );
+  const [slides, setSlides] = useState<Slide[]>([]);
 
   const addSection = () => {
     const newSection: ContentSection = {
@@ -87,116 +89,155 @@ const TopicContentSections = ({ sections, onChange, topicTitle = '' }: TopicCont
       if (newSections.length > 0) {
         setExpandedSection(newSections[0].id);
       }
+    } else if (data.slides && Array.isArray(data.slides)) {
+      const newSlides: Slide[] = data.slides.map((slide: any) => ({
+        id: slide.id || `slide-${Date.now()}-${Math.random()}`,
+        title: slide.title || '',
+        content: slide.content || '',
+        notes: slide.notes
+      }));
+      setSlides(newSlides);
     }
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium font-armenian">Տեսական նյութի բաժիններ</h3>
-        <div className="flex gap-2">
+    <div className="space-y-8">
+      {/* Slides Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Presentation className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-medium font-armenian">AI Սլայդ Պրեզենտացիա</h3>
+          </div>
           <AIGenerateButton
             topicTitle={topicTitle}
-            type="content"
+            type="slides"
             onGenerated={handleAIGenerate}
           />
-          <Button onClick={addSection} size="sm" className="font-armenian">
-            <Plus className="w-4 h-4 mr-2" />
-            Ավելացնել բաժին
-          </Button>
         </div>
+        
+        {slides.length > 0 ? (
+          <SlidePresentation slides={slides} />
+        ) : (
+          <Card>
+            <CardContent className="p-8 text-center">
+              <Presentation className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+              <p className="text-muted-foreground font-armenian mb-4">
+                Դեռ սլայդներ չկան: Գեներացրեք AI-ի միջոցով:
+              </p>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
-      {sections.length === 0 ? (
-        <Card>
-          <CardContent className="p-8 text-center">
-            <p className="text-muted-foreground font-armenian mb-4">
-              Դեռ բաժիններ չկան: Ավելացրեք առաջին բաժինը:
-            </p>
-            <Button onClick={addSection} className="font-armenian">
+      {/* Text Sections */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-medium font-armenian">Տեսական նյութի բաժիններ</h3>
+          <div className="flex gap-2">
+            <AIGenerateButton
+              topicTitle={topicTitle}
+              type="content"
+              onGenerated={handleAIGenerate}
+            />
+            <Button onClick={addSection} size="sm" className="font-armenian">
               <Plus className="w-4 h-4 mr-2" />
               Ավելացնել բաժին
             </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="sections">
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
-                {sections.map((section, index) => (
-                  <Draggable key={section.id} draggableId={section.id} index={index}>
-                    {(provided, snapshot) => (
-                      <Card
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        className={`${snapshot.isDragging ? 'shadow-lg' : ''}`}
-                      >
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center gap-3">
-                            <div
-                              {...provided.dragHandleProps}
-                              className="cursor-grab hover:text-primary"
-                            >
-                              <GripVertical className="w-4 h-4" />
+          </div>
+        </div>
+
+        {sections.length === 0 ? (
+          <Card>
+            <CardContent className="p-8 text-center">
+              <p className="text-muted-foreground font-armenian mb-4">
+                Դեռ բաժիններ չկան: Ավելացրեք առաջին բաժինը:
+              </p>
+              <Button onClick={addSection} className="font-armenian">
+                <Plus className="w-4 h-4 mr-2" />
+                Ավելացնել բաժին
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="sections">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-3">
+                  {sections.map((section, index) => (
+                    <Draggable key={section.id} draggableId={section.id} index={index}>
+                      {(provided, snapshot) => (
+                        <Card
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          className={`${snapshot.isDragging ? 'shadow-lg' : ''}`}
+                        >
+                          <CardHeader className="pb-3">
+                            <div className="flex items-center gap-3">
+                              <div
+                                {...provided.dragHandleProps}
+                                className="cursor-grab hover:text-primary"
+                              >
+                                <GripVertical className="w-4 h-4" />
+                              </div>
+                              <div className="flex-1">
+                                <Label htmlFor={`section-title-${section.id}`} className="font-armenian">
+                                  Բաժնի վերնագիր
+                                </Label>
+                                <Input
+                                  id={`section-title-${section.id}`}
+                                  value={section.title}
+                                  onChange={(e) => updateSection(section.id, { title: e.target.value })}
+                                  placeholder="Մուտքագրեք բաժնի վերնագիրը"
+                                />
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setExpandedSection(
+                                    expandedSection === section.id ? null : section.id
+                                  )}
+                                  className="font-armenian"
+                                >
+                                  <Edit3 className="w-4 h-4 mr-1" />
+                                  {expandedSection === section.id ? 'Փակել' : 'Խմբագրել'}
+                                </Button>
+                                <Button
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => removeSection(section.id)}
+                                  className="font-armenian"
+                                >
+                                  <Trash2 className="w-4 h-4 mr-1" />
+                                  Ջնջել
+                                </Button>
+                              </div>
                             </div>
-                            <div className="flex-1">
-                              <Label htmlFor={`section-title-${section.id}`} className="font-armenian">
-                                Բաժնի վերնագիր
-                              </Label>
-                              <Input
-                                id={`section-title-${section.id}`}
-                                value={section.title}
-                                onChange={(e) => updateSection(section.id, { title: e.target.value })}
-                                placeholder="Մուտքագրեք բաժնի վերնագիրը"
+                          </CardHeader>
+                          
+                          {expandedSection === section.id && (
+                            <CardContent>
+                              <Label className="font-armenian mb-2 block">Բովանդակություն</Label>
+                              <RichTextEditor
+                                value={section.content}
+                                onChange={(content) => updateSection(section.id, { content })}
+                                placeholder="Մուտքագրեք բաժնի բովանդակությունը..."
+                                className="min-h-[300px]"
                               />
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setExpandedSection(
-                                  expandedSection === section.id ? null : section.id
-                                )}
-                                className="font-armenian"
-                              >
-                                <Edit3 className="w-4 h-4 mr-1" />
-                                {expandedSection === section.id ? 'Փակել' : 'Խմբագրել'}
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                size="sm"
-                                onClick={() => removeSection(section.id)}
-                                className="font-armenian"
-                              >
-                                <Trash2 className="w-4 h-4 mr-1" />
-                                Ջնջել
-                              </Button>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        
-                        {expandedSection === section.id && (
-                          <CardContent>
-                            <Label className="font-armenian mb-2 block">Բովանդակություն</Label>
-                            <RichTextEditor
-                              value={section.content}
-                              onChange={(content) => updateSection(section.id, { content })}
-                              placeholder="Մուտքագրեք բաժնի բովանդակությունը..."
-                              className="min-h-[300px]"
-                            />
-                          </CardContent>
-                        )}
-                      </Card>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-      )}
+                            </CardContent>
+                          )}
+                        </Card>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        )}
+      </div>
     </div>
   );
 };
