@@ -246,7 +246,13 @@ export default {
 				'glow': '0 0 20px hsl(var(--edu-blue) / 0.3)',
 				'glow-lg': '0 0 40px hsl(var(--edu-blue) / 0.4)',
 				'modern': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-				'modern-lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)'
+				'modern-lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+				// Material Design elevation shadows
+				'md-1': '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
+				'md-2': '0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12)',
+				'md-3': '0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.10)',
+				'md-4': '0 15px 25px rgba(0,0,0,0.15), 0 5px 10px rgba(0,0,0,0.05)',
+				'md-5': '0 20px 40px rgba(0,0,0,0.2)'
 			},
 			fontFamily: {
 				'armenian': ['Noto Sans Armenian', 'system-ui', 'sans-serif']
@@ -254,7 +260,20 @@ export default {
 			spacing: {
 				'18': '4.5rem',
 				'88': '22rem',
-				'128': '32rem'
+				'128': '32rem',
+				// Material Design spacing scale
+				'safe-top': 'env(safe-area-inset-top)',
+				'safe-bottom': 'env(safe-area-inset-bottom)',
+				'safe-left': 'env(safe-area-inset-left)',
+				'safe-right': 'env(safe-area-inset-right)'
+			},
+			minHeight: {
+				'touch': '48px', // Material Design minimum touch target
+				'touch-sm': '40px'
+			},
+			minWidth: {
+				'touch': '48px',
+				'touch-sm': '40px'
 			}
 		}
 	},
@@ -276,6 +295,36 @@ export default {
 				},
 				'.text-shadow-lg': {
 					'text-shadow': '0 4px 8px rgb(0 0 0 / 0.15)'
+				},
+				// Material Design utilities
+				'.material-transition': {
+					'transition': 'all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)'
+				},
+				'.material-elevation': {
+					'box-shadow': '0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1)'
+				},
+				'.touch-target': {
+					'min-height': '48px',
+					'min-width': '48px'
+				},
+				'.safe-area-inset': {
+					'padding-top': 'env(safe-area-inset-top)',
+					'padding-bottom': 'env(safe-area-inset-bottom)',
+					'padding-left': 'env(safe-area-inset-left)',
+					'padding-right': 'env(safe-area-inset-right)'
+				},
+				'.fab': {
+					'position': 'fixed',
+					'bottom': '16px',
+					'right': '16px',
+					'z-index': '50',
+					'border-radius': '50%',
+					'width': '56px',
+					'height': '56px',
+					'display': 'flex',
+					'align-items': 'center',
+					'justify-content': 'center',
+					'box-shadow': '0 6px 10px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.15)'
 				}
 			}
 			addUtilities(newUtilities)
