@@ -46,10 +46,10 @@ const Courses = () => {
               </div>
               
               {/* Modern floating elements */}
-              <div className="absolute -top-6 -left-6 w-12 h-12 bg-gradient-to-br from-edu-blue to-edu-purple rounded-2xl opacity-60 animate-float" />
-              <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-gradient-to-br from-edu-orange to-edu-yellow rounded-xl opacity-50 animate-float animation-delay-1000" />
-              <div className="absolute top-1/3 -right-8 w-6 h-6 bg-gradient-to-br from-edu-light-blue to-edu-purple rounded-lg opacity-40 animate-float animation-delay-2000" />
-              <div className="absolute bottom-1/3 -left-4 w-4 h-4 bg-gradient-to-br from-edu-purple to-edu-blue rounded-full opacity-30 animate-float animation-delay-3000" />
+              <div className="absolute -top-6 -left-6 w-12 h-12 bg-edu-blue rounded-2xl opacity-60 animate-float" />
+              <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-edu-orange rounded-xl opacity-50 animate-float animation-delay-1000" />
+              <div className="absolute top-1/3 -right-8 w-6 h-6 bg-edu-blue rounded-lg opacity-40 animate-float animation-delay-2000" />
+              <div className="absolute bottom-1/3 -left-4 w-4 h-4 bg-edu-blue rounded-full opacity-30 animate-float animation-delay-3000" />
             </div>
           </div>
         </ScrollReveal>
