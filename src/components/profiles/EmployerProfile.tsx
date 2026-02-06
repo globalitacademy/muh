@@ -35,7 +35,7 @@ const EmployerProfile = () => {
                   <Building2 className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl font-bold bg-gradient-to-r from-employer-primary to-employer-secondary bg-clip-text text-transparent font-armenian">
+                  <CardTitle className="text-2xl font-bold text-foreground font-armenian">
                     Գործատուի պրոֆիլ
                   </CardTitle>
                   <CardDescription className="text-lg font-armenian text-muted-foreground">
