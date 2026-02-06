@@ -438,7 +438,7 @@
 
 /* Enhanced Button Styles */
 .btn-modern {
-  @apply bg-gradient-to-r from-edu-blue to-edu-purple hover:from-edu-blue/90 hover:to-edu-purple/90 
+  @apply bg-edu-blue hover:bg-edu-blue/90 
          shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
 }
 
