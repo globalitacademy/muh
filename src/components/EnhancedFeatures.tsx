@@ -154,7 +154,7 @@ const EnhancedFeatures = () => {
         </ScrollReveal>
         
         <ScrollReveal delay={200}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 font-armenian bg-gradient-to-r from-foreground via-edu-blue to-edu-purple bg-clip-text text-transparent text-center leading-[1.2] py-2">{t('features.advantages')}</h2>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 font-armenian text-foreground text-center leading-[1.2] py-2">{t('features.advantages')}</h2>
         </ScrollReveal>
         
         <ScrollReveal delay={300}>
