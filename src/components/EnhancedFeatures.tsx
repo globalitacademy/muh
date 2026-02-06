@@ -184,7 +184,7 @@ const EnhancedFeatures = () => {
                 
                 <CardContent className="p-6 sm:p-8 h-full flex flex-col">
                   {/* Icon with enhanced styling */}
-                  <div className="w-12 h-12 mx-auto bg-gradient-to-r from-edu-blue to-purple-600 text-white rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 ease-out shadow-lg group-hover:shadow-xl mb-4">
+                  <div className="w-12 h-12 mx-auto bg-edu-blue text-white rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 ease-out shadow-lg group-hover:shadow-xl mb-4">
                     {feature.icon}
                   </div>
                   
