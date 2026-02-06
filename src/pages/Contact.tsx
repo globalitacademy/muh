@@ -59,7 +59,7 @@ const Contact = () => {
       icon: <Clock className="w-5 sm:w-6 h-5 sm:h-6" />,
       title: t('contact.hours'),
       info: t('contact.hours-value'),
-      color: 'from-purple-500 to-pink-500'
+      color: 'bg-edu-purple'
     }
   ];
 
