@@ -240,7 +240,7 @@ const Contact = () => {
                       
                       <Button 
                         type="submit" 
-                        className="w-full h-12 sm:h-12 bg-gradient-to-r from-edu-blue to-purple-500 hover:from-edu-dark-blue hover:to-purple-600 font-armenian font-semibold text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                        className="w-full h-12 sm:h-12 bg-edu-blue hover:bg-edu-blue/90 font-armenian font-semibold text-white rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-lg"
                       >
                         <Send className="w-4 sm:w-5 h-4 sm:h-5 mr-2" />
                         {t('contact.send')}
