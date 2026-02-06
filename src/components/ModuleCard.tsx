@@ -51,7 +51,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
             {getModuleIconFromDb((module as any).icon)}
             
             {/* Inner glow */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-edu-blue/0 to-edu-blue/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 rounded-2xl bg-edu-blue/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
           
           {/* Floating ring effect */}
