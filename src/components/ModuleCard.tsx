@@ -77,7 +77,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
         {/* Enhanced Start Learning Button with modern styling */}
         <Button 
           onClick={handleStartLearning}
-          className="w-full relative overflow-hidden bg-gradient-to-r from-edu-blue via-edu-blue to-edu-purple text-white border-0 font-armenian font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl hover:shadow-edu-blue/30 group/btn"
+          className="w-full relative overflow-hidden bg-edu-blue text-white border-0 font-armenian font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl hover:shadow-edu-blue/30 hover:bg-edu-blue/90 group/btn"
         >
           {/* Button shimmer effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 ease-out" />
@@ -85,7 +85,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
           <span className="relative z-10">{t('courses.start-learning')}</span>
           
           {/* Button glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-edu-blue to-edu-purple opacity-0 group-hover/btn:opacity-20 rounded-xl transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-edu-blue opacity-0 group-hover/btn:opacity-20 rounded-xl transition-opacity duration-300" />
         </Button>
       </CardContent>
       
