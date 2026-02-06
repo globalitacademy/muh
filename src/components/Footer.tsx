@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Mail, Phone, MapPin, Twitter, Linkedin, Facebook } from 'lucide-react';
 import logoDark from '@/assets/logo-dark.png';
+import logoLight from '@/assets/logo-light.png';
 
 const Footer = () => {
   const { t } = useLanguage();
