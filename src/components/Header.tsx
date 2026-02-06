@@ -4,10 +4,12 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import UserMenu from './UserMenu';
 import ThemeToggle from './ThemeToggle';
 import { NotificationBell } from './notifications/NotificationBell';
 import { useNavigate } from 'react-router-dom';
+import logoDark from '@/assets/logo-dark.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
