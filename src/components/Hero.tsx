@@ -135,8 +135,8 @@ const Hero = () => {
                 </div>
 
                 {/* Floating elements */}
-                <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full animate-bounce opacity-80"></div>
-                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse opacity-60"></div>
+                <div className="absolute -top-4 -right-4 w-8 h-8 bg-edu-orange rounded-full animate-bounce opacity-80"></div>
+                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-edu-purple rounded-full animate-pulse opacity-60"></div>
               </div>
             </ScrollReveal>
           </div>
