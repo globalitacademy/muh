@@ -189,7 +189,7 @@ const Hero = () => {
                     </div>
                     <div className="w-3 h-3 bg-edu-orange rounded-full animate-pulse"></div>
                   </div>
-                  <div className="text-3xl md:text-4xl font-bold text-orange-500 mb-2 font-armenian">
+                  <div className="text-3xl md:text-4xl font-bold text-edu-orange mb-2 font-armenian">
                     <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.instructors')}</div>
