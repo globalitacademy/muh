@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Mail, Phone, MapPin, Twitter, Linkedin, Facebook } from 'lucide-react';
 import logoDark from '@/assets/logo-dark.png';
+import logoLight from '@/assets/logo-light.png';
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -16,18 +17,11 @@ const Footer = () => {
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-6">
-              {resolvedTheme === 'dark' ? (
-                <img src={logoDark} alt="LearnHub" className="h-10" />
-              ) : (
-                <>
-                  <div className="w-10 h-10 bg-gradient-to-r from-edu-blue to-edu-purple rounded-xl flex items-center justify-center">
-                    <span className="text-primary-foreground font-bold text-lg">L</span>
-                  </div>
-                  <span className="text-2xl font-bold font-armenian text-foreground">
-                    {t('hero.title')}
-                  </span>
-                </>
-              )}
+              <img 
+                src={resolvedTheme === 'dark' ? logoDark : logoLight} 
+                alt="LearnHub" 
+                className="h-10" 
+              />
             </div>
             <p className="text-muted-foreground mb-8 max-w-md font-armenian leading-relaxed text-lg">
               {t('footer.description')}
