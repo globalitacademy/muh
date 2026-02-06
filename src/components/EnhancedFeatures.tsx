@@ -199,7 +199,7 @@ const EnhancedFeatures = () => {
                   </p>
 
                   {/* Hover effect indicator */}
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-edu-blue to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-edu-blue transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                 </CardContent>
 
                 {/* Floating particles effect */}
