@@ -109,7 +109,7 @@ const Contact = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16">
                 {realStats.map((stat, index) => (
                   <div key={index} className="glass-card p-4 sm:p-6 rounded-2xl text-center hover:scale-105 transition-transform duration-300">
-                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-br from-edu-blue to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white">
+                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-edu-blue rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white">
                       {statsLoading ? <Loader2 className="w-6 sm:w-8 h-6 sm:h-8 animate-spin" /> : stat.icon}
                     </div>
                     <div className="text-2xl sm:text-3xl font-bold text-foreground mb-2">{stat.number}</div>
