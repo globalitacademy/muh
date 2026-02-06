@@ -53,7 +53,7 @@ const Contact = () => {
       icon: <Mail className="w-5 sm:w-6 h-5 sm:h-6" />,
       title: t('contact.email'),
       info: 'info@limitlesslearning.am',
-      color: 'from-orange-500 to-red-500'
+      color: 'bg-edu-orange'
     },
     {
       icon: <Clock className="w-5 sm:w-6 h-5 sm:h-6" />,
