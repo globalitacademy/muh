@@ -637,7 +637,7 @@
 }
 
 .progress-bar {
-  @apply bg-gradient-to-r from-edu-blue to-edu-purple h-full transition-all duration-500 ease-out;
+  @apply bg-edu-blue h-full transition-all duration-500 ease-out;
 }
 
 /* Custom scrollbar utility class */
