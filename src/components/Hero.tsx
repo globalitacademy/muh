@@ -115,7 +115,7 @@ const Hero = () => {
                           <span className="text-orange-500 font-medium">78%</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-3">
-                          <div className="bg-gradient-to-r from-orange-500 to-red-600 h-3 rounded-full" style={{ width: '78%' }}></div>
+                          <div className="bg-edu-orange h-3 rounded-full" style={{ width: '78%' }}></div>
                         </div>
                       </div>
                     </div>
