@@ -83,9 +83,9 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ className }) => {
   if (!isTokenValid && !mapboxToken) {
     return (
       <div className={`bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative overflow-hidden ${className}`}>
-        <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/10 to-purple-500/10"></div>
+        <div className="absolute inset-0 bg-edu-blue/10"></div>
         <div className="text-center z-10 p-8 max-w-md mx-auto">
-          <div className="w-16 h-16 bg-gradient-to-br from-edu-blue to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6 text-white">
+          <div className="w-16 h-16 bg-edu-blue rounded-2xl flex items-center justify-center mx-auto mb-6 text-white">
             <MapPin className="w-8 h-8" />
           </div>
           <h3 className="text-xl font-semibold font-armenian text-foreground mb-4">

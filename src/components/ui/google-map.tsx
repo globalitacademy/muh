@@ -24,7 +24,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ className }) => {
       {/* Overlay with location info */}
       <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg max-w-xs">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-edu-blue to-purple-500 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+          <div className="w-10 h-10 bg-edu-blue rounded-lg flex items-center justify-center text-white flex-shrink-0">
             <MapPin className="w-5 h-5" />
           </div>
           <div className="min-w-0">

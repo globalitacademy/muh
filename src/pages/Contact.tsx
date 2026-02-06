@@ -41,25 +41,25 @@ const Contact = () => {
       icon: <MapPin className="w-5 sm:w-6 h-5 sm:h-6" />,
       title: t('contact.address'),
       info: t('contact.address-value'),
-      color: 'from-edu-blue to-purple-500'
+      color: 'bg-edu-blue'
     },
     {
       icon: <Phone className="w-5 sm:w-6 h-5 sm:h-6" />,
       title: t('contact.phone'),
       info: '+374 10 123 456',
-      color: 'from-green-500 to-emerald-500'
+      color: 'bg-success-green'
     },
     {
       icon: <Mail className="w-5 sm:w-6 h-5 sm:h-6" />,
       title: t('contact.email'),
       info: 'info@limitlesslearning.am',
-      color: 'from-orange-500 to-red-500'
+      color: 'bg-edu-orange'
     },
     {
       icon: <Clock className="w-5 sm:w-6 h-5 sm:h-6" />,
       title: t('contact.hours'),
       info: t('contact.hours-value'),
-      color: 'from-purple-500 to-pink-500'
+      color: 'bg-edu-purple'
     }
   ];
 
@@ -109,7 +109,7 @@ const Contact = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-16">
                 {realStats.map((stat, index) => (
                   <div key={index} className="glass-card p-4 sm:p-6 rounded-2xl text-center hover:scale-105 transition-transform duration-300">
-                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-gradient-to-br from-edu-blue to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white">
+                    <div className="w-12 sm:w-16 h-12 sm:h-16 bg-edu-blue rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 text-white">
                       {statsLoading ? <Loader2 className="w-6 sm:w-8 h-6 sm:h-8 animate-spin" /> : stat.icon}
                     </div>
                     <div className="text-2xl sm:text-3xl font-bold text-foreground mb-2">{stat.number}</div>
@@ -141,7 +141,7 @@ const Contact = () => {
                     <div key={index} className="group">
                       <div className="glass-card p-4 sm:p-6 rounded-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
                         <div className="flex items-start space-x-3 sm:space-x-4">
-                          <div className={`w-10 sm:w-14 h-10 sm:h-14 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center flex-shrink-0 text-white group-hover:scale-110 transition-transform duration-300`}>
+                          <div className={`w-10 sm:w-14 h-10 sm:h-14 ${item.color} rounded-xl flex items-center justify-center flex-shrink-0 text-white group-hover:scale-110 transition-transform duration-300`}>
                             {item.icon}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -163,9 +163,9 @@ const Contact = () => {
               {/* Contact Form - Mobile optimized */}
               <div>
                 <Card className="glass-card border-0 shadow-2xl rounded-2xl overflow-hidden">
-                  <CardHeader className="bg-gradient-to-br from-edu-blue/5 to-purple-500/5 border-b border-border/50 p-4 sm:p-6">
+                  <CardHeader className="bg-edu-blue/5 border-b border-border/50 p-4 sm:p-6">
                     <CardTitle className="text-xl sm:text-2xl md:text-3xl font-armenian text-foreground flex items-center gap-3">
-                      <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-edu-blue to-purple-500 rounded-xl flex items-center justify-center text-white">
+                      <div className="w-8 sm:w-10 h-8 sm:h-10 bg-edu-blue rounded-xl flex items-center justify-center text-white">
                         <Send className="w-4 sm:w-5 h-4 sm:h-5" />
                       </div>
                       {t('contact.send-message')}
