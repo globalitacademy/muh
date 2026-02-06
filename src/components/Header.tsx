@@ -4,14 +4,17 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import UserMenu from './UserMenu';
 import ThemeToggle from './ThemeToggle';
 import { NotificationBell } from './notifications/NotificationBell';
 import { useNavigate } from 'react-router-dom';
+import logoDark from '@/assets/logo-dark.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t, currentLanguage, setLanguage } = useLanguage();
+  const { resolvedTheme } = useTheme();
   const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -37,12 +40,18 @@ const Header = () => {
             className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px]" 
             onClick={() => navigate('/')}
           >
-            <div className="w-7 sm:w-8 h-7 sm:h-8 bg-gradient-to-r from-edu-blue to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xs sm:text-sm">L</span>
-            </div>
-            <span className="text-lg sm:text-xl font-bold text-foreground font-armenian">
-              LearnHub
-            </span>
+            {resolvedTheme === 'dark' ? (
+              <img src={logoDark} alt="LearnHub" className="h-7 sm:h-8" />
+            ) : (
+              <>
+                <div className="w-7 sm:w-8 h-7 sm:h-8 bg-gradient-to-r from-edu-blue to-edu-purple rounded-lg flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-xs sm:text-sm">L</span>
+                </div>
+                <span className="text-lg sm:text-xl font-bold text-foreground font-armenian">
+                  LearnHub
+                </span>
+              </>
+            )}
           </div>
 
           {/* Desktop Navigation */}
