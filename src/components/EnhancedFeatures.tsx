@@ -180,11 +180,11 @@ const EnhancedFeatures = () => {
                 <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-5 group-hover:opacity-10 transition-opacity duration-500`} />
                 
                 {/* Network connection indicator */}
-                <div className="absolute top-4 right-4 w-2 h-2 bg-gradient-to-r from-edu-blue to-purple-600 rounded-full animate-pulse opacity-60 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute top-4 right-4 w-2 h-2 bg-edu-blue rounded-full animate-pulse opacity-60 group-hover:opacity-100 transition-opacity" />
                 
                 <CardContent className="p-6 sm:p-8 h-full flex flex-col">
                   {/* Icon with enhanced styling */}
-                  <div className="w-12 h-12 mx-auto bg-gradient-to-r from-edu-blue to-purple-600 text-white rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 ease-out shadow-lg group-hover:shadow-xl mb-4">
+                  <div className="w-12 h-12 mx-auto bg-edu-blue text-white rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-transform duration-500 ease-out shadow-lg group-hover:shadow-xl mb-4">
                     {feature.icon}
                   </div>
                   
@@ -199,7 +199,7 @@ const EnhancedFeatures = () => {
                   </p>
 
                   {/* Hover effect indicator */}
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-edu-blue to-purple-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                  <div className="absolute bottom-0 left-0 w-full h-1 bg-edu-blue transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                 </CardContent>
 
                 {/* Floating particles effect */}

@@ -47,19 +47,19 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
       <CardContent className="p-8 flex flex-col items-center text-center h-full relative z-10">
         {/* Enhanced Module Icon with floating effect */}
         <div className="relative mb-8 group-hover:scale-110 transition-all duration-500">
-          <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-edu-blue/20 via-edu-blue/30 to-purple-600/20 border border-edu-blue/40 flex items-center justify-center text-edu-blue shadow-xl group-hover:shadow-2xl group-hover:shadow-edu-blue/30 transition-all duration-500">
+          <div className="relative w-24 h-24 rounded-2xl bg-edu-blue/20 border border-edu-blue/40 flex items-center justify-center text-edu-blue shadow-xl group-hover:shadow-2xl group-hover:shadow-edu-blue/30 transition-all duration-500">
             {getModuleIconFromDb((module as any).icon)}
             
             {/* Inner glow */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-edu-blue/0 to-edu-blue/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 rounded-2xl bg-edu-blue/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
           
           {/* Floating ring effect */}
           <div className="absolute inset-0 w-24 h-24 rounded-2xl border-2 border-edu-blue/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           
           {/* Orbital particles */}
-          <div className="absolute -top-2 -right-2 w-3 h-3 bg-gradient-to-r from-edu-orange to-edu-yellow rounded-full opacity-0 group-hover:opacity-100 animate-bounce transition-opacity duration-500" />
-          <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-gradient-to-r from-edu-light-blue to-edu-purple rounded-full opacity-0 group-hover:opacity-100 animate-pulse transition-opacity duration-500" />
+          <div className="absolute -top-2 -right-2 w-3 h-3 bg-edu-orange rounded-full opacity-0 group-hover:opacity-100 animate-bounce transition-opacity duration-500" />
+          <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-edu-blue rounded-full opacity-0 group-hover:opacity-100 animate-pulse transition-opacity duration-500" />
         </div>
 
         {/* Enhanced Module Number with gradient */}
@@ -77,7 +77,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
         {/* Enhanced Start Learning Button with modern styling */}
         <Button 
           onClick={handleStartLearning}
-          className="w-full relative overflow-hidden bg-gradient-to-r from-edu-blue via-edu-blue to-edu-purple text-white border-0 font-armenian font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl hover:shadow-edu-blue/30 group/btn"
+          className="w-full relative overflow-hidden bg-edu-blue text-white border-0 font-armenian font-semibold py-4 px-8 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl hover:shadow-edu-blue/30 hover:bg-edu-blue/90 group/btn"
         >
           {/* Button shimmer effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 ease-out" />
@@ -85,7 +85,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
           <span className="relative z-10">{t('courses.start-learning')}</span>
           
           {/* Button glow */}
-          <div className="absolute inset-0 bg-gradient-to-r from-edu-blue to-edu-purple opacity-0 group-hover/btn:opacity-20 rounded-xl transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-edu-blue opacity-0 group-hover/btn:opacity-20 rounded-xl transition-opacity duration-300" />
         </Button>
       </CardContent>
       

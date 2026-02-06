@@ -80,7 +80,7 @@ const Hero = () => {
                   <div className="space-y-6">
                     {/* Header */}
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-edu-blue to-purple-600 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-edu-blue rounded-xl flex items-center justify-center">
                         <BookOpen className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -97,7 +97,7 @@ const Hero = () => {
                           <span className="text-edu-blue font-medium">85%</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-3">
-                          <div className="bg-gradient-to-r from-edu-blue to-purple-600 h-3 rounded-full" style={{ width: '85%' }}></div>
+                          <div className="bg-edu-blue h-3 rounded-full" style={{ width: '85%' }}></div>
                         </div>
                       </div>
                       <div>
@@ -106,7 +106,7 @@ const Hero = () => {
                           <span className="text-green-500 font-medium">92%</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-3">
-                          <div className="bg-gradient-to-r from-green-500 to-emerald-600 h-3 rounded-full" style={{ width: '92%' }}></div>
+                          <div className="bg-success-green h-3 rounded-full" style={{ width: '92%' }}></div>
                         </div>
                       </div>
                       <div>
@@ -115,7 +115,7 @@ const Hero = () => {
                           <span className="text-orange-500 font-medium">78%</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-3">
-                          <div className="bg-gradient-to-r from-orange-500 to-red-600 h-3 rounded-full" style={{ width: '78%' }}></div>
+                          <div className="bg-edu-orange h-3 rounded-full" style={{ width: '78%' }}></div>
                         </div>
                       </div>
                     </div>
@@ -135,8 +135,8 @@ const Hero = () => {
                 </div>
 
                 {/* Floating elements */}
-                <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full animate-bounce opacity-80"></div>
-                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse opacity-60"></div>
+                <div className="absolute -top-4 -right-4 w-8 h-8 bg-edu-orange rounded-full animate-bounce opacity-80"></div>
+                <div className="absolute -bottom-2 -left-2 w-6 h-6 bg-edu-purple rounded-full animate-pulse opacity-60"></div>
               </div>
             </ScrollReveal>
           </div>
@@ -150,10 +150,10 @@ const Hero = () => {
               <div className="group relative">
                 <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-edu-blue/20 to-purple-600/20 rounded-xl flex items-center justify-center border border-edu-blue/20">
+                    <div className="w-12 h-12 bg-edu-blue/20 rounded-xl flex items-center justify-center border border-edu-blue/20">
                       <Users className="w-6 h-6 text-edu-blue" />
                     </div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full animate-pulse"></div>
+                    <div className="w-3 h-3 bg-success-green rounded-full animate-pulse"></div>
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
                     <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
@@ -167,12 +167,12 @@ const Hero = () => {
               <div className="group relative">
                 <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl flex items-center justify-center border border-purple-600/20">
-                      <BookOpen className="w-6 h-6 text-purple-600" />
+                    <div className="w-12 h-12 bg-edu-blue/20 rounded-xl flex items-center justify-center border border-edu-blue/20">
+                      <BookOpen className="w-6 h-6 text-edu-blue" />
                     </div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
+                    <div className="w-3 h-3 bg-edu-blue rounded-full animate-pulse"></div>
                   </div>
-                  <div className="text-3xl md:text-4xl font-bold text-purple-600 mb-2 font-armenian">
+                  <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
                     <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.modules')}</div>
@@ -184,12 +184,12 @@ const Hero = () => {
               <div className="group relative">
                 <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500/20 to-red-600/20 rounded-xl flex items-center justify-center border border-orange-500/20">
-                      <Award className="w-6 h-6 text-orange-500" />
+                    <div className="w-12 h-12 bg-edu-orange/20 rounded-xl flex items-center justify-center border border-edu-orange/20">
+                      <Award className="w-6 h-6 text-edu-orange" />
                     </div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-pulse"></div>
+                    <div className="w-3 h-3 bg-edu-orange rounded-full animate-pulse"></div>
                   </div>
-                  <div className="text-3xl md:text-4xl font-bold text-orange-500 mb-2 font-armenian">
+                  <div className="text-3xl md:text-4xl font-bold text-edu-orange mb-2 font-armenian">
                     <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.instructors')}</div>
@@ -201,12 +201,12 @@ const Hero = () => {
               <div className="group relative">
                 <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-xl flex items-center justify-center border border-green-500/20">
-                      <Star className="w-6 h-6 text-green-500" />
+                    <div className="w-12 h-12 bg-success-green/20 rounded-xl flex items-center justify-center border border-success-green/20">
+                      <Star className="w-6 h-6 text-success-green" />
                     </div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full animate-pulse"></div>
+                    <div className="w-3 h-3 bg-success-green rounded-full animate-pulse"></div>
                   </div>
-                  <div className="text-3xl md:text-4xl font-bold text-green-500 mb-2 font-armenian">
+                  <div className="text-3xl md:text-4xl font-bold text-success-green mb-2 font-armenian">
                     <span className="animate-scale-in" style={{ animationDelay: '0.3s' }}>95%</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.satisfaction')}</div>
