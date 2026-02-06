@@ -180,7 +180,7 @@ const EnhancedFeatures = () => {
                 <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-5 group-hover:opacity-10 transition-opacity duration-500`} />
                 
                 {/* Network connection indicator */}
-                <div className="absolute top-4 right-4 w-2 h-2 bg-gradient-to-r from-edu-blue to-purple-600 rounded-full animate-pulse opacity-60 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute top-4 right-4 w-2 h-2 bg-edu-blue rounded-full animate-pulse opacity-60 group-hover:opacity-100 transition-opacity" />
                 
                 <CardContent className="p-6 sm:p-8 h-full flex flex-col">
                   {/* Icon with enhanced styling */}
