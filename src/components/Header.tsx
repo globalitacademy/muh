@@ -10,6 +10,7 @@ import ThemeToggle from './ThemeToggle';
 import { NotificationBell } from './notifications/NotificationBell';
 import { useNavigate } from 'react-router-dom';
 import logoDark from '@/assets/logo-dark.png';
+import logoLight from '@/assets/logo-light.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
