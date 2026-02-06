@@ -14,6 +14,7 @@ import logoDark from '@/assets/logo-dark.png';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t, currentLanguage, setLanguage } = useLanguage();
+  const { resolvedTheme } = useTheme();
   const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
