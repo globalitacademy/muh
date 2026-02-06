@@ -184,10 +184,10 @@ const Hero = () => {
               <div className="group relative">
                 <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-orange-500/20 to-red-600/20 rounded-xl flex items-center justify-center border border-orange-500/20">
-                      <Award className="w-6 h-6 text-orange-500" />
+                    <div className="w-12 h-12 bg-edu-orange/20 rounded-xl flex items-center justify-center border border-edu-orange/20">
+                      <Award className="w-6 h-6 text-edu-orange" />
                     </div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full animate-pulse"></div>
+                    <div className="w-3 h-3 bg-edu-orange rounded-full animate-pulse"></div>
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-orange-500 mb-2 font-armenian">
                     <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
