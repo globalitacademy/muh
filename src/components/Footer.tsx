@@ -7,20 +7,27 @@ import logoDark from '@/assets/logo-dark.png';
 
 const Footer = () => {
   const { t } = useLanguage();
+  const { resolvedTheme } = useTheme();
 
   return (
-    <footer className="relative bg-background border-t border-border overflow-hidden py-16 bg-gradient-to-br from-edu-blue/5 via-background to-purple-500/5 w-full">
+    <footer className="relative bg-background border-t border-border overflow-hidden py-16 bg-gradient-to-br from-edu-blue/5 via-background to-edu-purple/5 w-full">
       <div className="content-container">
         <div className="grid md:grid-cols-4 gap-12">
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-r from-edu-blue to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">L</span>
-              </div>
-              <span className="text-2xl font-bold font-armenian text-foreground">
-                {t('hero.title')}
-              </span>
+              {resolvedTheme === 'dark' ? (
+                <img src={logoDark} alt="LearnHub" className="h-10" />
+              ) : (
+                <>
+                  <div className="w-10 h-10 bg-gradient-to-r from-edu-blue to-edu-purple rounded-xl flex items-center justify-center">
+                    <span className="text-primary-foreground font-bold text-lg">L</span>
+                  </div>
+                  <span className="text-2xl font-bold font-armenian text-foreground">
+                    {t('hero.title')}
+                  </span>
+                </>
+              )}
             </div>
             <p className="text-muted-foreground mb-8 max-w-md font-armenian leading-relaxed text-lg">
               {t('footer.description')}
