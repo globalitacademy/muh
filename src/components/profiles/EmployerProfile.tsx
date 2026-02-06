@@ -124,7 +124,7 @@ const EmployerProfile = () => {
           {/* Modern Quick Actions */}
           <Card className="border-none shadow-xl bg-gradient-to-br from-employer-card to-employer-card/80 backdrop-blur-sm">
             <CardHeader className="pb-6">
-              <CardTitle className="font-armenian text-xl bg-gradient-to-r from-employer-primary to-employer-secondary bg-clip-text text-transparent">
+              <CardTitle className="font-armenian text-xl text-foreground">
                 Գործատուի գործողություններ
               </CardTitle>
             </CardHeader>
