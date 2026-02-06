@@ -47,7 +47,7 @@ const Contact = () => {
       icon: <Phone className="w-5 sm:w-6 h-5 sm:h-6" />,
       title: t('contact.phone'),
       info: '+374 10 123 456',
-      color: 'from-green-500 to-emerald-500'
+      color: 'bg-success-green'
     },
     {
       icon: <Mail className="w-5 sm:w-6 h-5 sm:h-6" />,
