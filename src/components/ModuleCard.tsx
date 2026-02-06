@@ -47,7 +47,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
       <CardContent className="p-8 flex flex-col items-center text-center h-full relative z-10">
         {/* Enhanced Module Icon with floating effect */}
         <div className="relative mb-8 group-hover:scale-110 transition-all duration-500">
-          <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-edu-blue/20 via-edu-blue/30 to-purple-600/20 border border-edu-blue/40 flex items-center justify-center text-edu-blue shadow-xl group-hover:shadow-2xl group-hover:shadow-edu-blue/30 transition-all duration-500">
+          <div className="relative w-24 h-24 rounded-2xl bg-edu-blue/20 border border-edu-blue/40 flex items-center justify-center text-edu-blue shadow-xl group-hover:shadow-2xl group-hover:shadow-edu-blue/30 transition-all duration-500">
             {getModuleIconFromDb((module as any).icon)}
             
             {/* Inner glow */}
