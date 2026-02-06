@@ -150,10 +150,10 @@ const Hero = () => {
               <div className="group relative">
                 <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-edu-blue/20 to-purple-600/20 rounded-xl flex items-center justify-center border border-edu-blue/20">
+                    <div className="w-12 h-12 bg-edu-blue/20 rounded-xl flex items-center justify-center border border-edu-blue/20">
                       <Users className="w-6 h-6 text-edu-blue" />
                     </div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full animate-pulse"></div>
+                    <div className="w-3 h-3 bg-success-green rounded-full animate-pulse"></div>
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
                     <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
