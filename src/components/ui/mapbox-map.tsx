@@ -109,7 +109,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({ className }) => {
             </div>
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-edu-blue to-purple-500 hover:from-edu-blue/90 hover:to-purple-500/90 text-white px-4 py-2 rounded-lg transition-all duration-300 font-armenian"
+              className="w-full bg-edu-blue hover:bg-edu-blue/90 text-white px-4 py-2 rounded-lg transition-all duration-300 font-armenian"
             >
               Ցուցադրել քարտեզը
             </button>
