@@ -64,7 +64,7 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
 
         {/* Enhanced Module Number with gradient */}
         {module.order_index && (
-          <div className="text-3xl font-bold mb-6 font-armenian bg-gradient-to-r from-edu-blue via-edu-purple to-edu-blue bg-clip-text text-transparent group-hover:scale-110 transition-transform duration-300">
+          <div className="text-3xl font-bold mb-6 font-armenian text-edu-blue group-hover:scale-110 transition-transform duration-300">
             {module.order_index}.
           </div>
         )}

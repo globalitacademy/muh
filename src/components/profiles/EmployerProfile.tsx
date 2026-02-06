@@ -35,7 +35,7 @@ const EmployerProfile = () => {
                   <Building2 className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl font-bold bg-gradient-to-r from-employer-primary to-employer-secondary bg-clip-text text-transparent font-armenian">
+                  <CardTitle className="text-2xl font-bold text-foreground font-armenian">
                     Գործատուի պրոֆիլ
                   </CardTitle>
                   <CardDescription className="text-lg font-armenian text-muted-foreground">
@@ -124,7 +124,7 @@ const EmployerProfile = () => {
           {/* Modern Quick Actions */}
           <Card className="border-none shadow-xl bg-gradient-to-br from-employer-card to-employer-card/80 backdrop-blur-sm">
             <CardHeader className="pb-6">
-              <CardTitle className="font-armenian text-xl bg-gradient-to-r from-employer-primary to-employer-secondary bg-clip-text text-transparent">
+              <CardTitle className="font-armenian text-xl text-foreground">
                 Գործատուի գործողություններ
               </CardTitle>
             </CardHeader>
@@ -185,7 +185,7 @@ const EmployerProfile = () => {
           {/* Modern Active Job Postings */}
           <Card className="border-none shadow-xl bg-gradient-to-br from-employer-card to-employer-card/80 backdrop-blur-sm">
             <CardHeader className="pb-6">
-              <CardTitle className="font-armenian text-xl bg-gradient-to-r from-employer-primary to-employer-secondary bg-clip-text text-transparent">
+              <CardTitle className="font-armenian text-xl text-foreground">
                 Ակտիվ հայտարարություններ
               </CardTitle>
             </CardHeader>
@@ -241,7 +241,7 @@ const EmployerProfile = () => {
           {/* Modern Statistics */}
           <Card className="border-none shadow-xl bg-gradient-to-br from-employer-card to-employer-card/80 backdrop-blur-sm">
             <CardHeader className="pb-6">
-              <CardTitle className="font-armenian text-xl bg-gradient-to-r from-employer-primary to-employer-secondary bg-clip-text text-transparent">
+              <CardTitle className="font-armenian text-xl text-foreground">
                 Վիճակագրություն
               </CardTitle>
             </CardHeader>

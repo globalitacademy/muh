@@ -97,7 +97,7 @@ const Contact = () => {
           <div className="container mx-auto text-center">
             <div className="max-w-4xl mx-auto">
               <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 font-armenian">
-                <span className="text-gradient bg-gradient-to-r from-edu-blue via-purple-500 to-edu-orange bg-clip-text text-transparent">
+                <span className="text-foreground">
                   {t('contact.title')}
                 </span>
               </h1>

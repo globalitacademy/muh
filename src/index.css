@@ -416,11 +416,11 @@
 }
 
 .text-gradient {
-  @apply bg-gradient-to-r from-edu-blue to-edu-purple bg-clip-text text-transparent;
+  @apply text-foreground;
 }
 
 .text-gradient-orange {
-  @apply bg-gradient-to-r from-edu-orange to-warning-yellow bg-clip-text text-transparent;
+  @apply text-edu-orange;
 }
 
 /* Professional Card Styles */
