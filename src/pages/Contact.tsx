@@ -41,7 +41,7 @@ const Contact = () => {
       icon: <MapPin className="w-5 sm:w-6 h-5 sm:h-6" />,
       title: t('contact.address'),
       info: t('contact.address-value'),
-      color: 'from-edu-blue to-purple-500'
+      color: 'bg-edu-blue'
     },
     {
       icon: <Phone className="w-5 sm:w-6 h-5 sm:h-6" />,
