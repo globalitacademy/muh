@@ -167,12 +167,12 @@ const Hero = () => {
               <div className="group relative">
                 <div className="glass-card backdrop-blur-xl bg-card/30 border border-border/20 rounded-2xl p-6 hover:bg-card/40 transition-all duration-300 hover:scale-105 hover:shadow-xl">
                   <div className="flex items-center justify-between mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl flex items-center justify-center border border-purple-600/20">
-                      <BookOpen className="w-6 h-6 text-purple-600" />
+                    <div className="w-12 h-12 bg-edu-blue/20 rounded-xl flex items-center justify-center border border-edu-blue/20">
+                      <BookOpen className="w-6 h-6 text-edu-blue" />
                     </div>
-                    <div className="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
+                    <div className="w-3 h-3 bg-edu-blue rounded-full animate-pulse"></div>
                   </div>
-                  <div className="text-3xl md:text-4xl font-bold text-purple-600 mb-2 font-armenian">
+                  <div className="text-3xl md:text-4xl font-bold text-edu-blue mb-2 font-armenian">
                     <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.modules')}</div>
