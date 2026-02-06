@@ -58,8 +58,8 @@ const ModuleCard = ({ module }: ModuleCardProps) => {
           <div className="absolute inset-0 w-24 h-24 rounded-2xl border-2 border-edu-blue/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           
           {/* Orbital particles */}
-          <div className="absolute -top-2 -right-2 w-3 h-3 bg-gradient-to-r from-edu-orange to-edu-yellow rounded-full opacity-0 group-hover:opacity-100 animate-bounce transition-opacity duration-500" />
-          <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-gradient-to-r from-edu-light-blue to-edu-purple rounded-full opacity-0 group-hover:opacity-100 animate-pulse transition-opacity duration-500" />
+          <div className="absolute -top-2 -right-2 w-3 h-3 bg-edu-orange rounded-full opacity-0 group-hover:opacity-100 animate-bounce transition-opacity duration-500" />
+          <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-edu-blue rounded-full opacity-0 group-hover:opacity-100 animate-pulse transition-opacity duration-500" />
         </div>
 
         {/* Enhanced Module Number with gradient */}
