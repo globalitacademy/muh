@@ -438,8 +438,12 @@
 
 /* Enhanced Button Styles */
 .btn-modern {
-  @apply bg-edu-blue hover:bg-edu-blue/90 
-         shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
+  background-color: hsl(var(--edu-blue));
+  @apply shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
+}
+
+.btn-modern:hover {
+  background-color: hsl(var(--edu-blue) / 0.9);
 }
 
 .btn-outline-modern {
