@@ -141,7 +141,7 @@ const Contact = () => {
                     <div key={index} className="group">
                       <div className="glass-card p-4 sm:p-6 rounded-2xl hover:scale-105 transition-all duration-300 cursor-pointer">
                         <div className="flex items-start space-x-3 sm:space-x-4">
-                          <div className={`w-10 sm:w-14 h-10 sm:h-14 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center flex-shrink-0 text-white group-hover:scale-110 transition-transform duration-300`}>
+                          <div className={`w-10 sm:w-14 h-10 sm:h-14 ${item.color} rounded-xl flex items-center justify-center flex-shrink-0 text-white group-hover:scale-110 transition-transform duration-300`}>
                             {item.icon}
                           </div>
                           <div className="flex-1 min-w-0">
