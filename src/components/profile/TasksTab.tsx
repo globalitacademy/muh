@@ -49,7 +49,7 @@ const TaskCompletionDialog: React.FC<TaskCompletionDialogProps> = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+        <Button size="sm" className="bg-edu-blue hover:bg-edu-blue/90">
           <Send className="w-4 h-4 mr-2" />
           Ներկայացնել առաջադրանքը
         </Button>

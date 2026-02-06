@@ -163,9 +163,9 @@ const Contact = () => {
               {/* Contact Form - Mobile optimized */}
               <div>
                 <Card className="glass-card border-0 shadow-2xl rounded-2xl overflow-hidden">
-                  <CardHeader className="bg-gradient-to-br from-edu-blue/5 to-purple-500/5 border-b border-border/50 p-4 sm:p-6">
+                  <CardHeader className="bg-edu-blue/5 border-b border-border/50 p-4 sm:p-6">
                     <CardTitle className="text-xl sm:text-2xl md:text-3xl font-armenian text-foreground flex items-center gap-3">
-                      <div className="w-8 sm:w-10 h-8 sm:h-10 bg-gradient-to-br from-edu-blue to-purple-500 rounded-xl flex items-center justify-center text-white">
+                      <div className="w-8 sm:w-10 h-8 sm:h-10 bg-edu-blue rounded-xl flex items-center justify-center text-white">
                         <Send className="w-4 sm:w-5 h-4 sm:h-5" />
                       </div>
                       {t('contact.send-message')}

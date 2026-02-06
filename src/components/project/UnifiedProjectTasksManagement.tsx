@@ -139,7 +139,7 @@ const CreateTaskDialog: React.FC<{ projectId: string; onTaskCreated: () => void 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+        <Button className="bg-edu-blue hover:bg-edu-blue/90">
           <Plus className="w-4 h-4 mr-2" />
           Նոր առաջադրանք
         </Button>

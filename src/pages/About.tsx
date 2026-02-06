@@ -240,7 +240,7 @@ const About = () => {
                 instructors.map((instructor, index) => (
                   <Card key={instructor.id} className="modern-card course-card-hover border-0 shadow-lg group overflow-hidden h-full">
                     <CardContent className="p-6 lg:p-8 text-center h-full flex flex-col">
-                      <div className="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 bg-gradient-to-br from-edu-blue to-purple-600 flex items-center justify-center">
+                      <div className="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden group-hover:scale-105 transition-transform duration-300 bg-edu-blue flex items-center justify-center">
                         {instructor.avatar_url ? (
                           <img 
                             src={instructor.avatar_url} 
