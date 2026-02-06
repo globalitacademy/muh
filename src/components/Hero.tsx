@@ -80,7 +80,7 @@ const Hero = () => {
                   <div className="space-y-6">
                     {/* Header */}
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-edu-blue to-purple-600 rounded-xl flex items-center justify-center">
+                      <div className="w-12 h-12 bg-edu-blue rounded-xl flex items-center justify-center">
                         <BookOpen className="w-6 h-6 text-white" />
                       </div>
                       <div>
