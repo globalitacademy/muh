@@ -36,9 +36,9 @@ const Header = () => {
     <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 w-full">
       <div className="content-container">
         <div className="flex items-center justify-between h-14 sm:h-16">
-          {/* Logo - Mobile optimized */}
+          {/* Logo */}
           <div 
-            className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px]" 
+            className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px] flex-shrink-0" 
             onClick={() => navigate('/')}
           >
             <img 
@@ -49,12 +49,12 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
             {menuItems.map((item) => (
               <button
                 key={item.href}
                 onClick={() => navigate(item.href)}
-                className="text-foreground/80 hover:text-foreground transition-colors font-armenian text-sm font-medium"
+                className="text-foreground/80 hover:text-foreground transition-colors font-armenian text-sm font-medium whitespace-nowrap"
               >
                 {item.label}
               </button>
@@ -79,7 +79,7 @@ const Header = () => {
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+          <div className="hidden lg:flex items-center space-x-2 xl:space-x-3 flex-shrink-0">
             {/* Language Selector */}
             <select
               value={currentLanguage}
@@ -96,8 +96,8 @@ const Header = () => {
             <UserMenu />
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
+          {/* Mobile/Tablet menu button */}
+          <div className="lg:hidden">
             <Button
               variant="ghost"
               size="icon"
@@ -112,10 +112,10 @@ const Header = () => {
 
         {/* Mobile Navigation - Enhanced */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-sm">
-            {/* Mobile Navigation Menu */}
+          <div className="lg:hidden border-t border-border bg-background/95 backdrop-blur-sm">
+            {/* Navigation Menu */}
             <nav className="px-4 pb-4 pt-2 border-t border-border/20">
-              <div className="space-y-3">
+              <div className="space-y-3 sm:grid sm:grid-cols-2 sm:gap-x-4 sm:space-y-0">
                 {menuItems.map((item) => (
                   <button
                     key={item.href}
@@ -129,21 +129,23 @@ const Header = () => {
                   </button>
                 ))}
                 
-                {/* Other items in mobile */}
-                <div className="border-t border-border/20 pt-3 mt-3">
+                {/* Other items */}
+                <div className="border-t border-border/20 pt-3 mt-3 sm:col-span-2">
                   <p className="text-xs font-medium text-muted-foreground mb-2 font-armenian">{t('nav.other')}</p>
-                  {otherItems.map((item) => (
-                    <button
-                      key={item.href}
-                      onClick={() => {
-                        navigate(item.href);
-                        setIsMenuOpen(false);
-                      }}
-                      className="block w-full text-left py-2 text-foreground/80 hover:text-foreground transition-colors font-armenian text-base"
-                    >
-                      {item.label}
-                    </button>
-                  ))}
+                  <div className="sm:grid sm:grid-cols-2 sm:gap-x-4">
+                    {otherItems.map((item) => (
+                      <button
+                        key={item.href}
+                        onClick={() => {
+                          navigate(item.href);
+                          setIsMenuOpen(false);
+                        }}
+                        className="block w-full text-left py-2 text-foreground/80 hover:text-foreground transition-colors font-armenian text-base"
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </nav>
@@ -152,7 +154,7 @@ const Header = () => {
               <select
                 value={currentLanguage}
                 onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
-                className="bg-background border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary text-foreground min-h-[44px] flex-1 mr-2"
+                className="bg-background border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary text-foreground min-h-[44px] flex-1 mr-2 max-w-[120px]"
               >
                 <option value="hy">Հայ</option>
                 <option value="en">EN</option>
