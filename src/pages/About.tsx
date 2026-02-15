@@ -1,8 +1,7 @@
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent } from '@/components/ui/card';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import AppLayout from '@/components/AppLayout';
 import { Target, Users, Award, Globe, Star, CheckCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -113,10 +112,8 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background w-full">
-      <Header />
-      
-      <main>
+    <AppLayout>
+      <div>
         {/* Hero Section */}
         <section className="relative py-24 overflow-hidden w-full">
           <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-background to-purple-500/5"></div>
@@ -290,10 +287,8 @@ const About = () => {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </AppLayout>
   );
 };
 

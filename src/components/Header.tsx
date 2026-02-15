@@ -1,8 +1,7 @@
 import React from 'react';
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import UserMenu from './UserMenu';
@@ -13,18 +12,16 @@ import logoDark from '@/assets/logo-dark.png';
 import logoLight from '@/assets/logo-light.png';
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t, currentLanguage, setLanguage } = useLanguage();
   const { resolvedTheme } = useTheme();
   const navigate = useNavigate();
-
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const menuItems = [
     { href: '/', label: t('nav.home') },
     { href: '/specialties', label: t('nav.specialties') },
     { href: '/private-courses', label: t('nav.private') },
     { href: '/jobs', label: t('nav.jobs') },
+    { href: '/projects', label: t('nav.projects') || 'Նախագծdelays' },
   ];
 
   const otherItems = [
@@ -36,7 +33,7 @@ const Header = () => {
     <header className="bg-background/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 w-full">
       <div className="content-container">
         <div className="flex items-center justify-between h-14 sm:h-16">
-          {/* Logo - Mobile optimized */}
+          {/* Logo */}
           <div 
             className="flex items-center space-x-2 cursor-pointer min-h-[44px] min-w-[44px]" 
             onClick={() => navigate('/')}
@@ -44,7 +41,7 @@ const Header = () => {
             <img 
               src={resolvedTheme === 'dark' ? logoDark : logoLight} 
               alt="LearnHub" 
-              className="h-7 sm:h-8" 
+              className="h-6 sm:h-8" 
             />
           </div>
 
@@ -96,77 +93,24 @@ const Header = () => {
             <UserMenu />
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleMenu}
-              aria-label="Toggle menu"
-              className="min-h-[44px] min-w-[44px]"
+          {/* Mobile actions - compact top bar */}
+          <div className="md:hidden flex items-center space-x-1">
+            <select
+              value={currentLanguage}
+              onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
+              className="bg-background border border-border rounded-lg px-1.5 py-1 text-xs focus:outline-none focus:border-primary text-foreground min-h-[32px] w-14"
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
+              <option value="hy">Հայ</option>
+              <option value="en">EN</option>
+              <option value="ru">РУ</option>
+            </select>
+            <NotificationBell />
+            <ThemeToggle />
+            <UserMenu />
           </div>
         </div>
 
-        {/* Mobile Navigation - Enhanced */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-sm">
-            {/* Mobile Navigation Menu */}
-            <nav className="px-4 pb-4 pt-2 border-t border-border/20">
-              <div className="space-y-3">
-                {menuItems.map((item) => (
-                  <button
-                    key={item.href}
-                    onClick={() => {
-                      navigate(item.href);
-                      setIsMenuOpen(false);
-                    }}
-                    className="block w-full text-left py-2 text-foreground/80 hover:text-foreground transition-colors font-armenian text-base"
-                  >
-                    {item.label}
-                  </button>
-                ))}
-                
-                {/* Other items in mobile */}
-                <div className="border-t border-border/20 pt-3 mt-3">
-                  <p className="text-xs font-medium text-muted-foreground mb-2 font-armenian">{t('nav.other')}</p>
-                  {otherItems.map((item) => (
-                    <button
-                      key={item.href}
-                      onClick={() => {
-                        navigate(item.href);
-                        setIsMenuOpen(false);
-                      }}
-                      className="block w-full text-left py-2 text-foreground/80 hover:text-foreground transition-colors font-armenian text-base"
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </nav>
-            
-            <div className="flex items-center justify-between pt-4 border-t border-border px-4 pb-4">
-              <select
-                value={currentLanguage}
-                onChange={(e) => setLanguage(e.target.value as 'hy' | 'en' | 'ru')}
-                className="bg-background border border-border rounded px-3 py-2 text-sm focus:outline-none focus:border-primary text-foreground min-h-[44px] flex-1 mr-2"
-              >
-                <option value="hy">Հայ</option>
-                <option value="en">EN</option>
-                <option value="ru">РУ</option>
-              </select>
-              
-              <div className="flex items-center space-x-2">
-                <NotificationBell />
-                <ThemeToggle />
-                <UserMenu />
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Mobile Navigation removed - using BottomNavigation instead */}
       </div>
     </header>
   );

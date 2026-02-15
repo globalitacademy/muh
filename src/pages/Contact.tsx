@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import AppLayout from '@/components/AppLayout';
 import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Users, BookOpen, Loader2 } from 'lucide-react';
 import { useContactStats } from '@/hooks/useContactStats';
 import GoogleMap from '@/components/ui/google-map';
@@ -82,10 +81,8 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
-      <main className="relative overflow-hidden">
+    <AppLayout>
+      <div className="relative overflow-hidden">
         {/* Background decorations - Mobile optimized */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-10 sm:top-20 -left-10 sm:-left-20 w-40 sm:w-80 h-40 sm:h-80 bg-gradient-to-br from-edu-blue/20 to-purple-500/20 rounded-full blur-3xl"></div>
@@ -292,10 +289,8 @@ const Contact = () => {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-    </div>
+      </div>
+    </AppLayout>
   );
 };
 

@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BottomNavigation from '@/components/BottomNavigation';
 import ModuleDetailHeader from '@/components/module/ModuleDetailHeader';
 import ModuleDetailTabs from '@/components/module/ModuleDetailTabs';
 import ModuleDetailSidebar from '@/components/module/ModuleDetailSidebar';
@@ -149,6 +150,7 @@ const ModuleDetail = () => {
       </div>
       
       <Footer />
+      <BottomNavigation />
     </div>
   );
 };
