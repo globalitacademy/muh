@@ -56,7 +56,7 @@ const ExerciseCard = ({
               <Lightbulb className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-blue-800 dark:text-blue-300 font-armenian">Հուշում</p>
-                <p className="text-sm text-blue-700 dark:text-blue-400 font-armenian text-right">{exercise.hint}</p>
+                <p className="text-sm text-blue-700 dark:text-blue-400 font-armenian text-left">{exercise.hint}</p>
               </div>
             </div>
           </div>
