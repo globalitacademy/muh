@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/breadcrumb';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import BottomNavigation from '@/components/BottomNavigation';
 import TopicNavigation from '@/components/TopicNavigation';
 import TopicHeader from '@/components/topic/TopicHeader';
 import TopicTabs from '@/components/topic/TopicTabs';
@@ -133,7 +132,6 @@ const TopicDetail = () => {
       </div>
       
       <Footer />
-      <BottomNavigation />
     </div>
   );
 };

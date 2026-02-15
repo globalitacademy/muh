@@ -4,7 +4,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { useUserProfile } from '@/hooks/useUserProfile';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import AppLayout from '@/components/AppLayout';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import StudentProfile from '@/components/profiles/StudentProfile';
 import InstructorProfile from '@/components/profiles/InstructorProfile';
 import EmployerProfile from '@/components/profiles/EmployerProfile';
@@ -45,8 +46,9 @@ const Dashboard = () => {
   if (!profile) {
     console.log('Dashboard - No profile found, showing fallback');
     return (
-      <AppLayout>
-        <div className="py-8 w-full">
+      <div className="min-h-screen bg-background w-full">
+        <Header />
+        <main className="py-8 w-full">
           <div className="content-container">
             <div className="text-center">
               <h1 className="text-2xl font-bold mb-4">Profile not found</h1>
@@ -54,8 +56,9 @@ const Dashboard = () => {
               <p className="text-sm text-muted-foreground mt-2">User ID: {user.id}</p>
             </div>
           </div>
-        </div>
-      </AppLayout>
+        </main>
+        <Footer />
+      </div>
     );
   }
 
@@ -75,13 +78,17 @@ const Dashboard = () => {
   };
 
   return (
-    <AppLayout>
-      <div className="py-8 w-full">
+    <div className="min-h-screen bg-background w-full">
+      <Header />
+      
+      <main className="py-8 w-full">
         <div className="content-container">
           {renderProfileByRole()}
         </div>
-      </div>
-    </AppLayout>
+      </main>
+
+      <Footer />
+    </div>
   );
 };
 

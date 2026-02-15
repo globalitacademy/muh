@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import AppLayout from '@/components/AppLayout';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -161,8 +162,10 @@ const Projects = () => {
   };
 
   return (
-    <AppLayout>
-      <div className="content-container py-8">
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <main className="content-container py-8">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -433,8 +436,10 @@ const Projects = () => {
             )}
           </div>
         </div>
-      </div>
-    </AppLayout>
+      </main>
+
+      <Footer />
+    </div>
   );
 };
 

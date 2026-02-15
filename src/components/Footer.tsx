@@ -105,7 +105,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom section */}
-        <div className="border-t border-border pt-8 pb-20 md:pb-8 mt-16">
+        <div className="border-t border-border pt-8 pb-8 mt-16">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-muted-foreground font-armenian text-center md:text-left">
               © 2025 {t('hero.title')}. {t('footer.rights')}

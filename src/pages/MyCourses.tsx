@@ -12,7 +12,6 @@ import { BookOpen, Clock, Award, ArrowRight } from 'lucide-react';
 import { Loader2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import BottomNavigation from '@/components/BottomNavigation';
 
 const MyCourses = () => {
   const { user, loading } = useAuth();
@@ -168,7 +167,6 @@ const MyCourses = () => {
         )}
       </div>
       <Footer />
-      <BottomNavigation />
     </div>
   );
 };

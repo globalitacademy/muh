@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import AppLayout from '@/components/AppLayout';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { useJobPostings } from '@/hooks/useJobPostings';
 import { useMyProjects } from '@/hooks/useProjects';
 import { MapPin, Building, Calendar, Search, Filter, Briefcase } from 'lucide-react';
@@ -85,17 +86,21 @@ const Jobs = () => {
 
   if (isLoading) {
     return (
-      <AppLayout>
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center font-armenian">Բեռնdelays...</div>
-        </div>
-      </AppLayout>
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center font-armenian">Բեռնվում է...</div>
+        </main>
+        <Footer />
+      </div>
     );
   }
 
   return (
-    <AppLayout>
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold font-armenian mb-4 text-foreground">
@@ -271,8 +276,10 @@ const Jobs = () => {
             ))}
           </div>
         )}
-      </div>
-    </AppLayout>
+      </main>
+      
+      <Footer />
+    </div>
   );
 };
 
