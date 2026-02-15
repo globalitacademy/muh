@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import BottomNavigation from '@/components/BottomNavigation';
 import { useJobPostings } from '@/hooks/useJobPostings';
 import { MapPin, Building, Calendar, ArrowLeft, Briefcase, DollarSign, Clock } from 'lucide-react';
 import { format } from 'date-fns';
@@ -218,6 +219,7 @@ const JobDetail = () => {
       </main>
       
       <Footer />
+      <BottomNavigation />
     </div>
   );
 };
