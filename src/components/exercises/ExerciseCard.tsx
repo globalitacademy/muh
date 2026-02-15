@@ -18,15 +18,15 @@ const ExerciseCard = ({
     switch (difficulty?.toLowerCase()) {
       case 'հեշտ':
       case 'easy':
-        return 'bg-green-100 text-green-800';
+        return 'bg-primary text-white';
       case 'միջին':
       case 'medium':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-edu-orange text-white';
       case 'բարդ':
       case 'hard':
-        return 'bg-red-100 text-red-800';
+        return 'bg-destructive text-white';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-muted-foreground text-white';
     }
   };
 
