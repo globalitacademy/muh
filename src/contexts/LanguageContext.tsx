@@ -933,10 +933,6 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       if (savedLanguage && ['hy', 'ru', 'en'].includes(savedLanguage)) {
         return savedLanguage as Language;
       }
-      // Try to detect browser language
-      const browserLang = navigator.language.toLowerCase();
-      if (browserLang.startsWith('ru')) return 'ru';
-      if (browserLang.startsWith('en')) return 'en';
     }
     return 'hy'; // Default to Armenian
   });
