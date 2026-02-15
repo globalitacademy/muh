@@ -17,15 +17,15 @@ const ExerciseCard = ({
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty?.toLowerCase()) {
       case 'հեշտ':
-      case 'easy': 
+      case 'easy':
         return 'bg-green-100 text-green-800';
       case 'միջին':
-      case 'medium': 
+      case 'medium':
         return 'bg-yellow-100 text-yellow-800';
       case 'բարդ':
-      case 'hard': 
+      case 'hard':
         return 'bg-red-100 text-red-800';
-      default: 
+      default:
         return 'bg-gray-100 text-gray-800';
     }
   };
@@ -38,11 +38,11 @@ const ExerciseCard = ({
             <span className="text-muted-foreground">{index}.</span>
             {exercise.title}
           </CardTitle>
-          {exercise.difficulty && (
-            <Badge className={getDifficultyColor(exercise.difficulty)}>
+          {exercise.difficulty &&
+          <Badge className={getDifficultyColor(exercise.difficulty)}>
               {exercise.difficulty}
             </Badge>
-          )}
+          }
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -50,8 +50,8 @@ const ExerciseCard = ({
           {exercise.description}
         </p>
         
-        {exercise.hint && (
-          <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+        {exercise.hint &&
+        <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
             <div className="flex items-start gap-2">
               <Lightbulb className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
               <div>
@@ -60,10 +60,10 @@ const ExerciseCard = ({
               </div>
             </div>
           </div>
-        )}
+        }
       </CardContent>
-    </Card>
-  );
+    </Card>);
+
 };
 
 export default ExerciseCard;
