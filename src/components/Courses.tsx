@@ -23,34 +23,10 @@ const Courses = () => {
       
       <div className="content-container relative z-10">
         <ScrollReveal direction="up" delay={0}>
-          {/* Modern Glass Morphism Header */}
-          <div className="relative mb-20 group">
-            {/* Main glass container */}
-            <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-background/80 via-card/90 to-background/70 backdrop-blur-2xl border border-white/10 shadow-2xl hover:shadow-3xl transition-all duration-700 hover:scale-[1.02]">
-              {/* Animated gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/10 via-edu-purple/5 to-edu-orange/10 animate-gradient-xy" />
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-edu-light-blue/20 via-transparent to-transparent" />
-              
-              {/* Content container with modern spacing */}
-              <div className="relative z-10 px-8 py-12 md:px-16 md:py-16 text-center flex flex-col items-center justify-center">
-                {/* Premium badge with neon glow */}
-                
-                
-                {/* Modern typography with enhanced gradient */}
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-8 font-armenian text-foreground leading-[1.1] py-2 tracking-tight">
-                  {t('courses.choose-specialty')}
-                </h2>
-                
-                {/* Enhanced description with better typography */}
-                
-              </div>
-              
-              {/* Modern floating elements */}
-              <div className="absolute -top-6 -left-6 w-12 h-12 bg-edu-blue rounded-2xl opacity-60 animate-float" />
-              <div className="absolute -bottom-4 -right-4 w-8 h-8 bg-edu-orange rounded-xl opacity-50 animate-float animation-delay-1000" />
-              <div className="absolute top-1/3 -right-8 w-6 h-6 bg-edu-blue rounded-lg opacity-40 animate-float animation-delay-2000" />
-              <div className="absolute bottom-1/3 -left-4 w-4 h-4 bg-edu-blue rounded-full opacity-30 animate-float animation-delay-3000" />
-            </div>
+          <div className="text-center mb-16">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 font-armenian text-foreground leading-tight">
+              {t('courses.choose-specialty')}
+            </h2>
           </div>
         </ScrollReveal>
         
