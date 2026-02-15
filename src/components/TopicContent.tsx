@@ -307,7 +307,7 @@ const TopicContent = ({ topicId, onComplete }: TopicContentProps) => {
             <div key={resource.id || index} className="border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <h4 className="font-semibold text-foreground font-armenian mb-1 text-center">
+                      <h4 className="font-semibold text-foreground font-armenian mb-1 text-left">
                         {resource.title}
                       </h4>
                       <p className="text-sm text-muted-foreground font-armenian mb-2">
