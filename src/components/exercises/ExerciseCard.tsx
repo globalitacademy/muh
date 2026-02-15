@@ -18,15 +18,15 @@ const ExerciseCard = ({
     switch (difficulty?.toLowerCase()) {
       case 'հեշտ':
       case 'easy':
-        return 'bg-green-600 text-white';
+        return 'bg-green-100 text-green-800';
       case 'միջին':
       case 'medium':
-        return 'bg-yellow-500 text-white';
+        return 'bg-yellow-100 text-yellow-800';
       case 'բարդ':
       case 'hard':
-        return 'bg-red-600 text-white';
+        return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -56,7 +56,7 @@ const ExerciseCard = ({
               <Lightbulb className="w-4 h-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-medium text-blue-800 dark:text-blue-300 font-armenian">Հուշում</p>
-                <p className="text-sm text-blue-700 dark:text-blue-400 font-armenian">{exercise.hint}</p>
+                <p className="text-sm text-blue-700 dark:text-blue-400 font-armenian text-right">{exercise.hint}</p>
               </div>
             </div>
           </div>
