@@ -1,119 +1,184 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-export interface AccessSession {
+export interface IpAccessSession {
   id: string;
   code: string;
   partnerId: string;
-  moduleId?: string;
+  moduleId?: string | null;
   activityDurationMinutes: number;
-  startTime: Date;
-  endTime: Date;
-  isActive: boolean;
+  startedAt: string;
+  expiresAt: string;
 }
 
-// Session management hooks
-export const useAccessSession = () => {
-  const [session, setSession] = useState<AccessSession | null>(null);
-  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+const EDGE_FUNCTION_URL = 'https://uiiholvhyjxlutzuebpb.supabase.co/functions/v1/partner-session';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVpaWhvbHZoeWp4bHV0enVlYnBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0MjMzODAsImV4cCI6MjA2NTk5OTM4MH0.ez0Bj9B3COmaX1BbL_5uBUL3O3CHv79OkUtjDY8yqYM';
 
-  // Load session from localStorage on mount
+// Hook for IP-based partner access sessions
+export const useAccessSession = () => {
+  const [session, setSession] = useState<IpAccessSession | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Check for active IP-based session on mount
   useEffect(() => {
-    const savedSession = localStorage.getItem('partner_access_session');
-    if (savedSession) {
-      try {
-        const parsedSession = JSON.parse(savedSession);
-        const endTime = new Date(parsedSession.endTime);
-        const now = new Date();
-        
-        if (endTime > now) {
-          setSession({
-            ...parsedSession,
-            startTime: new Date(parsedSession.startTime),
-            endTime: endTime,
-          });
-          setTimeRemaining(Math.max(0, Math.floor((endTime.getTime() - now.getTime()) / 1000)));
-        } else {
-          // Session expired, remove it
-          localStorage.removeItem('partner_access_session');
-        }
-      } catch (error) {
-        console.error('Error parsing saved session:', error);
-        localStorage.removeItem('partner_access_session');
-      }
-    }
+    checkSession();
   }, []);
 
-  // Timer to update remaining time
+  // Timer countdown
   useEffect(() => {
-    if (!session || !session.isActive) return;
+    if (!session) return;
 
-    const timer = setInterval(() => {
-      const now = new Date();
-      const remaining = Math.max(0, Math.floor((session.endTime.getTime() - now.getTime()) / 1000));
-      
+    const updateTimer = () => {
+      const remaining = Math.max(0, Math.floor((new Date(session.expiresAt).getTime() - Date.now()) / 1000));
       setTimeRemaining(remaining);
-      
       if (remaining <= 0) {
-        endSession();
+        setSession(null);
+        localStorage.removeItem('partner_access_session');
       }
-    }, 1000);
+    };
 
+    updateTimer();
+    const timer = setInterval(updateTimer, 1000);
     return () => clearInterval(timer);
   }, [session]);
 
-  const startSession = (sessionData: Omit<AccessSession, 'id' | 'startTime' | 'endTime' | 'isActive'>) => {
-    const startTime = new Date();
-    const endTime = new Date(startTime.getTime() + sessionData.activityDurationMinutes * 60 * 1000);
-    
-    const newSession: AccessSession = {
-      ...sessionData,
-      id: crypto.randomUUID(),
-      startTime,
-      endTime,
-      isActive: true,
-    };
+  const checkSession = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(EDGE_FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': ANON_KEY,
+        },
+        body: JSON.stringify({ action: 'check' }),
+      });
 
-    setSession(newSession);
-    setTimeRemaining(sessionData.activityDurationMinutes * 60);
-    localStorage.setItem('partner_access_session', JSON.stringify(newSession));
+      const data = await res.json();
+
+      if (data.active && data.session) {
+        const s: IpAccessSession = {
+          id: data.session.id,
+          code: data.session.code,
+          partnerId: data.session.partner_id,
+          moduleId: data.session.module_id,
+          activityDurationMinutes: data.session.activity_duration_minutes,
+          startedAt: data.session.started_at,
+          expiresAt: data.session.expires_at,
+        };
+        setSession(s);
+        // Also save to localStorage as fallback for quick checks
+        localStorage.setItem('partner_access_session', JSON.stringify(s));
+      } else {
+        setSession(null);
+        localStorage.removeItem('partner_access_session');
+      }
+    } catch (err) {
+      console.error('Error checking IP session:', err);
+      // Fallback: check localStorage
+      const saved = localStorage.getItem('partner_access_session');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (new Date(parsed.expiresAt) > new Date()) {
+            setSession(parsed);
+          } else {
+            localStorage.removeItem('partner_access_session');
+          }
+        } catch {
+          localStorage.removeItem('partner_access_session');
+        }
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const startSession = async (sessionData: {
+    code: string;
+    partnerId: string;
+    moduleId?: string;
+    activityDurationMinutes: number;
+  }) => {
+    // Session is started via edge function in activateCode, so just set it
+    // This is kept for backward compatibility
   };
 
-  const endSession = () => {
+  const activateCode = useCallback(async (code: string, moduleId?: string): Promise<any> => {
+    const res = await fetch(EDGE_FUNCTION_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': ANON_KEY,
+      },
+      body: JSON.stringify({ action: 'activate', code, module_id: moduleId }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || 'Failed to activate code');
+    }
+
+    const s: IpAccessSession = {
+      id: data.session.id,
+      code: data.session.code,
+      partnerId: data.session.partner_id,
+      moduleId: data.session.module_id,
+      activityDurationMinutes: data.session.activity_duration_minutes,
+      startedAt: data.session.started_at,
+      expiresAt: data.session.expires_at,
+    };
+    setSession(s);
+    localStorage.setItem('partner_access_session', JSON.stringify(s));
+
+    return {
+      ...data,
+      activity_duration_minutes: data.session.activity_duration_minutes,
+      partner_id: data.session.partner_id,
+      module_id: data.session.module_id,
+    };
+  }, []);
+
+  const endSession = useCallback(() => {
     setSession(null);
     setTimeRemaining(0);
     localStorage.removeItem('partner_access_session');
-  };
+  }, []);
 
-  const hasModuleAccess = (moduleId?: string) => {
-    if (!session || !session.isActive) return false;
+  const hasModuleAccess = useCallback((moduleId?: string) => {
+    if (!session) return false;
     if (session.moduleId && moduleId && session.moduleId !== moduleId) return false;
-    return new Date() < session.endTime;
-  };
+    return new Date(session.expiresAt) > new Date();
+  }, [session]);
 
-  const formatTimeRemaining = () => {
+  const formatTimeRemaining = useCallback(() => {
     const hours = Math.floor(timeRemaining / 3600);
     const minutes = Math.floor((timeRemaining % 3600) / 60);
     const seconds = timeRemaining % 60;
-    
+
     if (hours > 0) {
       return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
+  }, [timeRemaining]);
 
   return {
     session,
     timeRemaining,
     startSession,
+    activateCode,
     endSession,
     hasModuleAccess,
     formatTimeRemaining,
-    isActive: session?.isActive ?? false,
+    isActive: !!session && new Date(session.expiresAt) > new Date(),
+    isLoading,
+    checkSession,
   };
 };
 
-// Access code validation hook
+// Access code validation hook (kept for backward compatibility but now uses edge function)
 export const useAccessCodeValidation = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,24 +188,28 @@ export const useAccessCodeValidation = () => {
     setError(null);
 
     try {
-      const { data: user } = await supabase.auth.getUser();
-      
-      const { data, error } = await supabase.rpc('use_access_code', {
-        p_code: code.toUpperCase(),
-        p_user_id: user.user?.id,
-        p_module_id: moduleId,
+      const res = await fetch(EDGE_FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': ANON_KEY,
+        },
+        body: JSON.stringify({ action: 'activate', code, module_id: moduleId }),
       });
 
-      if (error) throw error;
+      const data = await res.json();
 
-      const result = data as any;
-      if (!result.success) {
-        throw new Error(result.error || 'Անվավեր կոդ');
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Invalid code');
       }
 
-      return result;
+      return {
+        activity_duration_minutes: data.session.activity_duration_minutes,
+        partner_id: data.session.partner_id,
+        module_id: data.session.module_id,
+      };
     } catch (err: any) {
-      const errorMessage = err.message || 'Կոդի ստուգման սխալ';
+      const errorMessage = err.message || 'Code validation error';
       setError(errorMessage);
       throw new Error(errorMessage);
     } finally {
@@ -157,7 +226,7 @@ export const useAccessCodeValidation = () => {
       if (error) throw error;
       return data;
     } catch (err: any) {
-      throw new Error(err.message || 'Կոդի կարգավիճակի ստուգման սխալ');
+      throw new Error(err.message || 'Code status check error');
     }
   };
 

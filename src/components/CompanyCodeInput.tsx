@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
 import { AlertCircle, CheckCircle, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useAccessSession, useAccessCodeValidation } from '@/hooks/useAccessSession';
+import { useAccessSession } from '@/hooks/useAccessSession';
 import { useToast } from '@/hooks/use-toast';
 
 interface CompanyCodeInputProps {
@@ -20,42 +19,34 @@ const CompanyCodeInput = ({
   const { toast } = useToast();
   const [code, setCode] = useState('');
   const [verificationStatus, setVerificationStatus] = useState<'none' | 'valid' | 'invalid'>('none');
+  const [isActivating, setIsActivating] = useState(false);
   
   const { 
     session, 
     timeRemaining, 
-    startSession, 
+    activateCode,
     endSession, 
     hasModuleAccess, 
     formatTimeRemaining,
     isActive 
   } = useAccessSession();
-  
-  const { validateCode, isLoading, error } = useAccessCodeValidation();
 
   // Check if we already have access to this module
   const hasCurrentAccess = hasModuleAccess(moduleId);
 
   const handleVerifyCode = async () => {
     if (!code.trim()) return;
+    setIsActivating(true);
 
     try {
-      const result = await validateCode(code.trim(), moduleId);
-      
-      // Start new session
-      startSession({
-        code: code.toUpperCase(),
-        partnerId: result.partner_id,
-        moduleId: result.module_id,
-        activityDurationMinutes: result.activity_duration_minutes,
-      });
+      const result = await activateCode(code.trim(), moduleId);
 
       setVerificationStatus('valid');
       onCodeVerified(true);
       
       toast({
-        title: 'Կոդը հաջողությամբ ակտիվացվել է',
-        description: `Ձեզ մոտ կա ${result.activity_duration_minutes} րոպե անվճար հասանելիություն։`,
+        title: 'Code activated successfully',
+        description: `You have ${result.activity_duration_minutes} minutes of free access.`,
       });
 
     } catch (err: any) {
@@ -63,10 +54,12 @@ const CompanyCodeInput = ({
       onCodeVerified(false);
       
       toast({
-        title: 'Անվավեր կոդ',
-        description: err.message || 'Խնդրում ենք ստուգել և կրկին փորձել։',
+        title: 'Invalid code',
+        description: err.message || 'Please check and try again.',
         variant: 'destructive',
       });
+    } finally {
+      setIsActivating(false);
     }
   };
 
@@ -77,8 +70,8 @@ const CompanyCodeInput = ({
     onCodeVerified(false);
     
     toast({
-      title: 'Սեսիան ավարտվեց',
-      description: 'Հասանելիության ժամանակը ավարտվել է։',
+      title: 'Session ended',
+      description: 'Access time has expired.',
     });
   };
 
@@ -89,10 +82,10 @@ const CompanyCodeInput = ({
         <CardContent className="p-4 space-y-4">
           <div className="text-center">
             <h2 className="text-xl font-semibold font-armenian mb-2 text-green-800">
-              Ակտիվ սեսիա
+              Active Session
             </h2>
             <p className="text-sm text-green-600 font-armenian">
-              Կոդ: {session?.code}
+              Code: {session?.code}
             </p>
           </div>
 
@@ -103,7 +96,7 @@ const CompanyCodeInput = ({
                 {formatTimeRemaining()}
               </p>
               <p className="text-xs text-green-600 font-armenian">
-                Մնացած ժամանակ
+                Remaining time
               </p>
             </div>
           </div>
@@ -112,24 +105,16 @@ const CompanyCodeInput = ({
             <CheckCircle className="w-4 h-4 text-green-600" />
             <div className="flex-1">
               <p className="text-sm font-medium text-green-800 font-armenian">
-                Անվճար հասանելիություն ակտիվ է
+                Free access is active
               </p>
               <p className="text-xs text-green-600 font-armenian">
-                Կարող եք դիտել բոլոր դասերը
+                You can view all lessons
               </p>
             </div>
             <Badge variant="secondary" className="text-green-700 bg-green-100">
-              Ակտիվ
+              Active
             </Badge>
           </div>
-
-          <Button 
-            onClick={handleEndSession} 
-            variant="outline"
-            className="w-full font-armenian text-red-600 border-red-200 hover:bg-red-50"
-          >
-            Ավարտել սեսիան
-          </Button>
         </CardContent>
       </Card>
     );
@@ -139,9 +124,9 @@ const CompanyCodeInput = ({
     <Card className="border-dashed border-2 border-muted-foreground/30">
       <CardContent className="p-4 space-y-6">
         <div className="text-center">
-          <h2 className="text-xl font-semibold font-armenian mb-4">Գործընկերային կոդ</h2>
+          <h2 className="text-xl font-semibold font-armenian mb-4">Partner Code</h2>
           <p className="text-sm text-muted-foreground font-armenian">
-            Մուտքագրեք գործընկերային կոդը՝ անվճար հասանելիություն ստանալու համար
+            Enter the partner code to get free access
           </p>
         </div>
 
@@ -151,19 +136,19 @@ const CompanyCodeInput = ({
               id="company-code" 
               value={code} 
               onChange={e => setCode(e.target.value)} 
-              placeholder="Մուտքագրեք կոդը (օր.՝ USUM25)..." 
+              placeholder="Enter code (e.g. USUM25)..." 
               className="uppercase" 
-              disabled={isLoading || verificationStatus === 'valid'} 
+              disabled={isActivating || verificationStatus === 'valid'} 
             />
           </div>
 
           <Button 
             onClick={handleVerifyCode} 
-            disabled={!code.trim() || isLoading || verificationStatus === 'valid'} 
+            disabled={!code.trim() || isActivating || verificationStatus === 'valid'} 
             className="w-full font-armenian" 
             variant={verificationStatus === 'valid' ? 'default' : 'outline'}
           >
-            {isLoading ? 'Ստուգվում է...' : verificationStatus === 'valid' ? 'Ակտիվացված' : 'Ստուգել կոդը'}
+            {isActivating ? 'Checking...' : verificationStatus === 'valid' ? 'Activated' : 'Check Code'}
           </Button>
         </div>
 
@@ -171,29 +156,29 @@ const CompanyCodeInput = ({
           <div className="flex items-center gap-2 p-3 bg-green-50 rounded-md border border-green-200">
             <CheckCircle className="w-4 h-4 text-green-600" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-green-800 font-armenian">Կոդը վավեր է</p>
-              <p className="text-xs text-green-600 font-armenian">Սեսիան սկսվել է</p>
+              <p className="text-sm font-medium text-green-800 font-armenian">Code is valid</p>
+              <p className="text-xs text-green-600 font-armenian">Session started</p>
             </div>
             <Badge variant="secondary" className="text-green-700 bg-green-100">
-              Ակտիվ
+              Active
             </Badge>
           </div>
         )}
 
-        {(verificationStatus === 'invalid' || error) && (
+        {(verificationStatus === 'invalid') && (
           <div className="flex items-center gap-2 p-3 bg-red-50 rounded-md border border-red-200">
             <AlertCircle className="w-4 h-4 text-red-600" />
             <div>
-              <p className="text-sm font-medium text-red-800 font-armenian">Սխալ կոդ</p>
+              <p className="text-sm font-medium text-red-800 font-armenian">Invalid code</p>
               <p className="text-xs text-red-600 font-armenian">
-                {error || 'Խնդրում ենք ստուգել և կրկին փորձել'}
+                Please check and try again
               </p>
             </div>
           </div>
         )}
 
         <div className="text-xs text-muted-foreground text-center font-armenian">
-          Գործընկերային կոդ չունե՞ք: Կապվեք մեր թիմի հետ
+          Don't have a partner code? Contact our team
         </div>
       </CardContent>
     </Card>
