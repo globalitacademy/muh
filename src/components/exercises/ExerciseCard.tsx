@@ -46,7 +46,7 @@ const ExerciseCard = ({
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="font-armenian whitespace-pre-line text-foreground leading-relaxed text-right">
+        <p className="font-armenian whitespace-pre-line text-foreground leading-relaxed text-left">
           {exercise.description}
         </p>
         
