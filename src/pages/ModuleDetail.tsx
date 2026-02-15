@@ -14,6 +14,7 @@ import ModuleDetailHeader from '@/components/module/ModuleDetailHeader';
 import ModuleDetailTabs from '@/components/module/ModuleDetailTabs';
 import ModuleDetailSidebar from '@/components/module/ModuleDetailSidebar';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useAccessSession } from '@/hooks/useAccessSession';
 
 const ModuleDetail = () => {
   const { t } = useLanguage();
@@ -25,9 +26,12 @@ const ModuleDetail = () => {
   const { data: enrollments } = useEnrollments();
   const enrollModule = useEnrollModule();
   const [hasValidCompanyCode, setHasValidCompanyCode] = useState(false);
+  const { hasModuleAccess, isActive } = useAccessSession();
 
   const isEnrolled = enrollments?.some(e => e.module_id === id);
-  const hasFullAccess = isEnrolled || hasValidCompanyCode;
+  // Check both enrollment and IP-based access session
+  const hasIpAccess = isActive && hasModuleAccess(id);
+  const hasFullAccess = isEnrolled || hasValidCompanyCode || hasIpAccess;
   
   console.log('ModuleDetail Access Debug:', {
     userId: user?.id,

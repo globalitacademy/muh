@@ -198,9 +198,13 @@ export const useTopicDetail = () => {
   };
 
   const handleTabChange = (value: string) => {
-    if (!hasAccess || !user || !topicId || !topic) return;
+    if (!hasAccess || !topicId || !topic) return;
     
     setActiveTab(value);
+    
+    // Only track progress for logged-in users
+    if (!user) return;
+    
     // Update progress based on completed sections and available tabs
     const tabIndex = availableTabs.indexOf(value);
     const progressIncrement = 100 / availableTabs.length;

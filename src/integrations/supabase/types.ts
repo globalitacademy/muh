@@ -1035,6 +1035,56 @@ export type Database = {
         }
         Relationships: []
       }
+      partner_ip_sessions: {
+        Row: {
+          access_code_id: string
+          activity_duration_minutes: number
+          code: string
+          created_at: string
+          expires_at: string
+          id: string
+          ip_address: string
+          is_active: boolean
+          module_id: string | null
+          partner_id: string
+          started_at: string
+        }
+        Insert: {
+          access_code_id: string
+          activity_duration_minutes: number
+          code: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          ip_address: string
+          is_active?: boolean
+          module_id?: string | null
+          partner_id: string
+          started_at?: string
+        }
+        Update: {
+          access_code_id?: string
+          activity_duration_minutes?: number
+          code?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          ip_address?: string
+          is_active?: boolean
+          module_id?: string | null
+          partner_id?: string
+          started_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partner_ip_sessions_access_code_id_fkey"
+            columns: ["access_code_id"]
+            isOneToOne: false
+            referencedRelation: "partner_access_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       password_reset_tokens: {
         Row: {
           created_at: string | null
