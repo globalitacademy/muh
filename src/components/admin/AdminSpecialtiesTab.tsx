@@ -365,9 +365,9 @@ const TopicContentPreview = ({ content }: {content: string;}) => {
     } catch {
 
 
+
       // Not JSON, treat as plain text
     }return null;}, [content]);
-
   return (
     <div className="mb-3">
       <div className="flex items-center gap-2 mb-2">
@@ -447,7 +447,7 @@ const TopicsView = ({ module }: {module: Module;}) => {
                             <span className="font-medium font-armenian">{topic.title}</span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 pl-9" onClick={(e) => e.stopPropagation()}>
+                        <div className="gap-2 pl-9 flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
                           <Badge variant={topic.is_free ? 'secondary' : 'default'}>
                             {topic.is_free ? '\u0531\u0576\u057E\u0573\u0561\u0580' : '\u054E\u0573\u0561\u0580\u0578\u057E\u056B'}
                           </Badge>
