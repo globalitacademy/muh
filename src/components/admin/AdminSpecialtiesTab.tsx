@@ -354,6 +354,43 @@ const ModulesView = ({ specialty, onSelectModule, onAddModule, onEditModule }: {
   );
 };
 
+// ─── TOPIC CONTENT PREVIEW ───
+const TopicContentPreview = ({ content }: { content: string }) => {
+  const parsed = React.useMemo(() => {
+    try {
+      const data = JSON.parse(content);
+      if (data?.sections && Array.isArray(data.sections)) {
+        return data.sections.map((s: any) => s.title).filter(Boolean);
+      }
+    } catch {
+      // Not JSON, treat as plain text
+    }
+    return null;
+  }, [content]);
+
+  return (
+    <div className="mb-3">
+      <div className="flex items-center gap-2 mb-2">
+        <FileText className="w-4 h-4" />
+        <span className="text-sm font-medium font-armenian">{'\u0532\u0578\u057E\u0561\u0576\u0564\u0561\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576'}:</span>
+      </div>
+      <div className="p-3 bg-muted rounded text-sm max-h-40 overflow-y-auto space-y-1">
+        {parsed ? (
+          <ul className="list-disc list-inside space-y-1 font-armenian text-muted-foreground">
+            {parsed.map((title: string, i: number) => (
+              <li key={i}>{title}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-muted-foreground font-armenian">
+            {content.substring(0, 300)}{content.length > 300 && '...'}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // ─── TOPICS VIEW ───
 const TopicsView = ({ module }: { module: Module }) => {
   const { data: topics, isLoading } = useTopics(module.id);
@@ -438,12 +475,7 @@ const TopicsView = ({ module }: { module: Module }) => {
                         </div>
                       )}
                       {topic.content && (
-                        <div className="mb-3">
-                          <div className="flex items-center gap-2 mb-2"><FileText className="w-4 h-4" /><span className="text-sm font-medium font-armenian">{'\u0532\u0578\u057E\u0561\u0576\u0564\u0561\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576'}:</span></div>
-                          <div className="p-3 bg-muted rounded text-sm max-h-32 overflow-y-auto whitespace-pre-wrap">
-                            {topic.content.substring(0, 300)}{topic.content.length > 300 && '...'}
-                          </div>
-                        </div>
+                        <TopicContentPreview content={topic.content} />
                       )}
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         {topic.exercises && <div className="flex items-center gap-1"><FileText className="w-3 h-3" /><span className="font-armenian">{'\u054E\u0561\u0580\u056A\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580'}</span></div>}
