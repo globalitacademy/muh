@@ -19,43 +19,43 @@ import { useDeleteTopic } from '@/hooks/useAdminTopics';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 type View =
-  | { type: 'specialties' }
-  | { type: 'modules'; specialty: Specialty }
-  | { type: 'topics'; specialty: Specialty; module: Module };
+{type: 'specialties';} |
+{type: 'modules';specialty: Specialty;} |
+{type: 'topics';specialty: Specialty;module: Module;};
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case 'active': return 'bg-green-500/15 text-green-700 dark:text-green-300';
-    case 'inactive': return 'bg-red-500/15 text-red-700 dark:text-red-300';
-    case 'coming_soon': return 'bg-muted text-muted-foreground';
-    default: return 'bg-green-500/15 text-green-700 dark:text-green-300';
+    case 'active':return 'bg-green-500/15 text-green-700 dark:text-green-300';
+    case 'inactive':return 'bg-red-500/15 text-red-700 dark:text-red-300';
+    case 'coming_soon':return 'bg-muted text-muted-foreground';
+    default:return 'bg-green-500/15 text-green-700 dark:text-green-300';
   }
 };
 
 const getStatusLabel = (status: string) => {
   switch (status) {
-    case 'active': return '\u0531\u056F\u057F\u056B\u057E';
-    case 'inactive': return '\u0548\u0579 \u0561\u056F\u057F\u056B\u057E';
-    case 'coming_soon': return '\u0547\u0578\u0582\u057F\u0578\u057E';
-    default: return '\u0531\u056F\u057F\u056B\u057E';
+    case 'active':return '\u0531\u056F\u057F\u056B\u057E';
+    case 'inactive':return '\u0548\u0579 \u0561\u056F\u057F\u056B\u057E';
+    case 'coming_soon':return '\u0547\u0578\u0582\u057F\u0578\u057E';
+    default:return '\u0531\u056F\u057F\u056B\u057E';
   }
 };
 
 const getDifficultyColor = (level: string) => {
   switch (level) {
-    case 'beginner': return 'bg-primary text-white';
-    case 'intermediate': return 'bg-edu-orange text-white';
-    case 'advanced': return 'bg-destructive text-white';
-    default: return 'bg-muted-foreground text-white';
+    case 'beginner':return 'bg-primary text-white';
+    case 'intermediate':return 'bg-edu-orange text-white';
+    case 'advanced':return 'bg-destructive text-white';
+    default:return 'bg-muted-foreground text-white';
   }
 };
 
 const getDifficultyLabel = (level: string) => {
   switch (level) {
-    case 'beginner': return '\u054D\u056F\u057D\u0576\u0561\u056F';
-    case 'intermediate': return '\u0544\u056B\u057B\u056B\u0576';
-    case 'advanced': return '\u0532\u0561\u0580\u0571\u0580\u0561\u056F\u0561\u0580\u0563';
-    default: return level;
+    case 'beginner':return '\u054D\u056F\u057D\u0576\u0561\u056F';
+    case 'intermediate':return '\u0544\u056B\u057B\u056B\u0576';
+    case 'advanced':return '\u0532\u0561\u0580\u0571\u0580\u0561\u056F\u0561\u0580\u0563';
+    default:return level;
   }
 };
 
@@ -76,7 +76,7 @@ const AdminSpecialtiesTab = () => {
     name: '', name_en: '', name_ru: '',
     description: '', description_en: '', description_ru: '',
     icon: 'Code', color: 'from-blue-500 to-cyan-500',
-    order_index: 0, status: 'active',
+    order_index: 0, status: 'active'
   });
 
   const resetForm = () => {
@@ -84,7 +84,7 @@ const AdminSpecialtiesTab = () => {
       name: '', name_en: '', name_ru: '',
       description: '', description_en: '', description_ru: '',
       icon: 'Code', color: 'from-blue-500 to-cyan-500',
-      order_index: 0, status: 'active',
+      order_index: 0, status: 'active'
     });
     setIsCreateModalOpen(false);
     setEditingSpecialty(null);
@@ -106,7 +106,7 @@ const AdminSpecialtiesTab = () => {
       name: specialty.name || '', name_en: specialty.name_en || '', name_ru: specialty.name_ru || '',
       description: specialty.description || '', description_en: specialty.description_en || '', description_ru: specialty.description_ru || '',
       icon: specialty.icon || 'Code', color: specialty.color || 'from-blue-500 to-cyan-500',
-      order_index: specialty.order_index || 0, status: specialty.status || 'active',
+      order_index: specialty.order_index || 0, status: specialty.status || 'active'
     });
     setIsCreateModalOpen(true);
   };
@@ -130,7 +130,7 @@ const AdminSpecialtiesTab = () => {
   };
 
   const getIconComponent = (iconName: string) => {
-    const iconOption = iconOptions.find(opt => opt.value === iconName);
+    const iconOption = iconOptions.find((opt) => opt.value === iconName);
     return iconOption ? iconOption.icon : iconOptions[0].icon;
   };
 
@@ -138,28 +138,28 @@ const AdminSpecialtiesTab = () => {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+      </div>);
+
   }
 
   return (
     <div className="space-y-4 md:space-y-6 p-2 md:p-0">
-      {view.type !== 'specialties' && (
-        <Button
-          variant="ghost"
-          onClick={() => {
-            if (view.type === 'topics') setView({ type: 'modules', specialty: view.specialty });
-            else setView({ type: 'specialties' });
-          }}
-          className="font-armenian gap-2"
-        >
+      {view.type !== 'specialties' &&
+      <Button
+        variant="ghost"
+        onClick={() => {
+          if (view.type === 'topics') setView({ type: 'modules', specialty: view.specialty });else
+          setView({ type: 'specialties' });
+        }}
+        className="font-armenian gap-2">
+
           <ArrowLeft className="w-4 h-4" />
           {view.type === 'modules' ? '\u0544\u0561\u057D\u0576\u0561\u0563\u056B\u057F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580' : view.specialty.name}
         </Button>
-      )}
+      }
 
-      {view.type === 'specialties' && (
-        <>
+      {view.type === 'specialties' &&
+      <>
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <h2 className="text-xl md:text-2xl font-bold font-armenian">{'\u0544\u0561\u057D\u0576\u0561\u0563\u056B\u057F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580\u056B \u056F\u0561\u057C\u0561\u057E\u0561\u0580\u0578\u0582\u0574'}</h2>
             <Button onClick={() => setIsCreateModalOpen(true)} className="font-armenian w-full sm:w-auto">
@@ -171,13 +171,13 @@ const AdminSpecialtiesTab = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {specialties?.map((specialty) => {
-              const IconComp = getIconComponent(specialty.icon);
-              return (
-                <Card
-                  key={specialty.id}
-                  className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-border/50 overflow-hidden"
-                  onClick={() => setView({ type: 'modules', specialty })}
-                >
+            const IconComp = getIconComponent(specialty.icon);
+            return (
+              <Card
+                key={specialty.id}
+                className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-border/50 overflow-hidden"
+                onClick={() => setView({ type: 'modules', specialty })}>
+
                   <CardContent className="p-6 flex flex-col gap-4 h-full">
                     <div className="flex items-center gap-4">
                       <div className={`w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-r ${specialty.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
@@ -203,25 +203,25 @@ const AdminSpecialtiesTab = () => {
                       </Button>
                     </div>
                   </CardContent>
-                </Card>
-              );
-            })}
+                </Card>);
+
+          })}
           </div>
         </>
-      )}
+      }
 
-      {view.type === 'modules' && (
-        <ModulesView
-          specialty={view.specialty}
-          onSelectModule={(module) => setView({ type: 'topics', specialty: view.specialty, module })}
-          onAddModule={() => handleAddModule(view.specialty.id)}
-          onEditModule={handleEditModule}
-        />
-      )}
+      {view.type === 'modules' &&
+      <ModulesView
+        specialty={view.specialty}
+        onSelectModule={(module) => setView({ type: 'topics', specialty: view.specialty, module })}
+        onAddModule={() => handleAddModule(view.specialty.id)}
+        onEditModule={handleEditModule} />
 
-      {view.type === 'topics' && (
-        <TopicsView module={view.module} />
-      )}
+      }
+
+      {view.type === 'topics' &&
+      <TopicsView module={view.module} />
+      }
 
       <SpecialtyFormDialog
         isOpen={isCreateModalOpen}
@@ -230,25 +230,25 @@ const AdminSpecialtiesTab = () => {
         editingSpecialty={editingSpecialty}
         formData={formData}
         setFormData={setFormData}
-        isLoading={createSpecialty.isPending || updateSpecialty.isPending}
-      />
+        isLoading={createSpecialty.isPending || updateSpecialty.isPending} />
+
       <ModuleFormDialog
         isOpen={moduleFormOpen}
         onClose={() => setModuleFormOpen(false)}
         specialtyId={selectedSpecialtyId}
-        editingModule={editingModule}
-      />
-    </div>
-  );
+        editingModule={editingModule} />
+
+    </div>);
+
 };
 
 // ─── MODULES VIEW ───
-const ModulesView = ({ specialty, onSelectModule, onAddModule, onEditModule }: {
-  specialty: Specialty;
-  onSelectModule: (module: Module) => void;
-  onAddModule: () => void;
-  onEditModule: (module: Module) => void;
-}) => {
+const ModulesView = ({ specialty, onSelectModule, onAddModule, onEditModule
+
+
+
+
+}: {specialty: Specialty;onSelectModule: (module: Module) => void;onAddModule: () => void;onEditModule: (module: Module) => void;}) => {
   const { data: modules, isLoading } = useSpecialtyModules(specialty.id);
   const deleteModule = useDeleteModule();
   const updateModule = useUpdateModule();
@@ -280,24 +280,24 @@ const ModulesView = ({ specialty, onSelectModule, onAddModule, onEditModule }: {
         </Button>
       </div>
 
-      {!modules || modules.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground font-armenian">
+      {!modules || modules.length === 0 ?
+      <div className="text-center py-12 text-muted-foreground font-armenian">
           {'\u0531\u0575\u057D \u0574\u0561\u057D\u0576\u0561\u0563\u056B\u057F\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0578\u0582\u0574 \u0564\u0565\u057C \u0574\u0578\u0564\u0578\u0582\u056C\u0576\u0565\u0580 \u0579\u056F\u0561\u0576'}
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {modules.map((module) => (
-            <Card
-              key={module.id}
-              className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-border/50 overflow-hidden"
-              onClick={() => onSelectModule(module)}
-            >
+        </div> :
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {modules.map((module) =>
+        <Card
+          key={module.id}
+          className="group cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-border/50 overflow-hidden"
+          onClick={() => onSelectModule(module)}>
+
               <CardContent className="p-6 flex flex-col gap-4 h-full">
                 <div>
                   <h3 className="font-bold text-lg font-armenian">{module.title}</h3>
-                  {module.description && (
-                    <p className="text-sm text-muted-foreground font-armenian line-clamp-2 mt-1">{module.description}</p>
-                  )}
+                  {module.description &&
+              <p className="text-sm text-muted-foreground font-armenian line-clamp-2 mt-1">{module.description}</p>
+              }
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -313,11 +313,11 @@ const ModulesView = ({ specialty, onSelectModule, onAddModule, onEditModule }: {
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Users className="w-4 h-4" /> {module.students_count}
                   </div>
-                  {module.rating && (
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  {module.rating &&
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <Star className="w-4 h-4 fill-warning-yellow text-warning-yellow" /> {module.rating}
                     </div>
-                  )}
+              }
                 </div>
 
                 <div className="flex items-center justify-between mt-auto">
@@ -347,15 +347,15 @@ const ModulesView = ({ specialty, onSelectModule, onAddModule, onEditModule }: {
                 </div>
               </CardContent>
             </Card>
-          ))}
+        )}
         </div>
-      )}
-    </>
-  );
+      }
+    </>);
+
 };
 
 // ─── TOPIC CONTENT PREVIEW ───
-const TopicContentPreview = ({ content }: { content: string }) => {
+const TopicContentPreview = ({ content }: {content: string;}) => {
   const parsed = React.useMemo(() => {
     try {
       const data = JSON.parse(content);
@@ -363,9 +363,9 @@ const TopicContentPreview = ({ content }: { content: string }) => {
         return data.sections.map((s: any) => s.title).filter(Boolean);
       }
     } catch {
+
       // Not JSON, treat as plain text
-    }
-    return null;
+    }return null;
   }, [content]);
 
   return (
@@ -375,24 +375,24 @@ const TopicContentPreview = ({ content }: { content: string }) => {
         <span className="text-sm font-medium font-armenian">{'\u0532\u0578\u057E\u0561\u0576\u0564\u0561\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576'}:</span>
       </div>
       <div className="p-3 bg-muted rounded text-sm max-h-40 overflow-y-auto space-y-1">
-        {parsed ? (
-          <ul className="list-disc list-inside space-y-1 font-armenian text-muted-foreground">
-            {parsed.map((title: string, i: number) => (
-              <li key={i}>{title}</li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-muted-foreground font-armenian">
+        {parsed ?
+        <ul className="list-disc list-inside space-y-1 font-armenian text-muted-foreground">
+            {parsed.map((title: string, i: number) =>
+          <li key={i} className="text-center">{title}</li>
+          )}
+          </ul> :
+
+        <p className="text-muted-foreground font-armenian">
             {content.substring(0, 300)}{content.length > 300 && '...'}
           </p>
-        )}
+        }
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 // ─── TOPICS VIEW ───
-const TopicsView = ({ module }: { module: Module }) => {
+const TopicsView = ({ module }: {module: Module;}) => {
   const { data: topics, isLoading } = useTopics(module.id);
   const deleteTopic = useDeleteTopic();
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -419,22 +419,22 @@ const TopicsView = ({ module }: { module: Module }) => {
     <>
       <div className="flex flex-wrap gap-2 mb-2">
         <UpdateTopicContentButton />
-        <Button onClick={() => { setEditingTopic(null); setIsFormOpen(true); }} className="font-armenian">
+        <Button onClick={() => {setEditingTopic(null);setIsFormOpen(true);}} className="font-armenian">
           <Plus className="w-4 h-4 mr-1" /> {'\u0546\u0578\u0580 \u0569\u0565\u0574\u0561'}
         </Button>
       </div>
       <h2 className="text-xl md:text-2xl font-bold font-armenian">{module.title} — {'\u0539\u0565\u0574\u0561\u0576\u0565\u0580'}</h2>
 
-      {!topics || topics.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground font-armenian">
+      {!topics || topics.length === 0 ?
+      <div className="text-center py-12 text-muted-foreground font-armenian">
           {'\u0531\u0575\u057D \u0574\u0578\u0564\u0578\u0582\u056C\u0578\u0582\u0574 \u0564\u0565\u057C \u0569\u0565\u0574\u0561\u0576\u0565\u0580 \u0579\u056F\u0561\u0576'}
-        </div>
-      ) : (
-        <div className="space-y-2">
+        </div> :
+
+      <div className="space-y-2">
           {topics.map((topic, index) => {
-            const isExpanded = expandedTopics.has(topic.id);
-            return (
-              <Card key={topic.id} className="border-l-4 border-l-primary">
+          const isExpanded = expandedTopics.has(topic.id);
+          return (
+            <Card key={topic.id} className="border-l-4 border-l-primary">
                 <Collapsible open={isExpanded} onOpenChange={() => toggleTopic(topic.id)}>
                   <CollapsibleTrigger asChild>
                     <CardContent className="p-4 cursor-pointer hover:bg-accent/50 transition-colors">
@@ -454,7 +454,7 @@ const TopicsView = ({ module }: { module: Module }) => {
                           <div className="flex items-center gap-1 text-sm text-muted-foreground">
                             <Clock className="w-3 h-3" /> {topic.duration_minutes}{'\u0580'}
                           </div>
-                          <Button variant="outline" size="sm" onClick={() => { setEditingTopic(topic); setIsFormOpen(true); }} className="font-armenian">
+                          <Button variant="outline" size="sm" onClick={() => {setEditingTopic(topic);setIsFormOpen(true);}} className="font-armenian">
                             <Edit className="w-3 h-3 mr-1" /> {'\u053D\u0574\u0562\u0561\u0563\u0580\u0565\u056C'}
                           </Button>
                           <Button variant="destructive" size="sm" onClick={() => handleDeleteTopic(topic.id)} disabled={deleteTopic.isPending} className="font-armenian">
@@ -467,16 +467,16 @@ const TopicsView = ({ module }: { module: Module }) => {
                   <CollapsibleContent>
                     <CardContent className="pt-0 pb-4 pl-12">
                       {topic.description && <p className="text-sm text-muted-foreground mb-3 font-armenian">{topic.description}</p>}
-                      {topic.video_url && (
-                        <div className="mb-3 flex items-center gap-2">
+                      {topic.video_url &&
+                    <div className="mb-3 flex items-center gap-2">
                           <LinkIcon className="w-4 h-4" />
                           <span className="text-sm font-medium font-armenian">{'\u054E\u056B\u0564\u0565\u0578'}:</span>
                           <a href={topic.video_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">{'\u0534\u056B\u057F\u0565\u056C \u057E\u056B\u0564\u0565\u0578\u0576'}</a>
                         </div>
-                      )}
-                      {topic.content && (
-                        <TopicContentPreview content={topic.content} />
-                      )}
+                    }
+                      {topic.content &&
+                    <TopicContentPreview content={topic.content} />
+                    }
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         {topic.exercises && <div className="flex items-center gap-1"><FileText className="w-3 h-3" /><span className="font-armenian">{'\u054E\u0561\u0580\u056A\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580'}</span></div>}
                         {topic.quiz_questions && <div className="flex items-center gap-1"><HelpCircle className="w-3 h-3" /><span className="font-armenian">{'\u054E\u056B\u056F\u057F\u0578\u0580\u056B\u0576\u0561'}</span></div>}
@@ -485,15 +485,15 @@ const TopicsView = ({ module }: { module: Module }) => {
                     </CardContent>
                   </CollapsibleContent>
                 </Collapsible>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+              </Card>);
 
-      <TopicFormDialog isOpen={isFormOpen} onClose={() => { setIsFormOpen(false); setEditingTopic(null); }} moduleId={module.id} editingTopic={editingTopic} />
-    </>
-  );
+        })}
+        </div>
+      }
+
+      <TopicFormDialog isOpen={isFormOpen} onClose={() => {setIsFormOpen(false);setEditingTopic(null);}} moduleId={module.id} editingTopic={editingTopic} />
+    </>);
+
 };
 
 export default AdminSpecialtiesTab;
