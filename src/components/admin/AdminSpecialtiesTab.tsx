@@ -380,15 +380,13 @@ const TopicsView = ({ module }: { module: Module }) => {
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <h2 className="text-xl md:text-2xl font-bold font-armenian">{module.title} — {'\u0539\u0565\u0574\u0561\u0576\u0565\u0580'}</h2>
-        <div className="flex gap-2">
-          <UpdateTopicContentButton />
-          <Button onClick={() => { setEditingTopic(null); setIsFormOpen(true); }} className="font-armenian">
-            <Plus className="w-4 h-4 mr-1" /> {'\u0546\u0578\u0580 \u0569\u0565\u0574\u0561'}
-          </Button>
-        </div>
+      <div className="flex flex-wrap gap-2 mb-2">
+        <UpdateTopicContentButton />
+        <Button onClick={() => { setEditingTopic(null); setIsFormOpen(true); }} className="font-armenian">
+          <Plus className="w-4 h-4 mr-1" /> {'\u0546\u0578\u0580 \u0569\u0565\u0574\u0561'}
+        </Button>
       </div>
+      <h2 className="text-xl md:text-2xl font-bold font-armenian">{module.title} — {'\u0539\u0565\u0574\u0561\u0576\u0565\u0580'}</h2>
 
       {!topics || topics.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground font-armenian">
