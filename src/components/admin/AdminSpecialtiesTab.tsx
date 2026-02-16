@@ -438,7 +438,7 @@ const TopicsView = ({ module }: {module: Module;}) => {
                 <Collapsible open={isExpanded} onOpenChange={() => toggleTopic(topic.id)}>
                   <CollapsibleTrigger asChild>
                     <CardContent className="p-4 cursor-pointer hover:bg-accent/50 transition-colors">
-                      <div className="flex items-center justify-between">
+                      <div className="space-y-2">
                         <div className="flex items-center gap-3">
                           <span className="text-sm font-medium text-primary min-w-[2rem]">{index + 1}.</span>
                           <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
@@ -447,7 +447,7 @@ const TopicsView = ({ module }: {module: Module;}) => {
                             <span className="font-medium font-armenian">{topic.title}</span>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex items-center gap-2 pl-9" onClick={(e) => e.stopPropagation()}>
                           <Badge variant={topic.is_free ? 'secondary' : 'default'}>
                             {topic.is_free ? '\u0531\u0576\u057E\u0573\u0561\u0580' : '\u054E\u0573\u0561\u0580\u0578\u057E\u056B'}
                           </Badge>
