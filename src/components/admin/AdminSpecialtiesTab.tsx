@@ -364,9 +364,9 @@ const TopicContentPreview = ({ content }: {content: string;}) => {
       }
     } catch {
 
+
       // Not JSON, treat as plain text
-    }return null;
-  }, [content]);
+    }return null;}, [content]);
 
   return (
     <div className="mb-3">
@@ -378,7 +378,7 @@ const TopicContentPreview = ({ content }: {content: string;}) => {
         {parsed ?
         <ul className="list-disc list-inside space-y-1 font-armenian text-muted-foreground">
             {parsed.map((title: string, i: number) =>
-          <li key={i} className="text-center">{title}</li>
+          <li key={i} className="text-left">{title}</li>
           )}
           </ul> :
 
