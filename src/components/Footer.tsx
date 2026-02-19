@@ -41,7 +41,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-xl font-semibold mb-6 font-armenian text-foreground">
+            <h3 className="text-xl font-semibold mb-6 font-armenian text-foreground text-left">
               {t('footer.quick-links')}
             </h3>
             <ul className="space-y-4">
@@ -60,7 +60,7 @@ const Footer = () => {
                   {t('nav.about')}
                 </a>
               </li>
-              <li className="text-left">
+              <li>
                 <a href="#" className="text-muted-foreground hover:text-edu-blue transition-colors font-armenian text-lg hover:translate-x-1 inline-block transition-transform">
                   {t('nav.contact')}
                 </a>
