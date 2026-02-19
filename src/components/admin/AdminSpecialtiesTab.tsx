@@ -5,7 +5,7 @@ import { useTopics } from '@/hooks/useTopics';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Plus, ArrowLeft, BookOpen, Edit, Trash2, Clock, Users, Star, Lock, Unlock, FileText, HelpCircle, Link as LinkIcon, ChevronDown } from 'lucide-react';
+import { Loader2, Plus, ArrowLeft, BookOpen, Edit, Trash2, Clock, Users, Star, Lock, Unlock, FileText, HelpCircle, Link as LinkIcon } from 'lucide-react';
 import { Specialty, CreateSpecialtyData } from '@/types/specialty';
 import { Module, Topic } from '@/types/database';
 import { iconOptions } from './specialty/SpecialtyConstants';
@@ -16,7 +16,7 @@ import UpdateTopicContentButton from './specialty/UpdateTopicContentButton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDeleteModule, useUpdateModule } from '@/hooks/useAdminModules';
 import { useDeleteTopic } from '@/hooks/useAdminTopics';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+
 
 type View =
 {type: 'specialties';} |
@@ -397,13 +397,6 @@ const TopicsView = ({ module }: {module: Module;}) => {
   const deleteTopic = useDeleteTopic();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTopic, setEditingTopic] = useState<Topic | null>(null);
-  const [expandedTopics, setExpandedTopics] = useState<Set<string>>(new Set());
-
-  const toggleTopic = (id: string) => {
-    const s = new Set(expandedTopics);
-    s.has(id) ? s.delete(id) : s.add(id);
-    setExpandedTopics(s);
-  };
 
   const handleDeleteTopic = async (topicId: string) => {
     if (confirm('\u054E\u057D\u057F\u0561\u057E\u0561\u057E\u0561\u0584 \u0565\u0584, \u0578\u0580 \u0578\u0582\u0566\u0578\u0582\u0574 \u0565\u0584 \u057B\u0576\u057B\u0565\u056C \u0561\u0575\u057D \u0569\u0565\u0574\u0561\u0576:')) {
@@ -430,64 +423,62 @@ const TopicsView = ({ module }: {module: Module;}) => {
           {'\u0531\u0575\u057D \u0574\u0578\u0564\u0578\u0582\u056C\u0578\u0582\u0574 \u0564\u0565\u057C \u0569\u0565\u0574\u0561\u0576\u0565\u0580 \u0579\u056F\u0561\u0576'}
         </div> :
 
-      <div className="space-y-2">
-          {topics.map((topic, index) => {
-          const isExpanded = expandedTopics.has(topic.id);
-          return (
-            <Card key={topic.id} className="border-l-4 border-l-primary">
-                <Collapsible open={isExpanded} onOpenChange={() => toggleTopic(topic.id)}>
-                  <CollapsibleTrigger asChild>
-                    <CardContent className="p-4 cursor-pointer hover:bg-accent/50 transition-colors">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-medium text-primary min-w-[2rem]">{index + 1}.</span>
-                          <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                          <div className="flex items-center gap-2">
-                            {topic.is_free ? <Unlock className="w-4 h-4 text-green-600" /> : <Lock className="w-4 h-4 text-orange-600" />}
-                            <span className="font-medium font-armenian">{topic.title}</span>
-                          </div>
-                        </div>
-                        <div className="gap-2 pl-9 flex items-center justify-end" onClick={(e) => e.stopPropagation()}>
-                          <Badge variant={topic.is_free ? 'secondary' : 'default'}>
-                            {topic.is_free ? '\u0531\u0576\u057E\u0573\u0561\u0580' : '\u054E\u0573\u0561\u0580\u0578\u057E\u056B'}
-                          </Badge>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Clock className="w-3 h-3" /> {topic.duration_minutes}{'\u0580'}
-                          </div>
-                          <Button variant="outline" size="sm" onClick={() => {setEditingTopic(topic);setIsFormOpen(true);}} className="font-armenian">
-                            <Edit className="w-3 h-3 mr-1" /> {'\u053D\u0574\u0562\u0561\u0563\u0580\u0565\u056C'}
-                          </Button>
-                          <Button variant="destructive" size="sm" onClick={() => handleDeleteTopic(topic.id)} disabled={deleteTopic.isPending} className="font-armenian">
-                            <Trash2 className="w-3 h-3 mr-1" /> {'\u054B\u0576\u057B\u0565\u056C'}
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <CardContent className="pt-0 pb-4 pl-12">
-                      {topic.description && <p className="text-sm text-muted-foreground mb-3 font-armenian">{topic.description}</p>}
-                      {topic.video_url &&
-                    <div className="mb-3 flex items-center gap-2">
-                          <LinkIcon className="w-4 h-4" />
-                          <span className="text-sm font-medium font-armenian">{'\u054E\u056B\u0564\u0565\u0578'}:</span>
-                          <a href={topic.video_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm">{'\u0534\u056B\u057F\u0565\u056C \u057E\u056B\u0564\u0565\u0578\u0576'}</a>
-                        </div>
-                    }
-                      {topic.content &&
-                    <TopicContentPreview content={topic.content} />
-                    }
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        {topic.exercises && <div className="flex items-center gap-1"><FileText className="w-3 h-3" /><span className="font-armenian">{'\u054E\u0561\u0580\u056A\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580'}</span></div>}
-                        {topic.quiz_questions && <div className="flex items-center gap-1"><HelpCircle className="w-3 h-3" /><span className="font-armenian">{'\u054E\u056B\u056F\u057F\u0578\u0580\u056B\u0576\u0561'}</span></div>}
-                        {topic.resources && <div className="flex items-center gap-1"><LinkIcon className="w-3 h-3" /><span className="font-armenian">{'\u054C\u0565\u057D\u0578\u0582\u0580\u057D\u0576\u0565\u0580'}</span></div>}
-                      </div>
-                    </CardContent>
-                  </CollapsibleContent>
-                </Collapsible>
-              </Card>);
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {topics.map((topic, index) =>
+          <Card key={topic.id} className="group border-t-4 border-t-primary border border-border/50 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] overflow-hidden flex flex-col">
+              <CardContent className="p-5 flex flex-col gap-3 h-full">
+                {/* Row 1: index + lock + title */}
+                <div className="flex items-start gap-2">
+                  <span className="text-sm font-medium text-primary min-w-[1.5rem] mt-0.5">{index + 1}.</span>
+                  {topic.is_free
+                    ? <Unlock className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
+                    : <Lock className="w-4 h-4 text-orange-600 mt-0.5 shrink-0" />}
+                  <span className="font-semibold font-armenian leading-snug">{topic.title}</span>
+                </div>
 
-        })}
+                {/* Row 2: badge + duration */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant={topic.is_free ? 'secondary' : 'default'}>
+                    {topic.is_free ? '\u0531\u0576\u057E\u0573\u0561\u0580' : '\u054E\u0573\u0561\u0580\u0578\u057E\u056B'}
+                  </Badge>
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <Clock className="w-3 h-3" /> {topic.duration_minutes}{'\u0580'}
+                  </div>
+                </div>
+
+                {/* Content section */}
+                <div className="flex-1 space-y-2 min-h-0">
+                  {topic.description &&
+                  <p className="text-sm text-muted-foreground font-armenian line-clamp-3">{topic.description}</p>
+                  }
+                  {topic.video_url &&
+                  <div className="flex items-center gap-2">
+                      <LinkIcon className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                      <a href={topic.video_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline text-sm font-armenian truncate">
+                        {'\u0534\u056B\u057F\u0565\u056C \u057E\u056B\u0564\u0565\u0578\u0576'}
+                      </a>
+                    </div>
+                  }
+                  {topic.content && <TopicContentPreview content={topic.content} />}
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                    {topic.exercises && <div className="flex items-center gap-1"><FileText className="w-3 h-3" /><span className="font-armenian">{'\u054E\u0561\u0580\u056A\u0578\u0582\u0569\u0575\u0578\u0582\u0576\u0576\u0565\u0580'}</span></div>}
+                    {topic.quiz_questions && <div className="flex items-center gap-1"><HelpCircle className="w-3 h-3" /><span className="font-armenian">{'\u054E\u056B\u056F\u057F\u0578\u0580\u056B\u0576\u0561'}</span></div>}
+                    {topic.resources && <div className="flex items-center gap-1"><LinkIcon className="w-3 h-3" /><span className="font-armenian">{'\u054C\u0565\u057D\u0578\u0582\u0580\u057D\u0576\u0565\u0580'}</span></div>}
+                  </div>
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex gap-2 mt-auto pt-2">
+                  <Button variant="outline" size="sm" onClick={(e) => {e.stopPropagation();setEditingTopic(topic);setIsFormOpen(true);}} className="font-armenian flex-1">
+                    <Edit className="w-3 h-3 mr-1" /> {'\u053D\u0574\u0562\u0561\u0563\u0580\u0565\u056C'}
+                  </Button>
+                  <Button variant="destructive" size="sm" onClick={(e) => {e.stopPropagation();handleDeleteTopic(topic.id);}} disabled={deleteTopic.isPending} className="font-armenian flex-1">
+                    <Trash2 className="w-3 h-3 mr-1" /> {'\u054B\u0576\u057B\u0565\u056C'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       }
 
