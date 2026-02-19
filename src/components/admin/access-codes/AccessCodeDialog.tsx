@@ -60,10 +60,10 @@ export const AccessCodeDialog: React.FC<AccessCodeDialogProps> = ({
     reset,
     setValue,
     watch,
-    control,
   } = useForm<AccessCodeFormData>({
     resolver: zodResolver(accessCodeSchema),
     defaultValues: {
+      partner_id: 'pending', // will be replaced with actual user id on submit
       activity_duration_minutes: 60,
       max_uses: 1,
       expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
@@ -83,6 +83,7 @@ export const AccessCodeDialog: React.FC<AccessCodeDialogProps> = ({
       setValue('max_uses', accessCode.max_uses);
     } else if (mode === 'create') {
       reset({
+        partner_id: 'pending',
         activity_duration_minutes: 60,
         max_uses: 1,
         expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
