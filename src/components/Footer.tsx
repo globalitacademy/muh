@@ -45,12 +45,12 @@ const Footer = () => {
               {t('footer.quick-links')}
             </h3>
             <ul className="space-y-4">
-              <li className="text-left">
+              <li>
                 <a href="#" className="text-muted-foreground hover:text-edu-blue transition-colors font-armenian text-lg hover:translate-x-1 inline-block transition-transform">
                   {t('nav.home')}
                 </a>
               </li>
-              <li>
+              <li className="text-left">
                 <a href="#" className="text-muted-foreground hover:text-edu-blue transition-colors font-armenian text-lg hover:translate-x-1 inline-block transition-transform">
                   {t('nav.courses')}
                 </a>
