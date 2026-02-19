@@ -44,7 +44,7 @@ const TopicCurriculum = ({ topics, hasFullAccess, onTopicClick }: TopicCurriculu
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle className="text-lg font-armenian mb-2 flex items-center gap-2 text-center">
+            <CardTitle className="text-lg font-armenian mb-2 flex items-center gap-2 text-left">
               <span className="w-8 h-8 rounded-full bg-edu-blue/10 text-edu-blue flex items-center justify-center text-sm font-bold">
                 {topic.order_index}
               </span>
