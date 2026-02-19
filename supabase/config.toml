@@ -20,6 +20,9 @@ verify_jwt = false
 [functions.generate-topic-content]
 verify_jwt = true
 
+[functions.generate-topic-video]
+verify_jwt = false
+
 [auth.hook.send_email]
 enabled = true
 uri = "https://uiiholvhyjxlutzuebpb.supabase.co/functions/v1/send-auth-email"
