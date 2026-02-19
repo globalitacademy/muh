@@ -17,13 +17,13 @@ const Footer = () => {
           {/* Logo and Description */}
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-6">
-              <img 
-                src={resolvedTheme === 'dark' ? logoDark : logoLight} 
-                alt="LearnHub" 
-                className="h-10" 
-              />
+              <img
+                src={resolvedTheme === 'dark' ? logoDark : logoLight}
+                alt="LearnHub"
+                className="h-10" />
+
             </div>
-            <p className="text-muted-foreground mb-8 max-w-md font-armenian leading-relaxed text-lg">
+            <p className="text-muted-foreground mb-8 max-w-md font-armenian leading-relaxed text-lg text-left">
               {t('footer.description')}
             </p>
             <div className="flex space-x-6">
@@ -121,8 +121,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>);
+
 };
 
 export default Footer;
