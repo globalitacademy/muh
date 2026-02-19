@@ -15,15 +15,14 @@ const Hero = () => {
   const { data: stats, isLoading: statsLoading } = useContactStats();
 
   return (
-    <section className="relative min-h-screen bg-background pt-20 pb-16 w-full overflow-hidden">
+    <section className="relative min-h-screen bg-gradient-to-br from-background via-background to-accent/5 pt-20 pb-16 w-full overflow-hidden">
       {/* Network Animation Background */}
       <div className="absolute inset-0 w-full h-full">
         <NetworkAnimation />
       </div>
       
-      {/* Subtle overlay using theme tokens */}
-      <div className="absolute inset-0 bg-primary/3 pointer-events-none z-[2]"></div>
-
+      {/* Gradient overlay for depth and content readability */}
+      <div className="absolute inset-0 bg-gradient-to-br from-edu-blue/5 via-transparent to-purple-500/5 pointer-events-none z-[2]"></div>
       
       <div className="relative content-container h-full z-10">
         {/* Main Hero Content */}
@@ -103,35 +102,35 @@ const Hero = () => {
                       </div>
                       <div>
                         <div className="flex justify-between text-sm mb-2">
-                           <span className="font-armenian text-foreground">{t('hero.stats.design')}</span>
-                           <span className="text-success-green font-medium">92%</span>
-                         </div>
-                         <div className="w-full bg-muted rounded-full h-3">
-                           <div className="bg-success-green h-3 rounded-full" style={{ width: '92%' }}></div>
-                         </div>
-                       </div>
-                       <div>
-                         <div className="flex justify-between text-sm mb-2">
-                           <span className="font-armenian text-foreground">{t('hero.stats.networking')}</span>
-                           <span className="text-edu-orange font-medium">78%</span>
-                         </div>
-                         <div className="w-full bg-muted rounded-full h-3">
-                           <div className="bg-edu-orange h-3 rounded-full" style={{ width: '78%' }}></div>
-                         </div>
-                       </div>
-                     </div>
+                          <span className="font-armenian text-foreground">{t('hero.stats.design')}</span>
+                          <span className="text-green-500 font-medium">92%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-success-green h-3 rounded-full" style={{ width: '92%' }}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between text-sm mb-2">
+                          <span className="font-armenian text-foreground">{t('hero.stats.networking')}</span>
+                          <span className="text-orange-500 font-medium">78%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-3">
+                          <div className="bg-edu-orange h-3 rounded-full" style={{ width: '78%' }}></div>
+                        </div>
+                      </div>
+                    </div>
 
                     {/* Achievement badges */}
-                     <div className="flex gap-2 pt-4">
-                       <div className="flex items-center gap-1 px-3 py-1 bg-success-green/10 text-success-green rounded-full text-xs font-medium">
-                         <Award className="w-3 h-3" />
-                         <span className="font-armenian">{t('hero.stats.certificate')}</span>
-                       </div>
-                       <div className="flex items-center gap-1 px-3 py-1 bg-edu-blue/10 text-edu-blue rounded-full text-xs font-medium">
-                         <Users className="w-3 h-3" />
-                         <span className="font-armenian">{t('hero.stats.group')}</span>
-                       </div>
-                     </div>
+                    <div className="flex gap-2 pt-4">
+                      <div className="flex items-center gap-1 px-3 py-1 bg-green-500/10 text-green-600 rounded-full text-xs font-medium">
+                        <Award className="w-3 h-3" />
+                        <span className="font-armenian">{t('hero.stats.certificate')}</span>
+                      </div>
+                      <div className="flex items-center gap-1 px-3 py-1 bg-blue-500/10 text-blue-600 rounded-full text-xs font-medium">
+                        <Users className="w-3 h-3" />
+                        <span className="font-armenian">{t('hero.stats.group')}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -160,7 +159,7 @@ const Hero = () => {
                     <span className="animate-scale-in">{stats?.studentsCount || 0}+</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.students')}</div>
-                  <div className="mt-2 text-xs text-success-green font-medium">+12% {t('hero.stats.monthly-growth')}</div>
+                  <div className="mt-2 text-xs text-green-600 font-medium">+12% {t('hero.stats.monthly-growth')}</div>
                 </div>
               </div>
 
@@ -177,7 +176,7 @@ const Hero = () => {
                     <span className="animate-scale-in" style={{ animationDelay: '0.1s' }}>{stats?.modulesCount || 0}</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.modules')}</div>
-                  <div className="mt-2 text-xs text-edu-blue font-medium">5 {t('hero.stats.new-modules')}</div>
+                  <div className="mt-2 text-xs text-blue-600 font-medium">5 {t('hero.stats.new-modules')}</div>
                 </div>
               </div>
 
@@ -194,7 +193,7 @@ const Hero = () => {
                     <span className="animate-scale-in" style={{ animationDelay: '0.2s' }}>{stats?.instructorsCount || 0}+</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.instructors')}</div>
-                  <div className="mt-2 text-xs text-edu-orange font-medium">{t('hero.stats.experts')}</div>
+                  <div className="mt-2 text-xs text-orange-600 font-medium">{t('hero.stats.experts')}</div>
                 </div>
               </div>
 
@@ -211,7 +210,7 @@ const Hero = () => {
                     <span className="animate-scale-in" style={{ animationDelay: '0.3s' }}>95%</span>
                   </div>
                   <div className="text-muted-foreground font-armenian text-sm">{t('hero.stats.satisfaction')}</div>
-                  <div className="mt-2 text-xs text-success-green font-medium">{t('hero.stats.high-rating')}</div>
+                  <div className="mt-2 text-xs text-green-600 font-medium">{t('hero.stats.high-rating')}</div>
                 </div>
               </div>
             </div>
