@@ -23,7 +23,7 @@ const Footer = () => {
                 className="h-10" />
 
             </div>
-            <p className="text-muted-foreground mb-8 max-w-md font-armenian leading-relaxed text-lg text-left">
+            <p className="text-muted-foreground mb-8 max-w-md font-armenian leading-relaxed text-lg">
               {t('footer.description')}
             </p>
             <div className="flex space-x-6">
@@ -45,7 +45,7 @@ const Footer = () => {
               {t('footer.quick-links')}
             </h3>
             <ul className="space-y-4">
-              <li>
+              <li className="text-left">
                 <a href="#" className="text-muted-foreground hover:text-edu-blue transition-colors font-armenian text-lg hover:translate-x-1 inline-block transition-transform">
                   {t('nav.home')}
                 </a>
