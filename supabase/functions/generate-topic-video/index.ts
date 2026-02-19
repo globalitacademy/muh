@@ -197,7 +197,6 @@ serve(async (req) => {
           parameters: {
             aspectRatio: "16:9",
             durationSeconds: 8,
-            personGeneration: "dont_allow",
           },
         }),
       }
