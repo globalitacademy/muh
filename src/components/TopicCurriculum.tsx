@@ -50,7 +50,7 @@ const TopicCurriculum = ({ topics, hasFullAccess, onTopicClick }: TopicCurriculu
               </span>
               {topic.title}
             </CardTitle>
-            <p className="text-sm text-muted-foreground font-armenian text-center">
+            <p className="text-sm text-muted-foreground font-armenian text-left">
               {topic.description}
             </p>
           </div>
