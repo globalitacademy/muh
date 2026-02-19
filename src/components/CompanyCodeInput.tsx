@@ -78,40 +78,40 @@ const CompanyCodeInput = ({
   // If we have an active session, show session info
   if (isActive && hasCurrentAccess) {
     return (
-      <Card className="border-dashed border-2 border-green-500/30 bg-green-50/50">
+      <Card className="border-dashed border-2 border-primary/30 bg-primary/5">
         <CardContent className="p-4 space-y-4">
           <div className="text-center">
-            <h2 className="text-xl font-semibold font-armenian mb-2 text-green-800">
+            <h2 className="text-xl font-semibold font-armenian mb-2 text-foreground">
               Active Session
             </h2>
-            <p className="text-sm text-green-600 font-armenian">
+            <p className="text-sm text-muted-foreground font-armenian">
               Code: {session?.code}
             </p>
           </div>
 
-          <div className="flex items-center justify-center gap-2 p-3 bg-green-100 rounded-md border border-green-200">
-            <Clock className="w-5 h-5 text-green-600" />
+          <div className="flex items-center justify-center gap-2 p-3 bg-primary/10 rounded-md border border-primary/20">
+            <Clock className="w-5 h-5 text-primary" />
             <div className="text-center">
-              <p className="text-lg font-bold text-green-800 font-mono">
+              <p className="text-lg font-bold text-foreground font-mono">
                 {formatTimeRemaining()}
               </p>
-              <p className="text-xs text-green-600 font-armenian">
+              <p className="text-xs text-muted-foreground font-armenian">
                 Remaining time
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 p-3 bg-green-50 rounded-md border border-green-200">
-            <CheckCircle className="w-4 h-4 text-green-600" />
+          <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-md border border-primary/20">
+            <CheckCircle className="w-4 h-4 text-primary" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-green-800 font-armenian">
+              <p className="text-sm font-medium text-foreground font-armenian">
                 Free access is active
               </p>
-              <p className="text-xs text-green-600 font-armenian">
+              <p className="text-xs text-muted-foreground font-armenian">
                 You can view all lessons
               </p>
             </div>
-            <Badge variant="secondary" className="text-green-700 bg-green-100">
+            <Badge variant="secondary" className="text-primary bg-primary/10">
               Active
             </Badge>
           </div>
@@ -153,24 +153,24 @@ const CompanyCodeInput = ({
         </div>
 
         {verificationStatus === 'valid' && (
-          <div className="flex items-center gap-2 p-3 bg-green-50 rounded-md border border-green-200">
-            <CheckCircle className="w-4 h-4 text-green-600" />
+          <div className="flex items-center gap-2 p-3 bg-primary/5 rounded-md border border-primary/20">
+            <CheckCircle className="w-4 h-4 text-primary" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-green-800 font-armenian">Code is valid</p>
-              <p className="text-xs text-green-600 font-armenian">Session started</p>
+              <p className="text-sm font-medium text-foreground font-armenian">Code is valid</p>
+              <p className="text-xs text-muted-foreground font-armenian">Session started</p>
             </div>
-            <Badge variant="secondary" className="text-green-700 bg-green-100">
+            <Badge variant="secondary" className="text-primary bg-primary/10">
               Active
             </Badge>
           </div>
         )}
 
         {(verificationStatus === 'invalid') && (
-          <div className="flex items-center gap-2 p-3 bg-red-50 rounded-md border border-red-200">
-            <AlertCircle className="w-4 h-4 text-red-600" />
+          <div className="flex items-center gap-2 p-3 bg-destructive/5 rounded-md border border-destructive/20">
+            <AlertCircle className="w-4 h-4 text-destructive" />
             <div>
-              <p className="text-sm font-medium text-red-800 font-armenian">Invalid code</p>
-              <p className="text-xs text-red-600 font-armenian">
+              <p className="text-sm font-medium text-foreground font-armenian">Invalid code</p>
+              <p className="text-xs text-muted-foreground font-armenian">
                 Please check and try again
               </p>
             </div>
