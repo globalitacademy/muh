@@ -1,13 +1,13 @@
-
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Upload, X, Loader2, FileText, Video } from 'lucide-react';
+import { Upload, X, Loader2, FileText, Video, Sparkles } from 'lucide-react';
 import { useVideoUpload } from '@/hooks/useVideoUpload';
 import { usePdfUpload } from '@/hooks/usePdfUpload';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 interface TopicBasicInfoFormData {
   title: string;
@@ -28,13 +28,148 @@ interface TopicBasicInfoTabProps {
   onFormDataChange: (updates: Partial<TopicBasicInfoFormData>) => void;
 }
 
+type AIGenerationStatus =
+  | 'idle'
+  | 'generating_script'
+  | 'generating_video'
+  | 'uploading'
+  | 'done'
+  | 'error';
+
+const STATUS_MESSAGES: Record<AIGenerationStatus, string> = {
+  idle: '',
+  generating_script: 'Ստեղծում եմ վիդեո սցենար...',
+  generating_video: 'Ստեղծում եմ վիդեո AI-ի միջոցով... (կարող է տևել 2-5 րոպե)',
+  uploading: 'Վերբեռնում եմ վիդեոն...',
+  done: 'Պատրաստ է!',
+  error: '',
+};
+
 const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProps) => {
   const { uploadVideo, deleteVideo, uploading: videoUploading } = useVideoUpload();
   const { uploadPdf, deletePdf, uploading: pdfUploading } = usePdfUpload();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [contentType, setContentType] = useState<'video' | 'pdf'>(formData.content_type === 'pdf' ? 'pdf' : 'video');
-  
+  const [aiStatus, setAiStatus] = useState<AIGenerationStatus>('idle');
+  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   const uploading = videoUploading || pdfUploading;
+  const isAiGenerating = aiStatus !== 'idle' && aiStatus !== 'done' && aiStatus !== 'error';
+
+  const stopPolling = () => {
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+  };
+
+  const handleGenerateWithAI = async () => {
+    if (!formData.title.trim()) {
+      toast.error('Նախ մուտքագրեք թեմայի վերնագիրը');
+      return;
+    }
+
+    setAiStatus('generating_script');
+
+    try {
+      // Step 1: Start the generation job
+      const { data: startData, error: startError } = await supabase.functions.invoke(
+        'generate-topic-video',
+        {
+          body: { topicTitle: formData.title },
+          headers: { 'x-query-action': 'start' },
+        }
+      );
+
+      // invoke doesn't support query params directly; use fetch instead
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+      const startResp = await fetch(
+        `${supabaseUrl}/functions/v1/generate-topic-video?action=start`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${anonKey}`,
+            apikey: anonKey,
+          },
+          body: JSON.stringify({ topicTitle: formData.title }),
+        }
+      );
+
+      const startResult = await startResp.json();
+
+      if (!startResp.ok || startResult.error) {
+        throw new Error(startResult.error || 'Վիդեո ստեղծման սկիզբը ձախողվեց');
+      }
+
+      const { operationName } = startResult;
+      if (!operationName) {
+        throw new Error('Չստացվեց գործողության անունը');
+      }
+
+      setAiStatus('generating_video');
+
+      // Step 2: Poll for completion
+      pollingRef.current = setInterval(async () => {
+        try {
+          const statusResp = await fetch(
+            `${supabaseUrl}/functions/v1/generate-topic-video?action=status`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${anonKey}`,
+                apikey: anonKey,
+              },
+              body: JSON.stringify({ operationName }),
+            }
+          );
+
+          const statusResult = await statusResp.json();
+
+          if (statusResult.error) {
+            stopPolling();
+            setAiStatus('error');
+            toast.error(`Վիդեո ստեղծման սխալ: ${statusResult.error}`);
+            return;
+          }
+
+          if (statusResult.done) {
+            stopPolling();
+
+            if (statusResult.videoUrl) {
+              setAiStatus('uploading');
+              // Small delay for UX
+              await new Promise((r) => setTimeout(r, 500));
+              setAiStatus('done');
+              onFormDataChange({
+                video_url: statusResult.videoUrl,
+                content_type: 'video',
+              });
+              toast.success('Վիդեոն հաջողությամբ ստեղծվեց AI-ի միջոցով');
+              setTimeout(() => setAiStatus('idle'), 2000);
+            } else {
+              setAiStatus('error');
+              toast.error('Վիդեոյի URL-ը չստացվեց');
+            }
+          }
+          // else: still generating, keep polling
+        } catch (pollErr) {
+          stopPolling();
+          setAiStatus('error');
+          toast.error('Վիդեոյի կարգավիճակի ստուգման սխալ');
+        }
+      }, 12000); // poll every 12 seconds
+    } catch (err) {
+      stopPolling();
+      setAiStatus('error');
+      const message = err instanceof Error ? err.message : 'Անհայտ սխալ';
+      toast.error(`AI վիդեո ստեղծման սխալ: ${message}`);
+      setTimeout(() => setAiStatus('idle'), 3000);
+    }
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,9 +187,9 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
     } else {
       url = await uploadPdf(selectedFile);
     }
-    
+
     if (url) {
-      onFormDataChange({ 
+      onFormDataChange({
         video_url: url,
         content_type: contentType
       });
@@ -63,6 +198,8 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
   };
 
   const handleRemoveContent = async () => {
+    stopPolling();
+    setAiStatus('idle');
     if (formData.video_url && formData.video_url.includes('topic-videos')) {
       if (formData.content_type === 'pdf') {
         await deletePdf(formData.video_url);
@@ -70,7 +207,7 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
         await deleteVideo(formData.video_url);
       }
     }
-    onFormDataChange({ 
+    onFormDataChange({
       video_url: '',
       content_type: 'none'
     });
@@ -139,15 +276,15 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
 
       <div className="space-y-3">
         <Label className="font-armenian">Դասի նյութ</Label>
-        
-        {/* Content Type Selection */}
-        <div className="flex gap-2">
+
+        {/* Content Type Selection + AI Button */}
+        <div className="flex flex-wrap gap-2">
           <Button
             type="button"
             variant={contentType === 'video' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setContentType('video')}
-            disabled={!!formData.video_url || uploading}
+            disabled={!!formData.video_url || uploading || isAiGenerating}
             className="font-armenian"
           >
             <Video className="w-4 h-4 mr-2" />
@@ -158,14 +295,55 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
             variant={contentType === 'pdf' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setContentType('pdf')}
-            disabled={!!formData.video_url || uploading}
+            disabled={!!formData.video_url || uploading || isAiGenerating}
             className="font-armenian"
           >
             <FileText className="w-4 h-4 mr-2" />
             PDF պրեզենտացիա
           </Button>
+
+          {/* Generate with AI button — only visible for video type when no video is set */}
+          {contentType === 'video' && !formData.video_url && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleGenerateWithAI}
+              disabled={uploading || isAiGenerating}
+              className="font-armenian border-primary text-primary hover:bg-primary/10"
+            >
+              {isAiGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  {STATUS_MESSAGES[aiStatus]}
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Ստեղծել AI-ով
+                </>
+              )}
+            </Button>
+          )}
         </div>
-        
+
+        {/* AI generation progress panel */}
+        {isAiGenerating && (
+          <div className="p-3 rounded-lg bg-primary/5 border border-primary/20 flex items-center gap-3">
+            <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0" />
+            <div>
+              <p className="text-sm font-medium font-armenian text-primary">
+                {STATUS_MESSAGES[aiStatus]}
+              </p>
+              {aiStatus === 'generating_video' && (
+                <p className="text-xs text-muted-foreground font-armenian mt-0.5">
+                  Խնդրում ենք սպասել, վիդեոն ստեղծվում է...
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* YouTube URL Input (only for video) */}
         {contentType === 'video' && (
           <div>
@@ -173,12 +351,12 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
             <Input
               id="video_url"
               value={formData.video_url}
-              onChange={(e) => onFormDataChange({ 
+              onChange={(e) => onFormDataChange({
                 video_url: e.target.value,
                 content_type: 'video'
               })}
               placeholder="https://youtube.com/..."
-              disabled={!!selectedFile || uploading}
+              disabled={!!selectedFile || uploading || isAiGenerating}
             />
           </div>
         )}
@@ -200,11 +378,11 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
           <div className="flex items-center gap-2 mt-1">
             <Input
               type="file"
-              accept={contentType === 'video' 
-                ? "video/mp4,video/webm,video/ogg,video/quicktime" 
+              accept={contentType === 'video'
+                ? "video/mp4,video/webm,video/ogg,video/quicktime"
                 : "application/pdf"}
               onChange={handleFileSelect}
-              disabled={!!formData.video_url || uploading}
+              disabled={!!formData.video_url || uploading || isAiGenerating}
               className="flex-1"
             />
             {selectedFile && (
@@ -240,7 +418,7 @@ const TopicBasicInfoTab = ({ formData, onFormDataChange }: TopicBasicInfoTabProp
           <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
             <div className="flex-1">
               <p className="text-sm font-medium font-armenian">
-                {isUploadedContent 
+                {isUploadedContent
                   ? (isPdf ? 'Վերբեռնված PDF' : 'Վերբեռնված վիդեո')
                   : 'YouTube հղում'}
               </p>
