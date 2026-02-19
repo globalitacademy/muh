@@ -26,8 +26,8 @@ const PublicProjectsSection = () => {
             </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[...Array(3)].map((_, i) => (
-              <Card key={i} className="animate-pulse">
+            {[...Array(3)].map((_, i) =>
+            <Card key={i} className="animate-pulse">
                 <div className="h-48 bg-muted rounded-t-lg" />
                 <CardContent className="p-4 space-y-3">
                   <div className="h-4 bg-muted rounded w-3/4" />
@@ -35,11 +35,11 @@ const PublicProjectsSection = () => {
                   <div className="h-3 bg-muted rounded w-2/3" />
                 </CardContent>
               </Card>
-            ))}
+            )}
           </div>
         </div>
-      </section>
-    );
+      </section>);
+
   }
 
   if (featuredProjects.length === 0) {
@@ -61,33 +61,33 @@ const PublicProjectsSection = () => {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-12">
-          {featuredProjects.map((project) => (
-            <Card key={project.id} className="modern-card group hover:shadow-lg transition-all duration-300">
-              {project.image_url && (
-                <div className="aspect-video overflow-hidden rounded-t-lg bg-muted">
+          {featuredProjects.map((project) =>
+          <Card key={project.id} className="modern-card group hover:shadow-lg transition-all duration-300">
+              {project.image_url &&
+            <div className="aspect-video overflow-hidden rounded-t-lg bg-muted">
                   <img
-                    src={project.image_url}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                src={project.image_url}
+                alt={project.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+
                 </div>
-              )}
+            }
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <CardTitle className="text-lg line-clamp-2 group-hover:text-primary transition-colors">
                     {project.title}
                   </CardTitle>
-                  {project.category && (
-                    <Badge variant="secondary" className="shrink-0">
+                  {project.category &&
+                <Badge variant="secondary" className="shrink-0">
                       {project.category}
                     </Badge>
-                  )}
+                }
                 </div>
-                {project.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-3">
+                {project.description &&
+              <p className="text-sm text-muted-foreground line-clamp-3">
                     {project.description}
                   </p>
-                )}
+              }
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -95,57 +95,57 @@ const PublicProjectsSection = () => {
                     <Calendar className="h-4 w-4" />
                     <span>{new Date(project.created_at).toLocaleDateString('hy-AM')}</span>
                   </div>
-                  {project.max_applicants && (
-                    <div className="flex items-center gap-1">
+                  {project.max_applicants &&
+                <div className="flex items-center gap-1">
                       <Users className="h-4 w-4" />
                       <span>մինչև {project.max_applicants}</span>
                     </div>
-                  )}
+                }
                 </div>
 
-                {project.required_skills && project.required_skills.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {project.required_skills.slice(0, 3).map((skill) => (
-                      <Badge key={skill} variant="outline" className="text-xs">
+                {project.required_skills && project.required_skills.length > 0 &&
+              <div className="flex flex-wrap gap-1">
+                    {project.required_skills.slice(0, 3).map((skill) =>
+                <Badge key={skill} variant="outline" className="text-xs">
                         {skill}
                       </Badge>
-                    ))}
-                    {project.required_skills.length > 3 && (
-                      <Badge variant="outline" className="text-xs">
+                )}
+                    {project.required_skills.length > 3 &&
+                <Badge variant="outline" className="text-xs">
                         +{project.required_skills.length - 3}
                       </Badge>
-                    )}
+                }
                   </div>
-                )}
+              }
 
                 <Button
-                  onClick={() => navigate(`/projects/${project.id}`)}
-                  className="w-full btn-modern group"
-                >
+                onClick={() => navigate(`/projects/${project.id}`)}
+                className="w-full btn-modern group bg-primary-foreground">
+
                   Մանրամասները
                   <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </CardContent>
             </Card>
-          ))}
+          )}
         </div>
 
-        {projects.length > 3 && (
-          <div className="text-center">
+        {projects.length > 3 &&
+        <div className="text-center">
             <Button
-              onClick={() => navigate('/projects')}
-              variant="outline"
-              size="lg"
-              className="btn-modern"
-            >
+            onClick={() => navigate('/projects')}
+            variant="outline"
+            size="lg"
+            className="btn-modern">
+
               Բոլոր նախագծերը
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>
-        )}
+        }
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default PublicProjectsSection;
