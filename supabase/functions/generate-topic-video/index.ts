@@ -185,7 +185,7 @@ serve(async (req) => {
 
     // Step 2: Start Veo 3.1 video generation
     const veoResp = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-preview:predictLongRunning`,
+      `https://generativelanguage.googleapis.com/v1beta/models/veo-3.0-generate-001:predictLongRunning`,
       {
         method: "POST",
         headers: {
