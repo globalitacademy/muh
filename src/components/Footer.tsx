@@ -55,12 +55,12 @@ const Footer = () => {
                   {t('nav.courses')}
                 </a>
               </li>
-              <li className="text-left">
+              <li>
                 <a href="#" className="text-muted-foreground hover:text-edu-blue transition-colors font-armenian text-lg hover:translate-x-1 inline-block transition-transform">
                   {t('nav.about')}
                 </a>
               </li>
-              <li>
+              <li className="text-left">
                 <a href="#" className="text-muted-foreground hover:text-edu-blue transition-colors font-armenian text-lg hover:translate-x-1 inline-block transition-transform">
                   {t('nav.contact')}
                 </a>
